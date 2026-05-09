@@ -3788,6 +3788,7 @@
 
 /* Active / selection mode — primary underline replaces default border */
 .management-toolbar--active .management-toolbar__bar {
+  background: var(--color-primary-l3);
   border-bottom: 2px solid var(--color-primary);
   padding-bottom: calc(var(--spacing-4) - 2px);
 }
