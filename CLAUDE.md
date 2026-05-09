@@ -384,10 +384,33 @@ The trailing chevron icon is a plain `.lexicon-icon` (16×16) inside the `<a cla
 
 ## Credentials
 
-- **File key:** `YNNkt9Xd6ImDtEvIz4tETF`
-- **Personal access token:** `figd_…` *(set in your local env or Claude Code secrets — never commit)*
+- **File key:** `YNNkt9Xd6ImDtEvIz4tETF` *(public — visible in any Figma share URL)*
+- **Personal access token:** not stored in this repo — you must supply your own (see below)
 
-The token is the user's personal Figma PAT, given for this project. Treat it like any other credential — do not paste it in prototypes, in commit messages, or in chat outputs other than where strictly necessary to call the Figma API.
+### Getting a Figma personal access token
+
+1. Open Figma → top-left menu → **Help and account** → **Account settings**
+2. Scroll to **Personal access tokens** → **Generate new token**
+3. Give it a name (e.g. `lexicon-vanilla`) and copy the value — it starts with `figd_`
+
+### Making the token available to Claude Code
+
+The import workflow uses the token in `curl` commands. The cleanest way is a shell environment variable in your profile so it is never typed into a file:
+
+```bash
+# ~/.zshrc or ~/.bashrc
+export FIGMA_TOKEN='figd_your_token_here'
+```
+
+Alternatively, store it as a Claude Code secret:
+
+```bash
+claude secrets set FIGMA_TOKEN figd_your_token_here
+```
+
+Then the import curl commands work as written in the *Component import workflow* section — they reference `$FIGMA_TOKEN`, not a hardcoded value.
+
+> **Never** paste the token value directly into `CLAUDE.md`, a prototype file, a commit message, or a chat message. GitHub Push Protection will block the push and the token should be rotated immediately if accidentally exposed.
 
 The Figma Dev Mode MCP Server (`mcp__Figma__*`) requires the Figma desktop app and is **not** how we extract this kit — those tools fail with `Enable the Dev Mode MCP Server` until the desktop app is running. We use the **REST API** with the token above instead.
 
