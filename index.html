@@ -216,9 +216,9 @@
       <li><a href="#comp-treeview">Tree View</a></li>
       <li><a href="#comp-vertbar">Vertical Bar</a></li>
       <li><a href="#comp-vertnav">Vertical Nav</a></li>
-    </ul>
       <li><a href="#comp-icons">Icons</a></li>
-        <h2>Satellites</h2>
+    </ul>
+    <h2>Satellites</h2>
     <ul>
       <li><a href="#comp-managementtoolbar">Management Toolbar</a></li>
       <li><a href="#comp-controlmenu">Control Menu</a></li>
@@ -2167,30 +2167,39 @@
           <a href="vertnav.html">Playground</a>
         </span>
       </div>
-      <p class="lead"><code>.vert-nav__section</code> titles + <code>.vert-nav__item</code> rows + <code>.vert-nav__sublist</code> (16px indent). <code>.is-active</code> = primary-l3 bg + left primary rail.</p>
+      <p class="lead">40px full-width items (no border-radius). Active: 6px primary left border + primary-l3 bg. Group parent uses <code>.vert-nav__group-header</code>. Icons: <code>.vert-nav__icon-cell</code> (24px wrapper) + <code>.lexicon-icon.vert-nav__icon</code>.</p>
 
       <div class="showcase__row showcase__row--block">
-        <span class="showcase__label">Section titles · active item · nested</span>
-        <nav class="vert-nav" style="max-width:240px">
+        <span class="showcase__label">Expandable group (open) · active child · standalone items</span>
+        <nav class="vert-nav">
           <ul class="vert-nav__list">
-            <li class="vert-nav__section">Navigation <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></li>
-            <li class="vert-nav__item is-active">
-              <svg class="lexicon-icon vert-nav__icon"><use href="#document"></use></svg>
-              Overview
+            <li>
+              <button class="vert-nav__group-header" aria-expanded="true">
+                Item Name
+                <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+              </button>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item is-active">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg></span>
+                  Item Name
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#box-container"></use></svg></span>
+                  Item Name
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#categories"></use></svg></span>
+                  Item Name
+                </li>
+              </ul>
             </li>
             <li class="vert-nav__item">
-              <svg class="lexicon-icon vert-nav__icon"><use href="#picture"></use></svg>
-              Media
+              <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg></span>
+              Section
             </li>
             <li class="vert-nav__item">
-              <svg class="lexicon-icon vert-nav__icon"><use href="#user"></use></svg>
-              Users
-              <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-            </li>
-            <li class="vert-nav__section">Settings <svg class="lexicon-icon"><use href="#plus"></use></svg></li>
-            <li class="vert-nav__item">
-              <svg class="lexicon-icon vert-nav__icon"><use href="#cog"></use></svg>
-              General
+              <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#books"></use></svg></span>
+              Section
             </li>
           </ul>
         </nav>

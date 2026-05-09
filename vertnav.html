@@ -29,80 +29,90 @@
 <main class="showcase">
   <h1>Vertical Navigation</h1>
   <p class="lead">
-    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=512-5857">Figma — Lexicon Components</a>.
-    Sidebar nav with section titles, items, optional trailing chevron / action icon, nested children indented 16px, and an active-state rail (2px primary-l1 left border + primary-l3 fill).
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-27394">Figma — Lexicon Components</a>.
+    Sidebar nav. Items are 40px, full-width, rectangular (no border-radius). Active item: 6px primary left border + primary-l3 fill. Expandable group parent uses <code>.vert-nav__group-header</code>. Icons use a <code>.vert-nav__icon-cell</code> 24px wrapper to center the 16px icon.
   </p>
 
+  <!-- ── Variant: expandable group (open) + standalone section items ── -->
   <div class="showcase__row">
-    <span class="showcase__label">Section titles · active item · nested · with action</span>
-    <nav class="vert-nav">
-      <ul class="vert-nav__list">
-        <li class="vert-nav__section">Item Name <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></li>
-        <li class="vert-nav__item is-active">
-          <svg class="lexicon-icon vert-nav__icon"><use href="#document"></use></svg>
-          Item Name
-        </li>
-        <li class="vert-nav__item">
-          <svg class="lexicon-icon vert-nav__icon"><use href="#picture"></use></svg>
-          Item Name
-        </li>
-        <li class="vert-nav__item">
-          <svg class="lexicon-icon vert-nav__icon"><use href="#user"></use></svg>
-          Item Name
-        </li>
-        <li class="vert-nav__item">
-          Item Name
-          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-        </li>
-        <li class="vert-nav__section">Item Name <svg class="lexicon-icon"><use href="#plus"></use></svg></li>
-        <li class="vert-nav__item is-muted">
-          Item Name
-          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-        </li>
-        <li class="vert-nav__item is-muted">
-          Item Name
-          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-        </li>
-        <li class="vert-nav__item">
-          Item Name
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </li>
-        <li>
-          <ul class="vert-nav__sublist">
-            <li class="vert-nav__item is-active">Item Name</li>
-            <li class="vert-nav__item is-muted">Item Name</li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+    <span class="showcase__label">Expandable group (open) · active child · standalone items</span>
 
     <nav class="vert-nav">
       <ul class="vert-nav__list">
-        <li class="vert-nav__section">Menu</li>
-        <li class="vert-nav__item">
-          Item Name
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </li>
+
+        <!-- Level-1 group header (expanded / parent of active) -->
         <li>
-          <ul class="vert-nav__sublist">
-            <li class="vert-nav__item">Nested Item Name</li>
+          <button class="vert-nav__group-header" aria-expanded="true">
+            Item Name
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+          <!-- Level-2 children -->
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item is-active">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#box-container"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#categories"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#books"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+              </span>
+              Item Name
+            </li>
           </ul>
         </li>
+
+        <!-- Standalone items (Section label role) -->
         <li class="vert-nav__item">
-          Item Name
-          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
         </li>
         <li class="vert-nav__item">
-          Item Name
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
         </li>
-        <li>
-          <ul class="vert-nav__sublist">
-            <li class="vert-nav__item is-active">Item Name</li>
-            <li class="vert-nav__item">Nested Item Name</li>
-            <li class="vert-nav__item">Nested Item Name</li>
-          </ul>
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
         </li>
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
+        </li>
+
       </ul>
     </nav>
   </div>

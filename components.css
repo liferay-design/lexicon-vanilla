@@ -3554,7 +3554,9 @@
    muted), nav items (plain text + optional trailing chevron
    for collapse, or trailing #plus / #angle-right for actions),
    nested children indented by 16px, and an active-state rail
-   on the left (2px primary-l1 border + primary-l3 fill).
+   on the left (6px primary border + primary-l3 fill).
+   Group header (expandable parent) uses .vert-nav__group-header:
+   12px semibold dark text, full-width, chevron on the right.
    Markup:
      <nav class="vert-nav">
        <ul class="vert-nav__list">
@@ -3602,15 +3604,14 @@
 }
 
 .vert-nav__item {
-  position: relative;
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-5);
   cursor: pointer;
-  border-radius: var(--rounded-md);
   font-weight: var(--font-weight-semi);
   color: var(--color-dark);
+  overflow: hidden;
 }
 
 .vert-nav__item:hover { background: var(--color-light); }
@@ -3619,18 +3620,36 @@
 
 .vert-nav__item.is-active {
   background: var(--color-primary-l3);
-  font-weight: var(--font-weight-bold);
+  border-left: 6px solid var(--color-primary);
 }
 
-.vert-nav__item.is-active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--color-primary-l1);
-  border-radius: 0 var(--rounded-sm) var(--rounded-sm) 0;
+/* Expandable group parent: 12px semibold dark text, chevron right */
+.vert-nav__group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.vert-nav__group-header:hover { background: var(--color-light); }
+
+/* 24px icon wrapper (centers 16px icon, matches Figma layout) */
+.vert-nav__icon-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .vert-nav__icon { color: var(--color-secondary); flex-shrink: 0; }
