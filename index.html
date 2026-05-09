@@ -189,6 +189,7 @@
       <li><a href="#keys">Keys</a></li>
       <li><a href="#label">Label</a></li>
       <li><a href="#loading">Loading</a></li>
+      <li><a href="#managementtoolbar">Management Toolbar</a></li>
       <li><a href="#pagination">Pagination</a></li>
       <li><a href="#progress">Progress</a></li>
       <li><a href="#radio">Radio</a></li>
@@ -1207,6 +1208,95 @@
           <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
           Loading…
         </button>
+      </div>
+    </section>
+
+    <!-- ───────────────────────  MANAGEMENT TOOLBAR  ──────────────────────────── -->
+    <section id="managementtoolbar" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Management Toolbar</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297">Figma ↗</a>
+          ·
+          <a href="managementtoolbar.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Full-width contextual toolbar. Default state: checkbox + filter/order + search + view picker + actions. Active state (<code>.management-toolbar--active</code>): selection count + bulk actions + primary underline. Optional <code>.management-toolbar__results</code> summary bar.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Default</span>
+        <div class="management-toolbar">
+          <div class="management-toolbar__bar">
+            <label class="checkbox">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"></span>
+            </label>
+            <button class="btn btn--secondary btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#filter"></use></svg>
+              Filter
+              <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+            </button>
+            <button class="btn btn--secondary btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
+              Order
+              <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+            </button>
+            <div class="management-toolbar__search">
+              <div class="search">
+                <input class="input__field search__field" type="search" placeholder="Search…">
+                <button class="search__clear" aria-label="Clear" hidden type="button">
+                  <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+                </button>
+                <button class="search__submit" aria-label="Search" type="button">
+                  <svg class="lexicon-icon"><use href="#search"></use></svg>
+                </button>
+              </div>
+            </div>
+            <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+              <svg class="lexicon-icon"><use href="#list"></use></svg>
+              <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+            </button>
+            <button class="btn btn--primary btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#plus"></use></svg>
+              New
+              <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+            </button>
+            <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
+              <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Active — items selected</span>
+        <div class="management-toolbar management-toolbar--active">
+          <div class="management-toolbar__bar">
+            <label class="checkbox is-indeterminate">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"></span>
+            </label>
+            <span class="management-toolbar__count">3 of 17 items selected</span>
+            <button class="btn btn--borderless btn--sm" type="button">Clear</button>
+            <button class="btn btn--borderless btn--sm" type="button">Select All</button>
+            <div class="management-toolbar__spacer"></div>
+            <button class="btn btn--borderless btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#download"></use></svg>
+              Download
+            </button>
+            <button class="btn btn--borderless btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#trash"></use></svg>
+              Delete
+            </button>
+            <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
+              <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+            </button>
+            <div class="management-toolbar__divider"></div>
+            <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
+              <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 

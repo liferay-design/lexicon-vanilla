@@ -3765,3 +3765,85 @@
 .table__title:hover { color: var(--color-primary); }
 
 .table__stack { display: inline-flex; flex-direction: column; gap: var(--spacing-2); align-items: flex-start; }
+
+
+/* ============================================================
+   MANAGEMENT TOOLBAR
+   Figma: Lexicon-Satellites · node 397:297
+   States: default / active (selection) · Devices: desktop / mobile
+   ============================================================ */
+
+.management-toolbar {
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-light-d2);
+  width: 100%;
+}
+
+.management-toolbar__bar {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-7);
+}
+
+/* Active / selection mode — primary underline replaces default border */
+.management-toolbar--active .management-toolbar__bar {
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: calc(var(--spacing-4) - 2px);
+}
+
+/* Search field stretches to fill available space */
+.management-toolbar__search { flex: 1; min-width: 0; }
+
+/* Pushes right-side items to end in active bar */
+.management-toolbar__spacer { flex: 1; }
+
+/* "X of Y items selected" label */
+.management-toolbar__count {
+  color: var(--color-secondary);
+  flex-shrink: 0;
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+}
+
+/* 1 px vertical separator between action groups */
+.management-toolbar__divider {
+  background: var(--color-secondary-l2);
+  flex-shrink: 0;
+  height: 16px;
+  width: 1px;
+}
+
+/* Results / filter-summary bar */
+.management-toolbar__results {
+  align-items: center;
+  background: var(--color-light-l1);
+  border-bottom: 1px solid var(--color-light-d2);
+  display: flex;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: var(--spacing-3) var(--spacing-7);
+}
+
+.management-toolbar__results-text {
+  color: var(--color-secondary);
+  font-size: var(--font-size-base);
+}
+
+.management-toolbar__results-clear {
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+}
+.management-toolbar__results-clear:hover { color: var(--color-primary-d1); }
+
+/* Mobile */
+@media (max-width: 767px) {
+  .management-toolbar__bar {
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+  }
+  .management-toolbar__results {
+    padding: var(--spacing-3) var(--spacing-5);
+  }
+}
