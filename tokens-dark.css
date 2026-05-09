@@ -347,7 +347,7 @@
 
 /* Auto dark (OS preference) — only when no explicit theme class is set */
 @media (prefers-color-scheme: dark) {
-  :root:not(.light):not([data-theme="light"]):not(.hc):not([data-theme="high-contrast"]):not(.dark):not([data-theme="dark"]):not(.dark-hc):not([data-theme="dark-hc"]) {
+  :root:not(.light):not([data-theme="light"]):not(.light-hc):not([data-theme="light-hc"]):not(.dark):not([data-theme="dark"]):not(.dark-hc):not([data-theme="dark-hc"]) {
 
     /* Primary */
     --color-primary-d3: #D6E4FF;

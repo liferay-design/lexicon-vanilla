@@ -155,7 +155,7 @@
           <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
           Light
         </button></li>
-        <li><button type="button" class="dropdown__item" role="option" data-skin="hc">
+        <li><button type="button" class="dropdown__item" role="option" data-skin="light-hc">
           <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
           Light high contrast
         </button></li>
@@ -1051,7 +1051,7 @@
             </div>
             <div class="input">
               <label class="input__label">Last name <span class="input__required">*</span></label>
-              <input class="input__field" type="text" value="González">
+              <input class="input__field" type="text" value="Castro">
             </div>
           </div>
           <footer class="sheet-footer">
@@ -1461,7 +1461,7 @@
     var trigger = picker.querySelector('.picker__trigger');
     var triggerText = picker.querySelector('.picker__trigger-text');
     var items = picker.querySelectorAll('.dropdown__item');
-    var SKINS = ['light', 'hc', 'dark', 'dark-hc'];
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
 
     function apply(skin) {
       SKINS.forEach(function (s) { root.classList.remove(s); });

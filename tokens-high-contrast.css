@@ -1,10 +1,10 @@
 /* ============================================================
    LEXICON DESIGN TOKENS — Light High Contrast
    Auto-generated from "Light High Contrast.tokens.json"
-   Usage: add class="hc" to <html> or use @media (prefers-contrast: more)
+   Usage: add class="light-hc" to <html> or use @media (prefers-contrast: more)
    ============================================================ */
 
-.hc, [data-theme="high-contrast"] {
+.light-hc, [data-theme="light-hc"] {
   --color-primary-d2: #0D2A65;
   --color-primary-d1: #0D2A65;
   --color-primary: #1852BF;
