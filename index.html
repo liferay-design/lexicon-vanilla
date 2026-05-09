@@ -966,15 +966,36 @@
           <a href="loading.html">Playground</a>
         </span>
       </div>
-      <p class="lead">Default <code>.loading-animation</code> = circle (ring) spinner; add <code>.loading-animation-squares</code> for paired squares (cards/modals). Sizes <code>-xs/-sm/-md/-lg</code>, colours <code>-primary/-secondary/-light</code>.</p>
+      <p class="lead">Default <code>.loading-animation</code> = circle (ring) spinner; <code>.loading-animation-squares</code> = paired squares (standalone, not composed). Sizes <code>-xs/-sm/-md/-lg</code>, colours <code>-primary/-secondary/-light</code>.</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Circle ring (sm/md/lg) &middot; paired squares (md/lg) &middot; inside a button</span>
+        <span class="showcase__label">Spinners — sizes xs / sm / md / lg</span>
+        <span aria-hidden="true" class="loading-animation loading-animation-xs"></span>
         <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
         <span aria-hidden="true" class="loading-animation loading-animation-md"></span>
         <span aria-hidden="true" class="loading-animation loading-animation-lg"></span>
-        <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-md"></span>
-        <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-lg"></span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Squares loader — sizes xs / sm / md / lg</span>
+        <span aria-hidden="true" class="loading-animation-squares loading-animation-xs"></span>
+        <span aria-hidden="true" class="loading-animation-squares loading-animation-sm"></span>
+        <span aria-hidden="true" class="loading-animation-squares loading-animation-md"></span>
+        <span aria-hidden="true" class="loading-animation-squares loading-animation-lg"></span>
+      </div>
+
+      <div class="showcase__row" style="background:var(--color-dark);padding:var(--spacing-5);border-radius:var(--rounded-md);">
+        <span class="showcase__label" style="color:var(--color-secondary-l1);">Light variant — on dark surface</span>
+        <span aria-hidden="true" class="loading-animation loading-animation-md loading-animation-light"></span>
+        <span aria-hidden="true" class="loading-animation-squares loading-animation-md loading-animation-light"></span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Inside a button</span>
+        <button class="btn btn--primary" aria-busy="true">
+          <span aria-hidden="true" class="loading-animation loading-animation-sm loading-animation-light"></span>
+          Saving…
+        </button>
         <button class="btn btn--secondary" aria-busy="true">
           <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
           Loading…
