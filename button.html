@@ -50,10 +50,7 @@
       margin-bottom: 0;
     }
     /* Force a focus ring on the demo so the user sees the focus state without tabbing */
-    .is-focused {
-      box-shadow: var(--focus-ring) !important;
-    }
-    .btn--secondary.is-focused { background: var(--color-light-l1) !important; }
+    .btn--secondary
   </style>
 </head>
 <body>
@@ -87,9 +84,9 @@
 
   <!-- Row 2: Secondary (Figma second row, focus shown on first two) -->
   <div class="showcase__row">
-    <span class="showcase__label">Secondary — :focus, primary :focus + dropdown, icon-only, default</span>
-    <button class="btn btn--secondary is-focused">Action</button>
-    <button class="btn btn--primary is-focused">
+    <span class="showcase__label">Secondary — default, with dropdown, icon-only</span>
+    <button class="btn btn--secondary">Action</button>
+    <button class="btn btn--primary">
       Action
       <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
     </button>

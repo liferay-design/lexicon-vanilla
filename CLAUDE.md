@@ -83,6 +83,8 @@ For text/icons that must stay legible in every skin, use `var(--color-dark)` wit
 
 **5. Don't introduce literal hexes anywhere outside `tokens.css`.** If you need a stable colour, add it to `tokens.css` (and the dark/HC counterparts) instead.
 
+**6. Never use `.is-focused` in showcase HTML.** The class exists in `components.css` to let Figma-to-HTML imports render the focus ring statically (Figma has no `:focus-visible`). In a browser the real `:focus-visible` fires on keyboard navigation, so a static `.is-focused` example is redundant and misleading. Showcase files must not contain `is-focused` on any element. If a component has a meaningful interactive state that's *only* visible on focus (e.g. an input with a clear button that appears while typing), demonstrate it without the focus ring class — the state itself is the point, not the ring.
+
 ---
 
 ## Components imported

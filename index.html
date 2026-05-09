@@ -115,8 +115,6 @@
       color: var(--color-secondary);
       margin-bottom: var(--spacing-2);
     }
-    .is-focused { box-shadow: var(--focus-ring) !important; }
-    .btn--secondary.is-focused { background: var(--color-light-l1) !important; }
 
     /* Skin switcher — uses the existing .picker + .dropdown so it
        reskins automatically with each skin via tokens. */
@@ -480,9 +478,9 @@
       </div>
 
       <div class="showcase__row">
-        <span class="showcase__label">Secondary — :focus, primary :focus + dropdown, icon-only, default</span>
-        <button class="btn btn--secondary is-focused">Action</button>
-        <button class="btn btn--primary is-focused">
+        <span class="showcase__label">Secondary — default, with dropdown, icon-only</span>
+        <button class="btn btn--secondary">Action</button>
+        <button class="btn btn--primary">
           Action
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
@@ -1111,10 +1109,6 @@
           <span class="input__help">Help text</span>
           <input class="input__field" type="text" value="Default Text">
         </div>
-        <div class="input" style="margin-bottom: var(--spacing-5);">
-          <label class="input__label">Focused</label>
-          <input class="input__field is-focused" type="text" value="Default Text">
-        </div>
         <div class="input input--warning">
           <label class="input__label">Warning <span class="input__required">*</span></label>
           <input class="input__field" type="text" value="Default Text">
@@ -1567,20 +1561,11 @@
       <p class="lead">Trigger: <code>.input-group</code> with <code>#calendar</code> icon. Panel: <code>.date-picker-panel</code> with month/year controls, weekday row, 7-column day grid, optional time row.</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Trigger fields — default · focused</span>
+        <span class="showcase__label">Trigger field — default</span>
         <div class="input" style="max-width:260px">
           <label class="input__label">Date</label>
           <div class="input-group">
             <input class="input__field" type="text" placeholder="YYYY-MM-DD">
-            <button class="input-group__addon btn btn--borderless btn--icon" aria-label="Open calendar">
-              <svg class="lexicon-icon"><use href="#calendar"></use></svg>
-            </button>
-          </div>
-        </div>
-        <div class="input" style="max-width:260px">
-          <label class="input__label">Date</label>
-          <div class="input-group">
-            <input class="input__field is-focused" type="text" placeholder="YYYY-MM-DD">
             <button class="input-group__addon btn btn--borderless btn--icon" aria-label="Open calendar">
               <svg class="lexicon-icon"><use href="#calendar"></use></svg>
             </button>
@@ -1911,15 +1896,14 @@
           <a href="navbar.html">Playground</a>
         </span>
       </div>
-      <p class="lead">Horizontal tab bar. <code>.navbar__item.is-active</code> = primary-l1 underline. Also: <code>.is-focused</code>, <code>.is-disabled</code>, <code>.navbar__more</code> overflow button.</p>
+      <p class="lead">Horizontal tab bar. <code>.navbar__item.is-active</code> = primary-l1 underline. Also: <code>.is-disabled</code>, <code>.navbar__more</code> overflow button.</p>
 
       <div class="showcase__row showcase__row--block">
-        <span class="showcase__label">Active 1 · focused 3 · disabled 4 · more</span>
+        <span class="showcase__label">Active 1 · disabled 4 · more</span>
         <nav class="navbar">
           <ul class="navbar__list">
             <li><a href="#" class="navbar__item is-active" aria-current="page">Item 1</a></li>
             <li><a href="#" class="navbar__item">Item 2</a></li>
-            <li><a href="#" class="navbar__item is-focused">Item 3</a></li>
             <li><span class="navbar__item is-disabled">Item 4</span></li>
             <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button></li>
           </ul>
@@ -2084,28 +2068,13 @@
       <p class="lead"><code>#clock</code> icon + <code>.time-picker__field</code> (HH:MM input + clear + up/down spinner) + optional <code>.time-picker__tz</code> timezone label.</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Default · focused with value</span>
+        <span class="showcase__label">Default</span>
         <div class="input" style="max-width:260px">
           <label class="input__label">Time</label>
           <div class="time-picker">
             <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
             <div class="time-picker__field">
               <input class="input__field time-picker__input" type="text" placeholder="HH:MM">
-            </div>
-            <span class="time-picker__tz">(GMT+01:00)</span>
-          </div>
-        </div>
-        <div class="input" style="max-width:260px">
-          <label class="input__label">Time</label>
-          <div class="time-picker">
-            <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
-            <div class="time-picker__field">
-              <input class="input__field time-picker__input is-focused" type="text" value="14:30">
-              <button class="time-picker__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times-circle-full"></use></svg></button>
-              <span class="time-picker__spinner">
-                <button aria-label="Increase"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg></button>
-                <button aria-label="Decrease"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg></button>
-              </span>
             </div>
             <span class="time-picker__tz">(GMT+01:00)</span>
           </div>

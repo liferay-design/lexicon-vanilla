@@ -30,17 +30,16 @@
   <h1>Navigation Bar</h1>
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=478-8481">Figma — Lexicon Components</a>.
-    Horizontal tab-style top bar. Active item gets a primary-l1 underline. Focused item shows a primary outline. Disabled items in light gray. Optional trailing dropdown trigger.
+    Horizontal tab-style top bar. Active item gets a primary-l1 underline. Disabled items in light gray. Optional trailing dropdown trigger.
   </p>
 
   <div class="showcase__row">
-    <span class="showcase__label">Active 1 · focused 3 · disabled 4 · trailing more</span>
+    <span class="showcase__label">Active 1 · disabled 4 · trailing more</span>
     <nav class="navbar">
       <ul class="navbar__list">
         <li><a href="#" class="navbar__item is-active" aria-current="page">Item 1</a></li>
         <li><a href="#" class="navbar__item">Item 2</a></li>
-        <li><a href="#" class="navbar__item is-focused">Item 3</a></li>
-        <li><span class="navbar__item is-disabled">Item 4</span></li>
+                <li><span class="navbar__item is-disabled">Item 4</span></li>
         <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button></li>
       </ul>
     </nav>
