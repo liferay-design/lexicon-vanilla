@@ -14,7 +14,7 @@
     .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
     .showcase__row { margin-bottom: var(--spacing-7); display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-7); }
     .showcase__label { flex: 0 0 100%; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: 0; }
-    .dark { background: var(--color-dark); padding: var(--spacing-5); border-radius: var(--rounded-md); }
+    .dark-surface { background: var(--color-dark); padding: var(--spacing-5); border-radius: var(--rounded-md); }
   </style>
 </head>
 <body>
@@ -24,39 +24,52 @@
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-29024">Figma</a> ·
     Reference: <a href="https://www.clayui.com/docs/components/loading-indicator/markup">Clay docs</a>.
-    Default <code>.loading-animation</code> = circle (ring) spinner — three sides washed at ~25%, top quadrant full colour, rotating 360°. Add <code>.loading-animation-squares</code> for the paired-squares animation (cards, modals). Sizes <code>-xs/-sm/-md/-lg</code>; colours <code>-primary/-secondary/-light</code>. Always <code>aria-hidden="true"</code> — convey state via the surrounding region.
+    <code>.loading-animation</code> = ring spinner.
+    <code>.loading-animation-squares</code> = paired squares (standalone, not composed).
+    Sizes <code>-xs/-sm/-md/-lg</code>; colours <code>-primary/-secondary/-light</code>. Always <code>aria-hidden="true"</code>.
   </p>
 
+  <!-- Spinners — sizes -->
   <div class="showcase__row">
-    <span class="showcase__label">Circle (ring) spinner &middot; sizes xs / sm / md / lg</span>
+    <span class="showcase__label">Spinners — sizes xs / sm / md / lg</span>
     <span aria-hidden="true" class="loading-animation loading-animation-xs"></span>
     <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
     <span aria-hidden="true" class="loading-animation loading-animation-md"></span>
     <span aria-hidden="true" class="loading-animation loading-animation-lg"></span>
   </div>
 
+  <!-- Spinners — colours -->
   <div class="showcase__row">
-    <span class="showcase__label">Circle (ring) spinner &middot; colours primary / secondary</span>
+    <span class="showcase__label">Spinners — primary / secondary</span>
     <span aria-hidden="true" class="loading-animation loading-animation-md loading-animation-primary"></span>
     <span aria-hidden="true" class="loading-animation loading-animation-md loading-animation-secondary"></span>
   </div>
 
-  <div class="showcase__row dark">
-    <span class="showcase__label" style="color: var(--color-secondary-l1);">Circle (ring) spinner &middot; light (on dark surface)</span>
+  <div class="showcase__row dark-surface">
+    <span class="showcase__label" style="color: var(--color-secondary-l1);">Spinners — light (on dark surface)</span>
     <span aria-hidden="true" class="loading-animation loading-animation-md loading-animation-light"></span>
     <span aria-hidden="true" class="loading-animation loading-animation-lg loading-animation-light"></span>
   </div>
 
+  <!-- Squares loader — sizes -->
   <div class="showcase__row">
-    <span class="showcase__label">Paired squares &middot; sizes xs / sm / md / lg</span>
-    <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-xs"></span>
-    <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-sm"></span>
-    <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-md"></span>
-    <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-lg"></span>
+    <span class="showcase__label">Squares loader — sizes xs / sm / md / lg</span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-xs"></span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-sm"></span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-md"></span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-lg"></span>
   </div>
 
+  <!-- Squares loader — light -->
+  <div class="showcase__row dark-surface">
+    <span class="showcase__label" style="color: var(--color-secondary-l1);">Squares loader — light (on dark surface)</span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-md loading-animation-light"></span>
+    <span aria-hidden="true" class="loading-animation-squares loading-animation-lg loading-animation-light"></span>
+  </div>
+
+  <!-- In a button -->
   <div class="showcase__row">
-    <span class="showcase__label">Inside a button &middot; convey loading via aria-busy on the host</span>
+    <span class="showcase__label">Inside a button — aria-busy on the host</span>
     <button class="btn btn--primary" aria-busy="true">
       <span aria-hidden="true" class="loading-animation loading-animation-sm loading-animation-light"></span>
       Saving…

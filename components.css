@@ -493,95 +493,144 @@
    LOADING INDICATOR
    Source: Figma — Lexicon Components, node 1574:29024
    Reference implementation: https://www.clayui.com/docs/components/loading-indicator/markup
-   API mirrors Clay (no children, `aria-hidden="true"`):
-     · type    .loading-animation (default = three-dot ball)
-              + .loading-animation-squares (paired squares for
-                cards / modals)
-     · size    -xs (10) | -sm (16) | -md (32) | -lg (64)
+   API (no children, `aria-hidden="true"`):
+     · type    .loading-animation (ring spinner)
+              .loading-animation-squares (paired squares — standalone, not composed)
+     · size    -xs (10px) | -sm (16px) | -md (32px) | -lg (64px)
      · colour  -primary | -secondary | -light
    Markup:
-     <span aria-hidden="true" class="loading-animation"></span>
-     <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-lg"></span>
-     <span aria-hidden="true" class="loading-animation loading-animation-light"></span>
+     <span aria-hidden="true" class="loading-animation loading-animation-md"></span>
+     <span aria-hidden="true" class="loading-animation-squares loading-animation-md"></span>
    ============================================================ */
 
-/* Default = circle (ring) spinner. Three sides washed at ~25%, top quadrant
-   at full `currentColor`, rotating 360° — the classic "loading ring".
-   Drawn entirely with `border` so the element stays a single paint surface
-   with no children. Add `.loading-animation-squares` for the paired-squares
-   variant used in cards/modals. */
-.loading-animation {
-  --la-size: 16px;
-  --la-border: 2px;
-  display: inline-block;
-  vertical-align: middle;
-  flex-shrink: 0;
-  width: var(--la-size);
-  height: var(--la-size);
-  border: var(--la-border) solid;
-  border-color: color-mix(in srgb, currentColor 25%, transparent);
-  border-top-color: currentColor;
-  border-radius: 50%;
-  color: var(--color-primary);
-  box-sizing: border-box;
-  animation: loading-animation-circle 0.7s linear infinite;
-}
-
 @keyframes loading-animation-circle {
-  to { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Paired-squares variant — overrides ring chrome with two pulsing squares.
-   The small one sits top-left, the large one bottom-right; their pulse
-   keyframes are 180° out of phase so one peaks while the other dips. */
-.loading-animation-squares {
-  --la-size: 16px;
+.loading-animation {
+  color: var(--color-primary);
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
   position: relative;
-  width: var(--la-size);
-  height: var(--la-size);
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  animation: none;
+  vertical-align: middle;
+  width: 1em;
 }
+
+.loading-animation::before {
+  animation: loading-animation-circle 1s linear infinite;
+  border-radius: 50%;
+  box-shadow: -0.03125em -0.375em 0 0 currentColor;
+  content: '';
+  height: 0.25em;
+  left: 50%;
+  margin-left: -0.125em;
+  margin-top: -0.125em;
+  position: absolute;
+  top: 50%;
+  width: 0.25em;
+}
+
+.loading-animation::after {
+  animation: loading-animation-circle 1s linear infinite;
+  background-color: currentColor;
+  border-radius: 50%;
+  content: '';
+  display: block;
+  height: 1em;
+  -webkit-mask: conic-gradient(transparent 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask-composite: source-out;
+  mask: conic-gradient(transparent 10%, #000), linear-gradient(#000 0 0) content-box;
+  mask-composite: subtract;
+  padding: 0.25em;
+  width: 1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-animation::before,
+  .loading-animation::after { animation: none; }
+}
+
+/* — Paired squares — */
+
+@keyframes loading-animation-squares-box-1 {
+  0%   { left: 0;                  opacity: 0.4; top: 0;                  transform: scale(1); }
+  25%  { left: calc(100% - 1em);   opacity: 0.4; top: 0;                  transform: scale(1); }
+  50%  { left: calc(100% - 1.5em); opacity: 1;   top: calc(100% - 1.5em); transform: scale(2); }
+  75%  { left: 0.5em;              opacity: 1;   top: calc(100% - 1.5em); transform: scale(2); }
+}
+
+@keyframes loading-animation-squares-box-2 {
+  0%   { left: calc(100% - 1.5em); opacity: 1;   top: calc(100% - 1.5em); transform: scale(2); }
+  25%  { left: 0.5em;              opacity: 1;   top: calc(100% - 1.5em); transform: scale(2); }
+  50%  { left: 0;                  opacity: 0.4; top: 0;                  transform: scale(1); }
+  75%  { left: calc(100% - 1em);   opacity: 0.4; top: 0;                  transform: scale(1); }
+}
+
+.loading-animation-squares {
+  color: var(--color-primary);
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  vertical-align: middle;
+  width: 1em;
+}
+
 .loading-animation-squares::before,
 .loading-animation-squares::after {
-  content: "";
+  background-color: currentColor;
+  border-radius: 0.2em;
+  content: '';
+  display: block;
+  font-size: 0.3125em;
+  height: 1em;
   position: absolute;
-  background: currentColor;
-  border-radius: 20%;
-  animation: loading-animation-square 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-.loading-animation-squares::before {
-  top: 0;
-  left: 0;
-  width: 31.25%;
-  height: 31.25%;
-  opacity: 0.4;
-  animation-delay: -0.7s;
-}
-.loading-animation-squares::after {
-  right: 0;
-  bottom: 0;
-  width: 62.5%;
-  height: 62.5%;
+  width: 1em;
 }
 
-@keyframes loading-animation-square {
-  0%, 100% { transform: scale(1);    opacity: 1;   }
-  50%      { transform: scale(0.75); opacity: 0.4; }
+.loading-animation-squares::before {
+  animation: loading-animation-squares-box-1 2.4s ease-in-out infinite;
+  left: 0;
+  opacity: 0.4;
+  top: 0;
+  transform: scale(1);
+}
+
+.loading-animation-squares::after {
+  animation: loading-animation-squares-box-2 2.4s ease-in-out infinite;
+  left: calc(100% - 1.5em);
+  opacity: 1;
+  top: calc(100% - 1.5em);
+  transform: scale(2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-animation-squares::before,
+  .loading-animation-squares::after { animation: none; }
 }
 
 /* — Sizes — */
-.loading-animation-xs { --la-size: 10px; --la-border: 1px; }
-.loading-animation-sm { --la-size: 16px; --la-border: 2px; }
-.loading-animation-md { --la-size: 32px; --la-border: 3px; }
-.loading-animation-lg { --la-size: 64px; --la-border: 4px; }
+.loading-animation-xs,
+.loading-animation-squares.loading-animation-xs { font-size: 0.625rem; }
+
+.loading-animation-sm,
+.loading-animation-squares.loading-animation-sm { font-size: 1rem; }
+
+.loading-animation-md,
+.loading-animation-squares.loading-animation-md { font-size: 2rem; }
+
+.loading-animation-lg,
+.loading-animation-squares.loading-animation-lg { font-size: 4rem; }
 
 /* — Colours — */
-.loading-animation-primary   { color: var(--color-primary);   }
-.loading-animation-secondary { color: var(--color-secondary); }
-.loading-animation-light     { color: var(--color-white);     }
+.loading-animation-primary,
+.loading-animation-squares.loading-animation-primary   { color: var(--color-primary);   }
+
+.loading-animation-secondary,
+.loading-animation-squares.loading-animation-secondary { color: var(--color-secondary); }
+
+.loading-animation-light,
+.loading-animation-squares.loading-animation-light     { color: var(--color-white);     }
 
 
 /* ============================================================
