@@ -435,7 +435,7 @@ When the user asks for a new screen, follow the same pattern. Never:
 
 ## Status
 
-**Component import: complete.** All 36 components from the Lexicon Figma file have been imported (Tier 1 atomic primitives, Tier 2 direct compositions, Tier 3 surfaces / overlays, Tier 4 heavy compositions). The kit also ships four colour skins (Light, Light HC, Dark, Dark HC) — see *Hard constraints* #5 and the *Skin selector — implementation reference* section at the bottom of this file.
+**Component import: complete.** All 36 components from the Lexicon Figma file have been imported. The kit also ships four colour skins (Light, Light HC, Dark, Dark HC) — see *Hard constraints* #5 and the *Skin selector — implementation reference* section at the bottom of this file.
 
 What remains is **refinement** rather than import: tightening any visual mismatch with Figma, polishing skin behaviour, adding edge-case showcase variants, and importing new components when they ship in Figma. Use the *Component import workflow* for new components and the *Refining an imported component* loop for everything else.
 
@@ -486,67 +486,7 @@ Catalogue of imported components:
 - ✅ **Vertical Bar** (`1571:15114`) — `.vert-bar` is a 40-wide white card with secondary-l3 border. `.vert-bar__cluster` groups buttons; clusters separate with a top border. `--end` cluster has `margin-top: auto` so it pins to the bottom regardless of overall bar height. `.vert-bar__btn` is a 40×40 borderless button that on `.is-active` gets primary-l3 fill + 2px primary-l1 left rail (via `::before`). Buttons accept either an SVG icon or short text glyphs (e.g. `h1`, `Tt`).
 - ✅ **Table** (`1844:20952`) — `<table class="table">` with a 1px secondary-l3 border + rounded-md container. Cells use 16px vertical/horizontal padding and a 1px secondary-l3 row border. Body rows zebra-stripe via `:nth-child(even) → light-l1`; `.is-selected` overrides both zebra and white with primary-l3. `.table__cell--gutter` is the 48px column for the checkbox header and the trailing actions menu. Title cell composes `.table__title-wrap` (flex with 24×24 `.table__icon` folder + `.table__title` underlined link). For multi-status cells, use `.table__stack` to stack `.label--sm` chips vertically. Composes Checkbox + Label + borderless icon button (for the per-row `#ellipsis-v` menu).
 
-### Pending — import roadmap
-
-Listed bottom-up: each tier builds on the previous. Inside a tier, order is by typical usage frequency in prototypes. Pick the next item, run the eight-step workflow, append the result to the *Components imported* table, and tick it off here.
-
-Every link below points at the **Playground Container** node (the inner frame with the actual variants). The outer "Playground Section" lives one parent up if you ever need the whole section image.
-
-#### Tier 1 — atomic primitives (no dependencies on other unimported components)
-
-- [x] ~~**Label** — [`800:19590`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-19590)~~ — done.
-- [x] ~~**Loading Indicator** — [`1574:29024`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-29024)~~ — done.
-- [x] ~~**Progress Bar** — [`538:21604`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=538-21604)~~ — done.
-- [x] ~~**Tooltip** — [`800:20044`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-20044)~~ — done.
-- [x] ~~**Keys** — [`1039:28790`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1039-28790)~~ — done.
-- [x] ~~**Radio Button** — [`796:16477`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-16477)~~ — done.
-- [x] ~~**Toggle Switch** — [`796:14965`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-14965)~~ — done.
-- [x] ~~**Slider** — [`550:4359`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=550-4359)~~ — done.
-- [x] ~~**Sticker** — [`996:11505`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=996-11505)~~ — done.
-- [x] ~~**Input: Text** — [`733:14906`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=733-14906)~~ — done.
-
-#### Tier 2 — direct compositions of Tier 1 + already-imported
-
-- [x] ~~**Input: Search** — [`773:5914`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-5914)~~ — done.
-- [x] ~~**Input: Group** — [`6502:81849`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=6502-81849)~~ — done.
-- [x] ~~**Button Group** — [`477:10707`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-10707)~~ — done.
-- [x] ~~**Button Translucent** — [`477:11087`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-11087)~~ — done.
-- [x] ~~**Breadcrumb** — [`473:4340`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-4340)~~ — done.
-- [x] ~~**Tab** — [`1008:17763`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1008-17763)~~ — done.
-- [x] ~~**Pagination** — [`532:2847`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=532-2847)~~ — done.
-- [x] ~~**Empty State** — [`1574:19191`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-19191)~~ — done.
-
-#### Tier 3 — surfaces and overlays
-
-- [x] ~~**Card** — [`675:4191`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=675-4191)~~ — done.
-- [x] ~~**Section** — [`545:520`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=545-520)~~ — done.
-- [x] ~~**Form Sheet** — [`773:6604`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-6604)~~ — done.
-- [x] ~~**List** — [`1570:7647`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1570-7647)~~ — done.
-- [x] ~~**Popover** — [`800:20734`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-20734)~~ — done.
-- [x] ~~**Dropdown** — [`1410:23811`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-23811)~~ — done.
-- [x] ~~**Modal** — [`472:4478`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=472-4478)~~ — done.
-- [x] ~~**Side Panel** — [`4664:8242`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=4664-8242)~~ — done.
-
-#### Tier 4 — heavy compositions
-
-- [x] ~~**Date Picker** — [`1574:18443`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-18443)~~ — done.
-- [x] ~~**Time Picker** — [`1047:30482`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-30482)~~ — done.
-- [x] ~~**Color Picker** — [`1574:27614`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-27614)~~ — done.
-- [x] ~~**Picker** — [`5982:705`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5982-705)~~ — done.
-- [x] ~~**Language Picker** — [`5034:5991`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5034-5991)~~ — done.
-- [x] ~~**Autocomplete** — [`5906:610`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5906-610)~~ — done.
-- [x] ~~**Multi Select** — [`1047:29598`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-29598)~~ — done.
-- [x] ~~**Dual Listbox** — [`1397:19158`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1397-19158)~~ — done.
-- [x] ~~**Tree View** — [`1410:25688`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-25688)~~ — done.
-- [x] ~~**Multi Step Navigation** — [`1410:22318`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-22318)~~ — done.
-- [x] ~~**Navigation Bar** — [`478:8481`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=478-8481)~~ — done.
-- [x] ~~**Vertical Navigation** — [`512:5857`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=512-5857)~~ — done.
-- [x] ~~**Vertical Bar** — [`1571:15114`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1571-15114)~~ — done.
-- [x] ~~**Table** — [`1844:20952`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1844-20952)~~ — done.
-
-> ⚠️ Some pages have multiple Playground Containers (Keys, Loading Indicator, Navigation Bar, Tooltip, Tree View, Vertical Bar). The link above is the primary one — check sibling containers when importing for extra variants/sub-groups.
-
-For new Figma components that ship later, get the Playground node-id, run the eight-step import workflow above, and append the result to the *Components imported* table.
+For new Figma components that ship later, get the Playground node-id, run the eight-step import workflow above, and append a row to the *Components imported* table above.
 
 ---
 
