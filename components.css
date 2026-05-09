@@ -1263,7 +1263,7 @@
   display: block;
   width: 100%;
   height: 40px;
-  padding: 0 var(--spacing-4);
+  padding: 0 var(--spacing-5);
   border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
   background: var(--color-light);
@@ -1416,6 +1416,16 @@
   border-top-right-radius: var(--rounded-md);
   border-bottom-right-radius: var(--rounded-md);
 }
+/* Collapse the shared border between adjacent siblings */
+.input-group > * + * { margin-left: -1px; }
+/* Bring focused field on top so its focus ring isn't clipped */
+.input-group > .input__field:focus-visible { position: relative; z-index: 1; }
+
+/* Sync addon border color when adjacent field is focused */
+.input-group:has(.input__field:focus-visible) .input-group__addon {
+  border-color: var(--color-primary-l0);
+}
+
 /* The size of the group is dictated by the group itself, not by individual
    children. `.input-group` (default) renders every child at 40px to match
    the regular `.input__field`. `.input-group--sm` forces 32px on the field
@@ -1428,20 +1438,26 @@
   padding: 0 var(--spacing-4);
   font-size: var(--font-size-sm);
 }
-.input-group--sm > .input-group__addon { font-size: var(--font-size-sm); }
+.input-group--sm > .input-group__addon { font-size: var(--font-size-sm); padding: 0 var(--spacing-4); }
 
 .input-group__addon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* no explicit height — stretches with .input-group's align-items: stretch */
-  padding: 0 var(--spacing-4);
-  background: var(--color-light);
+  padding: 0 var(--spacing-5);
+  background: var(--color-secondary-l3);
+  border: 1px solid var(--color-secondary-l3);
   color: var(--color-secondary);
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
   white-space: nowrap;
 }
+
+/* Addon tints match field tints on validation states */
+.input--info    .input-group .input-group__addon { background: var(--color-info-l2);    border-color: var(--color-info-l1); }
+.input--success .input-group .input-group__addon { background: var(--color-success-l2); border-color: var(--color-success-l1); }
+.input--warning .input-group .input-group__addon { background: var(--color-warning-l2); border-color: var(--color-warning-l1); }
+.input--danger  .input-group .input-group__addon { background: var(--color-danger-l2);  border-color: var(--color-danger-l1); }
 
 
 /* ============================================================
