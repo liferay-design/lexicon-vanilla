@@ -227,7 +227,7 @@
 
       <style>
         .ref__swatch-row { display:flex; flex-wrap:wrap; gap:2px; margin-bottom:var(--spacing-3); }
-        .ref__swatch-item { display:flex; flex-direction:column; flex:1; min-width:40px; }
+        .ref__swatch-item { display:flex; flex-direction:column; flex:1; min-width:18px; }
         .ref__swatch { height:24px; border-radius:var(--rounded-sm); border:1px solid rgba(0,0,0,0.06); }
         .ref__swatch-name { font-size:9px; color:var(--color-secondary); margin-top:2px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       </style>
@@ -267,30 +267,35 @@
         </div>
 
         <span class="showcase__label">Validation</span>
-        <div class="ref__swatch-row" style="flex-wrap:nowrap">
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-d2)"></div><div class="ref__swatch-name">success-d2</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-d1)"></div><div class="ref__swatch-name">success-d1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success)"></div><div class="ref__swatch-name">success</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-l1)"></div><div class="ref__swatch-name">success-l1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">success-l2</div></div>
-          <div class="ref__swatch-item" style="flex:0;min-width:12px"></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-d2)"></div><div class="ref__swatch-name">info-d2</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-d1)"></div><div class="ref__swatch-name">info-d1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info)"></div><div class="ref__swatch-name">info</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-l1)"></div><div class="ref__swatch-name">info-l1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">info-l2</div></div>
-          <div class="ref__swatch-item" style="flex:0;min-width:12px"></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-d2)"></div><div class="ref__swatch-name">warning-d2</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-d1)"></div><div class="ref__swatch-name">warning-d1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning)"></div><div class="ref__swatch-name">warning</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-l1)"></div><div class="ref__swatch-name">warning-l1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">warning-l2</div></div>
-          <div class="ref__swatch-item" style="flex:0;min-width:12px"></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-d2)"></div><div class="ref__swatch-name">danger-d2</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-d1)"></div><div class="ref__swatch-name">danger-d1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger)"></div><div class="ref__swatch-name">danger</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-l1)"></div><div class="ref__swatch-name">danger-l1</div></div>
-          <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">danger-l2</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-2)">
+          <div class="ref__swatch-row" style="margin-bottom:0">
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-d2)"></div><div class="ref__swatch-name">success-d2</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-d1)"></div><div class="ref__swatch-name">success-d1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success)"></div><div class="ref__swatch-name">success</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-l1)"></div><div class="ref__swatch-name">success-l1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-success-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">success-l2</div></div>
+          </div>
+          <div class="ref__swatch-row" style="margin-bottom:0">
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-d2)"></div><div class="ref__swatch-name">info-d2</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-d1)"></div><div class="ref__swatch-name">info-d1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info)"></div><div class="ref__swatch-name">info</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-l1)"></div><div class="ref__swatch-name">info-l1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-info-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">info-l2</div></div>
+          </div>
+          <div class="ref__swatch-row" style="margin-bottom:0">
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-d2)"></div><div class="ref__swatch-name">warning-d2</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-d1)"></div><div class="ref__swatch-name">warning-d1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning)"></div><div class="ref__swatch-name">warning</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-l1)"></div><div class="ref__swatch-name">warning-l1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-warning-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">warning-l2</div></div>
+          </div>
+          <div class="ref__swatch-row" style="margin-bottom:0">
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-d2)"></div><div class="ref__swatch-name">danger-d2</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-d1)"></div><div class="ref__swatch-name">danger-d1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger)"></div><div class="ref__swatch-name">danger</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-l1)"></div><div class="ref__swatch-name">danger-l1</div></div>
+            <div class="ref__swatch-item"><div class="ref__swatch" style="background:var(--color-danger-l2);border-color:var(--color-light-d2)"></div><div class="ref__swatch-name">danger-l2</div></div>
+          </div>
         </div>
 
         <span class="showcase__label">Charts</span>
@@ -1042,7 +1047,7 @@
           <div class="sheet-row">
             <div class="input">
               <label class="input__label">First name <span class="input__required">*</span></label>
-              <input class="input__field" type="text" value="Verónica">
+              <input class="input__field" type="text" value="Marcos">
             </div>
             <div class="input">
               <label class="input__label">Last name <span class="input__required">*</span></label>
