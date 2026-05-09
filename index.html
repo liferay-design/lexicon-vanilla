@@ -203,6 +203,7 @@
     <h2>Satellites</h2>
     <ul>
       <li><a href="#managementtoolbar">Management Toolbar</a></li>
+      <li><a href="#controlmenu">Control Menu</a></li>
     </ul>
   </nav>
 
@@ -848,10 +849,10 @@
       <div class="showcase__row showcase__row--block">
         <span class="showcase__label">Small — Section &amp; Collapsable</span>
         <header class="section section--sm" style="margin-bottom:var(--spacing-7);">
-          <h2 class="section__title">Section Regular</h2>
+          <span class="section__title">Section Regular</span>
         </header>
         <a href="#" class="section section--sm section--link">
-          <h2 class="section__title">Section Regular</h2>
+          <span class="section__title">Section Regular</span>
           <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
         </a>
       </div>
@@ -859,10 +860,10 @@
       <div class="showcase__row showcase__row--block">
         <span class="showcase__label">Regular (default) — Section &amp; Collapsable</span>
         <header class="section" style="margin-bottom:var(--spacing-7);">
-          <h2 class="section__title">Section Regular</h2>
+          <span class="section__title">Section Regular</span>
         </header>
         <a href="#" class="section section--link">
-          <h2 class="section__title">Section Regular</h2>
+          <span class="section__title">Section Regular</span>
           <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
         </a>
       </div>
@@ -991,7 +992,12 @@
           </article>
         </div>
         <article class="card card--inline is-selected" style="margin-top: var(--spacing-5);">
-          <input type="checkbox" class="card__select" checked aria-label="Select">
+          <label class="checkbox card__select" aria-label="Select">
+            <input class="checkbox__input" type="checkbox" checked>
+            <span class="checkbox__box">
+              <svg class="lexicon-icon checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            </span>
+          </label>
           <div class="card__media"><svg class="lexicon-icon"><use href="#document"></use></svg></div>
           <div class="card__body"><h3 class="card__title">Inline card row</h3></div>
           <button class="card__menu" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
@@ -1535,6 +1541,14 @@
               Download
             </button>
             <button class="btn btn--borderless btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#move-folder"></use></svg>
+              Move
+            </button>
+            <button class="btn btn--borderless btn--sm" type="button">
+              <svg class="lexicon-icon"><use href="#price-tag"></use></svg>
+              Edit Tags
+            </button>
+            <button class="btn btn--borderless btn--sm btn--danger" type="button">
               <svg class="lexicon-icon"><use href="#trash"></use></svg>
               Delete
             </button>
@@ -1545,6 +1559,65 @@
             <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
               <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="controlmenu" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Control Menu</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193">Figma ↗</a>
+          ·
+          <a href="controlmenu.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Application top bar. Product-menu toggle + page title on the left; global-nav icon + user avatar on the right. Add <code>.control-menu__btn</code> with <code>#angle-left</code> for back-navigation context.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Default</span>
+        <div class="control-menu">
+          <div class="control-menu__left">
+            <div class="control-menu__btns">
+              <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+                <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+              </button>
+            </div>
+            <span class="control-menu__title">Documents and Media</span>
+          </div>
+          <div class="control-menu__right">
+            <button class="control-menu__btn" type="button" aria-label="Global navigation">
+              <svg class="lexicon-icon"><use href="#grid"></use></svg>
+            </button>
+            <div class="control-menu__avatar">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">With back button</span>
+        <div class="control-menu">
+          <div class="control-menu__left">
+            <div class="control-menu__btns">
+              <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+                <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+              </button>
+              <button class="control-menu__btn" type="button" aria-label="Go back">
+                <svg class="lexicon-icon"><use href="#angle-left"></use></svg>
+              </button>
+            </div>
+            <span class="control-menu__title">Edit Document</span>
+          </div>
+          <div class="control-menu__right">
+            <button class="control-menu__btn" type="button" aria-label="Global navigation">
+              <svg class="lexicon-icon"><use href="#grid"></use></svg>
+            </button>
+            <div class="control-menu__avatar">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+            </div>
           </div>
         </div>
       </div>

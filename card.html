@@ -95,7 +95,12 @@
     <span class="showcase__label">Inline — list-item rows (selected + plain)</span>
     <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
       <article class="card card--inline is-selected">
-        <input type="checkbox" class="card__select" checked aria-label="Select">
+        <label class="checkbox card__select" aria-label="Select">
+          <input class="checkbox__input" type="checkbox" checked>
+          <span class="checkbox__box">
+            <svg class="lexicon-icon checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+          </span>
+        </label>
         <div class="card__media"><svg class="lexicon-icon"><use href="#document"></use></svg></div>
         <div class="card__body">
           <h3 class="card__title">Card Title</h3>

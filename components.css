@@ -51,8 +51,8 @@
   border: 1px solid transparent;
   background: transparent;
   font-family: inherit;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semi);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   line-height: 1;
   color: var(--color-dark);
   cursor: pointer;
@@ -87,14 +87,14 @@
 .btn--secondary {
   background: var(--color-white);
   border-color: var(--color-secondary-l0);
-  color: var(--color-dark);
+  color: var(--color-secondary);
 }
 .btn--secondary:hover  { background: var(--color-light-l1); }
 .btn--secondary:active { background: var(--color-light); }
 
 .btn--borderless {
   background: transparent;
-  color: var(--color-dark);
+  color: var(--color-secondary);
 }
 .btn--borderless:hover  { background: var(--color-light); }
 .btn--borderless:active { background: var(--color-light-d1); }
@@ -102,6 +102,7 @@
 .btn--link {
   background: transparent;
   color: var(--color-primary);
+  font-weight: var(--font-weight-semi);
   padding: 0 var(--spacing-2);
   height: auto;
 }
@@ -1879,16 +1880,17 @@
   display: flex;
   flex-direction: column;
   background: var(--color-white);
-  border: 1px solid var(--color-light-d2);
+  border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-card);
   font-family: var(--font-family-base);
   color: var(--color-dark);
+  overflow: hidden;
   transition: border-color 0.1s ease, box-shadow 0.1s ease;
 }
 .card.is-selected,
 .card:has(.card__select:checked) {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary);
+  border: 2px solid var(--color-primary-l1);
 }
 
 .card__media {
@@ -1914,8 +1916,9 @@
 .card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
-  padding: var(--spacing-4) var(--spacing-5);
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) var(--spacing-3) var(--spacing-4) var(--spacing-5);
+  border-top: 1px solid var(--color-secondary-l3);
   flex: 1 1 auto;
   min-width: 0;
   position: relative;
@@ -1929,7 +1932,7 @@
   color: var(--color-dark);
 }
 .card__subtitle {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: var(--color-secondary);
   margin: 0;
 }
@@ -1940,13 +1943,13 @@
 /* Kebab menu — positioned in the body's top-right corner */
 .card__menu {
   position: absolute;
-  top: var(--spacing-3);
-  right: var(--spacing-3);
-  width: 24px;
-  height: 24px;
-  padding: 0;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  width: 32px;
+  height: 32px;
+  padding: var(--spacing-3);
   border: 0;
-  border-radius: var(--rounded-sm);
+  border-radius: var(--rounded-md);
   background: transparent;
   color: var(--color-secondary);
   cursor: pointer;
@@ -1954,15 +1957,17 @@
   align-items: center;
   justify-content: center;
 }
-.card__menu:hover { background: var(--color-light); color: var(--color-dark); }
+.card__menu:hover { background: var(--color-light); }
 
-/* Selection input (checkbox/radio) — overlaid on the media area */
+/* Selection input (checkbox/radio) — overlaid on the media area for default cards */
 .card__select {
   position: absolute;
   top: var(--spacing-3);
   left: var(--spacing-3);
   z-index: 1;
 }
+/* In inline rows the checkbox is a flex item, not an overlay */
+.card--inline .card__select { position: static; flex-shrink: 0; }
 
 /* — Centered variant: icon-style cards — */
 .card--centered { text-align: center; }
@@ -1972,26 +1977,27 @@
   background: var(--color-white);
   border-bottom: 0;
 }
-.card--centered .card__body { align-items: center; padding-top: 0; }
+.card--centered .card__body { align-items: center; border-top: none; padding: var(--spacing-4) var(--spacing-5) var(--spacing-5); }
 .card--centered .card__title { text-decoration: none; }
 
 /* — Inline variant: list-item rows — */
 .card--inline {
   flex-direction: row;
   align-items: center;
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-3) var(--spacing-4) var(--spacing-5);
   gap: var(--spacing-3);
 }
 .card--inline .card__media {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   aspect-ratio: auto;
-  background: transparent;
-  border-radius: 0;
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
   flex-shrink: 0;
 }
 .card--inline .card__media .lexicon-icon { width: 16px; height: 16px; }
-.card--inline .card__body { padding: 0; flex-direction: row; align-items: center; }
+.card--inline .card__body { padding: 0; border-top: none; flex-direction: row; align-items: center; }
+.card--inline .card__title { text-decoration: none; }
 .card--inline .card__menu { position: static; margin-left: auto; }
 
 
@@ -2003,10 +2009,10 @@
    doubles as a Collapsable disclosure / link.
    Markup:
      <header class="section">
-       <h2 class="section__title">Section Regular</h2>
+       <span class="section__title">Section Regular</span>
      </header>
      <a class="section section--link">
-       <h2 class="section__title">Section Regular</h2>
+       <span class="section__title">Section Regular</span>
        <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
      </a>
    ============================================================ */
@@ -2019,21 +2025,23 @@
   border-bottom: 1px solid var(--color-secondary-l2);
   font-family: var(--font-family-base);
   text-decoration: none;
-  color: inherit;
+  color: var(--color-secondary);
 }
 
 .section__title {
-  flex: 1 1 auto;
+  flex: 1 0 0;
+  min-width: 0;
   margin: 0;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-secondary);
   line-height: 1.5;
 }
 
 .section .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
-.section--link:hover .section__title { color: var(--color-dark); }
+.section--link:hover .section__title,
 .section--link:hover .lexicon-icon { color: var(--color-dark); }
 
 .section--sm .section__title { font-size: var(--font-size-sm); }
@@ -3787,6 +3795,9 @@
 }
 
 /* Active / selection mode — primary underline replaces default border */
+.management-toolbar--active {
+  border-bottom: none;
+}
 .management-toolbar--active .management-toolbar__bar {
   background: var(--color-primary-l3);
   border-bottom: 2px solid var(--color-primary);
@@ -3846,5 +3857,83 @@
   }
   .management-toolbar__results {
     padding: var(--spacing-3) var(--spacing-5);
+  }
+}
+
+/* ─── Control Menu ─────────────────────────────────────────────────────────── */
+/* Satellite component (Lexicon-Satellites). Top application bar: product       */
+/* menu toggle + title on the left, global nav + user avatar on the right.      */
+.control-menu {
+  align-items: center;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-light-d2);
+  display: flex;
+  gap: var(--spacing-5);
+  padding: calc(var(--spacing-2) + var(--spacing-2-5)) var(--spacing-5);
+  width: 100%;
+}
+
+.control-menu__left {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: var(--spacing-5);
+  min-width: 0;
+}
+
+.control-menu__btns {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-5);
+}
+
+.control-menu__btn {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--rounded-md);
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: var(--spacing-3);
+}
+.control-menu__btn:hover { background: var(--color-light); }
+
+.control-menu__title {
+  color: var(--color-dark);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.control-menu__right {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-5);
+}
+
+.control-menu__avatar {
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  height: 36px;
+  overflow: hidden;
+  width: 36px;
+}
+.control-menu__avatar > img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Mobile — tighter padding */
+@media (max-width: 767px) {
+  .control-menu {
+    padding: var(--spacing-2-5) var(--spacing-4);
   }
 }

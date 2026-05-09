@@ -134,6 +134,7 @@ For text/icons that must stay legible in every skin, use `var(--color-dark)` wit
 | Vertical Bar | [`1571:15114`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1571-15114) | 40px icon sidebar. `.vert-bar__cluster` groups; `--end` pins to bottom. `.is-active` = primary-l3 + left rail. |
 | Table | [`1844:20952`](https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1844-20952) | Zebra rows. `.is-selected` = primary-l3. `.table__cell--gutter` 48px. Composes Checkbox + Label. |
 | Management Toolbar *(satellite)* | [`397:297`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297) | `.management-toolbar` wrapper. Default: checkbox + filter/order + search + view picker + actions. Active: `.management-toolbar--active` (primary underline, selection count, bulk actions). Optional `__results` bar. Desktop + mobile responsive. |
+| Control Menu *(satellite)* | [`3310:13193`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193) | `.control-menu` app top bar. Left: `.control-menu__btns` (product-menu toggle + optional back) + `.control-menu__title`. Right: global-nav icon + `.control-menu__avatar` (36px circle). Mobile uses tighter padding via `@media (max-width: 767px)`. |
 
 For new Figma components, get the Playground node-id, fetch the node JSON + PNG via the REST API, map fills to tokens, write the CSS + showcase HTML, and append a row here.
 
