@@ -1,0 +1,127 @@
+/* ============================================================
+   Lexicon base tokens — vanilla
+   Copy of tokens.css trimmed to colors, spacing, typography,
+   radius and shadow. Light mode only — no theming layer.
+   ============================================================ */
+
+:root {
+
+  /* ── Color: Primary ── */
+  --color-primary-d2: #004AD7;
+  --color-primary-d1: #0053F0;
+  --color-primary:    #0B5FFF;
+  --color-primary-l0: #5791FF;
+  --color-primary-l1: #80ACFF;
+  --color-primary-l2: #B3CDFF;
+  --color-primary-l3: #F0F5FF;
+
+  /* ── Color: Secondary ── */
+  --color-secondary:    #6B6C7E;
+  --color-secondary-l0: #9393A4;
+  --color-secondary-l1: #A7A9BC;
+  --color-secondary-l2: #CDCED9;
+  --color-secondary-l3: #E7E7ED;
+
+  /* ── Color: Dark / Light ── */
+  --color-dark-d2: #111116;
+  --color-dark-d1: #1C1C24;
+  --color-dark:    #272833;
+  --color-light-d2: #D3D6E0;
+  --color-light-d1: #E2E4EA;
+  --color-light:    #F1F2F5;
+  --color-light-l1: #F7F8F9;
+  --color-white:    #FFFFFF;
+
+  /* ── Color: Success ── */
+  --color-success-d2: #1C5629;
+  --color-success-d1: #226A33;
+  --color-success:    #287D3C;
+  --color-success-l1: #5ACA75;
+  --color-success-l2: #EDF9F0;
+
+  /* ── Color: Info ── */
+  --color-info-d2: #234584;
+  --color-info-d1: #294F98;
+  --color-info:    #2E5AAC;
+  --color-info-l1: #89A7E0;
+  --color-info-l2: #EEF2FA;
+
+  /* ── Color: Warning ── */
+  --color-warning-d2: #863A00;
+  --color-warning-d1: #9F4500;
+  --color-warning:    #B95000;
+  --color-warning-l1: #FF8F39;
+  --color-warning-l2: #FFF4EC;
+
+  /* ── Color: Danger ── */
+  --color-danger-d2: #AB1010;
+  --color-danger-d1: #C31212;
+  --color-danger:    #DA1414;
+  --color-danger-l1: #F48989;
+  --color-danger-l2: #FEEFEF;
+
+  /* ── Spacing ── */
+  --spacing-1:   2px;
+  --spacing-2:   4px;
+  --spacing-2-5: 6px;
+  --spacing-3:   8px;
+  --spacing-4:   12px;
+  --spacing-5:   16px;
+  --spacing-6:   20px;
+  --spacing-7:   24px;
+  --spacing-8:   32px;
+  --spacing-9:   40px;
+  --spacing-10: 48px;
+
+  /* ── Border radius ── */
+  --rounded-sm:    2px;
+  --rounded-md:    4px;
+  --rounded-lg:    8px;
+  --rounded-full:  9999px;
+
+  /* ── Typography ── */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-xs:   10px;
+  --font-size-sm:   12px;
+  --font-size-base: 14px;
+  --font-size-md:   16px;
+  --font-size-lg:   18px;
+  --font-size-xl:   20px;
+  --font-weight-normal: 300;
+  --font-weight-semi:   400;
+  --font-weight-bold:   600;
+  --line-height-base:   1.5;
+
+  /* ── Shadow ── */
+  --shadow-sm: 0 1px 2px rgba(39, 40, 51, 0.10);
+  --shadow-md: 0 2px 8px rgba(39, 40, 51, 0.14);
+  --shadow-lg: 0 4px 16px rgba(39, 40, 51, 0.18);
+
+  /* ── Focus ring ── */
+  --focus-ring: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-primary-l0);
+}
+
+/* Sensible defaults for the document */
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-dark);
+  background: var(--color-white);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: var(--color-primary); }
+a:hover { color: var(--color-primary-d1); }

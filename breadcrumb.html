@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breadcrumb — Vanilla Lexicon</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-6); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Breadcrumb</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-4340">Figma — Lexicon Components</a>.
+    Path navigation. Use <code>aria-current="page"</code> on the last item.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Two levels</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href="#">Level 1</a></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Three levels</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href="#">Level 1</a></li>
+        <li><a href="#">Level 2</a></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Four levels</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href="#">Level 1</a></li>
+        <li><a href="#">Level 2</a></li>
+        <li><a href="#">Level 3</a></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Truncated — only current page visible after collapse icon</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Truncated + one ancestor</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+        <li><a href="#">Level 6</a></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Truncated + multiple ancestors</span>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+        <li><a href="#">Level 6</a></li>
+        <li><a href="#">Level 7</a></li>
+        <li><a href="#">Level 8</a></li>
+        <li aria-current="page">Current Page</li>
+      </ol>
+    </nav>
+  </div>
+
+</main>
+
+</body>
+</html>

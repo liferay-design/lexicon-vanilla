@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dual Listbox — Vanilla Lexicon</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Dual Listbox</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1397-19158">Figma — Lexicon Components</a>.
+    Two side-by-side lists with arrow buttons in the middle. The right list has a pair of up/down reorder buttons in its bottom-right corner.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default</span>
+    <div class="dual-listbox">
+      <div class="dual-listbox__side">
+        <span class="dual-listbox__title">Available</span>
+        <ul class="dual-listbox__list">
+          <li class="dual-listbox__item">Item 1</li>
+          <li class="dual-listbox__item">Item 2</li>
+          <li class="dual-listbox__item">Item 3</li>
+          <li class="dual-listbox__item">Item 4</li>
+          <li class="dual-listbox__item">Item 5</li>
+        </ul>
+      </div>
+      <div class="dual-listbox__moves">
+        <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move right"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-right"></use></svg></button>
+        <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move left"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-left"></use></svg></button>
+      </div>
+      <div class="dual-listbox__side">
+        <span class="dual-listbox__title">In Use</span>
+        <ul class="dual-listbox__list">
+          <li class="dual-listbox__item">Item A</li>
+          <li class="dual-listbox__item">Item B</li>
+          <li class="dual-listbox__item">Item C</li>
+          <li class="dual-listbox__item">Item D</li>
+          <li class="dual-listbox__item">Item E</li>
+          <div class="dual-listbox__reorder">
+            <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move up"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg></button>
+            <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move down"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg></button>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Available focused with selection · In Use unfocused</span>
+    <div class="dual-listbox">
+      <div class="dual-listbox__side">
+        <span class="dual-listbox__title">Available</span>
+        <ul class="dual-listbox__list is-focused">
+          <li class="dual-listbox__item">List Item</li>
+          <li class="dual-listbox__item">List Item</li>
+          <li class="dual-listbox__item is-active">List Item</li>
+          <li class="dual-listbox__item">List Item</li>
+          <li class="dual-listbox__item">List Item</li>
+        </ul>
+      </div>
+      <div class="dual-listbox__moves">
+        <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move right"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-right"></use></svg></button>
+        <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move left"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-left"></use></svg></button>
+      </div>
+      <div class="dual-listbox__side">
+        <span class="dual-listbox__title">In Use</span>
+        <ul class="dual-listbox__list">
+          <li class="dual-listbox__item">Item A</li>
+          <li class="dual-listbox__item">Item B</li>
+          <li class="dual-listbox__item">Item C</li>
+          <li class="dual-listbox__item">Item D</li>
+          <li class="dual-listbox__item">Item E</li>
+          <div class="dual-listbox__reorder">
+            <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move up"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg></button>
+            <button class="btn btn--secondary btn--icon btn--sm" aria-label="Move down"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg></button>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

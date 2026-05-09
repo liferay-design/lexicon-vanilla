@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanilla Lexicon — Component Reference</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="tokens-high-contrast.css">
+  <link rel="stylesheet" href="tokens-dark.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    /* Reference page chrome — not part of the components */
+    body { margin: 0; }
+
+    .ref {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    .ref__nav {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow-y: auto;
+      padding: var(--spacing-7) var(--spacing-6);
+      border-right: 1px solid var(--color-secondary-l3);
+      background: var(--color-light-l1);
+      color: var(--color-dark);
+    }
+    .ref__nav h2 {
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      margin: 0 0 var(--spacing-3);
+    }
+    .ref__nav ul { list-style: none; padding: 0; margin: 0 0 var(--spacing-7); }
+    .ref__nav li { margin: 0; }
+    .ref__nav a {
+      display: block;
+      padding: var(--spacing-2) var(--spacing-3);
+      border-radius: var(--rounded-md);
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+    }
+    .ref__nav a:hover { background: var(--color-light); }
+
+    .ref__main {
+      padding: var(--spacing-9) var(--spacing-9);
+      max-width: 920px;
+    }
+
+    .ref__intro h1 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .ref__intro p {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-4);
+      max-width: 60ch;
+    }
+
+    .ref__component {
+      padding-top: var(--spacing-9);
+      margin-top: var(--spacing-8);
+      border-top: 1px solid var(--color-light-l1);
+      scroll-margin-top: var(--spacing-6);
+    }
+    .ref__component-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--spacing-5);
+      margin-bottom: var(--spacing-3);
+    }
+    .ref__component h2 {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      margin: 0;
+    }
+    .ref__component-meta a {
+      font-size: var(--font-size-sm);
+      color: var(--color-secondary);
+    }
+    .ref__component p.lead {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-7);
+      max-width: 60ch;
+    }
+
+    .showcase__row {
+      margin-bottom: var(--spacing-7);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+    .showcase__row--block { display: block; }
+    .showcase__label {
+      flex: 0 0 100%;
+      display: block;
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      margin-bottom: var(--spacing-2);
+    }
+    .is-focused { box-shadow: var(--focus-ring) !important; }
+    .btn--secondary.is-focused { background: var(--color-light-l1) !important; }
+
+    /* Skin switcher — uses the existing .picker + .dropdown so it
+       reskins automatically with each skin via tokens. */
+    .ref__skin { margin-bottom: var(--spacing-7); width: 100%; }
+    .ref__skin .picker__trigger { width: 100%; }
+    .ref__skin .dropdown {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    .ref__skin:not(.is-open) .dropdown { display: none; }
+    /* Uniform options — only the check icon marks the active one */
+    .ref__skin .dropdown__item.is-active {
+      background: transparent;
+      color: inherit;
+      font-weight: inherit;
+    }
+    .ref__skin .dropdown__item:hover { background: var(--color-light); }
+  </style>
+</head>
+<body>
+
+<div class="ref">
+
+  <nav class="ref__nav">
+    <h2>Skin</h2>
+    <div class="picker ref__skin">
+      <button type="button" class="btn btn--secondary btn--xs picker__trigger" id="skin-trigger" aria-haspopup="listbox" aria-expanded="false">
+        <span class="picker__trigger-text">Light</span>
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double-l"></use></svg>
+      </button>
+      <ul class="dropdown" role="listbox" aria-labelledby="skin-trigger">
+        <li><button type="button" class="dropdown__item is-active" role="option" data-skin="light" aria-selected="true">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
+          Light
+        </button></li>
+        <li><button type="button" class="dropdown__item" role="option" data-skin="hc">
+          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
+          Light high contrast
+        </button></li>
+        <li><button type="button" class="dropdown__item" role="option" data-skin="dark">
+          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
+          Dark
+        </button></li>
+        <li><button type="button" class="dropdown__item" role="option" data-skin="dark-hc">
+          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
+          Dark high contrast
+        </button></li>
+      </ul>
+    </div>
+
+    <h2>Vanilla Lexicon</h2>
+    <ul>
+      <li><a href="#intro">Overview</a></li>
+      <li><a href="#alert">Alert</a></li>
+      <li><a href="#badge">Badge</a></li>
+      <li><a href="#breadcrumb">Breadcrumb</a></li>
+      <li><a href="#button">Button</a></li>
+      <li><a href="#btngroup">Button Group</a></li>
+      <li><a href="#btntranslucent">Button Translucent</a></li>
+      <li><a href="#card">Card</a></li>
+      <li><a href="#checkbox">Checkbox</a></li>
+      <li><a href="#empty">Empty State</a></li>
+      <li><a href="#formsheet">Form Sheet</a></li>
+      <li><a href="#input">Input</a></li>
+      <li><a href="#inputgroup">Input Group</a></li>
+      <li><a href="#keys">Keys</a></li>
+      <li><a href="#label">Label</a></li>
+      <li><a href="#loading">Loading</a></li>
+      <li><a href="#pagination">Pagination</a></li>
+      <li><a href="#progress">Progress</a></li>
+      <li><a href="#radio">Radio</a></li>
+      <li><a href="#search">Search</a></li>
+      <li><a href="#section">Section</a></li>
+      <li><a href="#slider">Slider</a></li>
+      <li><a href="#sticker">Sticker</a></li>
+      <li><a href="#tabs">Tabs</a></li>
+      <li><a href="#toggle">Toggle</a></li>
+      <li><a href="#tooltip">Tooltip</a></li>
+    </ul>
+  </nav>
+
+  <main class="ref__main">
+
+    <section id="intro" class="ref__intro">
+      <h1>Component Reference</h1>
+      <p>
+        Single-page catalogue of every component in the Vanilla Lexicon kit. Copy markup directly
+        from each section into your prototype. All examples live in <code>components.css</code> and use
+        tokens from <code>tokens.css</code> — no build, no server.
+      </p>
+      <p>
+        To start a new prototype, copy <code>starter.html</code> into <code>prototypes/</code> and
+        edit inside the marked region.
+      </p>
+    </section>
+
+    <!-- ─────────────────────────────  BUTTON  ───────────────────────────── -->
+    <section id="button" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Button</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-7517">Figma ↗</a>
+          ·
+          <a href="button.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Axes: type, tone, size, shape, icon mode, state.</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Primary — pill, with icon, icon-only, dropdown</span>
+        <button class="btn btn--primary btn--pill btn--xs">
+          Action
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg>
+        </button>
+        <button class="btn btn--primary">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+          Action
+        </button>
+        <button class="btn btn--primary btn--icon" aria-label="Add">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+        </button>
+        <button class="btn btn--primary">
+          Action
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </button>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Secondary — :focus, primary :focus + dropdown, icon-only, default</span>
+        <button class="btn btn--secondary is-focused">Action</button>
+        <button class="btn btn--primary is-focused">
+          Action
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </button>
+        <button class="btn btn--secondary btn--icon" aria-label="Add">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+        </button>
+        <button class="btn btn--secondary">Action</button>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Borderless &amp; Link</span>
+        <button class="btn btn--borderless">Action</button>
+        <button class="btn btn--borderless">Action</button>
+        <button class="btn btn--borderless btn--icon" aria-label="Add">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+        </button>
+        <button class="btn btn--link">Action</button>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Tone — info, success, warning, danger</span>
+        <button class="btn btn--primary btn--info">Action</button>
+        <button class="btn btn--primary btn--success">Action</button>
+        <button class="btn btn--primary btn--warning">Action</button>
+        <button class="btn btn--primary btn--danger">Action</button>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Sizes — xs, sm, regular, lg</span>
+        <button class="btn btn--primary btn--xs">Action</button>
+        <button class="btn btn--primary btn--sm">Action</button>
+        <button class="btn btn--primary">Action</button>
+        <button class="btn btn--primary btn--lg">Action</button>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Disabled</span>
+        <button class="btn btn--primary" disabled>Action</button>
+        <button class="btn btn--secondary" disabled>Action</button>
+        <button class="btn btn--borderless" disabled>Action</button>
+        <button class="btn btn--link" disabled>Action</button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  ALERT  ───────────────────────────── -->
+    <section id="alert" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Alert</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=457-5325">Figma ↗</a>
+          ·
+          <a href="alert.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">
+        Three axes: type (simple/embedded/stripe/toast), layout (inline/vertical) and validation
+        (info/success/warning/danger). Action buttons reuse <code>.btn</code> with matching tone.
+      </p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Simple · Info</span>
+        <div class="alert alert--simple alert--info">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+            <p class="alert__text"><strong>Info:</strong> This is the alert's message.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Toast · Info — with actions</span>
+        <div class="alert alert--toast alert--info">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+            <p class="alert__text"><strong>Info:</strong> This is the alert's message.</p>
+          </div>
+          <div class="alert__actions">
+            <button class="btn btn--primary btn--info btn--sm">Action</button>
+            <button class="btn btn--secondary btn--info btn--sm">Action</button>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Embedded · Success</span>
+        <div class="alert alert--success">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+            <p class="alert__text"><strong>Success:</strong> This is the alert's message.</p>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Embedded · Success — with inline actions</span>
+        <div class="alert alert--success">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+            <p class="alert__text"><strong>Success:</strong> This is the alert's</p>
+          </div>
+          <div class="alert__actions">
+            <button class="btn btn--primary btn--success btn--sm">Action</button>
+            <button class="btn btn--secondary btn--success btn--sm">Action</button>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Embedded · Warning</span>
+        <div class="alert alert--warning">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+            <p class="alert__text"><strong>Warning:</strong> This is the alert's message.</p>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Simple · Success</span>
+        <div class="alert alert--simple alert--success">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+            <p class="alert__text"><strong>Success:</strong> This is the alert's message.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Stripe · Error</span>
+        <div class="alert alert--stripe alert--danger">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+            <p class="alert__text"><strong>Error:</strong> This is the alert's message.</p>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Stripe · Warning — with stacked actions</span>
+        <div class="alert alert--stripe alert--vertical alert--warning">
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+            <p class="alert__text"><strong>Warning:</strong> This is the alert's message.</p>
+          </div>
+          <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+          <div class="alert__actions">
+            <button class="btn btn--primary btn--warning btn--sm">Action</button>
+            <button class="btn btn--secondary btn--warning btn--sm">Action</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  BADGE  ───────────────────────────── -->
+    <section id="badge" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Badge</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=7875-315">Figma ↗</a>
+          ·
+          <a href="badge.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Compact pill for counts and status labels. One axis: type.</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Type — primary, secondary, info, success, warning, danger</span>
+        <span class="badge badge--primary">123</span>
+        <span class="badge badge--secondary">123</span>
+        <span class="badge badge--info">123</span>
+        <span class="badge badge--success">123</span>
+        <span class="badge badge--warning">123</span>
+        <span class="badge badge--danger">123</span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Variable width — single digit, multi-digit, label</span>
+        <span class="badge badge--primary">1</span>
+        <span class="badge badge--primary">12</span>
+        <span class="badge badge--primary">9999</span>
+        <span class="badge badge--secondary">New</span>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  CHECKBOX  ───────────────────────────── -->
+    <section id="checkbox" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Checkbox</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=493-12886">Figma ↗</a>
+          ·
+          <a href="checkbox.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">
+        16×16 box with a 24×24 circular focus ring. Indeterminate is a
+        <code>.is-indeterminate</code> class on the wrapper (native <code>:indeterminate</code> needs JS).
+      </p>
+
+      <div class="showcase__row" style="display:flex;gap:var(--spacing-7);flex-wrap:wrap;">
+        <span class="showcase__label">No label — unchecked, checked, focus</span>
+
+        <label class="checkbox" aria-label="Unchecked">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+
+        <label class="checkbox" aria-label="Checked">
+          <input type="checkbox" class="checkbox__input" checked>
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+
+        <label class="checkbox" aria-label="Focused">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+      </div>
+
+      <div class="showcase__row" style="display:flex;gap:var(--spacing-7);flex-wrap:wrap;">
+        <span class="showcase__label">With label — unchecked, checked, indeterminate</span>
+
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+          <span class="checkbox__label">Label</span>
+        </label>
+
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" checked>
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+          <span class="checkbox__label">Label</span>
+        </label>
+
+        <label class="checkbox is-indeterminate">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+          <span class="checkbox__label">Label</span>
+        </label>
+      </div>
+
+      <div class="showcase__row" style="display:flex;gap:var(--spacing-7);flex-wrap:wrap;">
+        <span class="showcase__label">Disabled — unchecked &amp; checked</span>
+
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" disabled>
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+          <span class="checkbox__label">Label</span>
+        </label>
+
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" checked disabled>
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+          <span class="checkbox__label">Label</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  LABEL  ───────────────────────────── -->
+    <section id="label" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Label</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-19590">Figma ↗</a>
+          ·
+          <a href="label.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">
+        Compact tag for tags, status, removable filters. Axes: type, size (regular / sm),
+        weight (outline / <code>--bold</code>), optional sticker (any 16×16 leading element)
+        and optional <code>.label__close</code> button.
+      </p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Outline · Regular — secondary, primary, info, success, warning, danger</span>
+        <span class="label label--secondary">Label text</span>
+        <span class="label label--primary">Label text</span>
+        <span class="label label--info">Label text</span>
+        <span class="label label--success">Label text</span>
+        <span class="label label--warning">Label text</span>
+        <span class="label label--danger">Label text</span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Bold · Regular — same tones, filled</span>
+        <span class="label label--bold label--secondary">Label text</span>
+        <span class="label label--bold label--primary">Label text</span>
+        <span class="label label--bold label--info">Label text</span>
+        <span class="label label--bold label--success">Label text</span>
+        <span class="label label--bold label--warning">Label text</span>
+        <span class="label label--bold label--danger">Label text</span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Small — outline + bold (uppercased)</span>
+        <span class="label label--sm label--secondary">Label text</span>
+        <span class="label label--sm label--info">Label text</span>
+        <span class="label label--sm label--bold label--secondary">Label text</span>
+        <span class="label label--sm label--bold label--info">Label text</span>
+      </div>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Closeable &amp; with sticker</span>
+        <span class="label label--secondary">
+          Label text
+          <button class="label__close" aria-label="Remove">
+            <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+          </button>
+        </span>
+        <span class="label label--bold label--secondary">
+          <svg class="lexicon-icon"><use href="#picture"></use></svg>
+          Label text
+          <button class="label__close" aria-label="Remove">
+            <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+          </button>
+        </span>
+        <span class="label label--info">
+          <svg class="lexicon-icon"><use href="#tag"></use></svg>
+          Featured
+        </span>
+        <span class="label label--bold label--success">
+          <svg class="lexicon-icon"><use href="#check-circle"></use></svg>
+          Approved
+        </span>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  SECTION  ───────────────────────────── -->
+    <section id="section" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Section</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=545-520">Figma ↗</a>
+          ·
+          <a href="section.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">
+        Underlined heading separator. Two sizes (regular = 14/21, <code>--sm</code> = 12/18) and two
+        types — Section (header only) or Collapsable (<code>--link</code> appends a trailing chevron).
+      </p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Small — Section &amp; Collapsable</span>
+        <header class="section section--sm" style="margin-bottom:var(--spacing-7);">
+          <h2 class="section__title">Section Regular</h2>
+        </header>
+        <a href="#" class="section section--sm section--link">
+          <h2 class="section__title">Section Regular</h2>
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </a>
+      </div>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Regular (default) — Section &amp; Collapsable</span>
+        <header class="section" style="margin-bottom:var(--spacing-7);">
+          <h2 class="section__title">Section Regular</h2>
+        </header>
+        <a href="#" class="section section--link">
+          <h2 class="section__title">Section Regular</h2>
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  BREADCRUMB  ───────────────────────────── -->
+    <section id="breadcrumb" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Breadcrumb</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-4340">Figma ↗</a>
+          ·
+          <a href="breadcrumb.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Path navigation. Use <code>aria-current="page"</code> on the last item; truncate with a leading <code>#angle-double-right</code> icon.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Three levels &middot; truncated with one ancestor</span>
+        <nav aria-label="Breadcrumb" style="margin-bottom: var(--spacing-5);">
+          <ol class="breadcrumb">
+            <li><a href="#">Level 1</a></li>
+            <li><a href="#">Level 2</a></li>
+            <li aria-current="page">Current Page</li>
+          </ol>
+        </nav>
+        <nav aria-label="Breadcrumb">
+          <ol class="breadcrumb">
+            <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+            <li><a href="#">Level 6</a></li>
+            <li aria-current="page">Current Page</li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  BUTTON GROUP  ───────────────────────────── -->
+    <section id="btngroup" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Button Group</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-10707">Figma ↗</a>
+          ·
+          <a href="btngroup.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Segmented control + split button. Add <code>.is-active</code> to the selected segment.</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Segmented secondary &middot; split primary &middot; split warning</span>
+        <div class="btn-group">
+          <button class="btn btn--secondary">Publish</button>
+          <button class="btn btn--secondary is-active">Month</button>
+          <button class="btn btn--secondary">Year</button>
+          <button class="btn btn--secondary">Agenda</button>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn--primary btn--sm">Publish</button>
+          <button class="btn btn--primary btn--sm btn--icon" aria-label="More">
+            <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg>
+          </button>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn--primary btn--warning">Action</button>
+          <button class="btn btn--primary btn--warning btn--icon" aria-label="More">
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  BUTTON TRANSLUCENT  ───────────────────────────── -->
+    <section id="btntranslucent" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Button Translucent</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-11087">Figma ↗</a>
+          ·
+          <a href="btntranslucent.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Pill button for dark surfaces. Compose with tone modifiers; add a small status dot via the <code>.indicator</code> helper.</p>
+
+      <div class="showcase__row" style="background: var(--color-dark); padding: var(--spacing-5); border-radius: var(--rounded-md);">
+        <span class="showcase__label" style="color: var(--color-secondary-l1);">Tones &middot; primary, info, success, warning, danger</span>
+        <button class="btn btn--translucent btn--primary">Primary</button>
+        <button class="btn btn--translucent btn--info">Info</button>
+        <button class="btn btn--translucent btn--success">Success</button>
+        <button class="btn btn--translucent btn--warning">Warning</button>
+        <button class="btn btn--translucent btn--danger">Danger</button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  CARD  ───────────────────────────── -->
+    <section id="card" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Card</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=675-4191">Figma ↗</a>
+          ·
+          <a href="card.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Default: media + body. Use <code>.card--centered</code> for icon cards, <code>.card--inline</code> for list rows. <code>.is-selected</code> turns the border primary.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Image card (selected) &middot; centred icon &middot; inline row</span>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--spacing-5);">
+          <article class="card is-selected">
+            <div class="card__media"><svg class="lexicon-icon"><use href="#picture"></use></svg></div>
+            <div class="card__body">
+              <h3 class="card__title">Card Title</h3>
+              <p class="card__subtitle">Card Subtitle</p>
+              <span class="label label--success">Label text</span>
+              <button class="card__menu" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+            </div>
+          </article>
+          <article class="card card--centered">
+            <div class="card__media">
+              <svg class="lexicon-icon" style="width: 80px; height: 80px;"><use href="#bolt"></use></svg>
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">Card Title</h3>
+              <p class="card__subtitle">Card Subtitle</p>
+            </div>
+          </article>
+        </div>
+        <article class="card card--inline is-selected" style="margin-top: var(--spacing-5);">
+          <input type="checkbox" class="card__select" checked aria-label="Select">
+          <div class="card__media"><svg class="lexicon-icon"><use href="#document"></use></svg></div>
+          <div class="card__body"><h3 class="card__title">Inline card row</h3></div>
+          <button class="card__menu" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  EMPTY STATE  ───────────────────────────── -->
+    <section id="empty" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Empty State</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-19191">Figma ↗</a>
+          ·
+          <a href="empty.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Tinted circular media slot + title + description + optional CTA. Use <code>--sm</code> for the compact form.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Default with CTA &middot; compact</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-7);">
+          <div class="empty-state">
+            <div class="empty-state__media"><svg class="lexicon-icon"><use href="#rocket"></use></svg></div>
+            <h3 class="empty-state__title">Place your title here</h3>
+            <p class="empty-state__text">Please, fill this text box with your content.</p>
+            <button class="btn btn--secondary">Button</button>
+          </div>
+          <div class="empty-state empty-state--sm">
+            <div class="empty-state__media"><svg class="lexicon-icon"><use href="#search"></use></svg></div>
+            <h3 class="empty-state__title">No results found</h3>
+            <p class="empty-state__text">Try adjusting your filters.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  FORM SHEET  ───────────────────────────── -->
+    <section id="formsheet" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Form Sheet</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-6604">Figma ↗</a>
+          ·
+          <a href="formsheet.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">White card with <code>.sheet-header</code> (title + text), content rows (single column or 2 cols via <code>.sheet-row</code>), and an optional <code>.sheet-footer</code> of buttons.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">2 Columns &middot; with footer</span>
+        <section class="sheet">
+          <header class="sheet-header">
+            <h3 class="sheet-title">Sheet Title</h3>
+            <p class="sheet-text">Sheet text should be used for any kind of explanatory text. The Sheet Title and Sheet Text are contained inside a sheet-header.</p>
+          </header>
+          <div class="sheet-row">
+            <div class="input">
+              <label class="input__label">First name <span class="input__required">*</span></label>
+              <input class="input__field" type="text" value="Verónica">
+            </div>
+            <div class="input">
+              <label class="input__label">Last name <span class="input__required">*</span></label>
+              <input class="input__field" type="text" value="González">
+            </div>
+          </div>
+          <footer class="sheet-footer">
+            <button class="btn btn--primary">Save</button>
+            <button class="btn btn--secondary">Cancel</button>
+          </footer>
+        </section>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  INPUT  ───────────────────────────── -->
+    <section id="input" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Input</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=733-14906">Figma ↗</a>
+          ·
+          <a href="input.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">32px tall fill, focus turns primary tint + ring. Validation tones tint the field and colour the feedback row. Textarea via <code>.input__field--textarea</code>.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Default &middot; focus &middot; warning</span>
+        <div class="input" style="margin-bottom: var(--spacing-5);">
+          <label class="input__label">Label <span class="input__required">*</span></label>
+          <span class="input__help">Help text</span>
+          <input class="input__field" type="text" value="Default Text">
+        </div>
+        <div class="input" style="margin-bottom: var(--spacing-5);">
+          <label class="input__label">Focused</label>
+          <input class="input__field is-focused" type="text" value="Default Text">
+        </div>
+        <div class="input input--warning">
+          <label class="input__label">Warning <span class="input__required">*</span></label>
+          <input class="input__field" type="text" value="Default Text">
+          <span class="input__feedback">
+            <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+            <span><strong>Warning:</strong> This is the alert's message.</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  INPUT GROUP  ───────────────────────────── -->
+    <section id="inputgroup" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Input Group</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=6502-81849">Figma ↗</a>
+          ·
+          <a href="inputgroup.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Combine <code>.input__field</code> with leading/trailing text or button addons. Validation tones flow from the wrapping <code>.input</code>.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Prefix &middot; suffix &middot; both ends</span>
+        <div class="input" style="margin-bottom: var(--spacing-5);">
+          <label class="input__label">Username</label>
+          <div class="input-group">
+            <span class="input-group__addon">@</span>
+            <input class="input__field" type="text" value="veronica">
+          </div>
+        </div>
+        <div class="input" style="margin-bottom: var(--spacing-5);">
+          <label class="input__label">Email</label>
+          <div class="input-group">
+            <input class="input__field" type="text" value="email-example">
+            <span class="input-group__addon">@liferay.com</span>
+          </div>
+        </div>
+        <div class="input">
+          <label class="input__label">Amount</label>
+          <div class="input-group">
+            <span class="input-group__addon">$</span>
+            <input class="input__field" type="text" value="5,000">
+            <span class="input-group__addon">.00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  KEYS  ───────────────────────────── -->
+    <section id="keys" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Keys</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1039-28790">Figma ↗</a>
+          ·
+          <a href="keys.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Keyboard-shortcut chip. Two sizes (regular / <code>--sm</code>) and two types (auto-width / <code>--fixed</code> square).</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Regular &middot; small &middot; combo</span>
+        <kbd class="key">Esc</kbd>
+        <kbd class="key key--fixed">⌘</kbd>
+        <kbd class="key key--sm">Esc</kbd>
+        <kbd class="key key--sm key--fixed">⌘</kbd>
+        <span style="display:inline-flex; align-items:center; gap: var(--spacing-2);">
+          <kbd class="key key--fixed">⌘</kbd>
+          <span style="color: var(--color-secondary)">+</span>
+          <kbd class="key key--fixed">⇧</kbd>
+          <span style="color: var(--color-secondary)">+</span>
+          <kbd class="key">P</kbd>
+        </span>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  LOADING  ───────────────────────────── -->
+    <section id="loading" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Loading Indicator</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-29024">Figma ↗</a>
+          ·
+          <a href="loading.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Default <code>.loading-animation</code> = circle (ring) spinner; add <code>.loading-animation-squares</code> for paired squares (cards/modals). Sizes <code>-xs/-sm/-md/-lg</code>, colours <code>-primary/-secondary/-light</code>.</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Circle ring (sm/md/lg) &middot; paired squares (md/lg) &middot; inside a button</span>
+        <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
+        <span aria-hidden="true" class="loading-animation loading-animation-md"></span>
+        <span aria-hidden="true" class="loading-animation loading-animation-lg"></span>
+        <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-md"></span>
+        <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-lg"></span>
+        <button class="btn btn--secondary" aria-busy="true">
+          <span aria-hidden="true" class="loading-animation loading-animation-sm"></span>
+          Loading…
+        </button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  PAGINATION  ───────────────────────────── -->
+    <section id="pagination" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Pagination</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=532-2847">Figma ↗</a>
+          ·
+          <a href="pagination.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Page-size selector + summary + page list with prev/next chevrons. Use <code>aria-current="page"</code> on the active page.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Inline full layout</span>
+        <nav class="pagination" aria-label="Pagination">
+          <button class="pagination__size btn btn--borderless btn--sm">
+            10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+          <span class="pagination__summary">Showing 1 to 10 of 95 entries.</span>
+          <ul class="pagination__pages">
+            <li><button class="pagination__btn" aria-label="Previous"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button></li>
+            <li><button class="pagination__btn">1</button></li>
+            <li><button class="pagination__btn is-active" aria-current="page">2</button></li>
+            <li><button class="pagination__btn">3</button></li>
+            <li><span class="pagination__ellipsis">…</span></li>
+            <li><button class="pagination__btn">8</button></li>
+            <li><button class="pagination__btn" aria-label="Next"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  PROGRESS  ───────────────────────────── -->
+    <section id="progress" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Progress Bar</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=538-21604">Figma ↗</a>
+          ·
+          <a href="progress.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">8px tall track. States: loading (partial), <code>--striped</code> (animated 100%), <code>--completed</code> (green + check icon).</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Loading 50% &middot; striped 100% &middot; completed</span>
+        <div class="progress" role="progressbar" aria-valuenow="50" style="margin-bottom: var(--spacing-5);">
+          <div class="progress__bar"><div class="progress__fill" style="width: 50%"></div></div>
+          <span class="progress__value">50%</span>
+        </div>
+        <div class="progress progress--striped" role="progressbar" aria-valuenow="100" style="margin-bottom: var(--spacing-5);">
+          <div class="progress__bar"><div class="progress__fill" style="width: 100%"></div></div>
+          <span class="progress__value">100%</span>
+        </div>
+        <div class="progress progress--completed" role="progressbar" aria-valuenow="100">
+          <div class="progress__bar"><div class="progress__fill" style="width: 100%"></div></div>
+          <svg class="lexicon-icon" aria-hidden="true"><use href="#check-circle-full"></use></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  RADIO  ───────────────────────────── -->
+    <section id="radio" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Radio Button</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-16477">Figma ↗</a>
+          ·
+          <a href="radio.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Sibling of Checkbox with the same 24×24 circular focus ring. Checked state = 4px primary inner ring.</p>
+
+      <div class="showcase__row" style="display:flex;gap:var(--spacing-7);flex-wrap:wrap;">
+        <span class="showcase__label">Unchecked &middot; checked &middot; focus &middot; with label</span>
+        <label class="radio" aria-label="Unchecked"><input type="radio" name="ix1" class="radio__input"><span class="radio__box"></span></label>
+        <label class="radio" aria-label="Checked"><input type="radio" name="ix1" class="radio__input" checked><span class="radio__box"></span></label>
+        <label class="radio"><input type="radio" name="ix3" class="radio__input" checked><span class="radio__box"></span><span class="radio__label">Option label</span></label>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  SEARCH  ───────────────────────────── -->
+    <section id="search" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Search</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-5914">Figma ↗</a>
+          ·
+          <a href="search.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Reuses <code>.input__field</code> + a trailing magnifier and optional clear button. The clear button is hidden when the field is empty.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Empty &middot; with value</span>
+        <div class="search" style="margin-bottom: var(--spacing-5);">
+          <input type="search" class="input__field search__field" placeholder="Search">
+          <button class="search__clear" aria-label="Clear" hidden><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+          <button class="search__submit" aria-label="Search"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+        </div>
+        <div class="search">
+          <input type="search" class="input__field search__field" value="Search">
+          <button class="search__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+          <button class="search__submit" aria-label="Search"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  SLIDER  ───────────────────────────── -->
+    <section id="slider" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Slider</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=550-4359">Figma ↗</a>
+          ·
+          <a href="slider.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Native <code>&lt;input type="range"&gt;</code> styled to match Lexicon. The fill follows <code>--value</code> on the wrapper. Optional value tooltip and right-aligned label.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Values 30, 70, 100 &middot; with tooltip pinned above the thumb</span>
+        <div class="slider" style="--value: 30; margin-bottom: var(--spacing-5);">
+          <div class="slider__field">
+            <input type="range" class="slider__input" min="0" max="100" value="30">
+          </div>
+          <span class="slider__value">30</span>
+        </div>
+        <div class="slider" style="--value: 70; margin-bottom: var(--spacing-5);">
+          <div class="slider__field">
+            <input type="range" class="slider__input" min="0" max="100" value="70">
+          </div>
+          <span class="slider__value">70</span>
+        </div>
+        <div class="slider" style="--value: 50; margin-top: var(--spacing-9);">
+          <div class="slider__field">
+            <input type="range" class="slider__input" min="0" max="100" value="50">
+            <span class="slider__tooltip">50</span>
+          </div>
+          <span class="slider__value">50</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  STICKER  ───────────────────────────── -->
+    <section id="sticker" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Sticker</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=996-11505">Figma ↗</a>
+          ·
+          <a href="sticker.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Avatar-style chip. Three types (image, outline initials, icon), four sizes (<code>--sm/--md/--lg</code>) and rounded-square or <code>--circle</code> shape.</p>
+
+      <div class="showcase__row">
+        <span class="showcase__label">Image &middot; outline initials &middot; icon &middot; circle</span>
+        <span class="sticker"><img src="https://picsum.photos/40/40?7" alt=""></span>
+        <span class="sticker sticker--outline">L</span>
+        <span class="sticker sticker--outline sticker--info sticker--md">IN</span>
+        <span class="sticker sticker--icon"><svg class="lexicon-icon"><use href="#document"></use></svg></span>
+        <span class="sticker sticker--circle sticker--icon sticker--md"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+        <span class="sticker sticker--circle sticker--outline sticker--success sticker--lg">JD</span>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  TABS  ───────────────────────────── -->
+    <section id="tabs" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Tabs</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1008-17763">Figma ↗</a>
+          ·
+          <a href="tab.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Horizontal row over a baseline. Active tab gets a white card via <code>.is-active</code>.</p>
+
+      <div class="showcase__row showcase__row--block" style="background: var(--color-light-l1); padding: var(--spacing-5); border-radius: var(--rounded-md);">
+        <span class="showcase__label">Default &middot; many tabs + disabled</span>
+        <nav class="tabs" role="tablist" style="margin-bottom: var(--spacing-5);">
+          <button class="tabs__tab is-active" role="tab" aria-selected="true">Details</button>
+          <button class="tabs__tab" role="tab">Connections</button>
+          <button class="tabs__tab" role="tab">Nodes</button>
+          <button class="tabs__tab" role="tab">Advanced</button>
+        </nav>
+        <nav class="tabs" role="tablist">
+          <button class="tabs__tab is-active" role="tab" aria-selected="true">Details</button>
+          <button class="tabs__tab" role="tab">Connections</button>
+          <button class="tabs__tab" role="tab">Nodes</button>
+          <button class="tabs__tab" role="tab">Advanced</button>
+          <button class="tabs__tab" role="tab">Options</button>
+          <button class="tabs__tab" role="tab" disabled>Motion</button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  TOGGLE  ───────────────────────────── -->
+    <section id="toggle" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Toggle Switch</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-14965">Figma ↗</a>
+          ·
+          <a href="toggle.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Two sizes (regular 48×24, <code>--sm</code> 30×16). Optional icon inside the dot, visible only when checked.</p>
+
+      <div class="showcase__row" style="display:flex;gap:var(--spacing-7);flex-wrap:wrap;">
+        <span class="showcase__label">Off &middot; on &middot; on with icon &middot; small &middot; with label</span>
+        <label class="toggle" aria-label="Off"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        <label class="toggle" aria-label="On"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        <label class="toggle" aria-label="On with icon"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__dot"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span></span></label>
+        <label class="toggle toggle--sm" aria-label="Small on"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        <label class="toggle"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__dot"></span></span><span class="toggle__label">Notifications</span></label>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────  TOOLTIP  ───────────────────────────── -->
+    <section id="tooltip" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Tooltip</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-20044">Figma ↗</a>
+          ·
+          <a href="tooltip.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Dark pill with a triangular arrow. Placement: bottom (default) or <code>--top</code>. Arrow alignment: center / <code>--align-start</code> / <code>--align-end</code>.</p>
+
+      <div class="showcase__row" style="gap: var(--spacing-9); padding-bottom: var(--spacing-5);">
+        <span class="showcase__label">Bottom-arrow center, start, end &middot; top variants</span>
+        <span class="tooltip">Tooltip text</span>
+        <span class="tooltip tooltip--align-start">Tooltip text</span>
+        <span class="tooltip tooltip--align-end">Tooltip text</span>
+        <span class="tooltip tooltip--top">Tooltip text</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var picker = document.querySelector('.ref__skin');
+    var trigger = picker.querySelector('.picker__trigger');
+    var triggerText = picker.querySelector('.picker__trigger-text');
+    var items = picker.querySelectorAll('.dropdown__item');
+    var SKINS = ['light', 'hc', 'dark', 'dark-hc'];
+
+    function apply(skin) {
+      SKINS.forEach(function (s) { root.classList.remove(s); });
+      if (SKINS.indexOf(skin) !== -1) root.classList.add(skin);
+      items.forEach(function (it) {
+        var on = it.dataset.skin === skin;
+        it.classList.toggle('is-active', on);
+        it.setAttribute('aria-selected', on ? 'true' : 'false');
+        var icon = it.querySelector('.dropdown__item-icon');
+        if (icon) icon.style.visibility = on ? 'visible' : 'hidden';
+        if (on) triggerText.textContent = it.textContent.trim();
+      });
+      try { localStorage.setItem('vanilla-skin', skin); } catch (e) {}
+    }
+
+    function setOpen(open) {
+      picker.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem('vanilla-skin'); } catch (e) {}
+    apply(SKINS.indexOf(saved) !== -1 ? saved : 'light');
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(!picker.classList.contains('is-open'));
+    });
+
+    items.forEach(function (it) {
+      it.addEventListener('click', function () {
+        apply(it.dataset.skin);
+        setOpen(false);
+      });
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!picker.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Navigation — Vanilla Lexicon</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); padding: var(--spacing-5); background: var(--color-light); border-radius: var(--rounded-md); display: inline-flex; gap: var(--spacing-7); flex-wrap: wrap; align-items: flex-start; }
+    .showcase__label { flex: 0 0 100%; display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Vertical Navigation</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=512-5857">Figma — Lexicon Components</a>.
+    Sidebar nav with section titles, items, optional trailing chevron / action icon, nested children indented 16px, and an active-state rail (2px primary-l1 left border + primary-l3 fill).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Section titles · active item · nested · with action</span>
+    <nav class="vert-nav">
+      <ul class="vert-nav__list">
+        <li class="vert-nav__section">Item Name <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></li>
+        <li class="vert-nav__item is-active">
+          <svg class="lexicon-icon vert-nav__icon"><use href="#document"></use></svg>
+          Item Name
+        </li>
+        <li class="vert-nav__item">
+          <svg class="lexicon-icon vert-nav__icon"><use href="#picture"></use></svg>
+          Item Name
+        </li>
+        <li class="vert-nav__item">
+          <svg class="lexicon-icon vert-nav__icon"><use href="#user"></use></svg>
+          Item Name
+        </li>
+        <li class="vert-nav__item">
+          Item Name
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </li>
+        <li class="vert-nav__section">Item Name <svg class="lexicon-icon"><use href="#plus"></use></svg></li>
+        <li class="vert-nav__item is-muted">
+          Item Name
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </li>
+        <li class="vert-nav__item is-muted">
+          Item Name
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </li>
+        <li class="vert-nav__item">
+          Item Name
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </li>
+        <li>
+          <ul class="vert-nav__sublist">
+            <li class="vert-nav__item is-active">Item Name</li>
+            <li class="vert-nav__item is-muted">Item Name</li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <nav class="vert-nav">
+      <ul class="vert-nav__list">
+        <li class="vert-nav__section">Menu</li>
+        <li class="vert-nav__item">
+          Item Name
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </li>
+        <li>
+          <ul class="vert-nav__sublist">
+            <li class="vert-nav__item">Nested Item Name</li>
+          </ul>
+        </li>
+        <li class="vert-nav__item">
+          Item Name
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+        </li>
+        <li class="vert-nav__item">
+          Item Name
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </li>
+        <li>
+          <ul class="vert-nav__sublist">
+            <li class="vert-nav__item is-active">Item Name</li>
+            <li class="vert-nav__item">Nested Item Name</li>
+            <li class="vert-nav__item">Nested Item Name</li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+</main>
+
+</body>
+</html>

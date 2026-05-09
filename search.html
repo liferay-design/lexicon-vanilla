@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Search — Vanilla Lexicon</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    .showcase { max-width: 540px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-7); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+  <script>
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('.search__field')) {
+        const wrap = e.target.closest('.search');
+        const clr = wrap?.querySelector('.search__clear');
+        if (clr) clr.hidden = !e.target.value;
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.search__clear')) {
+        const wrap = e.target.closest('.search');
+        const f = wrap.querySelector('.search__field');
+        f.value = '';
+        f.focus();
+        wrap.querySelector('.search__clear').hidden = true;
+      }
+    });
+  </script>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Input — Search</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-5914">Figma — Lexicon Components</a>.
+    Reuses <code>.input__field</code> + a trailing magnifier and optional clear button.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Empty (placeholder + magnifier)</span>
+    <div class="search">
+      <input type="search" class="input__field search__field" placeholder="Search">
+      <button class="search__clear" aria-label="Clear" hidden><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+      <button class="search__submit" aria-label="Search"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">With value (clear + magnifier)</span>
+    <div class="search">
+      <input type="search" class="input__field search__field" value="Search">
+      <button class="search__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+      <button class="search__submit" aria-label="Search"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Focused (drag focus by clicking)</span>
+    <div class="search">
+      <input type="search" class="input__field search__field is-focused" value="Search" autofocus>
+      <button class="search__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+      <button class="search__submit" aria-label="Search"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

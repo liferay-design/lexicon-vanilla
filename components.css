@@ -1,0 +1,3718 @@
+/* ============================================================
+   Lexicon Components — vanilla, single stylesheet
+   Source of truth for every component imported from Figma.
+   Light mode only. Open the showcase HTMLs (button.html, alert.html)
+   to see live variants. See CLAUDE.md for the import workflow.
+   ============================================================ */
+
+
+/* ============================================================
+   ICONS
+   Use the Lexicon SVG sprite shipped in ../icons.svg (auto-loaded
+   via icons.js). Reference an icon with:
+     <svg class="lexicon-icon"><use href="#icon-name"></use></svg>
+   Sizes follow the Lexicon scale.
+   ============================================================ */
+
+.lexicon-icon {
+  display: inline-block;
+  width: 16px;   /* default size */
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.lexicon-icon-sm  { width: 12px; height: 12px; }
+.lexicon-icon-lg  { width: 24px; height: 24px; }
+.lexicon-icon-xl  { width: 32px; height: 32px; }
+.lexicon-icon-2xl { width: 48px; height: 48px; }
+
+
+/* ============================================================
+   BUTTON
+   Source: Figma — Lexicon Components, node 473:7517
+   Axes:
+     · type        primary | secondary | borderless | link
+     · tone        (default = brand) | info | success | warning | danger
+     · size        xs | sm | (regular) | lg
+     · shape       (rect) | pill
+     · icon mode   (text) | icon-only
+     · state       default | :hover | :focus-visible | [disabled]
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  height: 40px;
+  padding: 0 var(--spacing-5);
+  border-radius: var(--rounded-md);
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  line-height: 1;
+  color: var(--color-dark);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.1s ease,
+    border-color 0.1s ease,
+    color 0.1s ease,
+    box-shadow 0.1s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.btn:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* — Type: primary / secondary / borderless / link — */
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.btn--primary:hover  { background: var(--color-primary-d1); }
+.btn--primary:active { background: var(--color-primary-d2); }
+
+.btn--secondary {
+  background: var(--color-white);
+  border-color: var(--color-secondary-l0);
+  color: var(--color-dark);
+}
+.btn--secondary:hover  { background: var(--color-light-l1); }
+.btn--secondary:active { background: var(--color-light); }
+
+.btn--borderless {
+  background: transparent;
+  color: var(--color-dark);
+}
+.btn--borderless:hover  { background: var(--color-light); }
+.btn--borderless:active { background: var(--color-light-d1); }
+
+.btn--link {
+  background: transparent;
+  color: var(--color-primary);
+  padding: 0 var(--spacing-2);
+  height: auto;
+}
+.btn--link:hover { text-decoration: underline; }
+
+/* — Tone: overrides primary fill, secondary border/text, borderless text — */
+
+.btn--primary.btn--info    { background: var(--color-info); }
+.btn--primary.btn--info:hover    { background: var(--color-info-d1); }
+.btn--primary.btn--success { background: var(--color-success); }
+.btn--primary.btn--success:hover { background: var(--color-success-d1); }
+.btn--primary.btn--warning { background: var(--color-warning); }
+.btn--primary.btn--warning:hover { background: var(--color-warning-d1); }
+.btn--primary.btn--danger  { background: var(--color-danger); }
+.btn--primary.btn--danger:hover  { background: var(--color-danger-d1); }
+
+.btn--secondary.btn--info    { color: var(--color-info);    border-color: var(--color-info);    }
+.btn--secondary.btn--info:hover    { background: var(--color-info-l2);    }
+.btn--secondary.btn--success { color: var(--color-success); border-color: var(--color-success); }
+.btn--secondary.btn--success:hover { background: var(--color-success-l2); }
+.btn--secondary.btn--warning { color: var(--color-warning); border-color: var(--color-warning); }
+.btn--secondary.btn--warning:hover { background: var(--color-warning-l2); }
+.btn--secondary.btn--danger  { color: var(--color-danger);  border-color: var(--color-danger);  }
+.btn--secondary.btn--danger:hover  { background: var(--color-danger-l2);  }
+
+.btn--borderless.btn--info    { color: var(--color-info);    }
+.btn--borderless.btn--info:hover    { background: var(--color-info-l2);    }
+.btn--borderless.btn--success { color: var(--color-success); }
+.btn--borderless.btn--success:hover { background: var(--color-success-l2); }
+.btn--borderless.btn--warning { color: var(--color-warning); }
+.btn--borderless.btn--warning:hover { background: var(--color-warning-l2); }
+.btn--borderless.btn--danger  { color: var(--color-danger);  }
+.btn--borderless.btn--danger:hover  { background: var(--color-danger-l2);  }
+
+/* — Size — */
+
+.btn--xs { height: 24px; padding: 0 var(--spacing-3); font-size: var(--font-size-sm); gap: var(--spacing-2); }
+.btn--sm { height: 32px; padding: 0 var(--spacing-4); font-size: var(--font-size-sm); }
+.btn--lg { height: 48px; padding: 0 var(--spacing-6); font-size: var(--font-size-md); }
+
+/* — Shape — */
+
+.btn--pill { border-radius: var(--rounded-full); }
+
+/* — Icon-only: square button (width = height) — */
+
+.btn--icon          { width: 40px; padding: 0; }
+.btn--icon.btn--xs  { width: 24px; }
+.btn--icon.btn--sm  { width: 32px; }
+.btn--icon.btn--lg  { width: 48px; }
+
+
+/* ============================================================
+   ALERT
+   Source: Figma — Lexicon Components, node 457:5325
+   Axes:
+     · type        simple | embedded | stripe | toast
+     · layout      (inline) | vertical          (where actions go)
+     · validation  info | success | warning | danger
+
+   DOM:
+     <div class="alert ...">
+       <div class="alert__content">             ← icon + text block
+         <svg class="lexicon-icon">…</svg>
+         <p class="alert__text">
+           <strong>Title:</strong> message.
+         </p>
+       </div>
+       <div class="alert__actions">…</div>     ← optional, .btn[s]
+       <button class="btn btn--borderless btn--sm btn--icon alert__close">
+         <svg class="lexicon-icon"><use href="#times"></use></svg>
+       </button>
+     </div>
+
+   Action buttons are the shared .btn component with the matching
+   .btn--{tone} modifier — inside an .alert--success use
+   .btn--primary.btn--success.
+   ============================================================ */
+
+.alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-5);          /* 16 between sections */
+  padding: var(--spacing-5);      /* 16 inside container */
+  border: 1px solid;
+  border-radius: var(--rounded-md);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+/* — Type — */
+
+.alert--simple {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.alert--toast {
+  box-shadow: var(--shadow-md);
+}
+
+.alert--stripe {
+  border: 0;
+  border-bottom: 2px solid;
+  border-radius: 0;
+}
+
+/* — Inner blocks — */
+
+.alert__content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);          /* 8 between icon and text */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.alert__text {
+  margin: 0;
+  min-width: 0;
+  color: inherit;                 /* inherits validation color from .alert--{x} */
+}
+.alert__text strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.alert__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);          /* 8 between buttons */
+  flex: 0 0 auto;
+}
+
+/* The close is a plain .btn--borderless.btn--sm.btn--icon. The
+   .alert__close hook just nudges color/order. */
+.alert__close { color: inherit; flex: 0 0 auto; }
+
+/* — Layout: vertical = actions stack on a new row, indented to the text — */
+
+.alert--vertical .alert__close   { order: 2; }
+.alert--vertical .alert__actions {
+  order: 3;
+  flex-basis: 100%;
+  /* indent to the text column: icon-width (16) + content gap (8) */
+  margin-left: calc(16px + var(--spacing-3));
+}
+
+/* — Validation: bg = -l2, border = -l1, accent = base — */
+
+.alert--info    { background: var(--color-info-l2);    border-color: var(--color-info-l1);    color: var(--color-info);    }
+.alert--success { background: var(--color-success-l2); border-color: var(--color-success-l1); color: var(--color-success); }
+.alert--warning { background: var(--color-warning-l2); border-color: var(--color-warning-l1); color: var(--color-warning); }
+.alert--danger  { background: var(--color-danger-l2);  border-color: var(--color-danger-l1);  color: var(--color-danger);  }
+
+/* Simple (no container) keeps only the text/icon color */
+.alert--simple.alert--info,
+.alert--simple.alert--success,
+.alert--simple.alert--warning,
+.alert--simple.alert--danger {
+  background: transparent;
+}
+
+
+/* ============================================================
+   BADGE
+   Source: Figma — Lexicon Components, node 7875:315
+   Compact pill for counts / status labels.
+   Axes:
+     · type        primary | secondary | info | success | warning | danger
+   Figma spec: 16px tall, 4px horizontal padding, pill radius,
+   10px / 600 text. Token mapping uses base validation colors
+   with white text (secondary uses light surface + secondary text).
+   ============================================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--spacing-2);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-white);
+  background: var(--color-primary);
+}
+
+/* Type — solid fill */
+.badge--primary   { background: var(--color-primary); color: var(--color-white); }
+.badge--secondary { background: var(--color-secondary-l3); color: var(--color-secondary); }
+.badge--info      { background: var(--color-info);    color: var(--color-white); }
+.badge--success   { background: var(--color-success); color: var(--color-white); }
+.badge--warning   { background: var(--color-warning); color: var(--color-white); }
+.badge--danger    { background: var(--color-danger);  color: var(--color-white); }
+
+
+/* ============================================================
+   CHECKBOX
+   Source: Figma — Lexicon Components, node 493:12886
+   Axes: checked, indeterminate, focus, disabled, label.
+   Markup:
+     <label class="checkbox">
+       <input type="checkbox" class="checkbox__input">
+       <span class="checkbox__box">
+         <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+         <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+       </span>
+       <span class="checkbox__label">Label</span>
+     </label>
+   Native :indeterminate needs JS, so use .is-indeterminate on the wrapper.
+   ============================================================ */
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Visually hidden native input, kept focusable */
+.checkbox__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The visual 16×16 box */
+.checkbox__box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-secondary-l0);
+  border-radius: var(--rounded-sm);
+  background: var(--color-white);
+  color: var(--color-white);
+}
+
+/* Icons hidden by default, shown via state */
+.checkbox__icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: none;
+}
+
+/* CHECKED */
+.checkbox__input:checked ~ .checkbox__box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.checkbox__input:checked ~ .checkbox__box .checkbox__icon--check {
+  display: block;
+}
+
+/* INDETERMINATE (wrapper class) */
+.checkbox.is-indeterminate .checkbox__box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.checkbox.is-indeterminate .checkbox__box .checkbox__icon--check { display: none; }
+.checkbox.is-indeterminate .checkbox__box .checkbox__icon--hr { display: block; }
+
+/* FOCUS RING — 24×24 circle around the 16×16 box, centered */
+.checkbox__input:focus-visible ~ .checkbox__box::before,
+.checkbox.is-focused .checkbox__box::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: var(--rounded-full);
+  border: 2px solid var(--color-primary-l0);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* DISABLED */
+.checkbox:has(.checkbox__input:disabled),
+.checkbox.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   LABEL
+   Source: Figma — Lexicon Components, node 800:19590
+   Compact tag for metadata, status, removable filters.
+   Axes:
+     · type        secondary (default) | primary | info | success | warning | danger
+     · size        (regular = 24px) | sm (= 16px, uppercase)
+     · weight      (outline) | bold (filled with tone color)
+     · closeable   add a <button class="label__close">
+     · sticker     prepend any 16×16 leading element (.lexicon-icon, img, etc.)
+   Markup:
+     <span class="label label--info">
+       <svg class="lexicon-icon"><use href="#picture"></use></svg>          (optional)
+       Label text
+       <button class="label__close" aria-label="Remove">                    (optional)
+         <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+       </button>
+     </span>
+   ============================================================ */
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  height: 24px;
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--color-secondary-l2);
+  border-radius: var(--rounded-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 18px;
+  white-space: nowrap;
+  background: var(--color-white);
+  color: var(--color-secondary);
+}
+
+/* — Size — */
+.label--sm {
+  height: 16px;
+  padding: 0 var(--spacing-2);
+  gap: var(--spacing-1);
+  font-size: var(--font-size-xs);
+  line-height: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* — Type (outline mode — Bold=No) — */
+.label--secondary { color: var(--color-secondary); border-color: var(--color-secondary-l2); }
+.label--primary   { color: var(--color-primary);   border-color: var(--color-primary-l1);   }
+.label--info      { color: var(--color-info);      border-color: var(--color-info-l1);      }
+.label--success   { color: var(--color-success);   border-color: var(--color-success-l1);   }
+.label--warning   { color: var(--color-warning);   border-color: var(--color-warning-l1);   }
+.label--danger    { color: var(--color-danger);    border-color: var(--color-danger-l1);    }
+
+/* — Bold (filled — Bold=Yes). Solid tone background, white text, no border — */
+.label--bold                  { color: var(--color-white); border-color: transparent; }
+.label--bold.label--secondary { background: var(--color-secondary); }
+.label--bold.label--primary   { background: var(--color-primary);   }
+.label--bold.label--info      { background: var(--color-info);      }
+.label--bold.label--success   { background: var(--color-success);   }
+.label--bold.label--warning   { background: var(--color-warning);   }
+.label--bold.label--danger    { background: var(--color-danger);    }
+
+/* — Close button: 16×16 inline affordance, inherits the label's tone. — */
+.label__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.label__close:hover { background: rgba(0, 0, 0, 0.08); }
+.label__close:focus-visible { outline: 0; box-shadow: var(--focus-ring); }
+
+
+/* ============================================================
+   LOADING INDICATOR
+   Source: Figma — Lexicon Components, node 1574:29024
+   Reference implementation: https://www.clayui.com/docs/components/loading-indicator/markup
+   API mirrors Clay (no children, `aria-hidden="true"`):
+     · type    .loading-animation (default = three-dot ball)
+              + .loading-animation-squares (paired squares for
+                cards / modals)
+     · size    -xs (10) | -sm (16) | -md (32) | -lg (64)
+     · colour  -primary | -secondary | -light
+   Markup:
+     <span aria-hidden="true" class="loading-animation"></span>
+     <span aria-hidden="true" class="loading-animation loading-animation-squares loading-animation-lg"></span>
+     <span aria-hidden="true" class="loading-animation loading-animation-light"></span>
+   ============================================================ */
+
+/* Default = circle (ring) spinner. Three sides washed at ~25%, top quadrant
+   at full `currentColor`, rotating 360° — the classic "loading ring".
+   Drawn entirely with `border` so the element stays a single paint surface
+   with no children. Add `.loading-animation-squares` for the paired-squares
+   variant used in cards/modals. */
+.loading-animation {
+  --la-size: 16px;
+  --la-border: 2px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  width: var(--la-size);
+  height: var(--la-size);
+  border: var(--la-border) solid;
+  border-color: color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  color: var(--color-primary);
+  box-sizing: border-box;
+  animation: loading-animation-circle 0.7s linear infinite;
+}
+
+@keyframes loading-animation-circle {
+  to { transform: rotate(360deg); }
+}
+
+/* Paired-squares variant — overrides ring chrome with two pulsing squares.
+   The small one sits top-left, the large one bottom-right; their pulse
+   keyframes are 180° out of phase so one peaks while the other dips. */
+.loading-animation-squares {
+  --la-size: 16px;
+  position: relative;
+  width: var(--la-size);
+  height: var(--la-size);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  animation: none;
+}
+.loading-animation-squares::before,
+.loading-animation-squares::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  border-radius: 20%;
+  animation: loading-animation-square 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+.loading-animation-squares::before {
+  top: 0;
+  left: 0;
+  width: 31.25%;
+  height: 31.25%;
+  opacity: 0.4;
+  animation-delay: -0.7s;
+}
+.loading-animation-squares::after {
+  right: 0;
+  bottom: 0;
+  width: 62.5%;
+  height: 62.5%;
+}
+
+@keyframes loading-animation-square {
+  0%, 100% { transform: scale(1);    opacity: 1;   }
+  50%      { transform: scale(0.75); opacity: 0.4; }
+}
+
+/* — Sizes — */
+.loading-animation-xs { --la-size: 10px; --la-border: 1px; }
+.loading-animation-sm { --la-size: 16px; --la-border: 2px; }
+.loading-animation-md { --la-size: 32px; --la-border: 3px; }
+.loading-animation-lg { --la-size: 64px; --la-border: 4px; }
+
+/* — Colours — */
+.loading-animation-primary   { color: var(--color-primary);   }
+.loading-animation-secondary { color: var(--color-secondary); }
+.loading-animation-light     { color: var(--color-white);     }
+
+
+/* ============================================================
+   PROGRESS BAR
+   Source: Figma — Lexicon Components, node 538:21604
+   8px tall track with three states:
+     · loading    — partial fill + "%" label              (default)
+     · striped    — full fill + diagonal animated stripes
+     · completed  — full fill + check-circle icon (green)
+   Markup:
+     <div class="progress" role="progressbar" aria-valuenow="50">
+       <div class="progress__bar"><div class="progress__fill" style="width: 50%"></div></div>
+       <span class="progress__value">50%</span>
+     </div>
+     <div class="progress progress--completed" role="progressbar" aria-valuenow="100">
+       <div class="progress__bar"><div class="progress__fill" style="width: 100%"></div></div>
+       <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+     </div>
+   ============================================================ */
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.progress__bar {
+  flex: 1 1 auto;
+  height: 8px;
+  background: var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: inherit;
+  transition: width 0.2s ease;
+}
+
+.progress__value {
+  flex: 0 0 auto;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  white-space: nowrap;
+}
+
+/* — Striped: diagonal animated stripes over a full-coloured fill — */
+.progress--striped .progress__fill {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 16px 16px;
+  animation: progress-stripes 1s linear infinite;
+}
+
+@keyframes progress-stripes {
+  from { background-position: 0 0; }
+  to   { background-position: 16px 0; }
+}
+
+/* — Completed: success fill + check icon — */
+.progress--completed .progress__fill { background: var(--color-success); }
+.progress--completed .lexicon-icon   { color: var(--color-success); flex-shrink: 0; }
+
+
+/* ============================================================
+   TOOLTIP
+   Source: Figma — Lexicon Components, node 800:20044
+   Dark pill + 8×8 arrow. Figma playground only shows the
+   bottom-pointing variants (arrow below body, target underneath).
+   We extend with `--top` for the symmetric case since prototypes
+   commonly need both.
+   Axes:
+     · placement   bottom (default) | top
+     · alignment   center (default) | start (arrow near left) | end (arrow near right)
+   Markup:
+     <span class="tooltip">Tooltip text</span>                          <!-- bottom · center -->
+     <span class="tooltip tooltip--align-start">Tooltip text</span>     <!-- bottom · arrow at left -->
+     <span class="tooltip tooltip--top">Tooltip text</span>             <!-- top · center (arrow above) -->
+   ============================================================ */
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  max-width: 240px;
+  padding: var(--spacing-4);
+  border-radius: var(--rounded-md);
+  background: var(--color-dark-d2);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 4px solid transparent;
+}
+
+/* — Default placement: bottom (arrow below body, points down) — */
+.tooltip::after {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--color-dark-d2);
+}
+
+/* — Top placement: arrow above body, points up — */
+.tooltip--top::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--color-dark-d2);
+}
+
+/* — Alignment along the body's edge (start = near left, end = near right) — */
+.tooltip--align-start::after { left: 12px; transform: none; }
+.tooltip--align-end::after   { left: auto; right: 12px; transform: none; }
+
+
+/* ============================================================
+   KEYS
+   Source: Figma — Lexicon Components, node 1039:28790
+   Keyboard-shortcut chip. Outlined pill with bold secondary text.
+   Axes:
+     · size   regular (24px) | sm (20px)
+     · type   flex (auto-width, e.g. "Esc") | fixed (square, e.g. ⌘)
+   Use Unicode glyphs for symbols: ⌘ ⇧ ⌥ ⌃ ⏎ ⎋ ⌫ ↑ ↓ ← →
+   Markup:
+     <kbd class="key">Esc</kbd>
+     <kbd class="key key--fixed">⌘</kbd>
+     <kbd class="key key--sm">Esc</kbd>
+   ============================================================ */
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--color-secondary-l2);
+  border-radius: var(--rounded-sm);
+  background: var(--color-white);
+  color: var(--color-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.key--sm {
+  height: 20px;
+  min-width: 20px;
+  font-size: var(--font-size-sm);
+}
+
+.key--fixed { width: 24px; padding: 0; }
+.key--sm.key--fixed { width: 20px; }
+
+
+/* ============================================================
+   RADIO BUTTON
+   Source: Figma — Lexicon Components, node 796:16477
+   Sibling of Checkbox with the same 24×24 circular focus ring.
+   Checked state = 4px primary border on a 16×16 circle (so the
+   white centre acts as the dot).
+   States: default · checked · focus · disabled (+ optional label).
+   Markup:
+     <label class="radio">
+       <input type="radio" name="group" class="radio__input">
+       <span class="radio__box"></span>
+       <span class="radio__label">Label</span>
+     </label>
+   ============================================================ */
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  cursor: pointer;
+  position: relative;
+}
+
+.radio__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.radio__box {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-secondary-l0);
+  border-radius: 50%;
+  background: var(--color-white);
+  box-sizing: border-box;
+  transition: border-color 0.1s ease, border-width 0.1s ease;
+}
+
+/* CHECKED — thick primary ring; the white centre acts as the dot */
+.radio:has(.radio__input:checked) .radio__box,
+.radio.is-checked .radio__box {
+  border: 4px solid var(--color-primary);
+}
+
+/* FOCUS — 24×24 circular ring, same Lexicon pattern as checkbox */
+.radio:has(.radio__input:focus-visible) .radio__box::before,
+.radio.is-focused .radio__box::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-l0);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* DISABLED */
+.radio:has(.radio__input:disabled),
+.radio.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   TOGGLE SWITCH
+   Source: Figma — Lexicon Components, node 796:14965
+   Pill-shaped track with a sliding dot.
+     · size       regular (48×24) | sm (30×16)
+     · checked    off (secondary-l1 track) | on (primary track, dot at right)
+     · icon       optional icon inside the dot, shown only when checked
+     · disabled   opacity 0.4
+   Markup:
+     <label class="toggle">
+       <input type="checkbox" class="toggle__input">
+       <span class="toggle__track">
+         <span class="toggle__dot">
+           <svg class="lexicon-icon"><use href="#bell-on"></use></svg>   (optional)
+         </span>
+       </span>
+       <span class="toggle__label">Label</span>
+     </label>
+   ============================================================ */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  cursor: pointer;
+  position: relative;
+}
+
+.toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.toggle__track {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--color-secondary-l1);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.toggle__dot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  transition: left 0.15s ease;
+}
+
+.toggle__dot .lexicon-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* CHECKED — primary track, dot slides right, icon (if any) appears */
+.toggle:has(.toggle__input:checked) .toggle__track,
+.toggle.is-checked .toggle__track { background: var(--color-primary); }
+
+.toggle:has(.toggle__input:checked) .toggle__dot,
+.toggle.is-checked .toggle__dot { left: 27px; }
+
+.toggle:has(.toggle__input:checked) .toggle__dot .lexicon-icon,
+.toggle.is-checked .toggle__dot .lexicon-icon { opacity: 1; }
+
+/* — Size: small — */
+.toggle--sm .toggle__track { width: 30px; height: 16px; }
+.toggle--sm .toggle__dot   { top: 2px; left: 2px; width: 12px; height: 12px; }
+.toggle--sm .toggle__dot .lexicon-icon { width: 10px; height: 10px; }
+.toggle--sm:has(.toggle__input:checked) .toggle__dot,
+.toggle--sm.is-checked .toggle__dot { left: 16px; }
+
+/* FOCUS */
+.toggle:has(.toggle__input:focus-visible) .toggle__track,
+.toggle.is-focused .toggle__track { box-shadow: var(--focus-ring); }
+
+/* DISABLED */
+.toggle:has(.toggle__input:disabled),
+.toggle.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   SLIDER
+   Source: Figma — Lexicon Components, node 550:4359
+   4px track, 24px white thumb, primary-coloured fill up to value.
+   States: default · active (value tooltip above thumb) · disabled.
+   The fill uses --value (0-100) as a CSS custom property because
+   native <input type="range"> can't paint the filled portion via
+   pseudo-elements consistently across browsers.
+   Markup:
+     <div class="slider" style="--value: 30">
+       <input type="range" class="slider__input" min="0" max="100" value="30">
+       <span class="slider__value">30</span>
+     </div>
+     <!-- Active (with tooltip): -->
+     <div class="slider slider--active" style="--value: 50">
+       <input type="range" class="slider__input" min="0" max="100" value="50">
+       <span class="slider__tooltip">50</span>
+       <span class="slider__value">50</span>
+     </div>
+   ============================================================ */
+
+.slider {
+  --value: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.slider__field {
+  position: relative;
+}
+
+.slider__input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Track (Webkit / Blink) */
+.slider__input::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: var(--rounded-md);
+  background: linear-gradient(
+    to right,
+    var(--color-primary) 0,
+    var(--color-primary) calc(var(--value) * 1%),
+    var(--color-light) calc(var(--value) * 1%),
+    var(--color-light) 100%
+  );
+}
+/* Thumb (Webkit / Blink) */
+.slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 1px solid var(--color-secondary-l2);
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+}
+.slider__input:active::-webkit-slider-thumb { cursor: grabbing; }
+
+/* Track (Firefox) */
+.slider__input::-moz-range-track {
+  height: 4px;
+  border-radius: var(--rounded-md);
+  background: var(--color-light);
+}
+.slider__input::-moz-range-progress {
+  height: 4px;
+  border-radius: var(--rounded-md);
+  background: var(--color-primary);
+}
+.slider__input::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 1px solid var(--color-secondary-l2);
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+}
+
+/* Focus */
+.slider__input:focus-visible { outline: 0; }
+.slider__input:focus-visible::-webkit-slider-thumb { box-shadow: var(--focus-ring); }
+.slider__input:focus-visible::-moz-range-thumb     { box-shadow: var(--focus-ring); }
+
+.slider__value {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+  white-space: nowrap;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* — Active: tooltip above thumb showing live value.
+     Position is thumb-center-aware: 12px (= thumb radius) + (track − 24px) × value%.
+     Must be a child of .slider__field (which wraps just the input). — */
+.slider__tooltip {
+  position: absolute;
+  bottom: calc(100% + var(--spacing-1));
+  left: calc(12px + (100% - 24px) * var(--value) / 100);
+  transform: translateX(-50%);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--rounded-md);
+  background: var(--color-dark-d2);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.slider__tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--color-dark-d2);
+}
+
+/* — Disabled — */
+.slider:has(.slider__input:disabled),
+.slider.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.slider:has(.slider__input:disabled) .slider__input,
+.slider.is-disabled .slider__input { cursor: not-allowed; }
+
+
+/* ============================================================
+   STICKER
+   Source: Figma — Lexicon Components, node 996:11505
+   Avatar-style chip (initials, image, or icon).
+   Axes:
+     · type    image | outline (initials) | icon
+     · size    sm (16) | (24) | md (32) | lg (40)
+     · shape   (rounded square, radius-md) | circle (radius-full)
+     · tone    secondary (default) | primary | info | success | warning | danger
+               — applies to the outline type (border + text + tinted bg)
+   Markup:
+     <!-- Image: any 24×24 (or other) image with rounded-md crop -->
+     <span class="sticker">
+       <img src="avatar.jpg" alt="">
+     </span>
+     <!-- Outline (initials) -->
+     <span class="sticker sticker--outline sticker--info">LA</span>
+     <!-- Icon (centred) -->
+     <span class="sticker sticker--icon">
+       <svg class="lexicon-icon"><use href="#picture"></use></svg>
+     </span>
+     <!-- Circle shape -->
+     <span class="sticker sticker--circle sticker--icon sticker--lg">
+       <svg class="lexicon-icon"><use href="#user"></use></svg>
+     </span>
+   ============================================================ */
+
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+  font-size: 12px;
+  line-height: 1;
+  background: var(--color-secondary-l3);
+  color: var(--color-secondary);
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.sticker > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* — Sizes — */
+.sticker--sm { width: 16px; height: 16px; font-size: 8px; }
+.sticker--md { width: 32px; height: 32px; font-size: 14px; }
+.sticker--lg { width: 40px; height: 40px; font-size: 18px; }
+
+/* — Shape — */
+.sticker--circle { border-radius: var(--rounded-full); }
+
+/* — Type: outline (initials) — */
+.sticker--outline {
+  background: var(--color-secondary-l3);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}
+.sticker--outline.sticker--primary { background: var(--color-primary-l3); color: var(--color-primary); border-color: var(--color-primary); }
+.sticker--outline.sticker--info    { background: var(--color-info-l2);    color: var(--color-info);    border-color: var(--color-info);    }
+.sticker--outline.sticker--success { background: var(--color-success-l2); color: var(--color-success); border-color: var(--color-success); }
+.sticker--outline.sticker--warning { background: var(--color-warning-l2); color: var(--color-warning); border-color: var(--color-warning); }
+.sticker--outline.sticker--danger  { background: var(--color-danger-l2);  color: var(--color-danger);  border-color: var(--color-danger);  }
+
+/* — Type: icon (white bg, icon at currentColor) — */
+.sticker--icon {
+  background: var(--color-white);
+  border: 1px solid var(--color-light-d2);
+  color: var(--color-secondary);
+}
+.sticker--icon .lexicon-icon { width: 50%; height: 50%; }
+
+
+/* ============================================================
+   INPUT (TEXT)
+   Source: Figma — Lexicon Components, node 733:14906
+   Form field with optional label, required marker, help text and
+   validation feedback. 32px tall; light fill in resting state,
+   primary-l3 fill + primary-l1 border + focus ring on :focus-visible.
+   Layout:
+     <div class="input">
+       <label class="input__label">
+         Label <span class="input__required">*</span>
+       </label>
+       <span class="input__help">Help text</span>
+       <input class="input__field" value="Default Text">
+       <span class="input__feedback">
+         <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+         <strong>Warning:</strong> This is the alert's message.
+       </span>
+     </div>
+   Validation tones (apply on the wrapper): info | success | warning | danger.
+   For multi-line use <textarea class="input__field input__field--textarea">.
+   ============================================================ */
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  font-family: var(--font-family-base);
+}
+
+.input__label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+.input__required { color: var(--color-warning); font-weight: var(--font-weight-bold); }
+.input__help {
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+  margin-top: calc(var(--spacing-1) * -1);
+}
+
+.input__field {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--spacing-4);
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  background: var(--color-light);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-dark);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  transition: background 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease;
+}
+
+.input--sm .input__field { height: 32px; }
+.input__field::placeholder { color: var(--color-dark); opacity: 0.55; }
+.input__field:focus-visible,
+.input__field.is-focused {
+  outline: 0;
+  background: var(--color-primary-l3);
+  border-color: var(--color-primary-l1);
+  box-shadow: var(--focus-ring);
+}
+.input__field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* — Multi-line textarea — */
+.input__field--textarea {
+  height: auto;
+  min-height: 64px;
+  padding: var(--spacing-3) var(--spacing-4);
+  resize: vertical;
+}
+
+/* — Feedback row (icon + message) — */
+.input__feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+}
+.input__feedback .lexicon-icon { flex-shrink: 0; }
+
+/* — Validation tones: tint the field + colour the feedback row — */
+.input--info    .input__field { background: var(--color-info-l2);    border-color: var(--color-info-l1);    }
+.input--success .input__field { background: var(--color-success-l2); border-color: var(--color-success-l1); }
+.input--warning .input__field { background: var(--color-warning-l2); border-color: var(--color-warning-l1); }
+.input--danger  .input__field { background: var(--color-danger-l2);  border-color: var(--color-danger-l1);  }
+
+.input--info    .input__feedback { color: var(--color-info);    }
+.input--success .input__feedback { color: var(--color-success); }
+.input--warning .input__feedback { color: var(--color-warning); }
+.input--danger  .input__feedback { color: var(--color-danger);  }
+
+
+/* ============================================================
+   INPUT (SEARCH)
+   Source: Figma — Lexicon Components, node 773:5914
+   Search field with trailing magnifier and optional clear button.
+   Reuses .input__field for the visual chrome (light fill, primary
+   tint on focus). Trailing affordances are absolutely positioned.
+   Markup:
+     <div class="search">
+       <input type="search" class="input__field search__field" placeholder="Search">
+       <button class="search__clear" aria-label="Clear" hidden>
+         <svg class="lexicon-icon"><use href="#times"></use></svg>
+       </button>
+       <button class="search__submit" aria-label="Search">
+         <svg class="lexicon-icon"><use href="#search"></use></svg>
+       </button>
+     </div>
+   The clear button shows only when the field is non-empty (toggle
+   the [hidden] attribute, or use JS — provided in the playground).
+   ============================================================ */
+
+.search {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.search__field {
+  padding-right: 64px;
+}
+.search__field:where(:not(:placeholder-shown)) ~ .search__clear { display: inline-flex; }
+
+.search__clear,
+.search__submit {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--rounded-sm);
+  color: var(--color-secondary);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search__clear:hover,
+.search__submit:hover { color: var(--color-dark); }
+
+.search__submit { right: var(--spacing-2); }
+.search__clear  { right: 32px; }
+.search__clear[hidden] { display: none; }
+
+
+/* ============================================================
+   INPUT GROUP
+   Source: Figma — Lexicon Components, node 6502:81849
+   Combine an .input__field with leading/trailing addons (text or
+   buttons). Adjacent corners are flattened so the row looks joined.
+   Markup:
+     <div class="input-group">
+       <span class="input-group__addon">@</span>
+       <input class="input__field" type="text" value="Default Text">
+       <span class="input-group__addon">@liferay.com</span>
+     </div>
+     <!-- Button addon -->
+     <div class="input-group">
+       <button class="btn btn--secondary">Button</button>
+       <input class="input__field" type="text">
+     </div>
+   ============================================================ */
+
+.input-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.input-group > * {
+  border-radius: 0;
+  flex: 0 0 auto;
+}
+.input-group > .input__field { flex: 1 1 auto; min-width: 0; }
+.input-group > :first-child {
+  border-top-left-radius: var(--rounded-md);
+  border-bottom-left-radius: var(--rounded-md);
+}
+.input-group > :last-child {
+  border-top-right-radius: var(--rounded-md);
+  border-bottom-right-radius: var(--rounded-md);
+}
+/* The size of the group is dictated by the group itself, not by individual
+   children. `.input-group` (default) renders every child at 40px to match
+   the regular `.input__field`. `.input-group--sm` forces 32px on the field
+   and any nested `.btn` so a small group is fully consistent. Don't mix
+   `.btn--sm` with a regular group or vice versa — let the group decide. */
+
+.input-group--sm .input__field { height: 32px; }
+.input-group--sm > .btn {
+  height: 32px;
+  padding: 0 var(--spacing-4);
+  font-size: var(--font-size-sm);
+}
+.input-group--sm > .input-group__addon { font-size: var(--font-size-sm); }
+
+.input-group__addon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* no explicit height — stretches with .input-group's align-items: stretch */
+  padding: 0 var(--spacing-4);
+  background: var(--color-light);
+  color: var(--color-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   BUTTON GROUP
+   Source: Figma — Lexicon Components, node 477:10707
+   Two patterns share the same wrapper:
+     · Segmented control — row of .btn--secondary; mark one .is-active
+       to apply a light tint.
+     · Split button — primary action + dropdown caret button.
+   The wrapper flattens interior corners and overlaps adjacent borders.
+   Markup:
+     <div class="btn-group">
+       <button class="btn btn--secondary">Day</button>
+       <button class="btn btn--secondary is-active">Month</button>
+       <button class="btn btn--secondary">Year</button>
+     </div>
+     <div class="btn-group">
+       <button class="btn btn--primary">Publish</button>
+       <button class="btn btn--primary btn--icon" aria-label="More">
+         <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+       </button>
+     </div>
+   ============================================================ */
+
+.btn-group {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.btn-group > .btn { border-radius: 0; position: relative; }
+.btn-group > .btn:first-child {
+  border-top-left-radius: var(--rounded-md);
+  border-bottom-left-radius: var(--rounded-md);
+}
+.btn-group > .btn:last-child {
+  border-top-right-radius: var(--rounded-md);
+  border-bottom-right-radius: var(--rounded-md);
+}
+.btn-group > .btn + .btn { margin-left: -1px; }
+.btn-group > .btn:hover,
+.btn-group > .btn:focus-visible { z-index: 1; }
+
+/* Active segment — tinted fill, kept above siblings so borders don't fight */
+.btn-group > .btn--secondary.is-active {
+  background: var(--color-light);
+  z-index: 1;
+}
+
+/* For pill-shaped groups (rare but supported) */
+.btn-group--pill > .btn:first-child {
+  border-top-left-radius: var(--rounded-full);
+  border-bottom-left-radius: var(--rounded-full);
+}
+.btn-group--pill > .btn:last-child {
+  border-top-right-radius: var(--rounded-full);
+  border-bottom-right-radius: var(--rounded-full);
+}
+
+
+/* ============================================================
+   BUTTON TRANSLUCENT
+   Source: Figma — Lexicon Components, node 477:11087
+   Variant of Button designed for dark surfaces. Pill shape,
+   translucent tone-tinted fill, lighter tone-coloured text.
+   Markup:
+     <button class="btn btn--translucent btn--info">
+       Button
+       <span class="sticker sticker--circle sticker--icon" style="background:var(--color-info);color:#fff;width:16px;height:16px">
+         <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+       </span>
+     </button>
+   Compose with the existing tone modifiers (info, success, warning, danger).
+   The default (no tone) sits on white text with a subtle white tint.
+   ============================================================ */
+
+.btn--translucent {
+  border-radius: var(--rounded-full);
+  border: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-white);
+}
+.btn--translucent:hover { background: rgba(255, 255, 255, 0.12); }
+
+.btn--translucent.btn--primary { background: rgba(11, 95, 255, 0.25);   color: var(--color-primary-l1); }
+.btn--translucent.btn--primary:hover { background: rgba(11, 95, 255, 0.4); }
+.btn--translucent.btn--info    { background: rgba(46, 90, 172, 0.30);   color: var(--color-info-l1);    }
+.btn--translucent.btn--info:hover    { background: rgba(46, 90, 172, 0.45); }
+.btn--translucent.btn--success { background: rgba(90, 202, 117, 0.18);  color: var(--color-success-l1); }
+.btn--translucent.btn--success:hover { background: rgba(90, 202, 117, 0.30); }
+.btn--translucent.btn--warning { background: rgba(255, 143, 57, 0.20);  color: var(--color-warning-l1); }
+.btn--translucent.btn--warning:hover { background: rgba(255, 143, 57, 0.32); }
+.btn--translucent.btn--danger  { background: rgba(244, 137, 137, 0.20); color: var(--color-danger-l1);  }
+.btn--translucent.btn--danger:hover  { background: rgba(244, 137, 137, 0.32); }
+
+
+/* ============================================================
+   BREADCRUMB
+   Source: Figma — Lexicon Components, node 473:4340
+   Path navigation. Links in secondary; current item bold + dark.
+   Optional leading "more" icon (#angle-double-right) for truncated paths.
+   Markup:
+     <nav aria-label="Breadcrumb">
+       <ol class="breadcrumb">
+         <li><a href="#">Level 1</a></li>
+         <li><a href="#">Level 2</a></li>
+         <li aria-current="page">Current Page</li>
+       </ol>
+     </nav>
+     <!-- Truncated path: -->
+     <nav aria-label="Breadcrumb">
+       <ol class="breadcrumb">
+         <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+         <li><a href="#">Level 6</a></li>
+         <li aria-current="page">Current Page</li>
+       </ol>
+     </nav>
+   ============================================================ */
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  gap: var(--spacing-2);
+}
+
+.breadcrumb > li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-secondary);
+}
+
+/* Separator (chevron) between items, but not after the last one */
+.breadcrumb > li:not(:last-child)::after {
+  content: ">";
+  display: inline-block;
+  margin-left: var(--spacing-2);
+  color: var(--color-secondary-l0);
+  font-weight: var(--font-weight-normal);
+}
+
+.breadcrumb a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  border-radius: var(--rounded-sm);
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+.breadcrumb a:hover { color: var(--color-dark); text-decoration: underline; }
+.breadcrumb a:focus-visible {
+  outline: 0;
+  text-decoration: underline;
+  box-shadow: var(--focus-ring);
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--color-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+/* The leading "truncated" icon — drop the separator after it (already handled) */
+.breadcrumb .lexicon-icon { color: var(--color-secondary); }
+
+
+/* ============================================================
+   TABS
+   Source: Figma — Lexicon Components, node 1008:17763
+   Horizontal row of selectable cards over a 1px baseline.
+   The active tab "lifts" by gaining a top/left/right border and
+   a white background that overlaps the baseline.
+   Markup:
+     <nav class="tabs" role="tablist">
+       <button class="tabs__tab is-active" role="tab" aria-selected="true">Details</button>
+       <button class="tabs__tab" role="tab">Connections</button>
+       <button class="tabs__tab" role="tab" disabled>Motion</button>
+     </nav>
+   ============================================================ */
+
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-3);
+  padding: 0 var(--spacing-2);
+  border-bottom: 1px solid var(--color-light-d2);
+}
+
+.tabs__tab {
+  position: relative;
+  margin-bottom: -1px;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--rounded-md) var(--rounded-md) 0 0;
+  background: transparent;
+  color: var(--color-secondary);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tabs__tab:hover { color: var(--color-dark); }
+.tabs__tab:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+.tabs__tab:disabled,
+.tabs__tab[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tabs__tab.is-active,
+.tabs__tab[aria-selected="true"] {
+  background: var(--color-white);
+  color: var(--color-dark);
+  border-color: var(--color-light-d2);
+  /* Hide the slice of the baseline that runs under the active card */
+  box-shadow: 0 1px 0 0 var(--color-white);
+}
+
+
+/* ============================================================
+   PAGINATION
+   Source: Figma — Lexicon Components, node 532:2847
+   Three logical sections: page-size selector, entries summary,
+   and page list with prev/next chevrons. The default layout is a
+   single inline row; .pagination--stacked stacks them vertically.
+   Active page tile gets a primary-tinted background and a 2px
+   bottom accent in primary.
+   Markup:
+     <nav class="pagination" aria-label="Pagination">
+       <button class="pagination__size btn btn--borderless btn--sm">
+         10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+       </button>
+       <span class="pagination__summary">Showing 1 to 10 of 95 entries.</span>
+       <ul class="pagination__pages">
+         <li><button class="pagination__btn" aria-label="Previous">
+           <svg class="lexicon-icon"><use href="#angle-left"></use></svg>
+         </button></li>
+         <li><button class="pagination__btn">1</button></li>
+         <li><button class="pagination__btn is-active" aria-current="page">2</button></li>
+         <li><button class="pagination__btn">3</button></li>
+         <li><span class="pagination__ellipsis">…</span></li>
+         <li><button class="pagination__btn">8</button></li>
+         <li><button class="pagination__btn" aria-label="Next">
+           <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+         </button></li>
+       </ul>
+     </nav>
+   ============================================================ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-5);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+}
+
+.pagination__summary { color: var(--color-secondary); }
+.pagination__size {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-secondary);
+}
+
+.pagination__pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+.pagination__pages > li { display: inline-flex; }
+
+.pagination__btn {
+  position: relative;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--spacing-2);
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-secondary);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination__btn:hover { background: var(--color-light); color: var(--color-dark); }
+.pagination__btn:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+.pagination__btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.pagination__btn.is-active,
+.pagination__btn[aria-current="page"] {
+  background: var(--color-primary-l3);
+  color: var(--color-dark);
+  box-shadow: inset 0 -2px 0 0 var(--color-primary);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  color: var(--color-secondary);
+  letter-spacing: 1px;
+}
+
+/* — Stacked layout — */
+.pagination--stacked {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   Source: Figma — Lexicon Components, node 1574:19191
+   Centred illustration + title + description + optional CTA.
+   The illustration slot is a tinted circle so any 16-style icon
+   or image can slide in. Use .empty-state--sm for the compact
+   variant (smaller circle, tighter spacing, no CTA expected).
+   Markup:
+     <div class="empty-state">
+       <div class="empty-state__media">
+         <svg class="lexicon-icon lexicon-icon-2xl"><use href="#rocket"></use></svg>
+       </div>
+       <h2 class="empty-state__title">Place your title here</h2>
+       <p class="empty-state__text">Please, fill this text box with your content.</p>
+       <button class="btn btn--secondary">Button</button>
+     </div>
+   ============================================================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-family-base);
+  padding: var(--spacing-9) var(--spacing-7);
+}
+
+.empty-state__media {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 160px;
+  border-radius: var(--rounded-full);
+  background: var(--color-light);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-4);
+}
+.empty-state__media .lexicon-icon { width: 64px; height: 64px; }
+.empty-state__media img,
+.empty-state__media svg.illustration { width: 60%; height: 60%; }
+
+.empty-state__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  margin: 0;
+}
+
+.empty-state__text {
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+  margin: 0;
+  max-width: 40ch;
+}
+
+.empty-state .btn { margin-top: var(--spacing-3); }
+
+/* — Compact variant — */
+.empty-state--sm {
+  gap: var(--spacing-3);
+  padding: var(--spacing-7) var(--spacing-5);
+}
+.empty-state--sm .empty-state__media {
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--spacing-2);
+}
+.empty-state--sm .empty-state__media .lexicon-icon { width: 40px; height: 40px; }
+.empty-state--sm .empty-state__title { font-size: var(--font-size-base); }
+
+
+/* ============================================================
+   CARD
+   Source: Figma — Lexicon Components, node 675:4191
+   White surface with border, optional media area + body. The body
+   holds title/subtitle/labels and an optional kebab menu. Add
+   .is-selected (or check the .card__select) for the primary border.
+   Markup:
+     <article class="card">
+       <div class="card__media"><img src="..." alt=""></div>
+       <div class="card__body">
+         <h3 class="card__title">Card Title</h3>
+         <p class="card__subtitle">Card Subtitle</p>
+       </div>
+       <button class="card__menu" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+     </article>
+   Variants:
+     · .card--centered      → media + body centred (icon-style cards)
+     · .card--inline        → row layout (icon · title · menu)
+     · .is-selected         → primary border (or check .card__select)
+   ============================================================ */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border: 1px solid var(--color-light-d2);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-base);
+  color: var(--color-dark);
+  transition: border-color 0.1s ease, box-shadow 0.1s ease;
+}
+.card.is-selected,
+.card:has(.card__select:checked) {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.card__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-light-l1);
+  aspect-ratio: 16 / 9;
+  color: var(--color-secondary);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  overflow: hidden;
+}
+.card__media img,
+.card__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.card__media .lexicon-icon { width: 64px; height: 64px; }
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-4) var(--spacing-5);
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+}
+.card__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--color-dark);
+}
+.card__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.card__body > .label,
+.card__body > .badge { margin-top: var(--spacing-2); align-self: flex-start; }
+
+/* Kebab menu — positioned in the body's top-right corner */
+.card__menu {
+  position: absolute;
+  top: var(--spacing-3);
+  right: var(--spacing-3);
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-sm);
+  background: transparent;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.card__menu:hover { background: var(--color-light); color: var(--color-dark); }
+
+/* Selection input (checkbox/radio) — overlaid on the media area */
+.card__select {
+  position: absolute;
+  top: var(--spacing-3);
+  left: var(--spacing-3);
+  z-index: 1;
+}
+
+/* — Centered variant: icon-style cards — */
+.card--centered { text-align: center; }
+.card--centered .card__media {
+  aspect-ratio: auto;
+  padding: var(--spacing-9) var(--spacing-5) var(--spacing-7);
+  background: var(--color-white);
+  border-bottom: 0;
+}
+.card--centered .card__body { align-items: center; padding-top: 0; }
+.card--centered .card__title { text-decoration: none; }
+
+/* — Inline variant: list-item rows — */
+.card--inline {
+  flex-direction: row;
+  align-items: center;
+  padding: var(--spacing-3) var(--spacing-4);
+  gap: var(--spacing-3);
+}
+.card--inline .card__media {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: auto;
+  background: transparent;
+  border-radius: 0;
+  flex-shrink: 0;
+}
+.card--inline .card__media .lexicon-icon { width: 16px; height: 16px; }
+.card--inline .card__body { padding: 0; flex-direction: row; align-items: center; }
+.card--inline .card__menu { position: static; margin-left: auto; }
+
+
+/* ============================================================
+   SECTION
+   Source: Figma — Lexicon Components, node 545:520
+   Underlined heading separator. Two sizes (regular default = 14px,
+   sm = 12px) and an optional trailing chevron when the header
+   doubles as a Collapsable disclosure / link.
+   Markup:
+     <header class="section">
+       <h2 class="section__title">Section Regular</h2>
+     </header>
+     <a class="section section--link">
+       <h2 class="section__title">Section Regular</h2>
+       <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+     </a>
+   ============================================================ */
+
+.section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+  padding: var(--spacing-2-5) 0;
+  border-bottom: 1px solid var(--color-secondary-l2);
+  font-family: var(--font-family-base);
+  text-decoration: none;
+  color: inherit;
+}
+
+.section__title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  line-height: 1.5;
+}
+
+.section .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+.section--link:hover .section__title { color: var(--color-dark); }
+.section--link:hover .lexicon-icon { color: var(--color-dark); }
+
+.section--sm .section__title { font-size: var(--font-size-sm); }
+
+
+/* ============================================================
+   FORM SHEET
+   Source: Figma — Lexicon Components, node 773:6604
+   White card with header (title + descriptive text), one or
+   more content sections (1 or 2 columns), and an optional
+   footer of action buttons. Outer padding 24, gap 48 between
+   direct sections; the header has gap 24 between title and text.
+   Markup:
+     <section class="sheet">
+       <header class="sheet-header">
+         <h2 class="sheet-title">Sheet Title</h2>
+         <p class="sheet-text">Description…</p>
+       </header>
+       <!-- 1-column: place inputs directly -->
+       <div class="input">…</div>
+       <!-- 2-column: wrap in .sheet-row -->
+       <div class="sheet-row">
+         <div class="input">…</div>
+         <div class="input">…</div>
+       </div>
+       <footer class="sheet-footer">
+         <button class="btn btn--primary">Save</button>
+         <button class="btn btn--secondary">Cancel</button>
+       </footer>
+     </section>
+   ============================================================ */
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+  padding: var(--spacing-7);
+  background: var(--color-white);
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-base);
+}
+
+.sheet-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-7);
+}
+
+.sheet-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  color: var(--color-dark);
+}
+
+.sheet-text {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-dark);
+}
+
+.sheet-row {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.sheet-row > * { flex: 1 1 0; min-width: 0; }
+
+.sheet-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-5);
+}
+
+
+/* ============================================================
+   LIST
+   Source: Figma — Lexicon Components, node 1570:7647
+   Vertical stack of rows separated by 1px borders. Optional
+   headers (uppercase, light-l1 fill), optional checkbox,
+   sticker, content (title/subtitle/detail/labels) and a
+   right-aligned quick-actions cluster of borderless icon
+   buttons. Row states: default, .is-active (primary-l3 tint),
+   .has-notification (2px primary-l1 left rail).
+   Markup:
+     <ul class="list">
+       <li class="list__header">Header Title</li>
+       <li class="list__row">
+         <input type="checkbox" class="list__select">
+         <span class="list__sticker"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+         <div class="list__content">
+           <a href="#" class="list__title">Row Title</a>
+           <span class="list__subtitle">Row Subtitle</span>
+           <span class="list__detail">Row Detail Text</span>
+           <div class="list__labels">…labels…</div>
+         </div>
+         <div class="list__actions">…btns…</div>
+       </li>
+     </ul>
+   ============================================================ */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  background: var(--color-white);
+  font-family: var(--font-family-base);
+  overflow: hidden;
+}
+
+.list__header {
+  padding: var(--spacing-3) var(--spacing-5);
+  background: var(--color-light-l1);
+  border-bottom: 1px solid var(--color-secondary-l3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.list__row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5);
+  border-bottom: 1px solid var(--color-secondary-l3);
+}
+
+.list__row:last-child { border-bottom: 0; }
+
+.list__row.is-active { background: var(--color-primary-l3); }
+
+.list__row.has-notification::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--color-primary-l1);
+}
+
+.list__select {
+  flex-shrink: 0;
+  margin-top: var(--spacing-3);
+}
+
+.list__sticker {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  color: var(--color-secondary);
+}
+
+.list__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-2);
+}
+
+.list__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  text-decoration: underline;
+}
+
+.list__title:hover { color: var(--color-primary); }
+
+.list__subtitle,
+.list__detail {
+  display: block;
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+}
+
+.list__detail { margin-top: var(--spacing-2); }
+
+.list__labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-2);
+}
+
+.list__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-left: auto;
+}
+
+
+/* ============================================================
+   POPOVER
+   Source: Figma — Lexicon Components, node 800:20734
+   White card, padding 12/16, rounded 4, drop shadow. Optional
+   header with title + close button, optional divider line, and
+   a body. Sibling of Tooltip but for richer content. Placement
+   modifiers mirror Tooltip (--top default places above trigger).
+   Markup:
+     <div class="popover">
+       <div class="popover__header">
+         <h3 class="popover__title">Popover title</h3>
+         <button class="btn btn--borderless btn--sm btn--icon popover__close" aria-label="Close">
+           <svg class="lexicon-icon"><use href="#times"></use></svg>
+         </button>
+       </div>
+       <div class="popover__body">…</div>
+     </div>
+   ============================================================ */
+
+.popover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-5);
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family-base);
+  color: var(--color-dark);
+  max-width: 320px;
+}
+
+.popover__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  border-bottom: 1px solid var(--color-secondary-l3);
+  padding-bottom: var(--spacing-4);
+}
+
+.popover__title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+  color: var(--color-dark);
+  flex: 1 1 auto;
+}
+
+.popover__close { flex-shrink: 0; }
+
+.popover__body {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-secondary);
+}
+
+/* Arrow — same triangular spike as Tooltip but colour-matched to popover */
+.popover__arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-white);
+  transform: rotate(45deg);
+  box-shadow: var(--shadow-sm);
+}
+
+.popover__arrow {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+.popover--top .popover__arrow {
+  bottom: auto;
+  top: -4px;
+}
+
+/* Optional scrollbar treatment when body overflows. Apply to the
+   body when the consumer caps height, e.g. style="max-height: 240px". */
+.popover__body--scrollable {
+  overflow-y: auto;
+  max-height: 240px;
+  padding-right: var(--spacing-2);
+}
+
+
+/* ============================================================
+   DROPDOWN
+   Source: Figma — Lexicon Components, node 1410:23811
+   White card with vertical list of selectable items. Optional
+   group titles (uppercase, 12/700, dark text), optional
+   dividers between sections, item icons left or right, and an
+   optional footer (caption + button) or alert banner at the top.
+   Markup:
+     <ul class="dropdown" role="menu">
+       <li class="dropdown__group-title">Group Title</li>
+       <li><button class="dropdown__item" role="menuitem">
+         <svg class="lexicon-icon dropdown__item-icon"><use href="#cloud"></use></svg>
+         Option
+         <svg class="lexicon-icon dropdown__item-meta"><use href="#caret-right"></use></svg>
+       </button></li>
+       <li class="dropdown__divider" role="separator"></li>
+       …
+     </ul>
+   ============================================================ */
+
+.dropdown {
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-3) 0;
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family-base);
+  min-width: 240px;
+}
+
+.dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-5);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  color: var(--color-secondary);
+  background: var(--color-white);
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.dropdown__item:hover { background: var(--color-light-l1); color: var(--color-dark); }
+.dropdown__item:disabled { color: var(--color-secondary-l1); cursor: not-allowed; background: var(--color-white); }
+.dropdown__item.is-active { color: var(--color-primary); }
+
+.dropdown__item-icon { flex-shrink: 0; color: var(--color-secondary); }
+.dropdown__item-text { flex: 1 1 auto; min-width: 0; }
+.dropdown__item-meta { flex-shrink: 0; margin-left: auto; color: var(--color-secondary); }
+
+.dropdown__group-title {
+  padding: var(--spacing-2) var(--spacing-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.dropdown__divider {
+  list-style: none;
+  height: 1px;
+  background: var(--color-secondary-l3);
+  margin: var(--spacing-2) 0;
+}
+
+.dropdown__footer {
+  padding: var(--spacing-3) var(--spacing-5) var(--spacing-5);
+  border-top: 1px solid var(--color-secondary-l3);
+  margin-top: var(--spacing-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.dropdown__caption {
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+}
+
+
+/* ============================================================
+   MODAL
+   Source: Figma — Lexicon Components, node 472:4478
+   Centred dialog over a dimmed overlay. Header (16/24, title +
+   close), body (24 padding) and right-aligned footer (16/24,
+   gap 16). Validation variants tint only the header background
+   + title colour (warning/success/info).
+   Markup:
+     <div class="modal-overlay">
+       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+         <header class="modal__header">
+           <h2 id="m-title" class="modal__title">Modal Title</h2>
+           <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+             <svg class="lexicon-icon"><use href="#times"></use></svg>
+           </button>
+         </header>
+         <div class="modal__body">…</div>
+         <footer class="modal__footer">
+           <button class="btn btn--borderless">Clear</button>
+           <button class="btn btn--secondary">Cancel</button>
+           <button class="btn btn--primary">Done</button>
+         </footer>
+       </div>
+     </div>
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(57, 58, 74, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-7);
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-family-base);
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - var(--spacing-9));
+  overflow: hidden;
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5) var(--spacing-7);
+  background: var(--color-white);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.modal__close { flex-shrink: 0; }
+
+.modal__body {
+  padding: var(--spacing-7);
+  overflow-y: auto;
+  flex: 1 1 auto;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-dark);
+}
+
+.modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5) var(--spacing-7);
+}
+
+/* Validation variants: tint only the header */
+.modal--info .modal__header    { background: var(--color-info-l2); }
+.modal--info .modal__title     { color: var(--color-info); }
+.modal--success .modal__header { background: var(--color-success-l2); }
+.modal--success .modal__title  { color: var(--color-success); }
+.modal--warning .modal__header { background: var(--color-warning-l2); }
+.modal--warning .modal__title  { color: var(--color-warning); }
+.modal--danger  .modal__header { background: var(--color-danger-l2); }
+.modal--danger  .modal__title  { color: var(--color-danger); }
+
+
+/* ============================================================
+   SIDE PANEL
+   Source: Figma — Lexicon Components, node 4664:8242
+   Right-anchored drawer. White card, full viewport height, fixed
+   width (default 280, --lg = 480). Header (8/16/8/24, title +
+   close), body (24 padding, scrollable) and a top-bordered
+   footer (16/24, gap 16) of action buttons.
+   Markup:
+     <aside class="side-panel" role="dialog" aria-labelledby="sp-title">
+       <header class="side-panel__header">
+         <h2 id="sp-title" class="side-panel__title">Side Panel Title</h2>
+         <button class="btn btn--borderless btn--icon side-panel__close" aria-label="Close">
+           <svg class="lexicon-icon"><use href="#times"></use></svg>
+         </button>
+       </header>
+       <div class="side-panel__body">…</div>
+       <footer class="side-panel__footer">
+         <button class="btn btn--secondary">Cancel</button>
+         <button class="btn btn--primary">Save</button>
+       </footer>
+     </aside>
+   ============================================================ */
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  height: 100%;
+  background: var(--color-white);
+  font-family: var(--font-family-base);
+  box-shadow: var(--shadow-lg);
+}
+
+.side-panel--lg { width: 480px; }
+
+.side-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-5);
+  padding: var(--spacing-3) var(--spacing-5) var(--spacing-3) var(--spacing-7);
+  flex-shrink: 0;
+}
+
+.side-panel__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.side-panel__close { flex-shrink: 0; }
+
+.side-panel__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--spacing-7);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-dark);
+}
+
+.side-panel__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5) var(--spacing-7);
+  border-top: 1px solid var(--color-secondary-l3);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   PICKER
+   Source: Figma — Lexicon Components, node 5982:705
+   Single-select trigger paired with a dropdown menu. Trigger
+   is a .btn--secondary with a trailing #caret-double-l icon.
+   Menu is the existing .dropdown primitive; the selected item
+   gets a leading #check via .dropdown__item-icon and the
+   .is-active state.
+   Markup:
+     <div class="picker">
+       <button class="btn btn--secondary picker__trigger" type="button">
+         <span class="picker__trigger-text">Option</span>
+         <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+       </button>
+       <ul class="dropdown" role="listbox">
+         <li><button class="dropdown__item" role="option">Option</button></li>
+         <li><button class="dropdown__item is-active" role="option" aria-selected="true">
+           <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
+           Option
+         </button></li>
+       </ul>
+     </div>
+   ============================================================ */
+
+.picker {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  position: relative;
+  min-width: 109px;
+}
+
+.picker__trigger {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.picker__trigger-text { flex: 1 1 auto; min-width: 0; text-align: left; }
+.picker__trigger > .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+
+/* Picker uses .dropdown but tints the active option with a soft fill
+   to match Figma — the bare .dropdown__item.is-active stays primary text. */
+.picker .dropdown__item.is-active {
+  background: var(--color-primary-l3);
+  color: var(--color-dark);
+}
+
+
+/* ============================================================
+   AUTOCOMPLETE
+   Source: Figma — Lexicon Components, node 5906:610
+   Free-text input that opens a filtered list. The trigger is a
+   plain .input__field with a trailing #caret-double-l icon
+   (same affordance as Picker, but the text is editable). The
+   menu is .dropdown with text-only items. Composes Input wrapper
+   for label + validation + help text.
+   Markup:
+     <div class="input">
+       <label class="input__label">Input <span class="input__required">*</span></label>
+       <div class="autocomplete">
+         <input class="input__field autocomplete__field" type="text" value="David">
+         <span class="autocomplete__caret"><svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></span>
+       </div>
+       <ul class="dropdown autocomplete__menu" role="listbox">…</ul>
+     </div>
+   ============================================================ */
+
+.autocomplete {
+  position: relative;
+  display: block;
+}
+
+.autocomplete__field { padding-right: var(--spacing-9); }
+
+.autocomplete__caret {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-4);
+  transform: translateY(-50%);
+  color: var(--color-secondary);
+  pointer-events: none;
+}
+
+.autocomplete__menu {
+  margin-top: var(--spacing-2);
+  width: 100%;
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ============================================================
+   LANGUAGE PICKER
+   Source: Figma — Lexicon Components, node 5034:5991
+   Picker variant: trigger shows the current locale's flag +
+   code, menu items show flag + locale + status badge
+   (DEFAULT / TRANSLATED / NOT TRANSLATED / generic LABEL TEXT).
+   Reuses .picker for the trigger and .dropdown for the menu;
+   the only new chrome is the flag affordance and the status
+   badge slot inside an item.
+   Markup:
+     <div class="picker lang-picker">
+       <button class="btn btn--secondary picker__trigger">
+         <span class="lang-picker__flag">…</span>
+         en-US
+         <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+       </button>
+       <ul class="dropdown" role="listbox">
+         <li><button class="dropdown__item lang-picker__item is-active">
+           <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
+           <span class="lang-picker__flag">…</span>
+           <span class="lang-picker__locale">en-US</span>
+           <span class="label label--sm label--primary lang-picker__status">Default</span>
+         </button></li>
+       </ul>
+     </div>
+   ============================================================ */
+
+.lang-picker__flag {
+  width: 16px;
+  height: 12px;
+  display: inline-block;
+  flex-shrink: 0;
+  background: var(--color-secondary-l2);
+  border-radius: var(--rounded-sm);
+  vertical-align: middle;
+}
+
+.lang-picker__item {
+  gap: var(--spacing-3);
+}
+
+.lang-picker__locale { flex: 1 1 auto; font-weight: var(--font-weight-bold); color: var(--color-dark); }
+.lang-picker__item.is-active .lang-picker__locale { color: var(--color-dark); }
+
+.lang-picker__status { margin-left: auto; }
+
+
+/* ============================================================
+   MULTI SELECT
+   Source: Figma — Lexicon Components, node 1047:29598
+   Input field that holds the current selection as inline tag
+   chips. Open: caret rotates / menu appears. Composes the
+   Input wrapper (label/help/feedback) and reuses .label--sm
+   chips for the selected items, .dropdown for the menu.
+   Markup:
+     <div class="input">
+       <label class="input__label">Tags</label>
+       <div class="multi-select">
+         <span class="label label--sm">Label <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button></span>
+         <span class="label label--sm">Label …</span>
+         <input class="multi-select__input" type="text">
+         <button class="multi-select__clear" aria-label="Clear all"><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+       </div>
+       <ul class="dropdown multi-select__menu" role="listbox">…</ul>
+     </div>
+   ============================================================ */
+
+.multi-select {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-height: 40px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  background: var(--color-white);
+  font-family: var(--font-family-base);
+}
+
+.multi-select:focus-within {
+  background: var(--color-primary-l3);
+  border-color: var(--color-primary-l1);
+  box-shadow: var(--focus-ring);
+}
+
+.multi-select__input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: var(--color-dark);
+  padding: var(--spacing-1) 0;
+}
+
+.multi-select__clear {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--color-secondary);
+  padding: var(--spacing-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.multi-select__clear:hover { color: var(--color-dark); }
+
+.multi-select__menu {
+  margin-top: var(--spacing-2);
+  width: 100%;
+  box-shadow: var(--shadow-md);
+}
+
+/* Validation tones flow from the parent .input wrapper */
+.input--warning .multi-select { border-color: var(--color-warning-l1); background: var(--color-warning-l2); }
+.input--danger  .multi-select { border-color: var(--color-danger-l1);  background: var(--color-danger-l2);  }
+.input--success .multi-select { border-color: var(--color-success-l1); background: var(--color-success-l2); }
+
+
+/* ============================================================
+   TIME PICKER
+   Source: Figma — Lexicon Components, node 1047:30482
+   Input field in the format HH:MM with a leading clock icon
+   (outside the field), an optional clear button + spinner
+   (caret-up/down stacked) inside, and a trailing timezone
+   label. Composes the Input wrapper.
+   Markup:
+     <div class="input">
+       <label class="input__label">Time Picker</label>
+       <div class="time-picker">
+         <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
+         <div class="time-picker__field">
+           <input class="input__field time-picker__input" type="text" value="12:45">
+           <button class="time-picker__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times-circle-full"></use></svg></button>
+           <span class="time-picker__spinner">
+             <button aria-label="Increase"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg></button>
+             <button aria-label="Decrease"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg></button>
+           </span>
+         </div>
+         <span class="time-picker__tz">(UTC+09:00)</span>
+       </div>
+     </div>
+   ============================================================ */
+
+.time-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  font-family: var(--font-family-base);
+}
+
+.time-picker__icon { color: var(--color-secondary); flex-shrink: 0; }
+
+.time-picker__field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.time-picker__input {
+  width: 200px;
+  padding-right: var(--spacing-8);
+}
+
+.time-picker__clear {
+  position: absolute;
+  right: var(--spacing-7);
+  background: transparent;
+  border: 0;
+  padding: var(--spacing-1);
+  color: var(--color-secondary-l1);
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.time-picker__clear:hover { color: var(--color-dark); }
+
+.time-picker__spinner {
+  position: absolute;
+  right: var(--spacing-2);
+  display: inline-flex;
+  flex-direction: column;
+  border: 1px solid var(--color-secondary-l2);
+  border-radius: var(--rounded-full);
+  overflow: hidden;
+}
+
+.time-picker__spinner button {
+  width: 16px;
+  height: 12px;
+  background: var(--color-white);
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-secondary);
+}
+
+.time-picker__spinner button:hover { background: var(--color-light-l1); color: var(--color-dark); }
+
+.time-picker__tz {
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   COLOR PICKER
+   Source: Figma — Lexicon Components, node 1574:27614
+   Two surfaces:
+     • A swatch panel — predefined colour grid + optional
+       "Custom Colors" section + optional advanced editor.
+     • A compact "color input" trigger — colour swatch + hex
+       text field, used inline as a form control.
+   Markup (panel):
+     <div class="color-picker">
+       <h3 class="color-picker__title">Choose a color</h3>
+       <div class="color-picker__grid">
+         <button class="color-picker__swatch" style="background:#000"></button>
+         …
+       </div>
+     </div>
+   Markup (input):
+     <div class="color-input">
+       <label class="color-input__label">Background Color</label>
+       <div class="color-input__field">
+         <button class="color-input__swatch" style="background:#008000"
+                 aria-label="Pick colour"></button>
+         <span class="color-input__hash">#</span>
+         <input type="text" class="color-input__hex" value="008000">
+       </div>
+     </div>
+   ============================================================ */
+
+.color-picker {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5);
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family-base);
+  width: 256px;
+}
+
+.color-picker__title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.color-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-2);
+}
+
+.color-picker__swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rounded-sm);
+  border: 1px solid var(--color-secondary-l3);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-picker__swatch:hover {
+  outline: 2px solid var(--color-primary-l1);
+  outline-offset: 1px;
+}
+
+.color-picker__swatch--empty { background: var(--color-white); }
+
+.color-picker__divider {
+  height: 1px;
+  background: var(--color-secondary-l3);
+  margin: var(--spacing-2) 0;
+}
+
+.color-picker__editor {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.color-picker__hue {
+  height: 8px;
+  border-radius: var(--rounded-full);
+  background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+}
+
+.color-picker__sv {
+  width: 100%;
+  height: 96px;
+  border-radius: var(--rounded-md);
+  background:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, hsl(205 100% 50%));
+}
+
+.color-picker__alpha {
+  height: 8px;
+  border-radius: var(--rounded-full);
+  background:
+    linear-gradient(to right, transparent, hsl(205 100% 50%)),
+    repeating-conic-gradient(var(--color-secondary-l3) 0 25%, var(--color-white) 0 50%) 0/8px 8px;
+}
+
+.color-picker__channel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--color-light-l1);
+  border-radius: var(--rounded-md);
+  font-size: var(--font-size-sm);
+  width: 64px;
+}
+.color-picker__channel-key { color: var(--color-secondary); font-weight: var(--font-weight-bold); }
+.color-picker__channel-value { color: var(--color-dark); margin-left: auto; }
+
+/* Compact form-control variant: colour swatch + hex */
+.color-input {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  font-family: var(--font-family-base);
+}
+
+.color-input__label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+}
+
+.color-input__field {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--spacing-2);
+}
+
+.color-input__swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-secondary-l3);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.color-input__hex-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.color-input__hash {
+  position: absolute;
+  left: var(--spacing-3);
+  color: var(--color-secondary);
+  font-size: var(--font-size-base);
+  pointer-events: none;
+}
+
+.color-input__hex {
+  height: 40px;
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  padding: 0 var(--spacing-3) 0 var(--spacing-7);
+  font: inherit;
+  color: var(--color-dark);
+  width: 100px;
+  background: var(--color-white);
+}
+
+.color-input__hex:focus {
+  outline: 0;
+  border-color: var(--color-primary-l1);
+  background: var(--color-primary-l3);
+  box-shadow: var(--focus-ring);
+}
+
+
+/* ============================================================
+   DATE PICKER
+   Source: Figma — Lexicon Components, node 1574:18443
+   Two surfaces:
+     • A trigger field (input + leading #calendar icon, format
+       YYYY-MM-DD HH:MM) — composes the Input wrapper.
+     • A panel with a 7-column calendar grid (M T W T F S S),
+       month/year selectors, prev/today/next actions, and an
+       optional Time Picker row at the bottom.
+   Markup (trigger):
+     <div class="input">
+       <label class="input__label">Date Picker</label>
+       <div class="input-group">
+         <input class="input__field" type="text" placeholder="YYYY-MM-DD --:-- --">
+         <button class="input-group__addon btn btn--borderless btn--icon" aria-label="Open calendar">
+           <svg class="lexicon-icon"><use href="#calendar"></use></svg>
+         </button>
+       </div>
+     </div>
+   Markup (panel): see date-picker.html for the full layout.
+   ============================================================ */
+
+.date-picker-panel {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5);
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family-base);
+  width: 366px;
+}
+
+.date-picker-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.date-picker-panel__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.date-picker-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.date-picker-panel__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  text-align: center;
+}
+
+.date-picker-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: var(--spacing-2);
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+}
+
+.date-picker-panel__day {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--rounded-full);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  margin: 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-picker-panel__day:hover { background: var(--color-light); color: var(--color-dark); }
+.date-picker-panel__day--muted { color: var(--color-secondary-l1); }
+.date-picker-panel__day.is-selected { background: var(--color-primary); color: var(--color-white); font-weight: var(--font-weight-bold); }
+.date-picker-panel__day.is-in-range { background: var(--color-primary-l3); color: var(--color-dark); border-radius: 0; }
+.date-picker-panel__day.is-range-start { border-top-left-radius: var(--rounded-full); border-bottom-left-radius: var(--rounded-full); background: var(--color-primary); color: var(--color-white); }
+.date-picker-panel__day.is-range-end   { border-top-right-radius: var(--rounded-full); border-bottom-right-radius: var(--rounded-full); background: var(--color-primary); color: var(--color-white); }
+
+.date-picker-panel__time {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-secondary-l2);
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+}
+
+.date-picker-panel__time .lexicon-icon { color: var(--color-secondary); }
+.date-picker-panel__time-input {
+  width: 96px;
+  height: 32px;
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  padding: 0 var(--spacing-3);
+  font: inherit;
+  text-align: center;
+  background: var(--color-white);
+  color: var(--color-dark);
+}
+.date-picker-panel__time-tz { margin-left: auto; display: inline-flex; align-items: center; gap: var(--spacing-2); }
+
+
+/* ============================================================
+   DUAL LISTBOX
+   Source: Figma — Lexicon Components, node 1397:19158
+   Two side-by-side lists with arrow buttons in the middle to
+   move items between them. The right list ("In Use") gets a
+   pair of up/down reorder buttons in its bottom-right corner.
+   List items are simple text rows; selected item gets the
+   primary fill + white text.
+   Markup:
+     <div class="dual-listbox">
+       <div class="dual-listbox__side">
+         <span class="dual-listbox__title">Available</span>
+         <ul class="dual-listbox__list">
+           <li class="dual-listbox__item">Item 1</li>
+           …
+         </ul>
+       </div>
+       <div class="dual-listbox__moves">
+         <button aria-label="Move right">…</button>
+         <button aria-label="Move left">…</button>
+       </div>
+       <div class="dual-listbox__side">
+         <span class="dual-listbox__title">In Use</span>
+         <ul class="dual-listbox__list dual-listbox__list--ordered">
+           <li class="dual-listbox__item">Item A</li>
+           …
+           <div class="dual-listbox__reorder">
+             <button aria-label="Move up">…</button>
+             <button aria-label="Move down">…</button>
+           </div>
+         </ul>
+       </div>
+     </div>
+   ============================================================ */
+
+.dual-listbox {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--spacing-7);
+  align-items: stretch;
+  font-family: var(--font-family-base);
+}
+
+.dual-listbox__side { display: flex; flex-direction: column; gap: var(--spacing-3); }
+
+.dual-listbox__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+}
+
+.dual-listbox__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-3) 0;
+  background: var(--color-light-l1);
+  border-radius: var(--rounded-md);
+  min-height: 200px;
+  flex: 1 1 auto;
+}
+
+.dual-listbox__list.is-focused {
+  background: var(--color-primary-l3);
+  box-shadow: var(--focus-ring);
+}
+
+.dual-listbox__item {
+  padding: var(--spacing-2) var(--spacing-5);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  cursor: pointer;
+}
+
+.dual-listbox__item:hover { background: rgba(11, 95, 255, 0.06); }
+.dual-listbox__item.is-active { background: var(--color-primary); color: var(--color-white); }
+
+.dual-listbox__moves {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  align-self: center;
+}
+
+.dual-listbox__reorder {
+  position: absolute;
+  right: var(--spacing-3);
+  bottom: var(--spacing-3);
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+
+/* ============================================================
+   TREE VIEW
+   Source: Figma — Lexicon Components, node 1410:25688
+   Vertical list of folder rows with a leading expand chevron
+   (caret-right collapsed / caret-bottom expanded), folder icon
+   and label. Children are nested via <ul> and indented 24px
+   per level. No row borders or backgrounds at rest.
+   Markup:
+     <ul class="tree" role="tree">
+       <li role="treeitem" aria-expanded="true">
+         <div class="tree__row">
+           <button class="tree__toggle" aria-label="Collapse">
+             <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+           </button>
+           <svg class="lexicon-icon tree__icon"><use href="#folder"></use></svg>
+           <span class="tree__label">Liferay Drive</span>
+         </div>
+         <ul role="group">…</ul>
+       </li>
+     </ul>
+   ============================================================ */
+
+.tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  color: var(--color-secondary);
+}
+
+.tree ul {
+  list-style: none;
+  margin: 0;
+  padding-left: var(--spacing-7);
+}
+
+.tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--rounded-md);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+}
+
+.tree__row:hover { background: var(--color-light); color: var(--color-dark); }
+.tree__row.is-active { background: var(--color-primary-l3); color: var(--color-dark); }
+
+.tree__toggle {
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tree__toggle--placeholder { visibility: hidden; }
+
+.tree__icon { color: var(--color-secondary); flex-shrink: 0; }
+
+
+/* ============================================================
+   MULTI STEP NAVIGATION
+   Source: Figma — Lexicon Components, node 1410:22318
+   Horizontal stepper. Each step is a 32×32 circle connected by
+   a 4px line to the next. States:
+     • Completed = dark filled circle, white #check-small icon,
+       dark connector to the right.
+     • Active    = primary circle, white number, light connector.
+     • Pending   = light circle, dark number, light connector.
+   Optional labels above each step (full layout) or only above
+   the active step (compact layout).
+   Markup:
+     <ol class="stepper">
+       <li class="stepper__step is-complete">
+         <span class="stepper__label">Step Name</span>
+         <span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span>
+       </li>
+       <li class="stepper__step is-active">
+         <span class="stepper__label">Step Name</span>
+         <span class="stepper__circle">3</span>
+       </li>
+       <li class="stepper__step">
+         <span class="stepper__label">Step Name</span>
+         <span class="stepper__circle">4</span>
+       </li>
+     </ol>
+   ============================================================ */
+
+.stepper {
+  display: flex;
+  align-items: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  gap: 0;
+}
+
+.stepper__step {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  position: relative;
+  min-width: 64px;
+}
+
+.stepper__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 100%;
+  height: 4px;
+  background: var(--color-secondary-l3);
+  z-index: 0;
+}
+
+.stepper__step.is-complete:not(:last-child)::after { background: var(--color-dark); }
+
+.stepper__label {
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  white-space: nowrap;
+}
+
+.stepper__circle {
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--rounded-full);
+  background: var(--color-secondary-l3);
+  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.stepper__step.is-complete .stepper__circle { background: var(--color-dark); color: var(--color-white); }
+.stepper__step.is-active   .stepper__circle { background: var(--color-primary); color: var(--color-white); }
+
+
+/* ============================================================
+   NAVIGATION BAR
+   Source: Figma — Lexicon Components, node 478:8481
+   Horizontal tab-style top bar. Active item gets a primary-l1
+   underline. Focus shows a primary border outline. Disabled
+   items in light gray. Optional trailing dropdown trigger.
+   Markup:
+     <nav class="navbar">
+       <ul class="navbar__list">
+         <li><a href="#" class="navbar__item is-active" aria-current="page">Item 1</a></li>
+         <li><a href="#" class="navbar__item">Item 2</a></li>
+         <li><a href="#" class="navbar__item is-focused">Item 3</a></li>
+         <li><span class="navbar__item is-disabled">Item 4</span></li>
+         <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button></li>
+       </ul>
+     </nav>
+   ============================================================ */
+
+.navbar {
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-base);
+  display: inline-block;
+}
+
+.navbar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.navbar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  color: var(--color-secondary);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.navbar__item:hover { color: var(--color-dark); }
+.navbar__item.is-active { color: var(--color-dark); font-weight: var(--font-weight-bold); border-bottom-color: var(--color-primary-l1); }
+.navbar__item.is-focused { outline: 2px solid var(--color-primary-l1); outline-offset: -2px; border-radius: var(--rounded-md); }
+.navbar__item.is-disabled,
+.navbar__item:disabled { color: var(--color-secondary-l1); cursor: not-allowed; pointer-events: none; }
+
+.navbar__more > .lexicon-icon { color: var(--color-secondary); }
+
+
+/* ============================================================
+   VERTICAL NAVIGATION
+   Source: Figma — Lexicon Components, node 512:5857
+   Sidebar nav. Composes section titles (uppercase 12/700,
+   muted), nav items (plain text + optional trailing chevron
+   for collapse, or trailing #plus / #angle-right for actions),
+   nested children indented by 16px, and an active-state rail
+   on the left (2px primary-l1 border + primary-l3 fill).
+   Markup:
+     <nav class="vert-nav">
+       <ul class="vert-nav__list">
+         <li class="vert-nav__section">Item Name</li>
+         <li class="vert-nav__item is-active">
+           <svg class="lexicon-icon vert-nav__icon"><use href="#document"></use></svg>
+           Item Name
+         </li>
+         <li class="vert-nav__item">
+           Item Name
+           <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+         </li>
+         <li><ul class="vert-nav__sublist">…</ul></li>
+       </ul>
+     </nav>
+   ============================================================ */
+
+.vert-nav {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  width: 240px;
+}
+
+.vert-nav__list,
+.vert-nav__sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vert-nav__sublist { padding-left: var(--spacing-5); }
+
+.vert-nav__section {
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.vert-nav__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-5);
+  cursor: pointer;
+  border-radius: var(--rounded-md);
+  font-weight: var(--font-weight-semi);
+  color: var(--color-dark);
+}
+
+.vert-nav__item:hover { background: var(--color-light); }
+
+.vert-nav__item.is-muted { color: var(--color-secondary); }
+
+.vert-nav__item.is-active {
+  background: var(--color-primary-l3);
+  font-weight: var(--font-weight-bold);
+}
+
+.vert-nav__item.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-primary-l1);
+  border-radius: 0 var(--rounded-sm) var(--rounded-sm) 0;
+}
+
+.vert-nav__icon { color: var(--color-secondary); flex-shrink: 0; }
+.vert-nav__item .lexicon-icon[href*="angle"],
+.vert-nav__item > .lexicon-icon:last-child { margin-left: auto; color: var(--color-secondary); }
+
+
+/* ============================================================
+   VERTICAL BAR
+   Source: Figma — Lexicon Components, node 1571:15114
+   Narrow icon-only sidebar — typically two clusters (top +
+   bottom) of square buttons. Active button = 2px primary-l1
+   left border + primary-l3 fill. Compact 40px width.
+   Markup:
+     <nav class="vert-bar">
+       <ul class="vert-bar__cluster">
+         <li><button class="vert-bar__btn"><svg class="lexicon-icon"><use href="#user"></use></svg></button></li>
+         …
+       </ul>
+       <ul class="vert-bar__cluster vert-bar__cluster--end">…</ul>
+     </nav>
+   ============================================================ */
+
+.vert-bar {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+  background: var(--color-white);
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-base);
+}
+
+.vert-bar__cluster {
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-2) 0;
+}
+
+.vert-bar__cluster + .vert-bar__cluster { border-top: 1px solid var(--color-secondary-l3); }
+.vert-bar__cluster--end { margin-top: auto; }
+
+.vert-bar__btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.vert-bar__btn:hover { color: var(--color-dark); background: var(--color-light); }
+
+.vert-bar__btn.is-active { background: var(--color-primary-l3); color: var(--color-primary); }
+.vert-bar__btn.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-primary-l1);
+}
+
+
+/* ============================================================
+   TABLE
+   Source: Figma — Lexicon Components, node 1844:20952
+   Data table with a header row, alternating zebra-striped body
+   rows, optional checkbox column on the left and ellipsis-v
+   action column on the right. Selected rows tint with
+   primary-l3. Cells are 48-wide for the gutter columns
+   (checkbox / actions) and flex-1 for data columns.
+   Markup:
+     <table class="table">
+       <thead>
+         <tr>
+           <th class="table__cell--gutter"><input type="checkbox" aria-label="Select all"></th>
+           <th>Title</th>
+           <th>Author</th>
+           <th>Status</th>
+           <th class="table__cell--gutter"></th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td class="table__cell--gutter"><input type="checkbox"></td>
+           <td>
+             <span class="table__title-wrap">
+               <svg class="lexicon-icon table__icon"><use href="#folder"></use></svg>
+               <a href="#" class="table__title">Very long title to be displayed in two lines</a>
+             </span>
+           </td>
+           <td>Text</td>
+           <td><span class="label label--sm label--success">Approved</span></td>
+           <td class="table__cell--gutter">
+             <button class="btn btn--borderless btn--sm btn--icon" aria-label="More">
+               <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+             </button>
+           </td>
+         </tr>
+         <tr class="is-selected">…</tr>
+       </tbody>
+     </table>
+   ============================================================ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  border: 1px solid var(--color-secondary-l3);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  background: var(--color-white);
+}
+
+.table th,
+.table td {
+  padding: var(--spacing-5) var(--spacing-5);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-secondary-l3);
+}
+
+.table th {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  background: var(--color-white);
+}
+
+.table tbody tr { background: var(--color-white); }
+.table tbody tr:nth-child(even) { background: var(--color-light-l1); }
+
+.table tbody tr.is-selected,
+.table tbody tr.is-selected:nth-child(even) { background: var(--color-primary-l3); }
+
+.table tbody tr:last-child td { border-bottom: 0; }
+
+.table__cell--gutter { width: 48px; padding-left: var(--spacing-5); padding-right: var(--spacing-5); }
+.table__cell--gutter:last-child { padding-left: var(--spacing-3); padding-right: var(--spacing-3); width: 48px; }
+
+.table__title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.table__icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+.table__title {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+  text-decoration: underline;
+}
+
+.table__title:hover { color: var(--color-primary); }
+
+.table__stack { display: inline-flex; flex-direction: column; gap: var(--spacing-2); align-items: flex-start; }
