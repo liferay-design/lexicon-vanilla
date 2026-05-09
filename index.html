@@ -135,6 +135,7 @@
       font-weight: inherit;
     }
     .ref__skin .dropdown__item:hover { background: var(--color-light); }
+    .ref__cms-toggle { margin-bottom: var(--spacing-7); }
   </style>
 </head>
 <body>
@@ -167,6 +168,12 @@
         </button></li>
       </ul>
     </div>
+
+    <label class="toggle toggle--sm ref__cms-toggle">
+      <input type="checkbox" class="toggle__input" id="cms-style-toggle">
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span class="toggle__label">CMS Style</span>
+    </label>
 
     <h2>Vanilla Lexicon</h2>
     <ul>
@@ -222,6 +229,7 @@
     <ul>
       <li><a href="#comp-managementtoolbar">Management Toolbar</a></li>
       <li><a href="#comp-controlmenu">Control Menu</a></li>
+      <li><a href="#comp-cmsmenu">CMS Menu</a></li>
     </ul>
   </nav>
 
@@ -1043,13 +1051,13 @@
         <span class="showcase__label">Default with CTA &middot; compact</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-7);">
           <div class="empty-state">
-            <div class="empty-state__media"><svg class="lexicon-icon"><use href="#rocket"></use></svg></div>
+            <div class="empty-state__media"><img src="illustration-telescope.svg" alt=""></div>
             <h3 class="empty-state__title">Place your title here</h3>
             <p class="empty-state__text">Please, fill this text box with your content.</p>
             <button class="btn btn--secondary">Button</button>
           </div>
           <div class="empty-state empty-state--sm">
-            <div class="empty-state__media"><svg class="lexicon-icon"><use href="#search"></use></svg></div>
+            <div class="empty-state__media"><img src="illustration-satellite.svg" alt=""></div>
             <h3 class="empty-state__title">No results found</h3>
             <p class="empty-state__text">Try adjusting your filters.</p>
           </div>
@@ -1522,7 +1530,7 @@
       <p class="lead">Two surfaces: <code>.color-picker</code> (palette panel with swatch grid) and <code>.color-input</code> (compact swatch + hex field).</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Compact color input — swatch + hex · swatch only · focused</span>
+        <span class="showcase__label">Compact color input — swatch + hex · swatch only</span>
         <div class="color-input">
           <span class="color-input__label">Background Color</span>
           <div class="color-input__field">
@@ -1537,16 +1545,6 @@
           <span class="color-input__label">Background Color</span>
           <div class="color-input__field">
             <button class="color-input__swatch" style="background: #0b5fff" aria-label="Pick"></button>
-          </div>
-        </div>
-        <div class="color-input">
-          <span class="color-input__label">Background Color</span>
-          <div class="color-input__field">
-            <button class="color-input__swatch" style="background: #da1414; box-shadow: var(--focus-ring);" aria-label="Pick"></button>
-            <div class="color-input__hex-wrap">
-              <span class="color-input__hash">#</span>
-              <input type="text" class="color-input__hex" value="DA1414">
-            </div>
           </div>
         </div>
       </div>
@@ -2180,7 +2178,7 @@
             <li>
               <button class="vert-nav__group-header" aria-expanded="true">
                 Item Name
-                <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
               </button>
               <ul class="vert-nav__list">
                 <li class="vert-nav__item is-active">
@@ -2369,6 +2367,108 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────  CMS MENU  ─────────────────────────── -->
+    <section id="comp-cmsmenu" class="ref__component">
+      <div class="ref__component-header">
+        <h2>CMS Menu</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=2545-4896">Figma ↗</a>
+          ·
+          <a href="cmsmenu.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">280px sidebar panel for CMS apps. Reuses <code>.vert-nav__item</code> rows and <code>.vert-nav__group-header</code> section labels inside <code>.cms-menu__groups</code>. Section headers with an add action wrap the button and caret in <code>.vert-nav__group-actions</code>. Space items use <code>.sticker</code> in the icon cell.</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">Full panel</span>
+        <aside class="cms-menu">
+          <ul class="cms-menu__groups">
+            <li>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item is-active">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg></span>
+                  Home
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#analytics"></use></svg></span>
+                  Dashboard
+                </li>
+              </ul>
+            </li>
+            <li>
+              <button class="vert-nav__group-header" aria-expanded="true">ASSETS <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg></button>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item is-active">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg></span>
+                  All
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#catalog"></use></svg></span>
+                  Content
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#documents-and-media"></use></svg></span>
+                  Files
+                </li>
+              </ul>
+            </li>
+            <li>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#users"></use></svg></span>
+                  Shared with me
+                </li>
+              </ul>
+            </li>
+            <li>
+              <button class="vert-nav__group-header" aria-expanded="true">ITEM NAME <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg></button>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#edit-layout"></use></svg></span>
+                  Content Structures
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg></span>
+                  Categorization
+                </li>
+              </ul>
+            </li>
+            <li>
+              <div class="vert-nav__group-header">
+                SPACE
+                <span class="vert-nav__group-actions">
+                  <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add space"><svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg></button>
+                  <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+                </span>
+              </div>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item is-active">
+                  <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background:#f2e5ff;color:#aa33ff;border-color:#aa33ff;">M</span></span>
+                  Marketing
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background:#f2e5ff;color:#aa33ff;border-color:#aa33ff;">H</span></span>
+                  HR
+                </li>
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background:#f2e5ff;color:#aa33ff;border-color:#aa33ff;">C</span></span>
+                  Campaigns
+                </li>
+              </ul>
+            </li>
+            <li>
+              <ul class="vert-nav__list">
+                <li class="vert-nav__item">
+                  <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#trash"></use></svg></span>
+                  Recycle bin
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
       </div>
     </section>
 
@@ -4228,6 +4328,27 @@
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') setOpen(false);
+    });
+  })();
+
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('cms-style-toggle');
+
+    function applyCmsStyle(on) {
+      if (on) {
+        root.style.setProperty('--rounded-sm', '4px');
+        root.style.setProperty('--rounded-md', '8px');
+        root.style.setProperty('--rounded-lg', '16px');
+      } else {
+        root.style.removeProperty('--rounded-sm');
+        root.style.removeProperty('--rounded-md');
+        root.style.removeProperty('--rounded-lg');
+      }
+    }
+
+    toggle.addEventListener('change', function () {
+      applyCmsStyle(toggle.checked);
     });
   })();
 </script>

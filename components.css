@@ -1830,16 +1830,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 160px;
-  height: 160px;
+  width: 250px;
+  height: 250px;
   border-radius: var(--rounded-full);
   background: var(--color-light);
   color: var(--color-secondary);
   margin-bottom: var(--spacing-4);
 }
 .empty-state__media .lexicon-icon { width: 64px; height: 64px; }
-.empty-state__media img,
-.empty-state__media svg.illustration { width: 60%; height: 60%; }
+.empty-state__media img { width: 100%; height: 100%; object-fit: contain; }
 
 .empty-state__title {
   font-size: var(--font-size-md);
@@ -1863,8 +1862,8 @@
   padding: var(--spacing-7) var(--spacing-5);
 }
 .empty-state--sm .empty-state__media {
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   margin-bottom: var(--spacing-2);
 }
 .empty-state--sm .empty-state__media .lexicon-icon { width: 40px; height: 40px; }
@@ -2849,6 +2848,16 @@
 .input--danger  .multi-select { border-color: var(--color-danger-l1);  background: var(--color-danger-l2);  }
 .input--success .multi-select { border-color: var(--color-success-l1); background: var(--color-success-l2); }
 
+/* Read-only / Not Localizable: chips only, no field chrome */
+.multi-select--plain {
+  border: 0;
+  padding: 0;
+  min-height: 0;
+  gap: var(--spacing-3);
+  background: transparent;
+}
+.multi-select--plain:focus-within { background: transparent; border: 0; box-shadow: none; }
+
 
 /* ============================================================
    TIME PICKER
@@ -2971,36 +2980,40 @@
 .color-picker {
   display: inline-flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-5);
   padding: var(--spacing-5);
   background: var(--color-white);
+  border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-md);
   font-family: var(--font-family-base);
   width: 256px;
 }
 
+/* 32px title row: "Choose a color" / "Custom Colors" */
 .color-picker__title {
   margin: 0;
+  height: 32px;
   font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semi);
   color: var(--color-secondary);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+/* 6-col fixed grid: 6×24px swatches + 5×16px gaps = 224px */
 .color-picker__grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--spacing-2);
+  grid-template-columns: repeat(6, 24px);
+  gap: var(--spacing-5);
 }
 
 .color-picker__swatch {
   width: 24px;
   height: 24px;
-  border-radius: var(--rounded-sm);
-  border: 1px solid var(--color-secondary-l3);
+  border-radius: 2px;
+  border: none;
   background: transparent;
   cursor: pointer;
   padding: 0;
@@ -3011,12 +3024,15 @@
   outline-offset: 1px;
 }
 
-.color-picker__swatch--empty { background: var(--color-white); }
+/* Empty slots show a bordered white square */
+.color-picker__swatch--empty {
+  background: var(--color-white);
+  border: 1px solid var(--color-secondary-l3);
+}
 
 .color-picker__divider {
   height: 1px;
   background: var(--color-secondary-l3);
-  margin: var(--spacing-2) 0;
 }
 
 .color-picker__editor {
@@ -3026,21 +3042,24 @@
   align-items: center;
 }
 
+/* Hue rainbow bar — 16px tall with full-border-radius pill */
 .color-picker__hue {
-  height: 8px;
+  height: 16px;
   border-radius: var(--rounded-full);
   background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
 }
 
+/* Saturation/value square — taller to match Figma (144px) */
 .color-picker__sv {
   width: 100%;
-  height: 96px;
+  height: 144px;
   border-radius: var(--rounded-md);
   background:
     linear-gradient(to top, #000, transparent),
     linear-gradient(to right, #fff, hsl(205 100% 50%));
 }
 
+/* Alpha bar — 8px pill with checker underlay */
 .color-picker__alpha {
   height: 8px;
   border-radius: var(--rounded-full);
@@ -3049,18 +3068,30 @@
     repeating-conic-gradient(var(--color-secondary-l3) 0 25%, var(--color-white) 0 50%) 0/8px 8px;
 }
 
+/* Channel input cell (H / R / G / B / A) */
 .color-picker__channel {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2);
   padding: var(--spacing-2) var(--spacing-3);
-  background: var(--color-light-l1);
+  background: var(--color-light);
+  border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
   font-size: var(--font-size-sm);
   width: 64px;
 }
 .color-picker__channel-key { color: var(--color-secondary); font-weight: var(--font-weight-bold); }
 .color-picker__channel-value { color: var(--color-dark); margin-left: auto; }
+
+/* Vertically-stacked channel group (R/G/B beside the SV box) */
+.color-picker__channel-group { display: grid; gap: var(--spacing-2); }
+
+/* Top-align editor row when one side is taller (e.g. SV box + RGB stack) */
+.color-picker__editor--start { align-items: start; }
+
+/* Hex input inside the picker panel fills available width */
+.color-picker .color-input__hex-wrap { width: 100%; }
+.color-picker .color-input__hex { width: 100%; }
 
 /* Compact form-control variant: colour swatch + hex */
 .color-input {
@@ -3114,7 +3145,7 @@
   font: inherit;
   color: var(--color-dark);
   width: 100px;
-  background: var(--color-white);
+  background: var(--color-light);
 }
 
 .color-input__hex:focus {
@@ -3455,9 +3486,9 @@
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 14px;
+  bottom: 15px;
   width: 100%;
-  height: 4px;
+  height: 2px;
   background: var(--color-secondary-l3);
   z-index: 0;
 }
@@ -3500,7 +3531,7 @@
        <ul class="navbar__list">
          <li><a href="#" class="navbar__item is-active" aria-current="page">Item 1</a></li>
          <li><a href="#" class="navbar__item">Item 2</a></li>
-         <li><a href="#" class="navbar__item is-focused">Item 3</a></li>
+         <li><a href="#" class="navbar__item">Item 3</a></li>
          <li><span class="navbar__item is-disabled">Item 4</span></li>
          <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button></li>
        </ul>
@@ -3579,6 +3610,7 @@
   font-size: var(--font-size-base);
   color: var(--color-dark);
   width: 240px;
+  border-right: 1px solid var(--color-secondary-l2);
 }
 
 .vert-nav__list,
@@ -3587,6 +3619,7 @@
   margin: 0;
   padding: 0;
 }
+
 
 .vert-nav__sublist { padding-left: var(--spacing-5); }
 
@@ -3621,6 +3654,7 @@
 .vert-nav__item.is-active {
   background: var(--color-primary-l3);
   border-left: 6px solid var(--color-primary);
+  padding-left: calc(var(--spacing-5) - 6px);
 }
 
 /* Expandable group parent: 12px semibold dark text, chevron right */
@@ -3630,8 +3664,10 @@
   justify-content: space-between;
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-5);
+  min-height: 40px;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
   color: var(--color-dark);
   cursor: pointer;
   width: 100%;
@@ -3910,6 +3946,82 @@
   }
 }
 
+/* ============================================================
+   CMS MENU (Satellite)
+   Source: Figma — Lexicon Satellites, node 2545:4896
+   280px sidebar panel. Item rows reuse .vert-nav__item and
+   .vert-nav__group-header. Groups are collected in
+   .cms-menu__groups (16px gap between groups). Space items
+   use a .sticker for the icon cell (user-chosen colour →
+   inline style on the sticker element).
+   Markup:
+     <aside class="cms-menu">
+       <ul class="cms-menu__groups">
+         <li>
+           <ul class="vert-nav__list">…</ul>
+         </li>
+         <li>
+           <button class="vert-nav__group-header">SECTION
+             <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+           </button>
+           <ul class="vert-nav__list">…</ul>
+         </li>
+         <li>
+           <div class="vert-nav__group-header">SECTION
+             <span class="vert-nav__group-actions">
+               <button class="btn btn--secondary btn--xs btn--icon" …>…</button>
+               <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+             </span>
+           </div>
+           <ul class="vert-nav__list">…</ul>
+         </li>
+       </ul>
+     </aside>
+   ============================================================ */
+
+.cms-menu {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-7) 0;
+  background: var(--color-light-l1);
+  border-right: 1px solid var(--color-secondary-l2);
+  font-family: var(--font-family-base);
+}
+
+.cms-menu__groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.cms-menu .vert-nav__icon { color: var(--color-dark); }
+
+/* Each group li: header + list stacked with 4px gap (Figma _Item Group gap-1) */
+.cms-menu__groups > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+/* Items within a group also separated by 4px */
+.cms-menu .vert-nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.vert-nav__group-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-left: auto;
+}
+
+
 /* ─── Control Menu ─────────────────────────────────────────────────────────── */
 /* Satellite component (Lexicon-Satellites). Top application bar: product       */
 /* menu toggle + title on the left, global nav + user avatar on the right.      */
@@ -3987,3 +4099,87 @@
     padding: var(--spacing-2-5) var(--spacing-4);
   }
 }
+
+
+/* ============================================================
+   LIGHT HIGH CONTRAST — component-level overrides
+   Compensates for token collapsing that happens in
+   tokens-high-contrast.css:
+     · primary-l0–l3  all → #A3C3FF  (too saturated for bg use)
+     · secondary-l0–l3 all → #B0B0C4 (too dark for subtle borders)
+     · color-light        → #BFC0C8  (too dark for input backgrounds)
+     · validation l1 = l2           (bg ≡ border, no visible border)
+   ============================================================ */
+
+/* Inputs — use near-white bg + stronger border in HC */
+.light-hc .input__field {
+  background: var(--color-white);
+  border-color: var(--color-secondary);
+}
+.light-hc .input__field:focus-visible,
+.light-hc .input__field.is-focused {
+  background: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+/* Validation input tones — keep pale bg but add visible border */
+.light-hc .input--info    .input__field { border-color: var(--color-info); }
+.light-hc .input--success .input__field { border-color: var(--color-success); }
+.light-hc .input--warning .input__field { border-color: var(--color-warning); }
+.light-hc .input--danger  .input__field { border-color: var(--color-danger); }
+
+/* Secondary button — btn--success text too low-contrast on white in HC */
+.light-hc .btn--secondary.btn--success  { color: var(--color-success-d1); border-color: var(--color-success-d1); }
+.light-hc .btn--borderless.btn--success { color: var(--color-success-d1); }
+
+/* Primary button — btn--success bg too light in HC */
+.light-hc .btn--primary.btn--success        { background: var(--color-success-d1); }
+.light-hc .btn--primary.btn--success:hover  { background: var(--color-success-d2); }
+.light-hc .btn--primary.btn--success:active { background: var(--color-success-d2); }
+
+/* input-group__addon — collapse of secondary-l3 makes it a dark gray block */
+.light-hc .input-group__addon {
+  background: var(--color-white);
+  border-color: var(--color-secondary);
+}
+
+/* color-input hex field + swatch — same color-light / secondary-l3 problem */
+.light-hc .color-input__hex {
+  background: var(--color-white);
+  border-color: var(--color-secondary);
+}
+.light-hc .color-input__hex:focus {
+  background: var(--color-white);
+  border-color: var(--color-primary);
+}
+.light-hc .color-input__swatch { border-color: var(--color-secondary); }
+
+/* Alerts — add visible tone border since l1 = l2 in HC */
+/* Success text color is too light (#5ACA75) on pale green bg in HC */
+.light-hc .alert--info    { border-color: var(--color-info); }
+.light-hc .alert--success { border-color: var(--color-success-d1); color: var(--color-success-d1); }
+.light-hc .alert--warning { border-color: var(--color-warning); }
+.light-hc .alert--danger  { border-color: var(--color-danger); }
+
+/* Modal validation headers — l1 = l2 border fix + success contrast fix */
+.light-hc .modal--info    .modal__header { border-bottom-color: var(--color-info); }
+.light-hc .modal--success .modal__header { border-bottom-color: var(--color-success-d1); }
+.light-hc .modal--warning .modal__header { border-bottom-color: var(--color-warning); }
+.light-hc .modal--danger  .modal__header { border-bottom-color: var(--color-danger); }
+.light-hc .modal--success .modal__title,
+.light-hc .modal--success .modal__close { color: var(--color-success-d1); }
+
+/* Dual listbox — light-l1 = white in HC, list becomes invisible without border */
+.light-hc .dual-listbox__list {
+  border: 1px solid var(--color-secondary);
+}
+.light-hc .dual-listbox__list.is-focused {
+  background: rgba(24, 82, 191, 0.05);
+  border-color: var(--color-primary);
+}
+
+/* Active state — use transparent primary tint instead of #A3C3FF */
+.light-hc .vert-nav__item.is-active { background: rgba(24, 82, 191, 0.1); }
+
+/* Navbar active — same tint fix */
+.light-hc .navbar__item.is-active { background: rgba(24, 82, 191, 0.1); }
