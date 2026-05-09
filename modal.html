@@ -118,6 +118,44 @@
     </div>
   </div>
 
+  <div class="showcase__row">
+    <span class="showcase__label">Danger</span>
+    <div class="modal modal--danger modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+          Modal Title
+        </h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>This item will be permanently deleted and cannot be recovered.</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary btn--danger">Delete</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">No dismiss — two-button footer (Cancel + action only)</span>
+    <div class="modal modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">Confirm Action</h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>Are you sure you want to publish this item?</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Publish</button>
+      </footer>
+    </div>
+  </div>
+
 </main>
 
 </body>

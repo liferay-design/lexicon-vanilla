@@ -219,7 +219,8 @@
       <li><a href="#comp-vertbar">Vertical Bar</a></li>
       <li><a href="#comp-vertnav">Vertical Nav</a></li>
     </ul>
-    <h2>Satellites</h2>
+      <li><a href="#comp-icons">Icons</a></li>
+        <h2>Satellites</h2>
     <ul>
       <li><a href="#comp-managementtoolbar">Management Toolbar</a></li>
       <li><a href="#comp-controlmenu">Control Menu</a></li>
@@ -1761,10 +1762,10 @@
           <a href="modal.html">Playground</a>
         </span>
       </div>
-      <p class="lead"><code>.modal-overlay</code> backdrop + <code>.modal</code> card (600px max). Validation variants tint the header only.</p>
+      <p class="lead"><code>.modal-overlay</code> backdrop + <code>.modal</code> card (600px max). Validation variants tint header + colored border. Footer: first <code>.btn--borderless</code> pushes left automatically.</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Default · warning · info</span>
+        <span class="showcase__label">Default · warning · success · info · danger</span>
         <div class="modal" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
           <header class="modal__header">
             <h2 class="modal__title">Modal Title</h2>
@@ -1772,23 +1773,67 @@
               <svg class="lexicon-icon"><use href="#times"></use></svg>
             </button>
           </header>
-          <div class="modal__body"><p>Body content goes here.</p></div>
+          <div class="modal__body"><p>Body content.</p></div>
           <footer class="modal__footer">
+            <button class="btn btn--borderless">Clear</button>
             <button class="btn btn--secondary">Cancel</button>
-            <button class="btn btn--primary">Save</button>
+            <button class="btn btn--primary">Done</button>
           </footer>
         </div>
         <div class="modal modal--warning" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
           <header class="modal__header">
-            <h2 class="modal__title">Warning Title</h2>
+            <h2 class="modal__title"><svg class="lexicon-icon"><use href="#warning-full"></use></svg> Modal Title</h2>
             <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
               <svg class="lexicon-icon"><use href="#times"></use></svg>
             </button>
           </header>
-          <div class="modal__body"><p>This action requires confirmation.</p></div>
+          <div class="modal__body"><p>This action cannot be undone.</p></div>
           <footer class="modal__footer">
+            <button class="btn btn--borderless">Clear</button>
             <button class="btn btn--secondary">Cancel</button>
-            <button class="btn btn--primary btn--warning">Confirm</button>
+            <button class="btn btn--primary btn--warning">Done</button>
+          </footer>
+        </div>
+        <div class="modal modal--success" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
+          <header class="modal__header">
+            <h2 class="modal__title"><svg class="lexicon-icon"><use href="#check-circle-full"></use></svg> Modal Title</h2>
+            <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+              <svg class="lexicon-icon"><use href="#times"></use></svg>
+            </button>
+          </header>
+          <div class="modal__body"><p>Changes saved successfully.</p></div>
+          <footer class="modal__footer">
+            <button class="btn btn--borderless">Clear</button>
+            <button class="btn btn--secondary">Cancel</button>
+            <button class="btn btn--primary btn--success">Done</button>
+          </footer>
+        </div>
+        <div class="modal modal--info" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
+          <header class="modal__header">
+            <h2 class="modal__title"><svg class="lexicon-icon"><use href="#info-circle"></use></svg> Modal Title</h2>
+            <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+              <svg class="lexicon-icon"><use href="#times"></use></svg>
+            </button>
+          </header>
+          <div class="modal__body"><p>Unsaved drafts detected.</p></div>
+          <footer class="modal__footer">
+            <button class="btn btn--borderless">Clear</button>
+            <button class="btn btn--secondary">Cancel</button>
+            <button class="btn btn--primary">Done</button>
+          </footer>
+        </div>
+        <div class="modal modal--danger" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
+          <header class="modal__header">
+            <h2 class="modal__title"><svg class="lexicon-icon"><use href="#times-circle-full"></use></svg> Modal Title</h2>
+            <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+              <svg class="lexicon-icon"><use href="#times"></use></svg>
+            </button>
+          </header>
+          <div class="modal__body"><p>Item will be permanently deleted.</p></div>
+          <footer class="modal__footer">
+            <button class="btn btn--borderless">Clear</button>
+            <button class="btn btn--secondary">Cancel</button>
+            <button class="btn btn--primary btn--danger">Delete</button>
           </footer>
         </div>
       </div>
@@ -2343,6 +2388,1809 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ─────────────────────────────  ICONS  ──────────────────────────────── -->
+    <section id="comp-icons" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Icons</h2>
+        <span class="ref__component-meta">444 Clay icons (flags excluded)</span>
+      </div>
+      <p class="lead">Use as <code>&lt;svg class="lexicon-icon"&gt;&lt;use href="#name"&gt;&lt;/use&gt;&lt;/svg&gt;</code>. Sizes: <code>lexicon-icon-sm</code> (12) · default (16) · <code>lexicon-icon-lg</code> (24) · <code>lexicon-icon-xl</code> (32).</p>
+
+      <style>
+        .icon-grid { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
+        .icon-grid__item {
+          display: flex; flex-direction: column; align-items: center;
+          gap: var(--spacing-2); padding: var(--spacing-3) var(--spacing-2);
+          border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md);
+          width: 80px; cursor: default; transition: background 0.1s;
+        }
+        .icon-grid__item:hover { background: var(--color-light); }
+        .icon-grid__name {
+          font-size: 9px; color: var(--color-secondary); text-align: center;
+          word-break: break-all; line-height: 1.3;
+        }
+      </style>
+
+      <ul class="icon-grid" style="list-style:none;padding:0;margin:0">
+        <li class="icon-grid__item" title="accessibility">
+          <svg class="lexicon-icon"><use href="#accessibility"></use></svg>
+          <span class="icon-grid__name">accessibility</span>
+        </li>
+        <li class="icon-grid__item" title="add-cell">
+          <svg class="lexicon-icon"><use href="#add-cell"></use></svg>
+          <span class="icon-grid__name">add-cell</span>
+        </li>
+        <li class="icon-grid__item" title="add-column">
+          <svg class="lexicon-icon"><use href="#add-column"></use></svg>
+          <span class="icon-grid__name">add-column</span>
+        </li>
+        <li class="icon-grid__item" title="add-role">
+          <svg class="lexicon-icon"><use href="#add-role"></use></svg>
+          <span class="icon-grid__name">add-role</span>
+        </li>
+        <li class="icon-grid__item" title="add-row">
+          <svg class="lexicon-icon"><use href="#add-row"></use></svg>
+          <span class="icon-grid__name">add-row</span>
+        </li>
+        <li class="icon-grid__item" title="adjust">
+          <svg class="lexicon-icon"><use href="#adjust"></use></svg>
+          <span class="icon-grid__name">adjust</span>
+        </li>
+        <li class="icon-grid__item" title="align-center">
+          <svg class="lexicon-icon"><use href="#align-center"></use></svg>
+          <span class="icon-grid__name">align-center</span>
+        </li>
+        <li class="icon-grid__item" title="align-image-center">
+          <svg class="lexicon-icon"><use href="#align-image-center"></use></svg>
+          <span class="icon-grid__name">align-image-center</span>
+        </li>
+        <li class="icon-grid__item" title="align-image-full-width">
+          <svg class="lexicon-icon"><use href="#align-image-full-width"></use></svg>
+          <span class="icon-grid__name">align-image-full-width</span>
+        </li>
+        <li class="icon-grid__item" title="align-image-left">
+          <svg class="lexicon-icon"><use href="#align-image-left"></use></svg>
+          <span class="icon-grid__name">align-image-left</span>
+        </li>
+        <li class="icon-grid__item" title="align-image-right">
+          <svg class="lexicon-icon"><use href="#align-image-right"></use></svg>
+          <span class="icon-grid__name">align-image-right</span>
+        </li>
+        <li class="icon-grid__item" title="align-justify">
+          <svg class="lexicon-icon"><use href="#align-justify"></use></svg>
+          <span class="icon-grid__name">align-justify</span>
+        </li>
+        <li class="icon-grid__item" title="align-left">
+          <svg class="lexicon-icon"><use href="#align-left"></use></svg>
+          <span class="icon-grid__name">align-left</span>
+        </li>
+        <li class="icon-grid__item" title="align-right">
+          <svg class="lexicon-icon"><use href="#align-right"></use></svg>
+          <span class="icon-grid__name">align-right</span>
+        </li>
+        <li class="icon-grid__item" title="analytics">
+          <svg class="lexicon-icon"><use href="#analytics"></use></svg>
+          <span class="icon-grid__name">analytics</span>
+        </li>
+        <li class="icon-grid__item" title="angle-double-left">
+          <svg class="lexicon-icon"><use href="#angle-double-left"></use></svg>
+          <span class="icon-grid__name">angle-double-left</span>
+        </li>
+        <li class="icon-grid__item" title="angle-double-left-small">
+          <svg class="lexicon-icon"><use href="#angle-double-left-small"></use></svg>
+          <span class="icon-grid__name">angle-double-left-small</span>
+        </li>
+        <li class="icon-grid__item" title="angle-double-right">
+          <svg class="lexicon-icon"><use href="#angle-double-right"></use></svg>
+          <span class="icon-grid__name">angle-double-right</span>
+        </li>
+        <li class="icon-grid__item" title="angle-double-right-small">
+          <svg class="lexicon-icon"><use href="#angle-double-right-small"></use></svg>
+          <span class="icon-grid__name">angle-double-right-small</span>
+        </li>
+        <li class="icon-grid__item" title="angle-down">
+          <svg class="lexicon-icon"><use href="#angle-down"></use></svg>
+          <span class="icon-grid__name">angle-down</span>
+        </li>
+        <li class="icon-grid__item" title="angle-down-small">
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          <span class="icon-grid__name">angle-down-small</span>
+        </li>
+        <li class="icon-grid__item" title="angle-left">
+          <svg class="lexicon-icon"><use href="#angle-left"></use></svg>
+          <span class="icon-grid__name">angle-left</span>
+        </li>
+        <li class="icon-grid__item" title="angle-left-small">
+          <svg class="lexicon-icon"><use href="#angle-left-small"></use></svg>
+          <span class="icon-grid__name">angle-left-small</span>
+        </li>
+        <li class="icon-grid__item" title="angle-right">
+          <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+          <span class="icon-grid__name">angle-right</span>
+        </li>
+        <li class="icon-grid__item" title="angle-right-small">
+          <svg class="lexicon-icon"><use href="#angle-right-small"></use></svg>
+          <span class="icon-grid__name">angle-right-small</span>
+        </li>
+        <li class="icon-grid__item" title="angle-up">
+          <svg class="lexicon-icon"><use href="#angle-up"></use></svg>
+          <span class="icon-grid__name">angle-up</span>
+        </li>
+        <li class="icon-grid__item" title="angle-up-small">
+          <svg class="lexicon-icon"><use href="#angle-up-small"></use></svg>
+          <span class="icon-grid__name">angle-up-small</span>
+        </li>
+        <li class="icon-grid__item" title="announcement">
+          <svg class="lexicon-icon"><use href="#announcement"></use></svg>
+          <span class="icon-grid__name">announcement</span>
+        </li>
+        <li class="icon-grid__item" title="anonymize">
+          <svg class="lexicon-icon"><use href="#anonymize"></use></svg>
+          <span class="icon-grid__name">anonymize</span>
+        </li>
+        <li class="icon-grid__item" title="api-lock">
+          <svg class="lexicon-icon"><use href="#api-lock"></use></svg>
+          <span class="icon-grid__name">api-lock</span>
+        </li>
+        <li class="icon-grid__item" title="api-web">
+          <svg class="lexicon-icon"><use href="#api-web"></use></svg>
+          <span class="icon-grid__name">api-web</span>
+        </li>
+        <li class="icon-grid__item" title="archive">
+          <svg class="lexicon-icon"><use href="#archive"></use></svg>
+          <span class="icon-grid__name">archive</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-end">
+          <svg class="lexicon-icon"><use href="#arrow-end"></use></svg>
+          <span class="icon-grid__name">arrow-end</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-join">
+          <svg class="lexicon-icon"><use href="#arrow-join"></use></svg>
+          <span class="icon-grid__name">arrow-join</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-right-full">
+          <svg class="lexicon-icon"><use href="#arrow-right-full"></use></svg>
+          <span class="icon-grid__name">arrow-right-full</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-split">
+          <svg class="lexicon-icon"><use href="#arrow-split"></use></svg>
+          <span class="icon-grid__name">arrow-split</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-start">
+          <svg class="lexicon-icon"><use href="#arrow-start"></use></svg>
+          <span class="icon-grid__name">arrow-start</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-up-full">
+          <svg class="lexicon-icon"><use href="#arrow-up-full"></use></svg>
+          <span class="icon-grid__name">arrow-up-full</span>
+        </li>
+        <li class="icon-grid__item" title="arrow-xor">
+          <svg class="lexicon-icon"><use href="#arrow-xor"></use></svg>
+          <span class="icon-grid__name">arrow-xor</span>
+        </li>
+        <li class="icon-grid__item" title="asterisk">
+          <svg class="lexicon-icon"><use href="#asterisk"></use></svg>
+          <span class="icon-grid__name">asterisk</span>
+        </li>
+        <li class="icon-grid__item" title="audio">
+          <svg class="lexicon-icon"><use href="#audio"></use></svg>
+          <span class="icon-grid__name">audio</span>
+        </li>
+        <li class="icon-grid__item" title="automatic-translate">
+          <svg class="lexicon-icon"><use href="#automatic-translate"></use></svg>
+          <span class="icon-grid__name">automatic-translate</span>
+        </li>
+        <li class="icon-grid__item" title="autosize">
+          <svg class="lexicon-icon"><use href="#autosize"></use></svg>
+          <span class="icon-grid__name">autosize</span>
+        </li>
+        <li class="icon-grid__item" title="background-color">
+          <svg class="lexicon-icon"><use href="#background-color"></use></svg>
+          <span class="icon-grid__name">background-color</span>
+        </li>
+        <li class="icon-grid__item" title="bars">
+          <svg class="lexicon-icon"><use href="#bars"></use></svg>
+          <span class="icon-grid__name">bars</span>
+        </li>
+        <li class="icon-grid__item" title="bell-full">
+          <svg class="lexicon-icon"><use href="#bell-full"></use></svg>
+          <span class="icon-grid__name">bell-full</span>
+        </li>
+        <li class="icon-grid__item" title="bell-off">
+          <svg class="lexicon-icon"><use href="#bell-off"></use></svg>
+          <span class="icon-grid__name">bell-off</span>
+        </li>
+        <li class="icon-grid__item" title="bell-on">
+          <svg class="lexicon-icon"><use href="#bell-on"></use></svg>
+          <span class="icon-grid__name">bell-on</span>
+        </li>
+        <li class="icon-grid__item" title="block">
+          <svg class="lexicon-icon"><use href="#block"></use></svg>
+          <span class="icon-grid__name">block</span>
+        </li>
+        <li class="icon-grid__item" title="blogs">
+          <svg class="lexicon-icon"><use href="#blogs"></use></svg>
+          <span class="icon-grid__name">blogs</span>
+        </li>
+        <li class="icon-grid__item" title="blue-print">
+          <svg class="lexicon-icon"><use href="#blue-print"></use></svg>
+          <span class="icon-grid__name">blue-print</span>
+        </li>
+        <li class="icon-grid__item" title="bold">
+          <svg class="lexicon-icon"><use href="#bold"></use></svg>
+          <span class="icon-grid__name">bold</span>
+        </li>
+        <li class="icon-grid__item" title="bolt">
+          <svg class="lexicon-icon"><use href="#bolt"></use></svg>
+          <span class="icon-grid__name">bolt</span>
+        </li>
+        <li class="icon-grid__item" title="book">
+          <svg class="lexicon-icon"><use href="#book"></use></svg>
+          <span class="icon-grid__name">book</span>
+        </li>
+        <li class="icon-grid__item" title="bookmarks">
+          <svg class="lexicon-icon"><use href="#bookmarks"></use></svg>
+          <span class="icon-grid__name">bookmarks</span>
+        </li>
+        <li class="icon-grid__item" title="bookmarks-full">
+          <svg class="lexicon-icon"><use href="#bookmarks-full"></use></svg>
+          <span class="icon-grid__name">bookmarks-full</span>
+        </li>
+        <li class="icon-grid__item" title="books">
+          <svg class="lexicon-icon"><use href="#books"></use></svg>
+          <span class="icon-grid__name">books</span>
+        </li>
+        <li class="icon-grid__item" title="books-brush">
+          <svg class="lexicon-icon"><use href="#books-brush"></use></svg>
+          <span class="icon-grid__name">books-brush</span>
+        </li>
+        <li class="icon-grid__item" title="border-style">
+          <svg class="lexicon-icon"><use href="#border-style"></use></svg>
+          <span class="icon-grid__name">border-style</span>
+        </li>
+        <li class="icon-grid__item" title="border-width">
+          <svg class="lexicon-icon"><use href="#border-width"></use></svg>
+          <span class="icon-grid__name">border-width</span>
+        </li>
+        <li class="icon-grid__item" title="box-container">
+          <svg class="lexicon-icon"><use href="#box-container"></use></svg>
+          <span class="icon-grid__name">box-container</span>
+        </li>
+        <li class="icon-grid__item" title="braces">
+          <svg class="lexicon-icon"><use href="#braces"></use></svg>
+          <span class="icon-grid__name">braces</span>
+        </li>
+        <li class="icon-grid__item" title="brackets">
+          <svg class="lexicon-icon"><use href="#brackets"></use></svg>
+          <span class="icon-grid__name">brackets</span>
+        </li>
+        <li class="icon-grid__item" title="breadcrumb">
+          <svg class="lexicon-icon"><use href="#breadcrumb"></use></svg>
+          <span class="icon-grid__name">breadcrumb</span>
+        </li>
+        <li class="icon-grid__item" title="briefcase">
+          <svg class="lexicon-icon"><use href="#briefcase"></use></svg>
+          <span class="icon-grid__name">briefcase</span>
+        </li>
+        <li class="icon-grid__item" title="button">
+          <svg class="lexicon-icon"><use href="#button"></use></svg>
+          <span class="icon-grid__name">button</span>
+        </li>
+        <li class="icon-grid__item" title="calculator">
+          <svg class="lexicon-icon"><use href="#calculator"></use></svg>
+          <span class="icon-grid__name">calculator</span>
+        </li>
+        <li class="icon-grid__item" title="calendar">
+          <svg class="lexicon-icon"><use href="#calendar"></use></svg>
+          <span class="icon-grid__name">calendar</span>
+        </li>
+        <li class="icon-grid__item" title="camera">
+          <svg class="lexicon-icon"><use href="#camera"></use></svg>
+          <span class="icon-grid__name">camera</span>
+        </li>
+        <li class="icon-grid__item" title="cards">
+          <svg class="lexicon-icon"><use href="#cards"></use></svg>
+          <span class="icon-grid__name">cards</span>
+        </li>
+        <li class="icon-grid__item" title="cards-full">
+          <svg class="lexicon-icon"><use href="#cards-full"></use></svg>
+          <span class="icon-grid__name">cards-full</span>
+        </li>
+        <li class="icon-grid__item" title="cards2">
+          <svg class="lexicon-icon"><use href="#cards2"></use></svg>
+          <span class="icon-grid__name">cards2</span>
+        </li>
+        <li class="icon-grid__item" title="caret-bottom">
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          <span class="icon-grid__name">caret-bottom</span>
+        </li>
+        <li class="icon-grid__item" title="caret-bottom-l">
+          <svg class="lexicon-icon"><use href="#caret-bottom-l"></use></svg>
+          <span class="icon-grid__name">caret-bottom-l</span>
+        </li>
+        <li class="icon-grid__item" title="caret-double">
+          <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
+          <span class="icon-grid__name">caret-double</span>
+        </li>
+        <li class="icon-grid__item" title="caret-double-l">
+          <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+          <span class="icon-grid__name">caret-double-l</span>
+        </li>
+        <li class="icon-grid__item" title="caret-left">
+          <svg class="lexicon-icon"><use href="#caret-left"></use></svg>
+          <span class="icon-grid__name">caret-left</span>
+        </li>
+        <li class="icon-grid__item" title="caret-left-l">
+          <svg class="lexicon-icon"><use href="#caret-left-l"></use></svg>
+          <span class="icon-grid__name">caret-left-l</span>
+        </li>
+        <li class="icon-grid__item" title="caret-right">
+          <svg class="lexicon-icon"><use href="#caret-right"></use></svg>
+          <span class="icon-grid__name">caret-right</span>
+        </li>
+        <li class="icon-grid__item" title="caret-right-l">
+          <svg class="lexicon-icon"><use href="#caret-right-l"></use></svg>
+          <span class="icon-grid__name">caret-right-l</span>
+        </li>
+        <li class="icon-grid__item" title="caret-top">
+          <svg class="lexicon-icon"><use href="#caret-top"></use></svg>
+          <span class="icon-grid__name">caret-top</span>
+        </li>
+        <li class="icon-grid__item" title="caret-top-l">
+          <svg class="lexicon-icon"><use href="#caret-top-l"></use></svg>
+          <span class="icon-grid__name">caret-top-l</span>
+        </li>
+        <li class="icon-grid__item" title="catalog">
+          <svg class="lexicon-icon"><use href="#catalog"></use></svg>
+          <span class="icon-grid__name">catalog</span>
+        </li>
+        <li class="icon-grid__item" title="categories">
+          <svg class="lexicon-icon"><use href="#categories"></use></svg>
+          <span class="icon-grid__name">categories</span>
+        </li>
+        <li class="icon-grid__item" title="chain-broken">
+          <svg class="lexicon-icon"><use href="#chain-broken"></use></svg>
+          <span class="icon-grid__name">chain-broken</span>
+        </li>
+        <li class="icon-grid__item" title="change">
+          <svg class="lexicon-icon"><use href="#change"></use></svg>
+          <span class="icon-grid__name">change</span>
+        </li>
+        <li class="icon-grid__item" title="change-list">
+          <svg class="lexicon-icon"><use href="#change-list"></use></svg>
+          <span class="icon-grid__name">change-list</span>
+        </li>
+        <li class="icon-grid__item" title="change-list-disabled">
+          <svg class="lexicon-icon"><use href="#change-list-disabled"></use></svg>
+          <span class="icon-grid__name">change-list-disabled</span>
+        </li>
+        <li class="icon-grid__item" title="chatbot">
+          <svg class="lexicon-icon"><use href="#chatbot"></use></svg>
+          <span class="icon-grid__name">chatbot</span>
+        </li>
+        <li class="icon-grid__item" title="check">
+          <svg class="lexicon-icon"><use href="#check"></use></svg>
+          <span class="icon-grid__name">check</span>
+        </li>
+        <li class="icon-grid__item" title="check-circle">
+          <svg class="lexicon-icon"><use href="#check-circle"></use></svg>
+          <span class="icon-grid__name">check-circle</span>
+        </li>
+        <li class="icon-grid__item" title="check-circle-full">
+          <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+          <span class="icon-grid__name">check-circle-full</span>
+        </li>
+        <li class="icon-grid__item" title="check-small">
+          <svg class="lexicon-icon"><use href="#check-small"></use></svg>
+          <span class="icon-grid__name">check-small</span>
+        </li>
+        <li class="icon-grid__item" title="check-square">
+          <svg class="lexicon-icon"><use href="#check-square"></use></svg>
+          <span class="icon-grid__name">check-square</span>
+        </li>
+        <li class="icon-grid__item" title="chip">
+          <svg class="lexicon-icon"><use href="#chip"></use></svg>
+          <span class="icon-grid__name">chip</span>
+        </li>
+        <li class="icon-grid__item" title="circle">
+          <svg class="lexicon-icon"><use href="#circle"></use></svg>
+          <span class="icon-grid__name">circle</span>
+        </li>
+        <li class="icon-grid__item" title="click">
+          <svg class="lexicon-icon"><use href="#click"></use></svg>
+          <span class="icon-grid__name">click</span>
+        </li>
+        <li class="icon-grid__item" title="closed-book">
+          <svg class="lexicon-icon"><use href="#closed-book"></use></svg>
+          <span class="icon-grid__name">closed-book</span>
+        </li>
+        <li class="icon-grid__item" title="cloud">
+          <svg class="lexicon-icon"><use href="#cloud"></use></svg>
+          <span class="icon-grid__name">cloud</span>
+        </li>
+        <li class="icon-grid__item" title="code">
+          <svg class="lexicon-icon"><use href="#code"></use></svg>
+          <span class="icon-grid__name">code</span>
+        </li>
+        <li class="icon-grid__item" title="cog">
+          <svg class="lexicon-icon"><use href="#cog"></use></svg>
+          <span class="icon-grid__name">cog</span>
+        </li>
+        <li class="icon-grid__item" title="coin">
+          <svg class="lexicon-icon"><use href="#coin"></use></svg>
+          <span class="icon-grid__name">coin</span>
+        </li>
+        <li class="icon-grid__item" title="color-picker">
+          <svg class="lexicon-icon"><use href="#color-picker"></use></svg>
+          <span class="icon-grid__name">color-picker</span>
+        </li>
+        <li class="icon-grid__item" title="columns">
+          <svg class="lexicon-icon"><use href="#columns"></use></svg>
+          <span class="icon-grid__name">columns</span>
+        </li>
+        <li class="icon-grid__item" title="comments">
+          <svg class="lexicon-icon"><use href="#comments"></use></svg>
+          <span class="icon-grid__name">comments</span>
+        </li>
+        <li class="icon-grid__item" title="community">
+          <svg class="lexicon-icon"><use href="#community"></use></svg>
+          <span class="icon-grid__name">community</span>
+        </li>
+        <li class="icon-grid__item" title="compress">
+          <svg class="lexicon-icon"><use href="#compress"></use></svg>
+          <span class="icon-grid__name">compress</span>
+        </li>
+        <li class="icon-grid__item" title="container">
+          <svg class="lexicon-icon"><use href="#container"></use></svg>
+          <span class="icon-grid__name">container</span>
+        </li>
+        <li class="icon-grid__item" title="content-shield">
+          <svg class="lexicon-icon"><use href="#content-shield"></use></svg>
+          <span class="icon-grid__name">content-shield</span>
+        </li>
+        <li class="icon-grid__item" title="control-panel">
+          <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+          <span class="icon-grid__name">control-panel</span>
+        </li>
+        <li class="icon-grid__item" title="cookie">
+          <svg class="lexicon-icon"><use href="#cookie"></use></svg>
+          <span class="icon-grid__name">cookie</span>
+        </li>
+        <li class="icon-grid__item" title="copy">
+          <svg class="lexicon-icon"><use href="#copy"></use></svg>
+          <span class="icon-grid__name">copy</span>
+        </li>
+        <li class="icon-grid__item" title="corner-radius">
+          <svg class="lexicon-icon"><use href="#corner-radius"></use></svg>
+          <span class="icon-grid__name">corner-radius</span>
+        </li>
+        <li class="icon-grid__item" title="credit-card">
+          <svg class="lexicon-icon"><use href="#credit-card"></use></svg>
+          <span class="icon-grid__name">credit-card</span>
+        </li>
+        <li class="icon-grid__item" title="crown">
+          <svg class="lexicon-icon"><use href="#crown"></use></svg>
+          <span class="icon-grid__name">crown</span>
+        </li>
+        <li class="icon-grid__item" title="cursor">
+          <svg class="lexicon-icon"><use href="#cursor"></use></svg>
+          <span class="icon-grid__name">cursor</span>
+        </li>
+        <li class="icon-grid__item" title="custom-field">
+          <svg class="lexicon-icon"><use href="#custom-field"></use></svg>
+          <span class="icon-grid__name">custom-field</span>
+        </li>
+        <li class="icon-grid__item" title="custom-size">
+          <svg class="lexicon-icon"><use href="#custom-size"></use></svg>
+          <span class="icon-grid__name">custom-size</span>
+        </li>
+        <li class="icon-grid__item" title="cut">
+          <svg class="lexicon-icon"><use href="#cut"></use></svg>
+          <span class="icon-grid__name">cut</span>
+        </li>
+        <li class="icon-grid__item" title="data-privacy">
+          <svg class="lexicon-icon"><use href="#data-privacy"></use></svg>
+          <span class="icon-grid__name">data-privacy</span>
+        </li>
+        <li class="icon-grid__item" title="database">
+          <svg class="lexicon-icon"><use href="#database"></use></svg>
+          <span class="icon-grid__name">database</span>
+        </li>
+        <li class="icon-grid__item" title="date">
+          <svg class="lexicon-icon"><use href="#date"></use></svg>
+          <span class="icon-grid__name">date</span>
+        </li>
+        <li class="icon-grid__item" title="date-time">
+          <svg class="lexicon-icon"><use href="#date-time"></use></svg>
+          <span class="icon-grid__name">date-time</span>
+        </li>
+        <li class="icon-grid__item" title="decimal">
+          <svg class="lexicon-icon"><use href="#decimal"></use></svg>
+          <span class="icon-grid__name">decimal</span>
+        </li>
+        <li class="icon-grid__item" title="desktop">
+          <svg class="lexicon-icon"><use href="#desktop"></use></svg>
+          <span class="icon-grid__name">desktop</span>
+        </li>
+        <li class="icon-grid__item" title="device-check">
+          <svg class="lexicon-icon"><use href="#device-check"></use></svg>
+          <span class="icon-grid__name">device-check</span>
+        </li>
+        <li class="icon-grid__item" title="devices">
+          <svg class="lexicon-icon"><use href="#devices"></use></svg>
+          <span class="icon-grid__name">devices</span>
+        </li>
+        <li class="icon-grid__item" title="diagonal-line">
+          <svg class="lexicon-icon"><use href="#diagonal-line"></use></svg>
+          <span class="icon-grid__name">diagonal-line</span>
+        </li>
+        <li class="icon-grid__item" title="diagram">
+          <svg class="lexicon-icon"><use href="#diagram"></use></svg>
+          <span class="icon-grid__name">diagram</span>
+        </li>
+        <li class="icon-grid__item" title="diamond">
+          <svg class="lexicon-icon"><use href="#diamond"></use></svg>
+          <span class="icon-grid__name">diamond</span>
+        </li>
+        <li class="icon-grid__item" title="diary">
+          <svg class="lexicon-icon"><use href="#diary"></use></svg>
+          <span class="icon-grid__name">diary</span>
+        </li>
+        <li class="icon-grid__item" title="disk">
+          <svg class="lexicon-icon"><use href="#disk"></use></svg>
+          <span class="icon-grid__name">disk</span>
+        </li>
+        <li class="icon-grid__item" title="display">
+          <svg class="lexicon-icon"><use href="#display"></use></svg>
+          <span class="icon-grid__name">display</span>
+        </li>
+        <li class="icon-grid__item" title="display-content">
+          <svg class="lexicon-icon"><use href="#display-content"></use></svg>
+          <span class="icon-grid__name">display-content</span>
+        </li>
+        <li class="icon-grid__item" title="document">
+          <svg class="lexicon-icon"><use href="#document"></use></svg>
+          <span class="icon-grid__name">document</span>
+        </li>
+        <li class="icon-grid__item" title="document-code">
+          <svg class="lexicon-icon"><use href="#document-code"></use></svg>
+          <span class="icon-grid__name">document-code</span>
+        </li>
+        <li class="icon-grid__item" title="document-compressed">
+          <svg class="lexicon-icon"><use href="#document-compressed"></use></svg>
+          <span class="icon-grid__name">document-compressed</span>
+        </li>
+        <li class="icon-grid__item" title="document-default">
+          <svg class="lexicon-icon"><use href="#document-default"></use></svg>
+          <span class="icon-grid__name">document-default</span>
+        </li>
+        <li class="icon-grid__item" title="document-image">
+          <svg class="lexicon-icon"><use href="#document-image"></use></svg>
+          <span class="icon-grid__name">document-image</span>
+        </li>
+        <li class="icon-grid__item" title="document-multimedia">
+          <svg class="lexicon-icon"><use href="#document-multimedia"></use></svg>
+          <span class="icon-grid__name">document-multimedia</span>
+        </li>
+        <li class="icon-grid__item" title="document-pdf">
+          <svg class="lexicon-icon"><use href="#document-pdf"></use></svg>
+          <span class="icon-grid__name">document-pdf</span>
+        </li>
+        <li class="icon-grid__item" title="document-pending">
+          <svg class="lexicon-icon"><use href="#document-pending"></use></svg>
+          <span class="icon-grid__name">document-pending</span>
+        </li>
+        <li class="icon-grid__item" title="document-presentation">
+          <svg class="lexicon-icon"><use href="#document-presentation"></use></svg>
+          <span class="icon-grid__name">document-presentation</span>
+        </li>
+        <li class="icon-grid__item" title="document-table">
+          <svg class="lexicon-icon"><use href="#document-table"></use></svg>
+          <span class="icon-grid__name">document-table</span>
+        </li>
+        <li class="icon-grid__item" title="document-text">
+          <svg class="lexicon-icon"><use href="#document-text"></use></svg>
+          <span class="icon-grid__name">document-text</span>
+        </li>
+        <li class="icon-grid__item" title="document-vector">
+          <svg class="lexicon-icon"><use href="#document-vector"></use></svg>
+          <span class="icon-grid__name">document-vector</span>
+        </li>
+        <li class="icon-grid__item" title="documents-and-media">
+          <svg class="lexicon-icon"><use href="#documents-and-media"></use></svg>
+          <span class="icon-grid__name">documents-and-media</span>
+        </li>
+        <li class="icon-grid__item" title="dollar-symbol">
+          <svg class="lexicon-icon"><use href="#dollar-symbol"></use></svg>
+          <span class="icon-grid__name">dollar-symbol</span>
+        </li>
+        <li class="icon-grid__item" title="download">
+          <svg class="lexicon-icon"><use href="#download"></use></svg>
+          <span class="icon-grid__name">download</span>
+        </li>
+        <li class="icon-grid__item" title="drag">
+          <svg class="lexicon-icon"><use href="#drag"></use></svg>
+          <span class="icon-grid__name">drag</span>
+        </li>
+        <li class="icon-grid__item" title="drop">
+          <svg class="lexicon-icon"><use href="#drop"></use></svg>
+          <span class="icon-grid__name">drop</span>
+        </li>
+        <li class="icon-grid__item" title="dropdown">
+          <svg class="lexicon-icon"><use href="#dropdown"></use></svg>
+          <span class="icon-grid__name">dropdown</span>
+        </li>
+        <li class="icon-grid__item" title="dynamic-data-list">
+          <svg class="lexicon-icon"><use href="#dynamic-data-list"></use></svg>
+          <span class="icon-grid__name">dynamic-data-list</span>
+        </li>
+        <li class="icon-grid__item" title="dynamic-data-mapping">
+          <svg class="lexicon-icon"><use href="#dynamic-data-mapping"></use></svg>
+          <span class="icon-grid__name">dynamic-data-mapping</span>
+        </li>
+        <li class="icon-grid__item" title="edit-layout">
+          <svg class="lexicon-icon"><use href="#edit-layout"></use></svg>
+          <span class="icon-grid__name">edit-layout</span>
+        </li>
+        <li class="icon-grid__item" title="effects">
+          <svg class="lexicon-icon"><use href="#effects"></use></svg>
+          <span class="icon-grid__name">effects</span>
+        </li>
+        <li class="icon-grid__item" title="ellipsis-h">
+          <svg class="lexicon-icon"><use href="#ellipsis-h"></use></svg>
+          <span class="icon-grid__name">ellipsis-h</span>
+        </li>
+        <li class="icon-grid__item" title="ellipsis-v">
+          <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          <span class="icon-grid__name">ellipsis-v</span>
+        </li>
+        <li class="icon-grid__item" title="embed">
+          <svg class="lexicon-icon"><use href="#embed"></use></svg>
+          <span class="icon-grid__name">embed</span>
+        </li>
+        <li class="icon-grid__item" title="emoji">
+          <svg class="lexicon-icon"><use href="#emoji"></use></svg>
+          <span class="icon-grid__name">emoji</span>
+        </li>
+        <li class="icon-grid__item" title="envelope-closed">
+          <svg class="lexicon-icon"><use href="#envelope-closed"></use></svg>
+          <span class="icon-grid__name">envelope-closed</span>
+        </li>
+        <li class="icon-grid__item" title="envelope-open">
+          <svg class="lexicon-icon"><use href="#envelope-open"></use></svg>
+          <span class="icon-grid__name">envelope-open</span>
+        </li>
+        <li class="icon-grid__item" title="environment">
+          <svg class="lexicon-icon"><use href="#environment"></use></svg>
+          <span class="icon-grid__name">environment</span>
+        </li>
+        <li class="icon-grid__item" title="environment-connected">
+          <svg class="lexicon-icon"><use href="#environment-connected"></use></svg>
+          <span class="icon-grid__name">environment-connected</span>
+        </li>
+        <li class="icon-grid__item" title="environment-disconnected">
+          <svg class="lexicon-icon"><use href="#environment-disconnected"></use></svg>
+          <span class="icon-grid__name">environment-disconnected</span>
+        </li>
+        <li class="icon-grid__item" title="exclamation-circle">
+          <svg class="lexicon-icon"><use href="#exclamation-circle"></use></svg>
+          <span class="icon-grid__name">exclamation-circle</span>
+        </li>
+        <li class="icon-grid__item" title="exclamation-full">
+          <svg class="lexicon-icon"><use href="#exclamation-full"></use></svg>
+          <span class="icon-grid__name">exclamation-full</span>
+        </li>
+        <li class="icon-grid__item" title="expand">
+          <svg class="lexicon-icon"><use href="#expand"></use></svg>
+          <span class="icon-grid__name">expand</span>
+        </li>
+        <li class="icon-grid__item" title="export">
+          <svg class="lexicon-icon"><use href="#export"></use></svg>
+          <span class="icon-grid__name">export</span>
+        </li>
+        <li class="icon-grid__item" title="field-area">
+          <svg class="lexicon-icon"><use href="#field-area"></use></svg>
+          <span class="icon-grid__name">field-area</span>
+        </li>
+        <li class="icon-grid__item" title="fieldset">
+          <svg class="lexicon-icon"><use href="#fieldset"></use></svg>
+          <span class="icon-grid__name">fieldset</span>
+        </li>
+        <li class="icon-grid__item" title="file-script">
+          <svg class="lexicon-icon"><use href="#file-script"></use></svg>
+          <span class="icon-grid__name">file-script</span>
+        </li>
+        <li class="icon-grid__item" title="file-template">
+          <svg class="lexicon-icon"><use href="#file-template"></use></svg>
+          <span class="icon-grid__name">file-template</span>
+        </li>
+        <li class="icon-grid__item" title="file-xsl">
+          <svg class="lexicon-icon"><use href="#file-xsl"></use></svg>
+          <span class="icon-grid__name">file-xsl</span>
+        </li>
+        <li class="icon-grid__item" title="filter">
+          <svg class="lexicon-icon"><use href="#filter"></use></svg>
+          <span class="icon-grid__name">filter</span>
+        </li>
+        <li class="icon-grid__item" title="flag-empty">
+          <svg class="lexicon-icon"><use href="#flag-empty"></use></svg>
+          <span class="icon-grid__name">flag-empty</span>
+        </li>
+        <li class="icon-grid__item" title="flag-full">
+          <svg class="lexicon-icon"><use href="#flag-full"></use></svg>
+          <span class="icon-grid__name">flag-full</span>
+        </li>
+        <li class="icon-grid__item" title="folder">
+          <svg class="lexicon-icon"><use href="#folder"></use></svg>
+          <span class="icon-grid__name">folder</span>
+        </li>
+        <li class="icon-grid__item" title="folder-lock">
+          <svg class="lexicon-icon"><use href="#folder-lock"></use></svg>
+          <span class="icon-grid__name">folder-lock</span>
+        </li>
+        <li class="icon-grid__item" title="folder-lock-line">
+          <svg class="lexicon-icon"><use href="#folder-lock-line"></use></svg>
+          <span class="icon-grid__name">folder-lock-line</span>
+        </li>
+        <li class="icon-grid__item" title="font-family">
+          <svg class="lexicon-icon"><use href="#font-family"></use></svg>
+          <span class="icon-grid__name">font-family</span>
+        </li>
+        <li class="icon-grid__item" title="font-size">
+          <svg class="lexicon-icon"><use href="#font-size"></use></svg>
+          <span class="icon-grid__name">font-size</span>
+        </li>
+        <li class="icon-grid__item" title="form-extensions">
+          <svg class="lexicon-icon"><use href="#form-extensions"></use></svg>
+          <span class="icon-grid__name">form-extensions</span>
+        </li>
+        <li class="icon-grid__item" title="format">
+          <svg class="lexicon-icon"><use href="#format"></use></svg>
+          <span class="icon-grid__name">format</span>
+        </li>
+        <li class="icon-grid__item" title="forms">
+          <svg class="lexicon-icon"><use href="#forms"></use></svg>
+          <span class="icon-grid__name">forms</span>
+        </li>
+        <li class="icon-grid__item" title="full-size">
+          <svg class="lexicon-icon"><use href="#full-size"></use></svg>
+          <span class="icon-grid__name">full-size</span>
+        </li>
+        <li class="icon-grid__item" title="gallery">
+          <svg class="lexicon-icon"><use href="#gallery"></use></svg>
+          <span class="icon-grid__name">gallery</span>
+        </li>
+        <li class="icon-grid__item" title="geolocation">
+          <svg class="lexicon-icon"><use href="#geolocation"></use></svg>
+          <span class="icon-grid__name">geolocation</span>
+        </li>
+        <li class="icon-grid__item" title="globe">
+          <svg class="lexicon-icon"><use href="#globe"></use></svg>
+          <span class="icon-grid__name">globe</span>
+        </li>
+        <li class="icon-grid__item" title="globe-lines">
+          <svg class="lexicon-icon"><use href="#globe-lines"></use></svg>
+          <span class="icon-grid__name">globe-lines</span>
+        </li>
+        <li class="icon-grid__item" title="globe-pin">
+          <svg class="lexicon-icon"><use href="#globe-pin"></use></svg>
+          <span class="icon-grid__name">globe-pin</span>
+        </li>
+        <li class="icon-grid__item" title="google">
+          <svg class="lexicon-icon"><use href="#google"></use></svg>
+          <span class="icon-grid__name">google</span>
+        </li>
+        <li class="icon-grid__item" title="google-drive">
+          <svg class="lexicon-icon"><use href="#google-drive"></use></svg>
+          <span class="icon-grid__name">google-drive</span>
+        </li>
+        <li class="icon-grid__item" title="grid">
+          <svg class="lexicon-icon"><use href="#grid"></use></svg>
+          <span class="icon-grid__name">grid</span>
+        </li>
+        <li class="icon-grid__item" title="h1">
+          <svg class="lexicon-icon"><use href="#h1"></use></svg>
+          <span class="icon-grid__name">h1</span>
+        </li>
+        <li class="icon-grid__item" title="h2">
+          <svg class="lexicon-icon"><use href="#h2"></use></svg>
+          <span class="icon-grid__name">h2</span>
+        </li>
+        <li class="icon-grid__item" title="hashtag">
+          <svg class="lexicon-icon"><use href="#hashtag"></use></svg>
+          <span class="icon-grid__name">hashtag</span>
+        </li>
+        <li class="icon-grid__item" title="hdd">
+          <svg class="lexicon-icon"><use href="#hdd"></use></svg>
+          <span class="icon-grid__name">hdd</span>
+        </li>
+        <li class="icon-grid__item" title="heading">
+          <svg class="lexicon-icon"><use href="#heading"></use></svg>
+          <span class="icon-grid__name">heading</span>
+        </li>
+        <li class="icon-grid__item" title="heart">
+          <svg class="lexicon-icon"><use href="#heart"></use></svg>
+          <span class="icon-grid__name">heart</span>
+        </li>
+        <li class="icon-grid__item" title="heart-full">
+          <svg class="lexicon-icon"><use href="#heart-full"></use></svg>
+          <span class="icon-grid__name">heart-full</span>
+        </li>
+        <li class="icon-grid__item" title="hidden">
+          <svg class="lexicon-icon"><use href="#hidden"></use></svg>
+          <span class="icon-grid__name">hidden</span>
+        </li>
+        <li class="icon-grid__item" title="hierarchy">
+          <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
+          <span class="icon-grid__name">hierarchy</span>
+        </li>
+        <li class="icon-grid__item" title="home">
+          <svg class="lexicon-icon"><use href="#home"></use></svg>
+          <span class="icon-grid__name">home</span>
+        </li>
+        <li class="icon-grid__item" title="home-full">
+          <svg class="lexicon-icon"><use href="#home-full"></use></svg>
+          <span class="icon-grid__name">home-full</span>
+        </li>
+        <li class="icon-grid__item" title="horizontal-scroll">
+          <svg class="lexicon-icon"><use href="#horizontal-scroll"></use></svg>
+          <span class="icon-grid__name">horizontal-scroll</span>
+        </li>
+        <li class="icon-grid__item" title="hr">
+          <svg class="lexicon-icon"><use href="#hr"></use></svg>
+          <span class="icon-grid__name">hr</span>
+        </li>
+        <li class="icon-grid__item" title="icon-rule-builder">
+          <svg class="lexicon-icon"><use href="#icon-rule-builder"></use></svg>
+          <span class="icon-grid__name">icon-rule-builder</span>
+        </li>
+        <li class="icon-grid__item" title="import">
+          <svg class="lexicon-icon"><use href="#import"></use></svg>
+          <span class="icon-grid__name">import</span>
+        </li>
+        <li class="icon-grid__item" title="import-export">
+          <svg class="lexicon-icon"><use href="#import-export"></use></svg>
+          <span class="icon-grid__name">import-export</span>
+        </li>
+        <li class="icon-grid__item" title="import-list">
+          <svg class="lexicon-icon"><use href="#import-list"></use></svg>
+          <span class="icon-grid__name">import-list</span>
+        </li>
+        <li class="icon-grid__item" title="indent-less">
+          <svg class="lexicon-icon"><use href="#indent-less"></use></svg>
+          <span class="icon-grid__name">indent-less</span>
+        </li>
+        <li class="icon-grid__item" title="indent-more">
+          <svg class="lexicon-icon"><use href="#indent-more"></use></svg>
+          <span class="icon-grid__name">indent-more</span>
+        </li>
+        <li class="icon-grid__item" title="info-book">
+          <svg class="lexicon-icon"><use href="#info-book"></use></svg>
+          <span class="icon-grid__name">info-book</span>
+        </li>
+        <li class="icon-grid__item" title="info-circle">
+          <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+          <span class="icon-grid__name">info-circle</span>
+        </li>
+        <li class="icon-grid__item" title="info-circle-open">
+          <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+          <span class="icon-grid__name">info-circle-open</span>
+        </li>
+        <li class="icon-grid__item" title="info-panel-closed">
+          <svg class="lexicon-icon"><use href="#info-panel-closed"></use></svg>
+          <span class="icon-grid__name">info-panel-closed</span>
+        </li>
+        <li class="icon-grid__item" title="info-panel-open">
+          <svg class="lexicon-icon"><use href="#info-panel-open"></use></svg>
+          <span class="icon-grid__name">info-panel-open</span>
+        </li>
+        <li class="icon-grid__item" title="information-live">
+          <svg class="lexicon-icon"><use href="#information-live"></use></svg>
+          <span class="icon-grid__name">information-live</span>
+        </li>
+        <li class="icon-grid__item" title="integer">
+          <svg class="lexicon-icon"><use href="#integer"></use></svg>
+          <span class="icon-grid__name">integer</span>
+        </li>
+        <li class="icon-grid__item" title="italic">
+          <svg class="lexicon-icon"><use href="#italic"></use></svg>
+          <span class="icon-grid__name">italic</span>
+        </li>
+        <li class="icon-grid__item" title="key">
+          <svg class="lexicon-icon"><use href="#key"></use></svg>
+          <span class="icon-grid__name">key</span>
+        </li>
+        <li class="icon-grid__item" title="layout-new-window">
+          <svg class="lexicon-icon"><use href="#layout-new-window"></use></svg>
+          <span class="icon-grid__name">layout-new-window</span>
+        </li>
+        <li class="icon-grid__item" title="liferay-ac">
+          <svg class="lexicon-icon"><use href="#liferay-ac"></use></svg>
+          <span class="icon-grid__name">liferay-ac</span>
+        </li>
+        <li class="icon-grid__item" title="link">
+          <svg class="lexicon-icon"><use href="#link"></use></svg>
+          <span class="icon-grid__name">link</span>
+        </li>
+        <li class="icon-grid__item" title="list">
+          <svg class="lexicon-icon"><use href="#list"></use></svg>
+          <span class="icon-grid__name">list</span>
+        </li>
+        <li class="icon-grid__item" title="list-ol">
+          <svg class="lexicon-icon"><use href="#list-ol"></use></svg>
+          <span class="icon-grid__name">list-ol</span>
+        </li>
+        <li class="icon-grid__item" title="list-ol-rtl">
+          <svg class="lexicon-icon"><use href="#list-ol-rtl"></use></svg>
+          <span class="icon-grid__name">list-ol-rtl</span>
+        </li>
+        <li class="icon-grid__item" title="list-ul">
+          <svg class="lexicon-icon"><use href="#list-ul"></use></svg>
+          <span class="icon-grid__name">list-ul</span>
+        </li>
+        <li class="icon-grid__item" title="list-ul-rtl">
+          <svg class="lexicon-icon"><use href="#list-ul-rtl"></use></svg>
+          <span class="icon-grid__name">list-ul-rtl</span>
+        </li>
+        <li class="icon-grid__item" title="live">
+          <svg class="lexicon-icon"><use href="#live"></use></svg>
+          <span class="icon-grid__name">live</span>
+        </li>
+        <li class="icon-grid__item" title="lock">
+          <svg class="lexicon-icon"><use href="#lock"></use></svg>
+          <span class="icon-grid__name">lock</span>
+        </li>
+        <li class="icon-grid__item" title="lock-dots">
+          <svg class="lexicon-icon"><use href="#lock-dots"></use></svg>
+          <span class="icon-grid__name">lock-dots</span>
+        </li>
+        <li class="icon-grid__item" title="logout">
+          <svg class="lexicon-icon"><use href="#logout"></use></svg>
+          <span class="icon-grid__name">logout</span>
+        </li>
+        <li class="icon-grid__item" title="low-vision">
+          <svg class="lexicon-icon"><use href="#low-vision"></use></svg>
+          <span class="icon-grid__name">low-vision</span>
+        </li>
+        <li class="icon-grid__item" title="magic">
+          <svg class="lexicon-icon"><use href="#magic"></use></svg>
+          <span class="icon-grid__name">magic</span>
+        </li>
+        <li class="icon-grid__item" title="maps">
+          <svg class="lexicon-icon"><use href="#maps"></use></svg>
+          <span class="icon-grid__name">maps</span>
+        </li>
+        <li class="icon-grid__item" title="mark-as-answer">
+          <svg class="lexicon-icon"><use href="#mark-as-answer"></use></svg>
+          <span class="icon-grid__name">mark-as-answer</span>
+        </li>
+        <li class="icon-grid__item" title="mark-as-question">
+          <svg class="lexicon-icon"><use href="#mark-as-question"></use></svg>
+          <span class="icon-grid__name">mark-as-question</span>
+        </li>
+        <li class="icon-grid__item" title="marketplace">
+          <svg class="lexicon-icon"><use href="#marketplace"></use></svg>
+          <span class="icon-grid__name">marketplace</span>
+        </li>
+        <li class="icon-grid__item" title="medal">
+          <svg class="lexicon-icon"><use href="#medal"></use></svg>
+          <span class="icon-grid__name">medal</span>
+        </li>
+        <li class="icon-grid__item" title="megaphone">
+          <svg class="lexicon-icon"><use href="#megaphone"></use></svg>
+          <span class="icon-grid__name">megaphone</span>
+        </li>
+        <li class="icon-grid__item" title="megaphone-full">
+          <svg class="lexicon-icon"><use href="#megaphone-full"></use></svg>
+          <span class="icon-grid__name">megaphone-full</span>
+        </li>
+        <li class="icon-grid__item" title="merge">
+          <svg class="lexicon-icon"><use href="#merge"></use></svg>
+          <span class="icon-grid__name">merge</span>
+        </li>
+        <li class="icon-grid__item" title="message">
+          <svg class="lexicon-icon"><use href="#message"></use></svg>
+          <span class="icon-grid__name">message</span>
+        </li>
+        <li class="icon-grid__item" title="message-boards">
+          <svg class="lexicon-icon"><use href="#message-boards"></use></svg>
+          <span class="icon-grid__name">message-boards</span>
+        </li>
+        <li class="icon-grid__item" title="minus-circle">
+          <svg class="lexicon-icon"><use href="#minus-circle"></use></svg>
+          <span class="icon-grid__name">minus-circle</span>
+        </li>
+        <li class="icon-grid__item" title="mobile-device-rules">
+          <svg class="lexicon-icon"><use href="#mobile-device-rules"></use></svg>
+          <span class="icon-grid__name">mobile-device-rules</span>
+        </li>
+        <li class="icon-grid__item" title="mobile-devices">
+          <svg class="lexicon-icon"><use href="#mobile-devices"></use></svg>
+          <span class="icon-grid__name">mobile-devices</span>
+        </li>
+        <li class="icon-grid__item" title="mobile-landscape">
+          <svg class="lexicon-icon"><use href="#mobile-landscape"></use></svg>
+          <span class="icon-grid__name">mobile-landscape</span>
+        </li>
+        <li class="icon-grid__item" title="mobile-portrait">
+          <svg class="lexicon-icon"><use href="#mobile-portrait"></use></svg>
+          <span class="icon-grid__name">mobile-portrait</span>
+        </li>
+        <li class="icon-grid__item" title="moon">
+          <svg class="lexicon-icon"><use href="#moon"></use></svg>
+          <span class="icon-grid__name">moon</span>
+        </li>
+        <li class="icon-grid__item" title="move">
+          <svg class="lexicon-icon"><use href="#move"></use></svg>
+          <span class="icon-grid__name">move</span>
+        </li>
+        <li class="icon-grid__item" title="move-folder">
+          <svg class="lexicon-icon"><use href="#move-folder"></use></svg>
+          <span class="icon-grid__name">move-folder</span>
+        </li>
+        <li class="icon-grid__item" title="myspace">
+          <svg class="lexicon-icon"><use href="#myspace"></use></svg>
+          <span class="icon-grid__name">myspace</span>
+        </li>
+        <li class="icon-grid__item" title="no-bot">
+          <svg class="lexicon-icon"><use href="#no-bot"></use></svg>
+          <span class="icon-grid__name">no-bot</span>
+        </li>
+        <li class="icon-grid__item" title="nodes">
+          <svg class="lexicon-icon"><use href="#nodes"></use></svg>
+          <span class="icon-grid__name">nodes</span>
+        </li>
+        <li class="icon-grid__item" title="number">
+          <svg class="lexicon-icon"><use href="#number"></use></svg>
+          <span class="icon-grid__name">number</span>
+        </li>
+        <li class="icon-grid__item" title="oauth">
+          <svg class="lexicon-icon"><use href="#oauth"></use></svg>
+          <span class="icon-grid__name">oauth</span>
+        </li>
+        <li class="icon-grid__item" title="opacity">
+          <svg class="lexicon-icon"><use href="#opacity"></use></svg>
+          <span class="icon-grid__name">opacity</span>
+        </li>
+        <li class="icon-grid__item" title="open-id">
+          <svg class="lexicon-icon"><use href="#open-id"></use></svg>
+          <span class="icon-grid__name">open-id</span>
+        </li>
+        <li class="icon-grid__item" title="order-arrow">
+          <svg class="lexicon-icon"><use href="#order-arrow"></use></svg>
+          <span class="icon-grid__name">order-arrow</span>
+        </li>
+        <li class="icon-grid__item" title="order-arrow-down">
+          <svg class="lexicon-icon"><use href="#order-arrow-down"></use></svg>
+          <span class="icon-grid__name">order-arrow-down</span>
+        </li>
+        <li class="icon-grid__item" title="order-arrow-left">
+          <svg class="lexicon-icon"><use href="#order-arrow-left"></use></svg>
+          <span class="icon-grid__name">order-arrow-left</span>
+        </li>
+        <li class="icon-grid__item" title="order-arrow-right">
+          <svg class="lexicon-icon"><use href="#order-arrow-right"></use></svg>
+          <span class="icon-grid__name">order-arrow-right</span>
+        </li>
+        <li class="icon-grid__item" title="order-arrow-up">
+          <svg class="lexicon-icon"><use href="#order-arrow-up"></use></svg>
+          <span class="icon-grid__name">order-arrow-up</span>
+        </li>
+        <li class="icon-grid__item" title="order-ascending">
+          <svg class="lexicon-icon"><use href="#order-ascending"></use></svg>
+          <span class="icon-grid__name">order-ascending</span>
+        </li>
+        <li class="icon-grid__item" title="order-descending">
+          <svg class="lexicon-icon"><use href="#order-descending"></use></svg>
+          <span class="icon-grid__name">order-descending</span>
+        </li>
+        <li class="icon-grid__item" title="order-form">
+          <svg class="lexicon-icon"><use href="#order-form"></use></svg>
+          <span class="icon-grid__name">order-form</span>
+        </li>
+        <li class="icon-grid__item" title="order-form-cog">
+          <svg class="lexicon-icon"><use href="#order-form-cog"></use></svg>
+          <span class="icon-grid__name">order-form-cog</span>
+        </li>
+        <li class="icon-grid__item" title="order-form-pencil">
+          <svg class="lexicon-icon"><use href="#order-form-pencil"></use></svg>
+          <span class="icon-grid__name">order-form-pencil</span>
+        </li>
+        <li class="icon-grid__item" title="order-form-tag">
+          <svg class="lexicon-icon"><use href="#order-form-tag"></use></svg>
+          <span class="icon-grid__name">order-form-tag</span>
+        </li>
+        <li class="icon-grid__item" title="order-list-down">
+          <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
+          <span class="icon-grid__name">order-list-down</span>
+        </li>
+        <li class="icon-grid__item" title="order-list-up">
+          <svg class="lexicon-icon"><use href="#order-list-up"></use></svg>
+          <span class="icon-grid__name">order-list-up</span>
+        </li>
+        <li class="icon-grid__item" title="organizations">
+          <svg class="lexicon-icon"><use href="#organizations"></use></svg>
+          <span class="icon-grid__name">organizations</span>
+        </li>
+        <li class="icon-grid__item" title="page">
+          <svg class="lexicon-icon"><use href="#page"></use></svg>
+          <span class="icon-grid__name">page</span>
+        </li>
+        <li class="icon-grid__item" title="page-template">
+          <svg class="lexicon-icon"><use href="#page-template"></use></svg>
+          <span class="icon-grid__name">page-template</span>
+        </li>
+        <li class="icon-grid__item" title="pages-tree">
+          <svg class="lexicon-icon"><use href="#pages-tree"></use></svg>
+          <span class="icon-grid__name">pages-tree</span>
+        </li>
+        <li class="icon-grid__item" title="paperclip">
+          <svg class="lexicon-icon"><use href="#paperclip"></use></svg>
+          <span class="icon-grid__name">paperclip</span>
+        </li>
+        <li class="icon-grid__item" title="paragraph">
+          <svg class="lexicon-icon"><use href="#paragraph"></use></svg>
+          <span class="icon-grid__name">paragraph</span>
+        </li>
+        <li class="icon-grid__item" title="password-policies">
+          <svg class="lexicon-icon"><use href="#password-policies"></use></svg>
+          <span class="icon-grid__name">password-policies</span>
+        </li>
+        <li class="icon-grid__item" title="paste">
+          <svg class="lexicon-icon"><use href="#paste"></use></svg>
+          <span class="icon-grid__name">paste</span>
+        </li>
+        <li class="icon-grid__item" title="paste-plaintext">
+          <svg class="lexicon-icon"><use href="#paste-plaintext"></use></svg>
+          <span class="icon-grid__name">paste-plaintext</span>
+        </li>
+        <li class="icon-grid__item" title="paste-word">
+          <svg class="lexicon-icon"><use href="#paste-word"></use></svg>
+          <span class="icon-grid__name">paste-word</span>
+        </li>
+        <li class="icon-grid__item" title="pause">
+          <svg class="lexicon-icon"><use href="#pause"></use></svg>
+          <span class="icon-grid__name">pause</span>
+        </li>
+        <li class="icon-grid__item" title="pencil">
+          <svg class="lexicon-icon"><use href="#pencil"></use></svg>
+          <span class="icon-grid__name">pencil</span>
+        </li>
+        <li class="icon-grid__item" title="percentage-banner">
+          <svg class="lexicon-icon"><use href="#percentage-banner"></use></svg>
+          <span class="icon-grid__name">percentage-banner</span>
+        </li>
+        <li class="icon-grid__item" title="percentage-symbol">
+          <svg class="lexicon-icon"><use href="#percentage-symbol"></use></svg>
+          <span class="icon-grid__name">percentage-symbol</span>
+        </li>
+        <li class="icon-grid__item" title="phone">
+          <svg class="lexicon-icon"><use href="#phone"></use></svg>
+          <span class="icon-grid__name">phone</span>
+        </li>
+        <li class="icon-grid__item" title="picture">
+          <svg class="lexicon-icon"><use href="#picture"></use></svg>
+          <span class="icon-grid__name">picture</span>
+        </li>
+        <li class="icon-grid__item" title="pin">
+          <svg class="lexicon-icon"><use href="#pin"></use></svg>
+          <span class="icon-grid__name">pin</span>
+        </li>
+        <li class="icon-grid__item" title="pin-full">
+          <svg class="lexicon-icon"><use href="#pin-full"></use></svg>
+          <span class="icon-grid__name">pin-full</span>
+        </li>
+        <li class="icon-grid__item" title="play">
+          <svg class="lexicon-icon"><use href="#play"></use></svg>
+          <span class="icon-grid__name">play</span>
+        </li>
+        <li class="icon-grid__item" title="plug">
+          <svg class="lexicon-icon"><use href="#plug"></use></svg>
+          <span class="icon-grid__name">plug</span>
+        </li>
+        <li class="icon-grid__item" title="plus">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+          <span class="icon-grid__name">plus</span>
+        </li>
+        <li class="icon-grid__item" title="plus-circle-full">
+          <svg class="lexicon-icon"><use href="#plus-circle-full"></use></svg>
+          <span class="icon-grid__name">plus-circle-full</span>
+        </li>
+        <li class="icon-grid__item" title="plus-squares">
+          <svg class="lexicon-icon"><use href="#plus-squares"></use></svg>
+          <span class="icon-grid__name">plus-squares</span>
+        </li>
+        <li class="icon-grid__item" title="polls">
+          <svg class="lexicon-icon"><use href="#polls"></use></svg>
+          <span class="icon-grid__name">polls</span>
+        </li>
+        <li class="icon-grid__item" title="price-list">
+          <svg class="lexicon-icon"><use href="#price-list"></use></svg>
+          <span class="icon-grid__name">price-list</span>
+        </li>
+        <li class="icon-grid__item" title="price-tag">
+          <svg class="lexicon-icon"><use href="#price-tag"></use></svg>
+          <span class="icon-grid__name">price-tag</span>
+        </li>
+        <li class="icon-grid__item" title="print">
+          <svg class="lexicon-icon"><use href="#print"></use></svg>
+          <span class="icon-grid__name">print</span>
+        </li>
+        <li class="icon-grid__item" title="process-builder">
+          <svg class="lexicon-icon"><use href="#process-builder"></use></svg>
+          <span class="icon-grid__name">process-builder</span>
+        </li>
+        <li class="icon-grid__item" title="product-configuration">
+          <svg class="lexicon-icon"><use href="#product-configuration"></use></svg>
+          <span class="icon-grid__name">product-configuration</span>
+        </li>
+        <li class="icon-grid__item" title="product-menu">
+          <svg class="lexicon-icon"><use href="#product-menu"></use></svg>
+          <span class="icon-grid__name">product-menu</span>
+        </li>
+        <li class="icon-grid__item" title="product-menu-closed">
+          <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+          <span class="icon-grid__name">product-menu-closed</span>
+        </li>
+        <li class="icon-grid__item" title="product-menu-open">
+          <svg class="lexicon-icon"><use href="#product-menu-open"></use></svg>
+          <span class="icon-grid__name">product-menu-open</span>
+        </li>
+        <li class="icon-grid__item" title="products">
+          <svg class="lexicon-icon"><use href="#products"></use></svg>
+          <span class="icon-grid__name">products</span>
+        </li>
+        <li class="icon-grid__item" title="propagation">
+          <svg class="lexicon-icon"><use href="#propagation"></use></svg>
+          <span class="icon-grid__name">propagation</span>
+        </li>
+        <li class="icon-grid__item" title="publications">
+          <svg class="lexicon-icon"><use href="#publications"></use></svg>
+          <span class="icon-grid__name">publications</span>
+        </li>
+        <li class="icon-grid__item" title="puzzle">
+          <svg class="lexicon-icon"><use href="#puzzle"></use></svg>
+          <span class="icon-grid__name">puzzle</span>
+        </li>
+        <li class="icon-grid__item" title="question-circle">
+          <svg class="lexicon-icon"><use href="#question-circle"></use></svg>
+          <span class="icon-grid__name">question-circle</span>
+        </li>
+        <li class="icon-grid__item" title="question-circle-full">
+          <svg class="lexicon-icon"><use href="#question-circle-full"></use></svg>
+          <span class="icon-grid__name">question-circle-full</span>
+        </li>
+        <li class="icon-grid__item" title="question-mark">
+          <svg class="lexicon-icon"><use href="#question-mark"></use></svg>
+          <span class="icon-grid__name">question-mark</span>
+        </li>
+        <li class="icon-grid__item" title="quote-left">
+          <svg class="lexicon-icon"><use href="#quote-left"></use></svg>
+          <span class="icon-grid__name">quote-left</span>
+        </li>
+        <li class="icon-grid__item" title="quote-right">
+          <svg class="lexicon-icon"><use href="#quote-right"></use></svg>
+          <span class="icon-grid__name">quote-right</span>
+        </li>
+        <li class="icon-grid__item" title="radio-button">
+          <svg class="lexicon-icon"><use href="#radio-button"></use></svg>
+          <span class="icon-grid__name">radio-button</span>
+        </li>
+        <li class="icon-grid__item" title="react">
+          <svg class="lexicon-icon"><use href="#react"></use></svg>
+          <span class="icon-grid__name">react</span>
+        </li>
+        <li class="icon-grid__item" title="rectangle">
+          <svg class="lexicon-icon"><use href="#rectangle"></use></svg>
+          <span class="icon-grid__name">rectangle</span>
+        </li>
+        <li class="icon-grid__item" title="rectangle-split">
+          <svg class="lexicon-icon"><use href="#rectangle-split"></use></svg>
+          <span class="icon-grid__name">rectangle-split</span>
+        </li>
+        <li class="icon-grid__item" title="redo">
+          <svg class="lexicon-icon"><use href="#redo"></use></svg>
+          <span class="icon-grid__name">redo</span>
+        </li>
+        <li class="icon-grid__item" title="relationship">
+          <svg class="lexicon-icon"><use href="#relationship"></use></svg>
+          <span class="icon-grid__name">relationship</span>
+        </li>
+        <li class="icon-grid__item" title="reload">
+          <svg class="lexicon-icon"><use href="#reload"></use></svg>
+          <span class="icon-grid__name">reload</span>
+        </li>
+        <li class="icon-grid__item" title="remove-role">
+          <svg class="lexicon-icon"><use href="#remove-role"></use></svg>
+          <span class="icon-grid__name">remove-role</span>
+        </li>
+        <li class="icon-grid__item" title="remove-style">
+          <svg class="lexicon-icon"><use href="#remove-style"></use></svg>
+          <span class="icon-grid__name">remove-style</span>
+        </li>
+        <li class="icon-grid__item" title="repeat">
+          <svg class="lexicon-icon"><use href="#repeat"></use></svg>
+          <span class="icon-grid__name">repeat</span>
+        </li>
+        <li class="icon-grid__item" title="reply">
+          <svg class="lexicon-icon"><use href="#reply"></use></svg>
+          <span class="icon-grid__name">reply</span>
+        </li>
+        <li class="icon-grid__item" title="repository">
+          <svg class="lexicon-icon"><use href="#repository"></use></svg>
+          <span class="icon-grid__name">repository</span>
+        </li>
+        <li class="icon-grid__item" title="reset">
+          <svg class="lexicon-icon"><use href="#reset"></use></svg>
+          <span class="icon-grid__name">reset</span>
+        </li>
+        <li class="icon-grid__item" title="restore">
+          <svg class="lexicon-icon"><use href="#restore"></use></svg>
+          <span class="icon-grid__name">restore</span>
+        </li>
+        <li class="icon-grid__item" title="rocket">
+          <svg class="lexicon-icon"><use href="#rocket"></use></svg>
+          <span class="icon-grid__name">rocket</span>
+        </li>
+        <li class="icon-grid__item" title="rotate">
+          <svg class="lexicon-icon"><use href="#rotate"></use></svg>
+          <span class="icon-grid__name">rotate</span>
+        </li>
+        <li class="icon-grid__item" title="rss">
+          <svg class="lexicon-icon"><use href="#rss"></use></svg>
+          <span class="icon-grid__name">rss</span>
+        </li>
+        <li class="icon-grid__item" title="rss-full">
+          <svg class="lexicon-icon"><use href="#rss-full"></use></svg>
+          <span class="icon-grid__name">rss-full</span>
+        </li>
+        <li class="icon-grid__item" title="ruler">
+          <svg class="lexicon-icon"><use href="#ruler"></use></svg>
+          <span class="icon-grid__name">ruler</span>
+        </li>
+        <li class="icon-grid__item" title="rules">
+          <svg class="lexicon-icon"><use href="#rules"></use></svg>
+          <span class="icon-grid__name">rules</span>
+        </li>
+        <li class="icon-grid__item" title="scim">
+          <svg class="lexicon-icon"><use href="#scim"></use></svg>
+          <span class="icon-grid__name">scim</span>
+        </li>
+        <li class="icon-grid__item" title="search">
+          <svg class="lexicon-icon"><use href="#search"></use></svg>
+          <span class="icon-grid__name">search</span>
+        </li>
+        <li class="icon-grid__item" title="search-experiences">
+          <svg class="lexicon-icon"><use href="#search-experiences"></use></svg>
+          <span class="icon-grid__name">search-experiences</span>
+        </li>
+        <li class="icon-grid__item" title="search-plus">
+          <svg class="lexicon-icon"><use href="#search-plus"></use></svg>
+          <span class="icon-grid__name">search-plus</span>
+        </li>
+        <li class="icon-grid__item" title="select">
+          <svg class="lexicon-icon"><use href="#select"></use></svg>
+          <span class="icon-grid__name">select</span>
+        </li>
+        <li class="icon-grid__item" title="select-all">
+          <svg class="lexicon-icon"><use href="#select-all"></use></svg>
+          <span class="icon-grid__name">select-all</span>
+        </li>
+        <li class="icon-grid__item" title="select-from-list">
+          <svg class="lexicon-icon"><use href="#select-from-list"></use></svg>
+          <span class="icon-grid__name">select-from-list</span>
+        </li>
+        <li class="icon-grid__item" title="semantic-search">
+          <svg class="lexicon-icon"><use href="#semantic-search"></use></svg>
+          <span class="icon-grid__name">semantic-search</span>
+        </li>
+        <li class="icon-grid__item" title="send">
+          <svg class="lexicon-icon"><use href="#send"></use></svg>
+          <span class="icon-grid__name">send</span>
+        </li>
+        <li class="icon-grid__item" title="seo">
+          <svg class="lexicon-icon"><use href="#seo"></use></svg>
+          <span class="icon-grid__name">seo</span>
+        </li>
+        <li class="icon-grid__item" title="separator">
+          <svg class="lexicon-icon"><use href="#separator"></use></svg>
+          <span class="icon-grid__name">separator</span>
+        </li>
+        <li class="icon-grid__item" title="shadow">
+          <svg class="lexicon-icon"><use href="#shadow"></use></svg>
+          <span class="icon-grid__name">shadow</span>
+        </li>
+        <li class="icon-grid__item" title="share">
+          <svg class="lexicon-icon"><use href="#share"></use></svg>
+          <span class="icon-grid__name">share</span>
+        </li>
+        <li class="icon-grid__item" title="share-alt">
+          <svg class="lexicon-icon"><use href="#share-alt"></use></svg>
+          <span class="icon-grid__name">share-alt</span>
+        </li>
+        <li class="icon-grid__item" title="sheets">
+          <svg class="lexicon-icon"><use href="#sheets"></use></svg>
+          <span class="icon-grid__name">sheets</span>
+        </li>
+        <li class="icon-grid__item" title="shield-asterisk">
+          <svg class="lexicon-icon"><use href="#shield-asterisk"></use></svg>
+          <span class="icon-grid__name">shield-asterisk</span>
+        </li>
+        <li class="icon-grid__item" title="shield-check">
+          <svg class="lexicon-icon"><use href="#shield-check"></use></svg>
+          <span class="icon-grid__name">shield-check</span>
+        </li>
+        <li class="icon-grid__item" title="shopping-cart">
+          <svg class="lexicon-icon"><use href="#shopping-cart"></use></svg>
+          <span class="icon-grid__name">shopping-cart</span>
+        </li>
+        <li class="icon-grid__item" title="shortcut">
+          <svg class="lexicon-icon"><use href="#shortcut"></use></svg>
+          <span class="icon-grid__name">shortcut</span>
+        </li>
+        <li class="icon-grid__item" title="sign-in">
+          <svg class="lexicon-icon"><use href="#sign-in"></use></svg>
+          <span class="icon-grid__name">sign-in</span>
+        </li>
+        <li class="icon-grid__item" title="signature">
+          <svg class="lexicon-icon"><use href="#signature"></use></svg>
+          <span class="icon-grid__name">signature</span>
+        </li>
+        <li class="icon-grid__item" title="simple-circle">
+          <svg class="lexicon-icon"><use href="#simple-circle"></use></svg>
+          <span class="icon-grid__name">simple-circle</span>
+        </li>
+        <li class="icon-grid__item" title="simulation-menu">
+          <svg class="lexicon-icon"><use href="#simulation-menu"></use></svg>
+          <span class="icon-grid__name">simulation-menu</span>
+        </li>
+        <li class="icon-grid__item" title="simulation-menu-closed">
+          <svg class="lexicon-icon"><use href="#simulation-menu-closed"></use></svg>
+          <span class="icon-grid__name">simulation-menu-closed</span>
+        </li>
+        <li class="icon-grid__item" title="simulation-menu-open">
+          <svg class="lexicon-icon"><use href="#simulation-menu-open"></use></svg>
+          <span class="icon-grid__name">simulation-menu-open</span>
+        </li>
+        <li class="icon-grid__item" title="site-template">
+          <svg class="lexicon-icon"><use href="#site-template"></use></svg>
+          <span class="icon-grid__name">site-template</span>
+        </li>
+        <li class="icon-grid__item" title="sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+          <span class="icon-grid__name">sites</span>
+        </li>
+        <li class="icon-grid__item" title="slash">
+          <svg class="lexicon-icon"><use href="#slash"></use></svg>
+          <span class="icon-grid__name">slash</span>
+        </li>
+        <li class="icon-grid__item" title="slideshow">
+          <svg class="lexicon-icon"><use href="#slideshow"></use></svg>
+          <span class="icon-grid__name">slideshow</span>
+        </li>
+        <li class="icon-grid__item" title="social-facebook">
+          <svg class="lexicon-icon"><use href="#social-facebook"></use></svg>
+          <span class="icon-grid__name">social-facebook</span>
+        </li>
+        <li class="icon-grid__item" title="social-instagram">
+          <svg class="lexicon-icon"><use href="#social-instagram"></use></svg>
+          <span class="icon-grid__name">social-instagram</span>
+        </li>
+        <li class="icon-grid__item" title="social-linkedin">
+          <svg class="lexicon-icon"><use href="#social-linkedin"></use></svg>
+          <span class="icon-grid__name">social-linkedin</span>
+        </li>
+        <li class="icon-grid__item" title="social-twitter">
+          <svg class="lexicon-icon"><use href="#social-twitter"></use></svg>
+          <span class="icon-grid__name">social-twitter</span>
+        </li>
+        <li class="icon-grid__item" title="social-vimeo">
+          <svg class="lexicon-icon"><use href="#social-vimeo"></use></svg>
+          <span class="icon-grid__name">social-vimeo</span>
+        </li>
+        <li class="icon-grid__item" title="spacer">
+          <svg class="lexicon-icon"><use href="#spacer"></use></svg>
+          <span class="icon-grid__name">spacer</span>
+        </li>
+        <li class="icon-grid__item" title="special-character">
+          <svg class="lexicon-icon"><use href="#special-character"></use></svg>
+          <span class="icon-grid__name">special-character</span>
+        </li>
+        <li class="icon-grid__item" title="speed">
+          <svg class="lexicon-icon"><use href="#speed"></use></svg>
+          <span class="icon-grid__name">speed</span>
+        </li>
+        <li class="icon-grid__item" title="square">
+          <svg class="lexicon-icon"><use href="#square"></use></svg>
+          <span class="icon-grid__name">square</span>
+        </li>
+        <li class="icon-grid__item" title="square-hole">
+          <svg class="lexicon-icon"><use href="#square-hole"></use></svg>
+          <span class="icon-grid__name">square-hole</span>
+        </li>
+        <li class="icon-grid__item" title="square-hole-multi">
+          <svg class="lexicon-icon"><use href="#square-hole-multi"></use></svg>
+          <span class="icon-grid__name">square-hole-multi</span>
+        </li>
+        <li class="icon-grid__item" title="squares">
+          <svg class="lexicon-icon"><use href="#squares"></use></svg>
+          <span class="icon-grid__name">squares</span>
+        </li>
+        <li class="icon-grid__item" title="squares-clock">
+          <svg class="lexicon-icon"><use href="#squares-clock"></use></svg>
+          <span class="icon-grid__name">squares-clock</span>
+        </li>
+        <li class="icon-grid__item" title="staging">
+          <svg class="lexicon-icon"><use href="#staging"></use></svg>
+          <span class="icon-grid__name">staging</span>
+        </li>
+        <li class="icon-grid__item" title="star">
+          <svg class="lexicon-icon"><use href="#star"></use></svg>
+          <span class="icon-grid__name">star</span>
+        </li>
+        <li class="icon-grid__item" title="star-half">
+          <svg class="lexicon-icon"><use href="#star-half"></use></svg>
+          <span class="icon-grid__name">star-half</span>
+        </li>
+        <li class="icon-grid__item" title="star-o">
+          <svg class="lexicon-icon"><use href="#star-o"></use></svg>
+          <span class="icon-grid__name">star-o</span>
+        </li>
+        <li class="icon-grid__item" title="stars">
+          <svg class="lexicon-icon"><use href="#stars"></use></svg>
+          <span class="icon-grid__name">stars</span>
+        </li>
+        <li class="icon-grid__item" title="sticky">
+          <svg class="lexicon-icon"><use href="#sticky"></use></svg>
+          <span class="icon-grid__name">sticky</span>
+        </li>
+        <li class="icon-grid__item" title="strikethrough">
+          <svg class="lexicon-icon"><use href="#strikethrough"></use></svg>
+          <span class="icon-grid__name">strikethrough</span>
+        </li>
+        <li class="icon-grid__item" title="submission">
+          <svg class="lexicon-icon"><use href="#submission"></use></svg>
+          <span class="icon-grid__name">submission</span>
+        </li>
+        <li class="icon-grid__item" title="subscript">
+          <svg class="lexicon-icon"><use href="#subscript"></use></svg>
+          <span class="icon-grid__name">subscript</span>
+        </li>
+        <li class="icon-grid__item" title="suitcase">
+          <svg class="lexicon-icon"><use href="#suitcase"></use></svg>
+          <span class="icon-grid__name">suitcase</span>
+        </li>
+        <li class="icon-grid__item" title="sun">
+          <svg class="lexicon-icon"><use href="#sun"></use></svg>
+          <span class="icon-grid__name">sun</span>
+        </li>
+        <li class="icon-grid__item" title="superscript">
+          <svg class="lexicon-icon"><use href="#superscript"></use></svg>
+          <span class="icon-grid__name">superscript</span>
+        </li>
+        <li class="icon-grid__item" title="synonyms">
+          <svg class="lexicon-icon"><use href="#synonyms"></use></svg>
+          <span class="icon-grid__name">synonyms</span>
+        </li>
+        <li class="icon-grid__item" title="table">
+          <svg class="lexicon-icon"><use href="#table"></use></svg>
+          <span class="icon-grid__name">table</span>
+        </li>
+        <li class="icon-grid__item" title="table2">
+          <svg class="lexicon-icon"><use href="#table2"></use></svg>
+          <span class="icon-grid__name">table2</span>
+        </li>
+        <li class="icon-grid__item" title="tablet-landscape">
+          <svg class="lexicon-icon"><use href="#tablet-landscape"></use></svg>
+          <span class="icon-grid__name">tablet-landscape</span>
+        </li>
+        <li class="icon-grid__item" title="tablet-portrait">
+          <svg class="lexicon-icon"><use href="#tablet-portrait"></use></svg>
+          <span class="icon-grid__name">tablet-portrait</span>
+        </li>
+        <li class="icon-grid__item" title="tabs">
+          <svg class="lexicon-icon"><use href="#tabs"></use></svg>
+          <span class="icon-grid__name">tabs</span>
+        </li>
+        <li class="icon-grid__item" title="tag">
+          <svg class="lexicon-icon"><use href="#tag"></use></svg>
+          <span class="icon-grid__name">tag</span>
+        </li>
+        <li class="icon-grid__item" title="tap-ahead">
+          <svg class="lexicon-icon"><use href="#tap-ahead"></use></svg>
+          <span class="icon-grid__name">tap-ahead</span>
+        </li>
+        <li class="icon-grid__item" title="task-status">
+          <svg class="lexicon-icon"><use href="#task-status"></use></svg>
+          <span class="icon-grid__name">task-status</span>
+        </li>
+        <li class="icon-grid__item" title="test">
+          <svg class="lexicon-icon"><use href="#test"></use></svg>
+          <span class="icon-grid__name">test</span>
+        </li>
+        <li class="icon-grid__item" title="text">
+          <svg class="lexicon-icon"><use href="#text"></use></svg>
+          <span class="icon-grid__name">text</span>
+        </li>
+        <li class="icon-grid__item" title="text-color">
+          <svg class="lexicon-icon"><use href="#text-color"></use></svg>
+          <span class="icon-grid__name">text-color</span>
+        </li>
+        <li class="icon-grid__item" title="text-editor">
+          <svg class="lexicon-icon"><use href="#text-editor"></use></svg>
+          <span class="icon-grid__name">text-editor</span>
+        </li>
+        <li class="icon-grid__item" title="text-l">
+          <svg class="lexicon-icon"><use href="#text-l"></use></svg>
+          <span class="icon-grid__name">text-l</span>
+        </li>
+        <li class="icon-grid__item" title="textbox">
+          <svg class="lexicon-icon"><use href="#textbox"></use></svg>
+          <span class="icon-grid__name">textbox</span>
+        </li>
+        <li class="icon-grid__item" title="theme">
+          <svg class="lexicon-icon"><use href="#theme"></use></svg>
+          <span class="icon-grid__name">theme</span>
+        </li>
+        <li class="icon-grid__item" title="third-party">
+          <svg class="lexicon-icon"><use href="#third-party"></use></svg>
+          <span class="icon-grid__name">third-party</span>
+        </li>
+        <li class="icon-grid__item" title="thumbs-down">
+          <svg class="lexicon-icon"><use href="#thumbs-down"></use></svg>
+          <span class="icon-grid__name">thumbs-down</span>
+        </li>
+        <li class="icon-grid__item" title="thumbs-down-full">
+          <svg class="lexicon-icon"><use href="#thumbs-down-full"></use></svg>
+          <span class="icon-grid__name">thumbs-down-full</span>
+        </li>
+        <li class="icon-grid__item" title="thumbs-up">
+          <svg class="lexicon-icon"><use href="#thumbs-up"></use></svg>
+          <span class="icon-grid__name">thumbs-up</span>
+        </li>
+        <li class="icon-grid__item" title="thumbs-up-arrow">
+          <svg class="lexicon-icon"><use href="#thumbs-up-arrow"></use></svg>
+          <span class="icon-grid__name">thumbs-up-arrow</span>
+        </li>
+        <li class="icon-grid__item" title="thumbs-up-full">
+          <svg class="lexicon-icon"><use href="#thumbs-up-full"></use></svg>
+          <span class="icon-grid__name">thumbs-up-full</span>
+        </li>
+        <li class="icon-grid__item" title="time">
+          <svg class="lexicon-icon"><use href="#time"></use></svg>
+          <span class="icon-grid__name">time</span>
+        </li>
+        <li class="icon-grid__item" title="times">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+          <span class="icon-grid__name">times</span>
+        </li>
+        <li class="icon-grid__item" title="times-circle">
+          <svg class="lexicon-icon"><use href="#times-circle"></use></svg>
+          <span class="icon-grid__name">times-circle</span>
+        </li>
+        <li class="icon-grid__item" title="times-circle-full">
+          <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+          <span class="icon-grid__name">times-circle-full</span>
+        </li>
+        <li class="icon-grid__item" title="times-small">
+          <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+          <span class="icon-grid__name">times-small</span>
+        </li>
+        <li class="icon-grid__item" title="transform">
+          <svg class="lexicon-icon"><use href="#transform"></use></svg>
+          <span class="icon-grid__name">transform</span>
+        </li>
+        <li class="icon-grid__item" title="trash">
+          <svg class="lexicon-icon"><use href="#trash"></use></svg>
+          <span class="icon-grid__name">trash</span>
+        </li>
+        <li class="icon-grid__item" title="truck">
+          <svg class="lexicon-icon"><use href="#truck"></use></svg>
+          <span class="icon-grid__name">truck</span>
+        </li>
+        <li class="icon-grid__item" title="twitter">
+          <svg class="lexicon-icon"><use href="#twitter"></use></svg>
+          <span class="icon-grid__name">twitter</span>
+        </li>
+        <li class="icon-grid__item" title="twitter-x">
+          <svg class="lexicon-icon"><use href="#twitter-x"></use></svg>
+          <span class="icon-grid__name">twitter-x</span>
+        </li>
+        <li class="icon-grid__item" title="underline">
+          <svg class="lexicon-icon"><use href="#underline"></use></svg>
+          <span class="icon-grid__name">underline</span>
+        </li>
+        <li class="icon-grid__item" title="undo">
+          <svg class="lexicon-icon"><use href="#undo"></use></svg>
+          <span class="icon-grid__name">undo</span>
+        </li>
+        <li class="icon-grid__item" title="unlock">
+          <svg class="lexicon-icon"><use href="#unlock"></use></svg>
+          <span class="icon-grid__name">unlock</span>
+        </li>
+        <li class="icon-grid__item" title="unpin">
+          <svg class="lexicon-icon"><use href="#unpin"></use></svg>
+          <span class="icon-grid__name">unpin</span>
+        </li>
+        <li class="icon-grid__item" title="upload">
+          <svg class="lexicon-icon"><use href="#upload"></use></svg>
+          <span class="icon-grid__name">upload</span>
+        </li>
+        <li class="icon-grid__item" title="upload-multiple">
+          <svg class="lexicon-icon"><use href="#upload-multiple"></use></svg>
+          <span class="icon-grid__name">upload-multiple</span>
+        </li>
+        <li class="icon-grid__item" title="urgent">
+          <svg class="lexicon-icon"><use href="#urgent"></use></svg>
+          <span class="icon-grid__name">urgent</span>
+        </li>
+        <li class="icon-grid__item" title="user">
+          <svg class="lexicon-icon"><use href="#user"></use></svg>
+          <span class="icon-grid__name">user</span>
+        </li>
+        <li class="icon-grid__item" title="user-plus">
+          <svg class="lexicon-icon"><use href="#user-plus"></use></svg>
+          <span class="icon-grid__name">user-plus</span>
+        </li>
+        <li class="icon-grid__item" title="users">
+          <svg class="lexicon-icon"><use href="#users"></use></svg>
+          <span class="icon-grid__name">users</span>
+        </li>
+        <li class="icon-grid__item" title="vertical-scroll">
+          <svg class="lexicon-icon"><use href="#vertical-scroll"></use></svg>
+          <span class="icon-grid__name">vertical-scroll</span>
+        </li>
+        <li class="icon-grid__item" title="video">
+          <svg class="lexicon-icon"><use href="#video"></use></svg>
+          <span class="icon-grid__name">video</span>
+        </li>
+        <li class="icon-grid__item" title="video-streaming">
+          <svg class="lexicon-icon"><use href="#video-streaming"></use></svg>
+          <span class="icon-grid__name">video-streaming</span>
+        </li>
+        <li class="icon-grid__item" title="view">
+          <svg class="lexicon-icon"><use href="#view"></use></svg>
+          <span class="icon-grid__name">view</span>
+        </li>
+        <li class="icon-grid__item" title="vocabulary">
+          <svg class="lexicon-icon"><use href="#vocabulary"></use></svg>
+          <span class="icon-grid__name">vocabulary</span>
+        </li>
+        <li class="icon-grid__item" title="voice">
+          <svg class="lexicon-icon"><use href="#voice"></use></svg>
+          <span class="icon-grid__name">voice</span>
+        </li>
+        <li class="icon-grid__item" title="warehouse">
+          <svg class="lexicon-icon"><use href="#warehouse"></use></svg>
+          <span class="icon-grid__name">warehouse</span>
+        </li>
+        <li class="icon-grid__item" title="warning">
+          <svg class="lexicon-icon"><use href="#warning"></use></svg>
+          <span class="icon-grid__name">warning</span>
+        </li>
+        <li class="icon-grid__item" title="warning-full">
+          <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+          <span class="icon-grid__name">warning-full</span>
+        </li>
+        <li class="icon-grid__item" title="web-content">
+          <svg class="lexicon-icon"><use href="#web-content"></use></svg>
+          <span class="icon-grid__name">web-content</span>
+        </li>
+        <li class="icon-grid__item" title="wiki">
+          <svg class="lexicon-icon"><use href="#wiki"></use></svg>
+          <span class="icon-grid__name">wiki</span>
+        </li>
+        <li class="icon-grid__item" title="wiki-page">
+          <svg class="lexicon-icon"><use href="#wiki-page"></use></svg>
+          <span class="icon-grid__name">wiki-page</span>
+        </li>
+        <li class="icon-grid__item" title="workflow">
+          <svg class="lexicon-icon"><use href="#workflow"></use></svg>
+          <span class="icon-grid__name">workflow</span>
+        </li>
+      </ul>
     </section>
 
   </main>
