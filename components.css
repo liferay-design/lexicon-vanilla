@@ -185,7 +185,7 @@
 .alert {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-5);          /* 16 between sections */
   padding: var(--spacing-5);      /* 16 inside container */
   border: 1px solid;
@@ -203,12 +203,12 @@
 }
 
 .alert--toast {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-alert);
 }
 
 .alert--stripe {
   border: 0;
-  border-bottom: 2px solid;
+  border-bottom: 1px solid;
   border-radius: 0;
 }
 
@@ -216,11 +216,15 @@
 
 .alert__content {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-3);          /* 8 between icon and text */
+  padding: var(--spacing-2-5) 0 var(--spacing-2); /* 6px top, 4px bottom */
   flex: 1 1 auto;
   min-width: 0;
 }
+
+/* Nudge icon 2px down so it optically aligns with the first text line */
+.alert__content .lexicon-icon { margin-top: var(--spacing-1); flex-shrink: 0; }
 
 .alert__text {
   margin: 0;
@@ -234,7 +238,7 @@
 .alert__actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);          /* 8 between buttons */
+  gap: var(--spacing-5);          /* 16 between buttons */
   flex: 0 0 auto;
 }
 
@@ -450,7 +454,7 @@
   font-size: var(--font-size-xs);
   line-height: 15px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 
 /* — Type (outline mode — Bold=No) — */
