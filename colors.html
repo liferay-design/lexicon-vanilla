@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Tokens — Vanilla Lexicon</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <script src="icons.js"></script>
+
+  <style>
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+
+    .showcase__label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-secondary-l1);
+      margin: var(--spacing-6) 0 var(--spacing-3);
+    }
+    .showcase__label:first-child { margin-top: 0; }
+
+    .color-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      margin-bottom: var(--spacing-5);
+    }
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      min-width: 72px;
+      flex: 1;
+    }
+    .color-swatch {
+      height: 40px;
+      border-radius: var(--rounded-md);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .color-swatch-label {
+      font-size: 10px;
+      color: var(--color-secondary);
+      margin-top: var(--spacing-1);
+      line-height: 1.4;
+    }
+    .color-swatch-label span { color: var(--color-secondary-l0); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Color Tokens</h1>
+  <p class="lead">Full palette · 142 tokens · use as <code>var(--color-primary)</code></p>
+
+  <!-- Primary -->
+  <span class="showcase__label">Primary</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-d2);"></div>
+      <div class="color-swatch-label">primary-d2<br><span>#004AD7</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-d1);"></div>
+      <div class="color-swatch-label">primary-d1<br><span>#0053F0</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary);"></div>
+      <div class="color-swatch-label">primary<br><span>#0B5FFF</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-l0);"></div>
+      <div class="color-swatch-label">primary-l0<br><span>#5791FF</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-l1);"></div>
+      <div class="color-swatch-label">primary-l1<br><span>#80ACFF</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-l2);"></div>
+      <div class="color-swatch-label">primary-l2<br><span>#B3CDFF</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-primary-l3); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">primary-l3<br><span>#F0F5FF</span></div>
+    </div>
+  </div>
+
+  <!-- Secondary -->
+  <span class="showcase__label">Secondary</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-secondary);"></div>
+      <div class="color-swatch-label">secondary<br><span>#6B6C7E</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-secondary-l0);"></div>
+      <div class="color-swatch-label">secondary-l0<br><span>#9393A4</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-secondary-l1);"></div>
+      <div class="color-swatch-label">secondary-l1<br><span>#A7A9BC</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-secondary-l2);"></div>
+      <div class="color-swatch-label">secondary-l2<br><span>#CDCED9</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-secondary-l3); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">secondary-l3<br><span>#E7E7ED</span></div>
+    </div>
+  </div>
+
+  <!-- Dark -->
+  <span class="showcase__label">Dark</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-dark-d2);"></div>
+      <div class="color-swatch-label">dark-d2<br><span>#111116</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-dark-d1);"></div>
+      <div class="color-swatch-label">dark-d1<br><span>#1C1C24</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-dark);"></div>
+      <div class="color-swatch-label">dark<br><span>#272833</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-dark-l1);"></div>
+      <div class="color-swatch-label">dark-l1<br><span>#30313F</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-dark-l2);"></div>
+      <div class="color-swatch-label">dark-l2<br><span>#393A4A</span></div>
+    </div>
+  </div>
+
+  <!-- Light -->
+  <span class="showcase__label">Light</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-light-d2);"></div>
+      <div class="color-swatch-label">light-d2<br><span>#D3D6E0</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-light-d1); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">light-d1<br><span>#E2E4EA</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-light); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">light<br><span>#F1F2F5</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-light-l1); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">light-l1<br><span>#F7F8F9</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-white); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">white<br><span>#FFFFFF</span></div>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <span class="showcase__label">Success</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-success-d2);"></div>
+      <div class="color-swatch-label">success-d2<br><span>#1C5629</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-success-d1);"></div>
+      <div class="color-swatch-label">success-d1<br><span>#226A33</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-success);"></div>
+      <div class="color-swatch-label">success<br><span>#287D3C</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-success-l1);"></div>
+      <div class="color-swatch-label">success-l1<br><span>#5ACA75</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-success-l2); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">success-l2<br><span>#EDF9F0</span></div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <span class="showcase__label">Info</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-info-d2);"></div>
+      <div class="color-swatch-label">info-d2<br><span>#234584</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-info-d1);"></div>
+      <div class="color-swatch-label">info-d1<br><span>#294F98</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-info);"></div>
+      <div class="color-swatch-label">info<br><span>#2E5AAC</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-info-l1);"></div>
+      <div class="color-swatch-label">info-l1<br><span>#89A7E0</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-info-l2); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">info-l2<br><span>#EEF2FA</span></div>
+    </div>
+  </div>
+
+  <!-- Warning -->
+  <span class="showcase__label">Warning</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-warning-d2);"></div>
+      <div class="color-swatch-label">warning-d2<br><span>#863A00</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-warning-d1);"></div>
+      <div class="color-swatch-label">warning-d1<br><span>#9F4500</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-warning);"></div>
+      <div class="color-swatch-label">warning<br><span>#B95000</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-warning-l1);"></div>
+      <div class="color-swatch-label">warning-l1<br><span>#FF8F39</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-warning-l2); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">warning-l2<br><span>#FFF4EC</span></div>
+    </div>
+  </div>
+
+  <!-- Danger -->
+  <span class="showcase__label">Danger</span>
+  <div class="color-row">
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-danger-d2);"></div>
+      <div class="color-swatch-label">danger-d2<br><span>#AB1010</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-danger-d1);"></div>
+      <div class="color-swatch-label">danger-d1<br><span>#C31212</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-danger);"></div>
+      <div class="color-swatch-label">danger<br><span>#DA1414</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-danger-l1);"></div>
+      <div class="color-swatch-label">danger-l1<br><span>#F48989</span></div>
+    </div>
+    <div class="color-item">
+      <div class="color-swatch" style="background:var(--color-danger-l2); border:1px solid var(--color-light-d2);"></div>
+      <div class="color-swatch-label">danger-l2<br><span>#FEEFEF</span></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <span class="showcase__label">Charts</span>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-d4);"></div><div class="color-swatch-label">blue-d4<br><span>#004799</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-d3);"></div><div class="color-swatch-label">blue-d3<br><span>#0053B3</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-d2);"></div><div class="color-swatch-label">blue-d2<br><span>#005FCC</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-d1);"></div><div class="color-swatch-label">blue-d1<br><span>#006BE6</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue);"></div><div class="color-swatch-label">blue<br><span>#006EFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-l1);"></div><div class="color-swatch-label">blue-l1<br><span>#338FFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-l2);"></div><div class="color-swatch-label">blue-l2<br><span>#66ABFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-l3);"></div><div class="color-swatch-label">blue-l3<br><span>#97C5FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-l4); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">blue-l4<br><span>#CCE3FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-blue-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">blue-l5<br><span>#E5F1FF</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-d4);"></div><div class="color-swatch-label">orange-d4<br><span>#662700</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-d3);"></div><div class="color-swatch-label">orange-d3<br><span>#803100</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-d2);"></div><div class="color-swatch-label">orange-d2<br><span>#993B00</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-d1);"></div><div class="color-swatch-label">orange-d1<br><span>#B34400</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange);"></div><div class="color-swatch-label">orange<br><span>#CC4E00</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-l1);"></div><div class="color-swatch-label">orange-l1<br><span>#FF6200</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-l2);"></div><div class="color-swatch-label">orange-l2<br><span>#FF8133</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-l3);"></div><div class="color-swatch-label">orange-l3<br><span>#FFA166</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-l4);"></div><div class="color-swatch-label">orange-l4<br><span>#FFC099</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-orange-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">orange-l5<br><span>#FFF0E5</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-d4);"></div><div class="color-swatch-label">red-d4<br><span>#800000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-d3);"></div><div class="color-swatch-label">red-d3<br><span>#990000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-d2);"></div><div class="color-swatch-label">red-d2<br><span>#B30000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-d1);"></div><div class="color-swatch-label">red-d1<br><span>#CC0000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red);"></div><div class="color-swatch-label">red<br><span>#E50000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-l1);"></div><div class="color-swatch-label">red-l1<br><span>#FF4D4D</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-l2);"></div><div class="color-swatch-label">red-l2<br><span>#FF6666</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-l3);"></div><div class="color-swatch-label">red-l3<br><span>#FF8080</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-l4);"></div><div class="color-swatch-label">red-l4<br><span>#FF9999</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-red-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">red-l5<br><span>#FFE5E5</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-d4);"></div><div class="color-swatch-label">teal-d4<br><span>#092A25</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-d3);"></div><div class="color-swatch-label">teal-d3<br><span>#0D3F37</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-d2);"></div><div class="color-swatch-label">teal-d2<br><span>#125449</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-d1);"></div><div class="color-swatch-label">teal-d1<br><span>#16695B</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal);"></div><div class="color-swatch-label">teal<br><span>#1B7E6E</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-l1);"></div><div class="color-swatch-label">teal-l1<br><span>#24A892</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-l2);"></div><div class="color-swatch-label">teal-l2<br><span>#42D7BE</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-l3);"></div><div class="color-swatch-label">teal-l3<br><span>#6CE0CC</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-l4);"></div><div class="color-swatch-label">teal-l4<br><span>#96E9DB</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-teal-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">teal-l5<br><span>#EAFBF8</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-d4);"></div><div class="color-swatch-label">pink-d4<br><span>#800048</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-d3);"></div><div class="color-swatch-label">pink-d3<br><span>#990057</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-d2);"></div><div class="color-swatch-label">pink-d2<br><span>#B30065</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-d1);"></div><div class="color-swatch-label">pink-d1<br><span>#CC0074</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink);"></div><div class="color-swatch-label">pink<br><span>#E50082</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-l1);"></div><div class="color-swatch-label">pink-l1<br><span>#FF4DB2</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-l2);"></div><div class="color-swatch-label">pink-l2<br><span>#FF80C8</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-l3);"></div><div class="color-swatch-label">pink-l3<br><span>#FF99D3</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-l4);"></div><div class="color-swatch-label">pink-l4<br><span>#FFB2DE</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-pink-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">pink-l5<br><span>#FFE5F4</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-d4);"></div><div class="color-swatch-label">green-d4<br><span>#162D06</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-d3);"></div><div class="color-swatch-label">green-d3<br><span>#22430A</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-d2);"></div><div class="color-swatch-label">green-d2<br><span>#2E590D</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-d1);"></div><div class="color-swatch-label">green-d1<br><span>#397010</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green);"></div><div class="color-swatch-label">green<br><span>#458613</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-l1);"></div><div class="color-swatch-label">green-l1<br><span>#53A117</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-l2);"></div><div class="color-swatch-label">green-l2<br><span>#67C91D</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-l3);"></div><div class="color-swatch-label">green-l3<br><span>#81E236</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-l4);"></div><div class="color-swatch-label">green-l4<br><span>#9DE963</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-green-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">green-l5<br><span>#F1FCE9</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-d4);"></div><div class="color-swatch-label">purple-d4<br><span>#7700CC</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-d3);"></div><div class="color-swatch-label">purple-d3<br><span>#8600E6</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-d2);"></div><div class="color-swatch-label">purple-d2<br><span>#9500FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-d1);"></div><div class="color-swatch-label">purple-d1<br><span>#9F1AFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple);"></div><div class="color-swatch-label">purple<br><span>#AA33FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-l1);"></div><div class="color-swatch-label">purple-l1<br><span>#BF66FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-l2);"></div><div class="color-swatch-label">purple-l2<br><span>#CA80FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-l3);"></div><div class="color-swatch-label">purple-l3<br><span>#D499FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-l4);"></div><div class="color-swatch-label">purple-l4<br><span>#DFB3FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-purple-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">purple-l5<br><span>#F2E5FF</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-d4);"></div><div class="color-swatch-label">yellow-d4<br><span>#997000</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-d3);"></div><div class="color-swatch-label">yellow-d3<br><span>#B38900</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-d2);"></div><div class="color-swatch-label">yellow-d2<br><span>#CC9600</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-d1);"></div><div class="color-swatch-label">yellow-d1<br><span>#E6A800</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow);"></div><div class="color-swatch-label">yellow<br><span>#FFBB00</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-l1);"></div><div class="color-swatch-label">yellow-l1<br><span>#FFC933</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-l2);"></div><div class="color-swatch-label">yellow-l2<br><span>#FFD666</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-l3); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">yellow-l3<br><span>#FFE499</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-l4); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">yellow-l4<br><span>#FFF1CC</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-yellow-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">yellow-l5<br><span>#FFF8E5</span></div></div>
+  </div>
+
+  <div class="color-row" style="margin-bottom:var(--spacing-3);">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-d4);"></div><div class="color-swatch-label">cyan-d4<br><span>#00334D</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-d3);"></div><div class="color-swatch-label">cyan-d3<br><span>#004466</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-d2);"></div><div class="color-swatch-label">cyan-d2<br><span>#005580</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-d1);"></div><div class="color-swatch-label">cyan-d1<br><span>#006699</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan);"></div><div class="color-swatch-label">cyan<br><span>#0077B3</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-l1);"></div><div class="color-swatch-label">cyan-l1<br><span>#0099E6</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-l2);"></div><div class="color-swatch-label">cyan-l2<br><span>#33BBFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-l3);"></div><div class="color-swatch-label">cyan-l3<br><span>#66CCFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-l4);"></div><div class="color-swatch-label">cyan-l4<br><span>#99DDFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-cyan-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">cyan-l5<br><span>#E5F6FF</span></div></div>
+  </div>
+
+  <div class="color-row">
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-d4);"></div><div class="color-swatch-label">indigo-d4<br><span>#0017E5</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-d3);"></div><div class="color-swatch-label">indigo-d3<br><span>#001AFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-d2);"></div><div class="color-swatch-label">indigo-d2<br><span>#1A30FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-d1);"></div><div class="color-swatch-label">indigo-d1<br><span>#3347FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo);"></div><div class="color-swatch-label">indigo<br><span>#4D5FFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-l1);"></div><div class="color-swatch-label">indigo-l1<br><span>#808CFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-l2);"></div><div class="color-swatch-label">indigo-l2<br><span>#99A3FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-l3);"></div><div class="color-swatch-label">indigo-l3<br><span>#B2BAFF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-l4);"></div><div class="color-swatch-label">indigo-l4<br><span>#CCD1FF</span></div></div>
+    <div class="color-item"><div class="color-swatch" style="background:var(--color-chart-indigo-l5); border:1px solid var(--color-light-d2);"></div><div class="color-swatch-label">indigo-l5<br><span>#E5E8FF</span></div></div>
+  </div>
+
+</main>
+
+</body>
+</html>
