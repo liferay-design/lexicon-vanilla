@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Section — Vanilla Lexicon</title>
   <script>(function(){
-    var S=['light-hc','dark','dark-hc'];
-    function apply(){try{var s=localStorage.getItem('vanilla-skin');S.forEach(function(c){document.documentElement.classList.remove(c);});if(s&&S.indexOf(s)>-1)document.documentElement.classList.add(s);}catch(e){}}
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{var s=localStorage.getItem('vanilla-skin')||'light';S.forEach(function(c){document.documentElement.classList.remove(c);});document.documentElement.classList.add(S.indexOf(s)>-1?s:'light');}catch(e){}}
     apply();
     window.addEventListener('pageshow',apply);
   })()</script>
