@@ -1589,23 +1589,21 @@
   margin: 0;
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
 }
 
 .breadcrumb > li {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
   color: var(--color-secondary);
 }
 
-/* Separator (chevron) between items, but not after the last one */
-.breadcrumb > li:not(:last-child)::after {
-  content: ">";
-  display: inline-block;
-  margin-left: var(--spacing-2);
-  color: var(--color-secondary-l0);
-  font-weight: var(--font-weight-normal);
+.breadcrumb__sep {
+  width: var(--spacing-3);
+  height: var(--spacing-3);
+  color: var(--color-secondary);
+  flex-shrink: 0;
 }
 
 .breadcrumb a {
@@ -1627,7 +1625,6 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* The leading "truncated" icon — drop the separator after it (already handled) */
 .breadcrumb .lexicon-icon { color: var(--color-secondary); }
 
 

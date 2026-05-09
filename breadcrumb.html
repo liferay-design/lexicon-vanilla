@@ -30,14 +30,14 @@
   <h1>Breadcrumb</h1>
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-4340">Figma — Lexicon Components</a>.
-    Path navigation. Use <code>aria-current="page"</code> on the last item.
+    Path navigation. Use <code>aria-current="page"</code> on the last item. Add <code>.breadcrumb__sep</code> after each non-last link.
   </p>
 
   <div class="showcase__row">
     <span class="showcase__label">Two levels</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><a href="#">Level 1</a></li>
+        <li><a href="#">Level 1</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
@@ -47,8 +47,8 @@
     <span class="showcase__label">Three levels</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><a href="#">Level 1</a></li>
-        <li><a href="#">Level 2</a></li>
+        <li><a href="#">Level 1</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
+        <li><a href="#">Level 2</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
@@ -58,9 +58,9 @@
     <span class="showcase__label">Four levels</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><a href="#">Level 1</a></li>
-        <li><a href="#">Level 2</a></li>
-        <li><a href="#">Level 3</a></li>
+        <li><a href="#">Level 1</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
+        <li><a href="#">Level 2</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
+        <li><a href="#">Level 3</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
@@ -70,7 +70,7 @@
     <span class="showcase__label">Truncated — only current page visible after collapse icon</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
+        <li><svg class="lexicon-icon"><use href="#angle-double-right-small"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
@@ -80,8 +80,8 @@
     <span class="showcase__label">Truncated + one ancestor</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
-        <li><a href="#">Level 6</a></li>
+        <li><svg class="lexicon-icon"><use href="#angle-double-right-small"></use></svg></li>
+        <li><a href="#">Level 6</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
@@ -91,10 +91,10 @@
     <span class="showcase__label">Truncated + multiple ancestors</span>
     <nav aria-label="Breadcrumb">
       <ol class="breadcrumb">
-        <li><svg class="lexicon-icon"><use href="#angle-double-right"></use></svg></li>
-        <li><a href="#">Level 6</a></li>
-        <li><a href="#">Level 7</a></li>
-        <li><a href="#">Level 8</a></li>
+        <li><svg class="lexicon-icon"><use href="#angle-double-right-small"></use></svg></li>
+        <li><a href="#">Level 6</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
+        <li><a href="#">Level 7</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
+        <li><a href="#">Level 8</a><svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>
         <li aria-current="page">Current Page</li>
       </ol>
     </nav>
