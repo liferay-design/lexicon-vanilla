@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Picker — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 1100px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); display: flex; gap: var(--spacing-9); align-items: flex-start; flex-wrap: wrap; }
+    .showcase__label { flex: 0 0 100%; display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Color Picker</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-27614">Figma — Lexicon Components</a>.
+    Two surfaces: <code>.color-picker</code> (palette panel with predefined + custom colours and an optional advanced editor) and <code>.color-input</code> (compact form control: swatch + hex field).
+  </p>
+
+  <!-- ── Palette panels ── -->
+  <div class="showcase__row">
+    <span class="showcase__label">Palette · with custom colours · simple grid</span>
+
+    <!-- Full palette: predefined + custom -->
+    <div class="color-picker">
+      <p class="color-picker__title">Choose a color</p>
+      <div class="color-picker__grid">
+        <button class="color-picker__swatch" style="background:#000000"></button>
+        <button class="color-picker__swatch" style="background:#6b6c7e"></button>
+        <button class="color-picker__swatch" style="background:#a7a9bc"></button>
+        <button class="color-picker__swatch" style="background:#cdced9"></button>
+        <button class="color-picker__swatch" style="background:#e7e7ed"></button>
+        <button class="color-picker__swatch" style="background:#ffffff"></button>
+        <button class="color-picker__swatch" style="background:#800000"></button>
+        <button class="color-picker__swatch" style="background:#b95000"></button>
+        <button class="color-picker__swatch" style="background:#064b3a"></button>
+        <button class="color-picker__swatch" style="background:#234584"></button>
+        <button class="color-picker__swatch" style="background:#5a009d"></button>
+        <button class="color-picker__swatch" style="background:#831a4d"></button>
+        <button class="color-picker__swatch" style="background:#da1414"></button>
+        <button class="color-picker__swatch" style="background:#b95000"></button>
+        <button class="color-picker__swatch" style="background:#287d3c"></button>
+        <button class="color-picker__swatch" style="background:#0b5fff"></button>
+        <button class="color-picker__swatch" style="background:#8800c4"></button>
+        <button class="color-picker__swatch" style="background:#e50082"></button>
+        <button class="color-picker__swatch" style="background:#f48989"></button>
+        <button class="color-picker__swatch" style="background:#ff8f39"></button>
+        <button class="color-picker__swatch" style="background:#5aca75"></button>
+        <button class="color-picker__swatch" style="background:#80acff"></button>
+        <button class="color-picker__swatch" style="background:#c89cff"></button>
+        <button class="color-picker__swatch" style="background:#ff66ad"></button>
+        <button class="color-picker__swatch" style="background:#ffb2b2"></button>
+        <button class="color-picker__swatch" style="background:#ffceaf"></button>
+        <button class="color-picker__swatch" style="background:#b9eac4"></button>
+        <button class="color-picker__swatch" style="background:#cbdcff"></button>
+        <button class="color-picker__swatch" style="background:#e2caff"></button>
+        <button class="color-picker__swatch" style="background:#ffb2de"></button>
+      </div>
+      <p class="color-picker__title">Custom Colors <svg class="lexicon-icon"><use href="#color-picker"></use></svg></p>
+      <div class="color-picker__grid">
+        <button class="color-picker__swatch" style="background:#475bff"></button>
+        <button class="color-picker__swatch" style="background:#b3eac4"></button>
+        <button class="color-picker__swatch" style="background:#ffb2de"></button>
+        <button class="color-picker__swatch" style="background:#ffd57a"></button>
+        <button class="color-picker__swatch" style="background:#ff8aa6"></button>
+        <button class="color-picker__swatch" style="background:#b2e3e8"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+      </div>
+    </div>
+
+    <!-- Simple grid (no title) -->
+    <div class="color-picker">
+      <div class="color-picker__grid">
+        <button class="color-picker__swatch" style="background:#000000"></button>
+        <button class="color-picker__swatch" style="background:#6b6c7e"></button>
+        <button class="color-picker__swatch" style="background:#a7a9bc"></button>
+        <button class="color-picker__swatch" style="background:#cdced9"></button>
+        <button class="color-picker__swatch" style="background:#e7e7ed"></button>
+        <button class="color-picker__swatch" style="background:#ffffff"></button>
+        <button class="color-picker__swatch" style="background:#800000"></button>
+        <button class="color-picker__swatch" style="background:#b95000"></button>
+        <button class="color-picker__swatch" style="background:#064b3a"></button>
+        <button class="color-picker__swatch" style="background:#234584"></button>
+        <button class="color-picker__swatch" style="background:#5a009d"></button>
+        <button class="color-picker__swatch" style="background:#831a4d"></button>
+        <button class="color-picker__swatch" style="background:#da1414"></button>
+        <button class="color-picker__swatch" style="background:#b95000"></button>
+        <button class="color-picker__swatch" style="background:#287d3c"></button>
+        <button class="color-picker__swatch" style="background:#0b5fff"></button>
+        <button class="color-picker__swatch" style="background:#8800c4"></button>
+        <button class="color-picker__swatch" style="background:#e50082"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Advanced editor ── -->
+  <div class="showcase__row">
+    <span class="showcase__label">Advanced editor · custom-colour grid + SV box + sliders + hex input</span>
+
+    <div class="color-picker">
+      <p class="color-picker__title">Custom Colors
+        <button class="btn btn--borderless btn--icon btn--sm" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </p>
+      <div class="color-picker__grid">
+        <button class="color-picker__swatch" style="background:#475bff"></button>
+        <button class="color-picker__swatch" style="background:#b3eac4"></button>
+        <button class="color-picker__swatch" style="background:#ffb2de"></button>
+        <button class="color-picker__swatch" style="background:#ffd57a"></button>
+        <button class="color-picker__swatch" style="background:#ff8aa6"></button>
+        <button class="color-picker__swatch" style="background:#b2e3e8"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+        <button class="color-picker__swatch color-picker__swatch--empty"></button>
+      </div>
+      <div class="color-picker__divider"></div>
+      <!-- SV gradient + R/G/B channels -->
+      <div class="color-picker__editor color-picker__editor--start">
+        <div class="color-picker__sv"></div>
+        <div class="color-picker__channel-group">
+          <span class="color-picker__channel"><span class="color-picker__channel-key">R</span><span class="color-picker__channel-value">42</span></span>
+          <span class="color-picker__channel"><span class="color-picker__channel-key">G</span><span class="color-picker__channel-value">165</span></span>
+          <span class="color-picker__channel"><span class="color-picker__channel-key">B</span><span class="color-picker__channel-value">255</span></span>
+        </div>
+      </div>
+      <!-- Hue bar + H channel -->
+      <div class="color-picker__editor">
+        <div class="color-picker__hue"></div>
+        <span class="color-picker__channel"><span class="color-picker__channel-key">H</span><span class="color-picker__channel-value">205</span></span>
+      </div>
+      <!-- Alpha bar + A channel -->
+      <div class="color-picker__editor">
+        <div class="color-picker__alpha"></div>
+        <span class="color-picker__channel"><span class="color-picker__channel-key">A</span><span class="color-picker__channel-value">0,5</span></span>
+      </div>
+      <!-- Hex input -->
+      <div class="color-input__hex-wrap">
+        <span class="color-input__hash">#</span>
+        <input type="text" class="color-input__hex" value="2AA5FF">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Compact form control ── -->
+  <div class="showcase__row">
+    <span class="showcase__label">Compact form control — swatch + hex · swatch only</span>
+
+    <div class="color-input">
+      <span class="color-input__label">Background Color</span>
+      <div class="color-input__field">
+        <button class="color-input__swatch" style="background:#008000" aria-label="Pick"></button>
+        <div class="color-input__hex-wrap">
+          <span class="color-input__hash">#</span>
+          <input type="text" class="color-input__hex" value="008000">
+        </div>
+      </div>
+    </div>
+
+    <div class="color-input">
+      <span class="color-input__label">Background Color</span>
+      <div class="color-input__field">
+        <button class="color-input__swatch" style="background:#008000" aria-label="Pick"></button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

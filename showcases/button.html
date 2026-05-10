@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* Showcase chrome only — not part of the component */
+    .showcase {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--spacing-9) var(--spacing-7);
+    }
+    .showcase h1 {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .showcase p.lead {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-8);
+    }
+    .showcase__row {
+      margin-bottom: var(--spacing-7);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+    .showcase__label {
+      flex: 0 0 100%;
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      margin-bottom: 0;
+    }
+    /* Force a focus ring on the demo so the user sees the focus state without tabbing */
+    .btn--secondary
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Button</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-7517">Figma — Lexicon Components</a>.
+    Axes: type, tone, size, shape, icon mode, state.
+  </p>
+
+  <!-- Row 1: Primary (Figma top row) -->
+  <div class="showcase__row">
+    <span class="showcase__label">Primary — pill, with icon, icon-only, dropdown</span>
+    <button class="btn btn--primary btn--pill btn--xs">
+      Action
+      <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg>
+    </button>
+    <button class="btn btn--primary">
+      <svg class="lexicon-icon"><use href="#plus"></use></svg>
+      Action
+    </button>
+    <button class="btn btn--primary btn--icon" aria-label="Add">
+      <svg class="lexicon-icon"><use href="#plus"></use></svg>
+    </button>
+    <button class="btn btn--primary">
+      Action
+      <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+    </button>
+  </div>
+
+  <!-- Row 2: Secondary (Figma second row, focus shown on first two) -->
+  <div class="showcase__row">
+    <span class="showcase__label">Secondary — default, with dropdown, icon-only</span>
+    <button class="btn btn--secondary">Action</button>
+    <button class="btn btn--primary">
+      Action
+      <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+    </button>
+    <button class="btn btn--secondary btn--icon" aria-label="Add">
+      <svg class="lexicon-icon"><use href="#plus"></use></svg>
+    </button>
+    <button class="btn btn--secondary">Action</button>
+  </div>
+
+  <!-- Row 3: Borderless and Link (Figma third row) -->
+  <div class="showcase__row">
+    <span class="showcase__label">Borderless &amp; Link</span>
+    <button class="btn btn--borderless">Action</button>
+    <button class="btn btn--borderless">Action</button>
+    <button class="btn btn--borderless btn--icon" aria-label="Add">
+      <svg class="lexicon-icon"><use href="#plus"></use></svg>
+    </button>
+    <button class="btn btn--link">Action</button>
+  </div>
+
+  <!-- Row 4: Validation tones (Figma "Action" type) -->
+  <div class="showcase__row">
+    <span class="showcase__label">Tone — info, success, warning, danger</span>
+    <button class="btn btn--primary btn--info">Action</button>
+    <button class="btn btn--primary btn--success">Action</button>
+    <button class="btn btn--primary btn--warning">Action</button>
+    <button class="btn btn--primary btn--danger">Action</button>
+  </div>
+
+  <!-- Sizes -->
+  <div class="showcase__row">
+    <span class="showcase__label">Sizes — xs, sm, regular, lg</span>
+    <button class="btn btn--primary btn--xs">Action</button>
+    <button class="btn btn--primary btn--sm">Action</button>
+    <button class="btn btn--primary">Action</button>
+    <button class="btn btn--primary btn--lg">Action</button>
+  </div>
+
+  <!-- Disabled -->
+  <div class="showcase__row">
+    <span class="showcase__label">Disabled</span>
+    <button class="btn btn--primary" disabled>Action</button>
+    <button class="btn btn--secondary" disabled>Action</button>
+    <button class="btn btn--borderless" disabled>Action</button>
+    <button class="btn btn--link" disabled>Action</button>
+  </div>
+
+</main>
+
+</body>
+</html>

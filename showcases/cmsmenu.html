@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Menu — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>CMS Menu</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=2545-4896">Figma — Lexicon Satellites</a>.
+    280px sidebar panel for CMS apps. Reuses <code>.vert-nav__item</code> rows and <code>.vert-nav__group-header</code> section labels.
+    Groups are collected in <code>.cms-menu__groups</code> (16px gap). Section headers with an add action use
+    <code>.vert-nav__group-actions</code> to wrap the button and caret.
+    Space items use <code>.sticker</code> in the icon cell; the sticker colour comes from user/space configuration (inline style).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Full panel · ASSETS and SPACE open · Home active in top group · All active in ASSETS · Marketing active in SPACE</span>
+
+    <aside class="cms-menu">
+      <ul class="cms-menu__groups">
+
+        <!-- ── Group 1: no header — Home / Dashboard ── -->
+        <li>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item is-active">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg>
+              </span>
+              Home
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#analytics"></use></svg>
+              </span>
+              Dashboard
+            </li>
+          </ul>
+        </li>
+
+        <!-- ── Group 2: ASSETS (expandable) ── -->
+        <li>
+          <button class="vert-nav__group-header" aria-expanded="true">
+            ASSETS
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </button>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item is-active">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+              </span>
+              All
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#catalog"></use></svg>
+              </span>
+              Content
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#documents-and-media"></use></svg>
+              </span>
+              Files
+            </li>
+          </ul>
+        </li>
+
+        <!-- ── Group 3: standalone — Shared with me ── -->
+        <li>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#users"></use></svg>
+              </span>
+              Shared with me
+            </li>
+          </ul>
+        </li>
+
+        <!-- ── Group 4: ITEM NAME (expandable) ── -->
+        <li>
+          <button class="vert-nav__group-header" aria-expanded="true">
+            ITEM NAME
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </button>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#edit-layout"></use></svg>
+              </span>
+              Content Structures
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg>
+              </span>
+              Categorization
+            </li>
+          </ul>
+        </li>
+
+        <!-- ── Group 5: SPACE — header with add button ── -->
+        <li>
+          <div class="vert-nav__group-header">
+            SPACE
+            <span class="vert-nav__group-actions">
+              <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add space">
+                <svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg>
+              </button>
+              <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+            </span>
+          </div>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item is-active">
+              <span class="vert-nav__icon-cell">
+                <span class="sticker sticker--outline" style="background: #f2e5ff; color: #aa33ff; border-color: #aa33ff;">M</span>
+              </span>
+              Marketing
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <span class="sticker sticker--outline" style="background: #f2e5ff; color: #aa33ff; border-color: #aa33ff;">H</span>
+              </span>
+              HR
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <span class="sticker sticker--outline" style="background: #f2e5ff; color: #aa33ff; border-color: #aa33ff;">C</span>
+              </span>
+              Campaigns
+            </li>
+          </ul>
+        </li>
+
+        <!-- ── Group 6: bottom utility — Recycle bin ── -->
+        <li>
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#trash"></use></svg>
+              </span>
+              Recycle bin
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </aside>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button Translucent — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); color: var(--color-white); }
+    .showcase p.lead { color: var(--color-secondary-l1); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-7); display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-5); padding: var(--spacing-5); background: var(--color-dark-d1); border-radius: var(--rounded-md); }
+    .showcase__label { flex: 0 0 100%; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary-l1); margin-bottom: 0; }
+    body { background: var(--color-dark); }
+    a { color: var(--color-primary-l1); }
+    .indicator { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; color: var(--color-white); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Button Translucent</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-11087">Figma — Lexicon Components</a>.
+    Pill button for dark surfaces. Compose with tone modifiers: primary, info, success, warning, danger.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Tones — primary, info, success, warning, danger (with status indicator)</span>
+    <button class="btn btn--translucent btn--primary">
+      Button
+      <span class="indicator" style="background: var(--color-primary)"></span>
+    </button>
+    <button class="btn btn--translucent btn--info">
+      Button
+      <span class="indicator" style="background: var(--color-info)">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+      </span>
+    </button>
+    <button class="btn btn--translucent btn--success">
+      Button
+      <span class="indicator" style="background: var(--color-success)">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#check-circle"></use></svg>
+      </span>
+    </button>
+    <button class="btn btn--translucent btn--warning">
+      Button
+      <span class="indicator" style="background: var(--color-warning)">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#warning"></use></svg>
+      </span>
+    </button>
+    <button class="btn btn--translucent btn--danger">
+      Button
+      <span class="indicator" style="background: var(--color-danger)">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#exclamation-circle"></use></svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Plain — no tone (subtle white tint)</span>
+    <button class="btn btn--translucent">Button</button>
+    <button class="btn btn--translucent btn--sm">Button</button>
+  </div>
+
+</main>
+
+</body>
+</html>

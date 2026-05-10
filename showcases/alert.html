@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alert — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* Showcase chrome only — not part of the component */
+    .showcase {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--spacing-9) var(--spacing-7);
+    }
+    .showcase h1 {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .showcase p.lead {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-8);
+    }
+    .showcase__row { margin-bottom: var(--spacing-7); }
+    .showcase__label {
+      display: block;
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      margin-bottom: var(--spacing-3);
+    }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Alert</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=457-5325">Figma — Lexicon Components</a>.
+    Three axes: type (simple/embedded/stripe/toast), layout (inline/vertical) and validation (info/success/warning/danger).
+    Action buttons are the shared <a href="button.html"><code>.btn</code></a> with matching tone.
+    Close is <code>.btn--borderless.btn--sm.btn--icon</code>.
+  </p>
+
+  <!-- 1. Simple · Info -->
+  <div class="showcase__row">
+    <span class="showcase__label">Simple · Info</span>
+    <div class="alert alert--simple alert--info">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+        <p class="alert__text"><strong>Info:</strong> This is the alert's message.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Toast · Info — with actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Toast · Info — with actions</span>
+    <div class="alert alert--toast alert--info">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+        <p class="alert__text"><strong>Info:</strong> This is the alert's message.</p>
+      </div>
+      <div class="alert__actions">
+        <button class="btn btn--primary btn--info btn--sm">Action</button>
+        <button class="btn btn--secondary btn--info btn--sm">Action</button>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Embedded · Success — no actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Embedded · Success</span>
+    <div class="alert alert--success">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+        <p class="alert__text"><strong>Success:</strong> This is the alert's message.</p>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. Embedded · Success — with inline actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Embedded · Success — with inline actions</span>
+    <div class="alert alert--success">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+        <p class="alert__text"><strong>Success:</strong> This is the alert's</p>
+      </div>
+      <div class="alert__actions">
+        <button class="btn btn--primary btn--success btn--sm">Action</button>
+        <button class="btn btn--secondary btn--success btn--sm">Action</button>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 5. Embedded · Warning — no actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Embedded · Warning</span>
+    <div class="alert alert--warning">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+        <p class="alert__text"><strong>Warning:</strong> This is the alert's message.</p>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. Simple · Success -->
+  <div class="showcase__row">
+    <span class="showcase__label">Simple · Success</span>
+    <div class="alert alert--simple alert--success">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+        <p class="alert__text"><strong>Success:</strong> This is the alert's message.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Stripe · Error — no actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Stripe · Error</span>
+    <div class="alert alert--stripe alert--danger">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+        <p class="alert__text"><strong>Error:</strong> This is the alert's message.</p>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 8. Stripe · Warning — with stacked actions -->
+  <div class="showcase__row">
+    <span class="showcase__label">Stripe · Warning — with stacked actions</span>
+    <div class="alert alert--stripe alert--vertical alert--warning">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+        <p class="alert__text"><strong>Warning:</strong> This is the alert's message.</p>
+      </div>
+      <button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+      <div class="alert__actions">
+        <button class="btn btn--primary btn--warning btn--sm">Action</button>
+        <button class="btn btn--secondary btn--warning btn--sm">Action</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keys — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-7); display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-3); }
+    .showcase__label { flex: 0 0 100%; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Keys</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1039-28790">Figma — Lexicon Components</a>.
+    Keyboard-shortcut chip. Two sizes (24, 20) and two types (flex auto-width / fixed square).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Regular — Flex &amp; Fixed</span>
+    <kbd class="key">Esc</kbd>
+    <kbd class="key key--fixed">⌘</kbd>
+    <kbd class="key key--fixed">⇧</kbd>
+    <kbd class="key key--fixed">⌥</kbd>
+    <kbd class="key">Enter</kbd>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Small — Flex &amp; Fixed</span>
+    <kbd class="key key--sm">Esc</kbd>
+    <kbd class="key key--sm key--fixed">⌘</kbd>
+    <kbd class="key key--sm key--fixed">⇧</kbd>
+    <kbd class="key key--sm">Enter</kbd>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">In context — combo (use a connector glyph "+" between keys)</span>
+    <kbd class="key key--fixed">⌘</kbd> <span style="color: var(--color-secondary)">+</span>
+    <kbd class="key key--fixed">⇧</kbd> <span style="color: var(--color-secondary)">+</span>
+    <kbd class="key">P</kbd>
+  </div>
+
+</main>
+
+</body>
+</html>

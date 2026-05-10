@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toggle Switch — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-7); display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-7); }
+    .showcase__label { flex: 0 0 100%; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Toggle Switch</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-14965">Figma — Lexicon Components</a>.
+    Two sizes (regular 48×24, sm 30×16). Optional icon inside the dot, visible only when checked.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Regular — off, on, on with icon</span>
+
+    <label class="toggle" aria-label="Off">
+      <input type="checkbox" class="toggle__input">
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+    </label>
+
+    <label class="toggle" aria-label="On">
+      <input type="checkbox" class="toggle__input" checked>
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+    </label>
+
+    <label class="toggle" aria-label="On with icon">
+      <input type="checkbox" class="toggle__input" checked>
+      <span class="toggle__track">
+        <span class="toggle__dot">
+          <svg class="lexicon-icon"><use href="#bell-on"></use></svg>
+        </span>
+      </span>
+    </label>
+
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Regular — with label</span>
+
+    <label class="toggle">
+      <input type="checkbox" class="toggle__input" checked>
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span class="toggle__label">Notifications</span>
+    </label>
+
+    <label class="toggle">
+      <input type="checkbox" class="toggle__input">
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span class="toggle__label">Email digest</span>
+    </label>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Small — off, on, on with icon</span>
+
+    <label class="toggle toggle--sm" aria-label="Off">
+      <input type="checkbox" class="toggle__input">
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+    </label>
+
+    <label class="toggle toggle--sm" aria-label="On">
+      <input type="checkbox" class="toggle__input" checked>
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+    </label>
+
+    <label class="toggle toggle--sm" aria-label="On with icon">
+      <input type="checkbox" class="toggle__input" checked>
+      <span class="toggle__track">
+        <span class="toggle__dot">
+          <svg class="lexicon-icon"><use href="#bell-on"></use></svg>
+        </span>
+      </span>
+    </label>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Disabled — off &amp; on</span>
+
+    <label class="toggle">
+      <input type="checkbox" class="toggle__input" disabled>
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span class="toggle__label">Disabled off</span>
+    </label>
+
+    <label class="toggle">
+      <input type="checkbox" class="toggle__input" checked disabled>
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span class="toggle__label">Disabled on</span>
+    </label>
+  </div>
+
+</main>
+
+</body>
+</html>

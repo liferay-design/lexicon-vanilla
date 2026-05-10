@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Bar — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-7); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Progress Bar</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=538-21604">Figma — Lexicon Components</a>.
+    8px tall track. States: loading (partial), striped (animated 100%), completed (green + icon).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Loading — 50%</span>
+    <div class="progress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__bar"><div class="progress__fill" style="width: 50%"></div></div>
+      <span class="progress__value">50%</span>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Loading — 25%</span>
+    <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__bar"><div class="progress__fill" style="width: 25%"></div></div>
+      <span class="progress__value">25%</span>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Striped — 100%, animated diagonal stripes</span>
+    <div class="progress progress--striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__bar"><div class="progress__fill" style="width: 100%"></div></div>
+      <span class="progress__value">100%</span>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Completed — green fill + check-circle icon</span>
+    <div class="progress progress--completed" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__bar"><div class="progress__fill" style="width: 100%"></div></div>
+      <svg class="lexicon-icon" aria-hidden="true"><use href="#check-circle-full"></use></svg>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

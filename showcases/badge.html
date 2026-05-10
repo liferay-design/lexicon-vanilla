@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badge — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--spacing-9) var(--spacing-7);
+    }
+    .showcase h1 {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .showcase p.lead {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-8);
+    }
+    .showcase__row {
+      margin-bottom: var(--spacing-7);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+    .showcase__label {
+      flex: 0 0 100%;
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Badge</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=7875-315">Figma — Lexicon Components</a>.
+    One axis: type (primary, secondary, info, success, warning, danger). Pill shaped, 16px tall.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Primary</span>
+    <span class="badge badge--primary">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Secondary</span>
+    <span class="badge badge--secondary">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Info</span>
+    <span class="badge badge--info">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Success</span>
+    <span class="badge badge--success">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Warning</span>
+    <span class="badge badge--warning">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Danger</span>
+    <span class="badge badge--danger">123</span>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">In context — counts of varying width</span>
+    <span class="badge badge--primary">1</span>
+    <span class="badge badge--primary">12</span>
+    <span class="badge badge--primary">123</span>
+    <span class="badge badge--primary">9999</span>
+    <span class="badge badge--secondary">New</span>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi Step Navigation — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Multi Step Navigation</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-22318">Figma — Lexicon Components</a>.
+    Horizontal stepper. States: <code>.is-complete</code> (dark filled + check), <code>.is-active</code> (primary blue + number), pending (light + number). Connector colour follows the completed step.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Six steps · all labelled · step 3 active</span>
+    <ol class="stepper">
+      <li class="stepper__step is-complete">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span>
+      </li>
+      <li class="stepper__step is-complete">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span>
+      </li>
+      <li class="stepper__step is-active">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">3</span>
+      </li>
+      <li class="stepper__step">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">4</span>
+      </li>
+      <li class="stepper__step">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">5</span>
+      </li>
+      <li class="stepper__step">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">6</span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Compact — only the active step is labelled, with overflow ellipsis</span>
+    <ol class="stepper" style="max-width: 420px;">
+      <li class="stepper__step is-complete"><span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span></li>
+      <li class="stepper__step is-complete"><span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span></li>
+      <li class="stepper__step is-complete"><span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span></li>
+      <li class="stepper__step is-active">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#ellipsis-h"></use></svg></span>
+      </li>
+      <li class="stepper__step"><span class="stepper__circle">5</span></li>
+    </ol>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Three steps · 1 complete + active 2 + pending 3</span>
+    <ol class="stepper" style="max-width: 320px;">
+      <li class="stepper__step is-complete"><span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span></li>
+      <li class="stepper__step is-active">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">2</span>
+      </li>
+      <li class="stepper__step"><span class="stepper__circle">3</span></li>
+    </ol>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Two steps · complete + active</span>
+    <ol class="stepper" style="max-width: 220px;">
+      <li class="stepper__step is-complete"><span class="stepper__circle"><svg class="lexicon-icon lexicon-icon-sm"><use href="#check-small"></use></svg></span></li>
+      <li class="stepper__step is-active">
+        <span class="stepper__label">Step Name</span>
+        <span class="stepper__circle">2</span>
+      </li>
+    </ol>
+  </div>
+
+</main>
+
+</body>
+</html>

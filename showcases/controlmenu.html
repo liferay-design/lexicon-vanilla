@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Menu — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__section { margin-bottom: var(--spacing-9); }
+    .showcase__label { font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); display: block; }
+    .showcase__mobile { max-width: 375px; }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Control Menu</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193">Figma</a>.
+    <code>.control-menu</code> wrapper · <code>.control-menu__left</code> / <code>.control-menu__right</code> sides ·
+    <code>.control-menu__btns</code> icon-button cluster · <code>.control-menu__title</code> page heading ·
+    <code>.control-menu__avatar</code> circular user portrait.
+  </p>
+
+  <!-- Desktop — Default -->
+  <div class="showcase__section">
+    <span class="showcase__label">Desktop — Default</span>
+    <div class="control-menu">
+      <div class="control-menu__left">
+        <div class="control-menu__btns">
+          <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+            <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+          </button>
+        </div>
+        <span class="control-menu__title">Documents and Media</span>
+      </div>
+      <div class="control-menu__right">
+        <button class="control-menu__btn" type="button" aria-label="Global navigation">
+          <svg class="lexicon-icon"><use href="#grid"></use></svg>
+        </button>
+        <div class="control-menu__avatar">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop — With back button -->
+  <div class="showcase__section">
+    <span class="showcase__label">Desktop — With back button</span>
+    <div class="control-menu">
+      <div class="control-menu__left">
+        <div class="control-menu__btns">
+          <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+            <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+          </button>
+          <button class="control-menu__btn" type="button" aria-label="Go back">
+            <svg class="lexicon-icon"><use href="#angle-left"></use></svg>
+          </button>
+        </div>
+        <span class="control-menu__title">Edit Document</span>
+      </div>
+      <div class="control-menu__right">
+        <button class="control-menu__btn" type="button" aria-label="Global navigation">
+          <svg class="lexicon-icon"><use href="#grid"></use></svg>
+        </button>
+        <div class="control-menu__avatar">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile -->
+  <div class="showcase__section">
+    <span class="showcase__label">Mobile</span>
+    <div class="showcase__mobile">
+      <div class="control-menu">
+        <div class="control-menu__left">
+          <div class="control-menu__btns">
+            <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+              <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+            </button>
+          </div>
+          <span class="control-menu__title">Documents and Media</span>
+        </div>
+        <div class="control-menu__right">
+          <button class="control-menu__btn" type="button" aria-label="Global navigation">
+            <svg class="lexicon-icon"><use href="#grid"></use></svg>
+          </button>
+          <div class="control-menu__avatar">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

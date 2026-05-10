@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+    /* Inline previews of modals (not the full overlay) so all variants are visible at once */
+    .modal-preview { display: block; max-width: 600px; margin-bottom: var(--spacing-7); border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: hidden; }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Modal</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=472-4478">Figma — Lexicon Components</a>.
+    Centred dialog over a dimmed overlay. Header (title + close), body (24 padding) and right-aligned footer of action buttons. Validation variants tint the header (warning / success / info).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default</span>
+    <div class="modal modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">Modal Title</h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body">
+        <p>This is the body of the modal. Use it for paragraphs of text, forms, or any other content.</p>
+      </div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Warning</span>
+    <div class="modal modal--warning modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+          Modal Title
+        </h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>Are you sure you want to proceed? This action cannot be undone.</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary btn--warning">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Success</span>
+    <div class="modal modal--success modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+          Modal Title
+        </h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>Your changes have been saved successfully.</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary btn--success">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Info</span>
+    <div class="modal modal--info modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+          Modal Title
+        </h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>Heads up — there are unsaved drafts in this workspace.</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Danger</span>
+    <div class="modal modal--danger modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+          Modal Title
+        </h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>This item will be permanently deleted and cannot be recovered.</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--borderless">Clear</button>
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary btn--danger">Delete</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">No dismiss — two-button footer (Cancel + action only)</span>
+    <div class="modal modal-preview">
+      <header class="modal__header">
+        <h2 class="modal__title">Confirm Action</h2>
+        <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="modal__body"><p>Are you sure you want to publish this item?</p></div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Publish</button>
+      </footer>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

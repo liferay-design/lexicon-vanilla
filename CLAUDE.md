@@ -53,7 +53,8 @@ vanilla/
 ├── index.html                  ← single-page catalogue with sidebar skin selector
 ├── colors.html                 ← full color token palette (142 tokens)
 ├── starter.html                ← scaffold for new prototypes (copy → edit)
-├── <component>.html            ← live showcase per component (button.html, alert.html, …)
+├── showcases/                  ← one live showcase per component (button.html, alert.html, …)
+├── illustrations/              ← decorative SVGs (satellite, spaceship, telescope)
 └── prototypes/                 ← designer outputs (created on demand)
 ```
 
@@ -248,7 +249,7 @@ Goal: a designer clones this directory, opens Claude Code, and asks for screens 
 
 1. Copy `starter.html` to `prototypes/<kebab-case-slug>.html`.
 2. Edit only inside the marked region. Keep the three `<link>`/`<script>` lines at the top intact.
-3. Use existing component classes (`button.html`, `alert.html` are the catalogues).
+3. Use existing component classes (`showcases/button.html`, `showcases/alert.html` are the catalogues).
 4. Need an icon? Grep `icons.svg` for `<symbol id="<keyword>"` and reference it as `<svg class="lexicon-icon"><use href="#name"></use></svg>`.
 5. Open the file in a browser — `file://` works without a server.
 
@@ -256,6 +257,19 @@ Never:
 - Inline custom SVG paths (always `<use>` from the sprite).
 - Add new CSS to the prototype itself (extend `components.css` if a primitive is missing).
 - Hard-code colors or spacing.
+
+---
+
+## Built-in helper: `/create-screen`
+
+This repo ships a Claude Code skill plus a slash command that automate the prototyping workflow above. Both are scoped to this repo (under `.claude/`) and only load when Claude Code operates inside this directory or one of its worktrees.
+
+- **Skill** — [.claude/skills/create-screen/SKILL.md](.claude/skills/create-screen/SKILL.md). Auto-triggers when the user asks to create / draft / mock up / design a screen, page, prototype, or wireframe in English or Spanish ("crea una pantalla de…", "diseña un mock-up…", etc.).
+- **Slash command** — [.claude/commands/create-screen.md](.claude/commands/create-screen.md). Explicit entry point: `/create-screen [optional description]`.
+
+Both paths follow the same workflow defined in `SKILL.md`, which covers: clarifying only structurally ambiguous decisions (sidebar variant, skin scope, state to render), inventing realistic sample data instead of asking, copying `starter.html`, composing with existing classes only, the hard rules, and a final checklist.
+
+**`SKILL.md` is the single source of truth — don't fork its content into the slash command file when editing.** The slash command file only points at the skill; updates to the workflow go in `SKILL.md`.
 
 ---
 
@@ -323,6 +337,47 @@ The four skins are activated by toggling a class on `<html>`. Copy this pattern 
 ```
 
 The JS toggles the skin class on `<html>`, persists under `localStorage` key `vanilla-skin`, closes on outside click and `Escape`. See the inline `<script>` at the bottom of `index.html` — copy verbatim.
+
+---
+
+## CMS Style — implementation reference
+
+`index.html` ships a second sibling toggle next to the skin selector called **CMS Style**, which overrides the rounded-corner tokens at runtime:
+
+| Token | Default | CMS Style on |
+|---|---|---|
+| `--rounded-sm` | 2px | **4px** |
+| `--rounded-md` | 4px | **8px** |
+| `--rounded-lg` | 8px | **16px** |
+
+The choice persists under `localStorage` key `vanilla-cms-style` (`'1'` = on, `''` or absent = off). It propagates to prototypes and showcases the same way the skin does — the head IIFE in each page reads the flag on load and applies the three `documentElement.style.setProperty` calls before any CSS runs.
+
+### Extended IIFE (what every prototype / showcase must ship in `<head>`)
+
+```html
+<script>(function(){
+  var S=['light','light-hc','dark','dark-hc'];
+  function apply(){try{
+    var r=document.documentElement;
+    var s=localStorage.getItem('vanilla-skin')||'light';
+    S.forEach(function(c){r.classList.remove(c);});
+    r.classList.add(S.indexOf(s)>-1?s:'light');
+    if(localStorage.getItem('vanilla-cms-style')==='1'){
+      r.style.setProperty('--rounded-sm','4px');
+      r.style.setProperty('--rounded-md','8px');
+      r.style.setProperty('--rounded-lg','16px');
+    }else{
+      r.style.removeProperty('--rounded-sm');
+      r.style.removeProperty('--rounded-md');
+      r.style.removeProperty('--rounded-lg');
+    }
+  }catch(e){}}
+  apply();
+  window.addEventListener('pageshow',apply);
+})()</script>
+```
+
+`starter.html` already includes this — any prototype copied from the scaffold inherits it. Older prototypes / showcases authored before this change need the IIFE replaced manually.
 
 ---
 

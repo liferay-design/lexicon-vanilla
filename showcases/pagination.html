@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagination — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); padding: var(--spacing-5); border: 1px solid var(--color-light-d2); border-radius: var(--rounded-md); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Pagination</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=532-2847">Figma — Lexicon Components</a>.
+    Page-size selector, summary, and page list with prev/next chevrons. Use <code>aria-current="page"</code> on the active page.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Inline — full layout (page 2 active)</span>
+    <nav class="pagination" aria-label="Pagination">
+      <button class="pagination__size btn btn--borderless btn--sm">
+        10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+      </button>
+      <span class="pagination__summary">Showing 1 to 10 of 95 entries.</span>
+      <ul class="pagination__pages">
+        <li><button class="pagination__btn" aria-label="Previous"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button></li>
+        <li><button class="pagination__btn">1</button></li>
+        <li><button class="pagination__btn is-active" aria-current="page">2</button></li>
+        <li><button class="pagination__btn">3</button></li>
+        <li><span class="pagination__ellipsis">…</span></li>
+        <li><button class="pagination__btn">8</button></li>
+        <li><button class="pagination__btn" aria-label="Next"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Inline — compact (3 pages, no chevrons)</span>
+    <nav class="pagination" aria-label="Pagination">
+      <button class="pagination__size btn btn--borderless btn--sm">
+        10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+      </button>
+      <span class="pagination__summary">Showing 1 to 10 of 95 entries.</span>
+      <ul class="pagination__pages">
+        <li><button class="pagination__btn">1</button></li>
+        <li><button class="pagination__btn is-active" aria-current="page">2</button></li>
+        <li><button class="pagination__btn">3</button></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Stacked — full layout</span>
+    <nav class="pagination pagination--stacked" aria-label="Pagination">
+      <button class="pagination__size btn btn--borderless btn--sm">
+        10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+      </button>
+      <span class="pagination__summary">Showing 1 to 10 of 95 entries.</span>
+      <ul class="pagination__pages">
+        <li><button class="pagination__btn" aria-label="Previous"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button></li>
+        <li><button class="pagination__btn">1</button></li>
+        <li><button class="pagination__btn is-active" aria-current="page">2</button></li>
+        <li><button class="pagination__btn">3</button></li>
+        <li><span class="pagination__ellipsis">…</span></li>
+        <li><button class="pagination__btn">8</button></li>
+        <li><button class="pagination__btn" aria-label="Next"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button></li>
+      </ul>
+    </nav>
+  </div>
+
+</main>
+
+</body>
+</html>

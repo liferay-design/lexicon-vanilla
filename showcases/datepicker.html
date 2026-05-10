@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Picker — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); display: flex; flex-direction: column; gap: var(--spacing-7); align-items: flex-start; }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Date Picker</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-18443">Figma — Lexicon Components</a>.
+    Trigger: <code>.input</code> + <code>.input-group</code> with leading <code>#calendar</code> icon. Panel: <code>.date-picker-panel</code> with month/year controls, weekday row, 7-column grid (single date or range) and an optional time-picker row.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Trigger field — default · disabled</span>
+    <div class="input" style="max-width: 366px; width: 100%;">
+      <label class="input__label">Date Picker</label>
+      <span class="input__help">Help Text</span>
+      <div class="input-group">
+        <input class="input__field" type="text" placeholder="YYYY-MM-DD --:-- --">
+        <button class="input-group__addon btn btn--borderless btn--icon" aria-label="Open calendar">
+          <svg class="lexicon-icon"><use href="#calendar"></use></svg>
+        </button>
+      </div>
+    </div>
+
+
+    <div class="input" style="max-width: 366px; width: 100%;">
+      <label class="input__label">Date Picker <span class="input__help">(Not Localizable)</span></label>
+      <div class="input-group">
+        <input class="input__field" type="text" placeholder="YYYY-MM-DD --:-- --" disabled style="background: var(--color-light);">
+        <button class="input-group__addon btn btn--borderless btn--icon" aria-label="Open calendar" disabled>
+          <svg class="lexicon-icon"><use href="#calendar"></use></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Panel — single date with time row</span>
+    <div class="date-picker-panel">
+      <div class="date-picker-panel__header">
+        <div class="date-picker-panel__nav">
+          <button class="btn btn--borderless btn--sm">December <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button>
+          <button class="btn btn--borderless btn--sm">2024 <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button>
+        </div>
+        <div class="date-picker-panel__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Previous month"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Today"><svg class="lexicon-icon"><use href="#circle"></use></svg></button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Next month"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button>
+        </div>
+      </div>
+      <div class="date-picker-panel__weekdays">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+      <div class="date-picker-panel__grid">
+        <button class="date-picker-panel__day date-picker-panel__day--muted">30</button>
+        <button class="date-picker-panel__day">1</button>
+        <button class="date-picker-panel__day">2</button>
+        <button class="date-picker-panel__day">3</button>
+        <button class="date-picker-panel__day">4</button>
+        <button class="date-picker-panel__day">5</button>
+        <button class="date-picker-panel__day">6</button>
+        <button class="date-picker-panel__day">7</button>
+        <button class="date-picker-panel__day">8</button>
+        <button class="date-picker-panel__day">9</button>
+        <button class="date-picker-panel__day">10</button>
+        <button class="date-picker-panel__day is-selected">11</button>
+        <button class="date-picker-panel__day">12</button>
+        <button class="date-picker-panel__day">13</button>
+        <button class="date-picker-panel__day">14</button>
+        <button class="date-picker-panel__day">15</button>
+        <button class="date-picker-panel__day">16</button>
+        <button class="date-picker-panel__day">17</button>
+        <button class="date-picker-panel__day">18</button>
+        <button class="date-picker-panel__day">19</button>
+        <button class="date-picker-panel__day">20</button>
+        <button class="date-picker-panel__day">21</button>
+        <button class="date-picker-panel__day">22</button>
+        <button class="date-picker-panel__day">23</button>
+        <button class="date-picker-panel__day">24</button>
+        <button class="date-picker-panel__day">25</button>
+        <button class="date-picker-panel__day">26</button>
+        <button class="date-picker-panel__day">27</button>
+        <button class="date-picker-panel__day">28</button>
+        <button class="date-picker-panel__day">29</button>
+        <button class="date-picker-panel__day">30</button>
+        <button class="date-picker-panel__day">31</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">1</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">2</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">3</button>
+      </div>
+      <div class="date-picker-panel__time">
+        <svg class="lexicon-icon"><use href="#clock"></use></svg>
+        <input class="date-picker-panel__time-input" type="text" value="--:--" >
+        <span class="date-picker-panel__time-tz">(UTC+09:00) <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Panel — date range</span>
+    <div class="date-picker-panel">
+      <div class="date-picker-panel__header">
+        <div class="date-picker-panel__nav">
+          <button class="btn btn--borderless btn--sm">December <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button>
+          <button class="btn btn--borderless btn--sm">2024 <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button>
+        </div>
+        <div class="date-picker-panel__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Previous month"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Today"><svg class="lexicon-icon"><use href="#circle"></use></svg></button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Next month"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button>
+        </div>
+      </div>
+      <div class="date-picker-panel__weekdays">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+      <div class="date-picker-panel__grid">
+        <button class="date-picker-panel__day date-picker-panel__day--muted">30</button>
+        <button class="date-picker-panel__day">1</button>
+        <button class="date-picker-panel__day">2</button>
+        <button class="date-picker-panel__day">3</button>
+        <button class="date-picker-panel__day">4</button>
+        <button class="date-picker-panel__day">5</button>
+        <button class="date-picker-panel__day">6</button>
+        <button class="date-picker-panel__day">7</button>
+        <button class="date-picker-panel__day">8</button>
+        <button class="date-picker-panel__day">9</button>
+        <button class="date-picker-panel__day">10</button>
+        <button class="date-picker-panel__day is-range-start">11</button>
+        <button class="date-picker-panel__day is-in-range">12</button>
+        <button class="date-picker-panel__day is-in-range">13</button>
+        <button class="date-picker-panel__day is-in-range">14</button>
+        <button class="date-picker-panel__day is-in-range">15</button>
+        <button class="date-picker-panel__day is-in-range">16</button>
+        <button class="date-picker-panel__day is-in-range">17</button>
+        <button class="date-picker-panel__day is-range-end">18</button>
+        <button class="date-picker-panel__day">19</button>
+        <button class="date-picker-panel__day">20</button>
+        <button class="date-picker-panel__day">21</button>
+        <button class="date-picker-panel__day">22</button>
+        <button class="date-picker-panel__day">23</button>
+        <button class="date-picker-panel__day">24</button>
+        <button class="date-picker-panel__day">25</button>
+        <button class="date-picker-panel__day">26</button>
+        <button class="date-picker-panel__day">27</button>
+        <button class="date-picker-panel__day">28</button>
+        <button class="date-picker-panel__day">29</button>
+        <button class="date-picker-panel__day">30</button>
+        <button class="date-picker-panel__day">31</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">1</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">2</button>
+        <button class="date-picker-panel__day date-picker-panel__day--muted">3</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

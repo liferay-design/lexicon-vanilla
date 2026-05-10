@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Administration — Lexicon Vanilla</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+</head>
+<body style="margin: 0;">
+
+<!-- ════════════════════════════════════════════════════════════════
+     User Administration screen
+     Layout: control-menu + cms-menu (left) + content
+     Click a user row → opens edit modal (data-* attributes feed the form)
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- Control menu (top bar) -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Users &amp; Organizations</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- App body: sidebar + content -->
+<div style="display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px);">
+
+  <!-- CMS menu (left sidebar) -->
+  <aside class="cms-menu">
+    <ul class="cms-menu__groups">
+
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg>
+            </span>
+            Home
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#analytics"></use></svg>
+            </span>
+            Dashboard
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          USER MANAGEMENT
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item is-active">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#users"></use></svg>
+            </span>
+            Users
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#organizations"></use></svg>
+            </span>
+            Organizations
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#user-plus"></use></svg>
+            </span>
+            User Groups
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#password-policies"></use></svg>
+            </span>
+            Roles
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          SECURITY
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#key"></use></svg>
+            </span>
+            Password Policies
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#document-text"></use></svg>
+            </span>
+            Audit Logs
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <div class="vert-nav__group-header">
+          ORGANIZATIONS
+          <span class="vert-nav__group-actions">
+            <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add organization">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg>
+            </button>
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </span>
+        </div>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <span class="sticker sticker--outline" style="background: #e3f1ff; color: #0b5fff; border-color: #0b5fff;">L</span>
+            </span>
+            Liferay Spain
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <span class="sticker sticker--outline" style="background: #fdebe0; color: #b95000; border-color: #b95000;">G</span>
+            </span>
+            Global HQ
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <span class="sticker sticker--outline" style="background: #e2f5ec; color: #287d3c; border-color: #287d3c;">A</span>
+            </span>
+            APAC
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#trash"></use></svg>
+            </span>
+            Recycle bin
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main style="display: flex; flex-direction: column; min-width: 0;">
+
+    <header style="display: flex; flex-direction: column; gap: var(--spacing-2); padding: var(--spacing-6);">
+      <h1 style="margin: 0; font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);">Users</h1>
+      <p style="margin: 0; color: var(--color-dark); opacity: 0.7; font-size: var(--font-size-sm);">
+        Manage user accounts, roles, and access across organizations.
+      </p>
+    </header>
+
+    <!-- Management toolbar -->
+    <div class="management-toolbar">
+      <div class="management-toolbar__bar">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+
+        <button class="btn btn--secondary btn--sm" type="button">
+          <svg class="lexicon-icon"><use href="#filter"></use></svg>
+          Filter
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </button>
+
+        <button class="btn btn--secondary btn--sm" type="button">
+          <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
+          Order
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </button>
+
+        <div class="management-toolbar__search">
+          <div class="search">
+            <input class="input__field search__field" type="search" placeholder="Search users by name, email, or role…">
+            <button class="search__clear" aria-label="Clear" hidden type="button">
+              <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+            </button>
+            <button class="search__submit" aria-label="Search" type="button">
+              <svg class="lexicon-icon"><use href="#search"></use></svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+          <svg class="lexicon-icon"><use href="#list"></use></svg>
+          <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+        </button>
+
+        <button class="btn btn--primary btn--sm" type="button">
+          <svg class="lexicon-icon"><use href="#plus"></use></svg>
+          New User
+          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+        </button>
+
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
+          <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Users table -->
+    <table class="table" id="users-table">
+      <thead>
+        <tr>
+          <th class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select all">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Organization</th>
+          <th>Status</th>
+          <th>Last login</th>
+          <th class="table__cell--gutter"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-first="Veronica" data-last="Gonzalez" data-email="veronica.gonzalez@liferay.com" data-role="Administrator" data-org="Liferay Spain" data-status="active" data-initials="VG" data-tone="primary">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--primary">VG</span>
+              <a href="#" class="table__title js-edit-user">Veronica Gonzalez</a>
+            </span>
+          </td>
+          <td>veronica.gonzalez@liferay.com</td>
+          <td>Administrator</td>
+          <td>Liferay Spain</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Today, 09:42</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Marcos" data-last="Ruiz" data-email="marcos.ruiz@liferay.com" data-role="Site Manager" data-org="Liferay Spain" data-status="active" data-initials="MR" data-tone="info">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--info">MR</span>
+              <a href="#" class="table__title js-edit-user">Marcos Ruiz</a>
+            </span>
+          </td>
+          <td>marcos.ruiz@liferay.com</td>
+          <td>Site Manager</td>
+          <td>Liferay Spain</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Today, 08:15</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr class="is-selected" data-first="Alex" data-last="Chen" data-email="alex.chen@liferay.com" data-role="Content Editor" data-org="APAC" data-status="active" data-initials="AC" data-tone="success">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input" checked>
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--success">AC</span>
+              <a href="#" class="table__title js-edit-user">Alex Chen</a>
+            </span>
+          </td>
+          <td>alex.chen@liferay.com</td>
+          <td>Content Editor</td>
+          <td>APAC</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Yesterday, 17:21</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Priya" data-last="Desai" data-email="priya.desai@liferay.com" data-role="Developer" data-org="Global HQ" data-status="pending" data-initials="PD" data-tone="warning">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--warning">PD</span>
+              <a href="#" class="table__title js-edit-user">Priya Desai</a>
+            </span>
+          </td>
+          <td>priya.desai@liferay.com</td>
+          <td>Developer</td>
+          <td>Global HQ</td>
+          <td><span class="label label--sm label--warning">Pending</span></td>
+          <td>Never</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Johanna" data-last="Klein" data-email="johanna.klein@liferay.com" data-role="Site Manager" data-org="Global HQ" data-status="locked" data-initials="JK" data-tone="danger">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--danger">JK</span>
+              <a href="#" class="table__title js-edit-user">Johanna Klein</a>
+            </span>
+          </td>
+          <td>johanna.klein@liferay.com</td>
+          <td>Site Manager</td>
+          <td>Global HQ</td>
+          <td><span class="label label--sm label--danger">Locked</span></td>
+          <td>Mar 12, 2026</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Diego" data-last="Soto" data-email="diego.soto@liferay.com" data-role="Content Editor" data-org="Liferay Spain" data-status="active" data-initials="DS" data-tone="info">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--info">DS</span>
+              <a href="#" class="table__title js-edit-user">Diego Soto</a>
+            </span>
+          </td>
+          <td>diego.soto@liferay.com</td>
+          <td>Content Editor</td>
+          <td>Liferay Spain</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Today, 11:08</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr class="is-selected" data-first="Sara" data-last="Okonkwo" data-email="sara.okonkwo@liferay.com" data-role="Administrator" data-org="Global HQ" data-status="active" data-initials="SO" data-tone="primary">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input" checked>
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--primary">SO</span>
+              <a href="#" class="table__title js-edit-user">Sara Okonkwo</a>
+            </span>
+          </td>
+          <td>sara.okonkwo@liferay.com</td>
+          <td>Administrator</td>
+          <td>Global HQ</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Today, 10:55</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Yuki" data-last="Tanaka" data-email="yuki.tanaka@liferay.com" data-role="Developer" data-org="APAC" data-status="inactive" data-initials="YT" data-tone="success">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--success">YT</span>
+              <a href="#" class="table__title js-edit-user">Yuki Tanaka</a>
+            </span>
+          </td>
+          <td>yuki.tanaka@liferay.com</td>
+          <td>Developer</td>
+          <td>APAC</td>
+          <td><span class="label label--sm label--secondary">Inactive</span></td>
+          <td>Feb 28, 2026</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Nadia" data-last="El-Sayed" data-email="nadia.elsayed@liferay.com" data-role="Content Editor" data-org="Global HQ" data-status="pending" data-initials="NE" data-tone="warning">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--warning">NE</span>
+              <a href="#" class="table__title js-edit-user">Nadia El-Sayed</a>
+            </span>
+          </td>
+          <td>nadia.elsayed@liferay.com</td>
+          <td>Content Editor</td>
+          <td>Global HQ</td>
+          <td><span class="label label--sm label--warning">Pending</span></td>
+          <td>Never</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+        <tr data-first="Lucas" data-last="Moreau" data-email="lucas.moreau@liferay.com" data-role="Site Manager" data-org="Liferay Spain" data-status="active" data-initials="LM" data-tone="info">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <span class="sticker sticker--circle sticker--outline sticker--info">LM</span>
+              <a href="#" class="table__title js-edit-user">Lucas Moreau</a>
+            </span>
+          </td>
+          <td>lucas.moreau@liferay.com</td>
+          <td>Site Manager</td>
+          <td>Liferay Spain</td>
+          <td><span class="label label--sm label--success">Active</span></td>
+          <td>Today, 07:44</td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More actions"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav class="pagination" aria-label="Pagination" style="padding: var(--spacing-4) var(--spacing-6);">
+      <button class="pagination__size btn btn--borderless btn--sm">
+        10 Items <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+      </button>
+      <span class="pagination__summary">Showing 1 to 10 of 247 users.</span>
+      <ul class="pagination__pages">
+        <li><button class="pagination__btn" aria-label="Previous"><svg class="lexicon-icon"><use href="#angle-left"></use></svg></button></li>
+        <li><button class="pagination__btn is-active" aria-current="page">1</button></li>
+        <li><button class="pagination__btn">2</button></li>
+        <li><button class="pagination__btn">3</button></li>
+        <li><span class="pagination__ellipsis">…</span></li>
+        <li><button class="pagination__btn">25</button></li>
+        <li><button class="pagination__btn" aria-label="Next"><svg class="lexicon-icon"><use href="#angle-right"></use></svg></button></li>
+      </ul>
+    </nav>
+
+  </main>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Edit user modal — hidden by default; opened from a row click
+     ════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="edit-user-overlay" style="display: none;">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-user-title">
+    <header class="modal__header">
+      <h2 id="edit-user-title" class="modal__title">Edit user</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close js-close-modal" aria-label="Close" type="button">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+
+    <div class="modal__body">
+      <form id="edit-user-form" style="display: flex; flex-direction: column; gap: var(--spacing-5);" onsubmit="event.preventDefault(); document.getElementById('edit-user-overlay').style.display = 'none';">
+
+        <!-- Avatar + headline -->
+        <div style="display: flex; align-items: center; gap: var(--spacing-4);">
+          <span id="edit-user-avatar" class="sticker sticker--circle sticker--outline sticker--primary sticker--lg">VG</span>
+          <div style="display: flex; flex-direction: column; gap: var(--spacing-1);">
+            <strong id="edit-user-headline" style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold);">Veronica Gonzalez</strong>
+            <span id="edit-user-email-display" style="color: var(--color-dark); opacity: 0.65; font-size: var(--font-size-sm);">veronica.gonzalez@liferay.com</span>
+          </div>
+        </div>
+
+        <!-- First / last name (2 cols) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+          <div class="input">
+            <label class="input__label" for="edit-first">First name <span class="input__required">*</span></label>
+            <input class="input__field" type="text" id="edit-first" name="first" value="Veronica" required>
+          </div>
+          <div class="input">
+            <label class="input__label" for="edit-last">Last name <span class="input__required">*</span></label>
+            <input class="input__field" type="text" id="edit-last" name="last" value="Gonzalez" required>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input">
+          <label class="input__label" for="edit-email">Email <span class="input__required">*</span></label>
+          <input class="input__field" type="email" id="edit-email" name="email" value="veronica.gonzalez@liferay.com" required>
+          <span class="input__help">Used for sign-in and notifications.</span>
+        </div>
+
+        <!-- Role / Organization (2 cols) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+          <div class="input">
+            <label class="input__label" for="edit-role">Role</label>
+            <select class="input__field" id="edit-role" name="role">
+              <option>Administrator</option>
+              <option>Site Manager</option>
+              <option>Content Editor</option>
+              <option>Developer</option>
+              <option>Guest</option>
+            </select>
+          </div>
+          <div class="input">
+            <label class="input__label" for="edit-org">Organization</label>
+            <select class="input__field" id="edit-org" name="org">
+              <option>Liferay Spain</option>
+              <option>Global HQ</option>
+              <option>APAC</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Status toggles -->
+        <fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--spacing-3);">
+          <legend class="input__label" style="margin-bottom: var(--spacing-2);">Account</legend>
+
+          <label class="toggle">
+            <input type="checkbox" class="toggle__input" id="edit-active" checked>
+            <span class="toggle__track"><span class="toggle__dot"></span></span>
+            <span class="toggle__label">Active — user can sign in</span>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" class="toggle__input" id="edit-reset">
+            <span class="toggle__track"><span class="toggle__dot"></span></span>
+            <span class="toggle__label">Send password reset on save</span>
+          </label>
+        </fieldset>
+
+      </form>
+    </div>
+
+    <footer class="modal__footer">
+      <button class="btn btn--borderless btn--danger" type="button">Delete user</button>
+      <button class="btn btn--secondary js-close-modal" type="button">Cancel</button>
+      <button class="btn btn--primary" type="submit" form="edit-user-form">Save changes</button>
+    </footer>
+  </div>
+</div>
+
+<!-- Wire up the table → modal interaction -->
+<script>
+  (function () {
+    var overlay = document.getElementById('edit-user-overlay');
+    var form = {
+      avatar: document.getElementById('edit-user-avatar'),
+      headline: document.getElementById('edit-user-headline'),
+      emailDisplay: document.getElementById('edit-user-email-display'),
+      first: document.getElementById('edit-first'),
+      last: document.getElementById('edit-last'),
+      email: document.getElementById('edit-email'),
+      role: document.getElementById('edit-role'),
+      org: document.getElementById('edit-org'),
+      active: document.getElementById('edit-active')
+    };
+    var TONES = ['secondary', 'primary', 'info', 'success', 'warning', 'danger'];
+
+    function openForRow(tr) {
+      var d = tr.dataset;
+      form.first.value = d.first;
+      form.last.value = d.last;
+      form.email.value = d.email;
+      form.emailDisplay.textContent = d.email;
+      form.headline.textContent = d.first + ' ' + d.last;
+      form.role.value = d.role;
+      form.org.value = d.org;
+      form.active.checked = (d.status === 'active');
+
+      form.avatar.textContent = d.initials;
+      TONES.forEach(function (t) { form.avatar.classList.remove('sticker--' + t); });
+      form.avatar.classList.add('sticker--' + (d.tone || 'primary'));
+
+      overlay.style.display = 'flex';
+      setTimeout(function () { form.first.focus(); }, 0);
+    }
+
+    function close() { overlay.style.display = 'none'; }
+
+    document.querySelectorAll('.js-edit-user').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var tr = link.closest('tr');
+        if (tr) openForRow(tr);
+      });
+    });
+
+    document.querySelectorAll('.js-close-modal').forEach(function (btn) {
+      btn.addEventListener('click', close);
+    });
+
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.style.display !== 'none') close();
+    });
+
+    // ── Collapsible CMS-menu groups ─────────────────────────────────
+    document.querySelectorAll('.vert-nav__group-header').forEach(function (header) {
+      if (!header.hasAttribute('aria-expanded')) header.setAttribute('aria-expanded', 'true');
+
+      // <div> headers (with action buttons inside) need explicit button semantics
+      if (header.tagName === 'DIV') {
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+      }
+
+      // Chevron is always the LAST .lexicon-icon inside the header
+      var icons = header.querySelectorAll('svg.lexicon-icon');
+      var chevron = icons[icons.length - 1] || null;
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      function toggle() {
+        var isExpanded = header.getAttribute('aria-expanded') !== 'false';
+        var next = !isExpanded;
+        header.setAttribute('aria-expanded', String(next));
+
+        // The list lives as the next sibling of the header *inside the same <li>*
+        var li = header.parentElement;
+        var list = li && li.querySelector(':scope > .vert-nav__list');
+        if (list) list.style.display = next ? '' : 'none';
+
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      }
+
+      header.addEventListener('click', function (e) {
+        // Don't toggle when the inline action button (e.g. add organization) is clicked
+        if (e.target.closest('.vert-nav__group-actions button')) return;
+        toggle();
+      });
+
+      header.addEventListener('keydown', function (e) {
+        if (header.tagName === 'DIV' && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

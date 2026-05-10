@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 1200px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Table</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1844-20952">Figma — Lexicon Components</a>.
+    Standard data table. Header row + zebra-striped body rows + optional checkbox / actions gutter columns. Selected rows tint with primary-l3. Composes Sticker (folder icon), Label, Checkbox.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Full layout — checkboxes, multi-line cells, selected rows, status labels</span>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select all">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Text</th>
+          <th>Text</th>
+          <th>Text</th>
+          <th class="table__cell--gutter"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <svg class="lexicon-icon table__icon"><use href="#folder"></use></svg>
+              <a href="#" class="table__title">Very long title to be displayed in two lines</a>
+            </span>
+          </td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td>
+            <span class="table__title-wrap">
+              <svg class="lexicon-icon table__icon"><use href="#folder"></use></svg>
+              <a href="#" class="table__title">Text</a>
+            </span>
+          </td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Very long title to be displayed in three lines</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr class="is-selected">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input" checked>
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>
+            <span class="table__stack">
+              <span class="label label--sm label--success">Approved</span>
+              <span class="label label--sm label--primary">Cached</span>
+            </span>
+          </td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr class="is-selected">
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input" checked>
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+        <tr>
+          <td class="table__cell--gutter">
+            <label class="checkbox" aria-label="Select row">
+              <input type="checkbox" class="checkbox__input">
+              <span class="checkbox__box">
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
+            </label>
+          </td>
+          <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Text</a></span></td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td>Text</td>
+          <td><span class="label label--sm label--success">Approved</span></td>
+          <td class="table__cell--gutter">
+            <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+</body>
+</html>

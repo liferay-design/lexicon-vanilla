@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Picker — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Time Picker</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-30482">Figma — Lexicon Components</a>.
+    HH:MM input with a leading clock icon, optional inline clear + spinner (caret-up/down stack) and a trailing timezone label. Composes the <code>.input</code> wrapper.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default · disabled (read-only)</span>
+
+    <div class="input" style="margin-bottom: var(--spacing-7);">
+      <span class="input__help">(Not Localizable)</span>
+      <div class="time-picker">
+        <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
+        <div class="time-picker__field">
+          <input class="input__field time-picker__input" type="text" value="12:45">
+        </div>
+        <span class="time-picker__tz">(GTM+01:00)</span>
+      </div>
+    </div>
+
+    <div class="input" style="margin-bottom: var(--spacing-7);">
+      <label class="input__label">Time Picker</label>
+      <div class="time-picker">
+        <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
+        <div class="time-picker__field">
+          <input class="input__field time-picker__input" type="text" value="12:45">
+          <button class="time-picker__clear" aria-label="Clear"><svg class="lexicon-icon"><use href="#times-circle-full"></use></svg></button>
+          <span class="time-picker__spinner">
+            <button aria-label="Increase"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg></button>
+            <button aria-label="Decrease"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg></button>
+          </span>
+        </div>
+        <span class="time-picker__tz">(UTC+09:00)
+          <svg class="lexicon-icon" style="color: var(--color-secondary);"><use href="#caret-double-l"></use></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="input">
+      <label class="input__label">Time Picker</label>
+      <div class="time-picker">
+        <svg class="lexicon-icon time-picker__icon"><use href="#clock"></use></svg>
+        <div class="time-picker__field">
+          <input class="input__field time-picker__input" type="text" value="08:56  PM" readonly style="background: var(--color-light); border-color: var(--color-light);">
+        </div>
+        <span class="time-picker__tz">(UTC+09:00)
+          <svg class="lexicon-icon" style="color: var(--color-secondary);"><use href="#caret-double-l"></use></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

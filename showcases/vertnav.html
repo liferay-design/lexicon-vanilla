@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Navigation — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); padding: var(--spacing-5); background: var(--color-light); border-radius: var(--rounded-md); display: inline-flex; gap: var(--spacing-7); flex-wrap: wrap; align-items: flex-start; }
+    .showcase__label { flex: 0 0 100%; display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Vertical Navigation</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-27394">Figma — Lexicon Components</a>.
+    Sidebar nav. Items are 40px, full-width, rectangular (no border-radius). Active item: 6px primary left border + primary-l3 fill. Expandable group parent uses <code>.vert-nav__group-header</code>. Icons use a <code>.vert-nav__icon-cell</code> 24px wrapper to center the 16px icon.
+  </p>
+
+  <!-- ── Variant: expandable group (open) + standalone section items ── -->
+  <div class="showcase__row">
+    <span class="showcase__label">Expandable group (open) · active child · standalone items</span>
+
+    <nav class="vert-nav">
+      <ul class="vert-nav__list">
+
+        <!-- Level-1 group header (expanded / parent of active) -->
+        <li>
+          <button class="vert-nav__group-header" aria-expanded="true">
+            Item Name
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+          <!-- Level-2 children -->
+          <ul class="vert-nav__list">
+            <li class="vert-nav__item is-active">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#box-container"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#categories"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#books"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg>
+              </span>
+              Item Name
+            </li>
+            <li class="vert-nav__item">
+              <span class="vert-nav__icon-cell">
+                <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+              </span>
+              Item Name
+            </li>
+          </ul>
+        </li>
+
+        <!-- Standalone items (Section label role) -->
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
+        </li>
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
+        </li>
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
+        </li>
+        <li class="vert-nav__item">
+          <span class="vert-nav__icon-cell">
+            <svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg>
+          </span>
+          Section
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+
+</main>
+
+</body>
+</html>

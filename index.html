@@ -45,11 +45,15 @@
       display: block;
       padding: var(--spacing-2) var(--spacing-3);
       border-radius: var(--rounded-md);
-      color: var(--color-primary);
+      color: var(--color-dark);
       text-decoration: none;
       font-size: var(--font-size-sm);
+      transition: background 120ms ease, color 120ms ease;
     }
-    .ref__nav a:hover { background: var(--color-light); }
+    .ref__nav a:hover {
+      background: var(--color-primary-l3);
+      color: var(--color-primary);
+    }
 
     .ref__main {
       padding: var(--spacing-9) var(--spacing-9);
@@ -136,6 +140,18 @@
     }
     .ref__skin .dropdown__item:hover { background: var(--color-light); }
     .ref__cms-toggle { margin-bottom: var(--spacing-7); }
+    .ref__download {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-4) var(--spacing-3) 0;
+      margin-top: var(--spacing-4);
+      border-top: 1px solid var(--color-light-d2);
+      font-size: var(--font-size-sm);
+      color: var(--color-dark);
+      text-decoration: none;
+    }
+    .ref__download:hover { color: var(--color-primary); }
   </style>
 </head>
 <body>
@@ -231,6 +247,15 @@
       <li><a href="#comp-controlmenu">Control Menu</a></li>
       <li><a href="#comp-cmsmenu">CMS Menu</a></li>
     </ul>
+
+    <a
+      class="ref__download"
+      href="https://github.com/marcoscv-work/lexicon-vanilla/archive/refs/heads/main.zip"
+      download
+    >
+      <svg class="lexicon-icon lexicon-icon-sm"><use href="#download"></use></svg>
+      Download repo
+    </a>
   </nav>
 
   <main class="ref__main">
@@ -465,7 +490,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-7517">Figma ↗</a>
           ·
-          <a href="button.html">Playground</a>
+          <a href="showcases/button.html">Playground</a>
         </span>
       </div>
       <p class="lead">Axes: type, tone, size, shape, icon mode, state.</p>
@@ -544,7 +569,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=457-5325">Figma ↗</a>
           ·
-          <a href="alert.html">Playground</a>
+          <a href="showcases/alert.html">Playground</a>
         </span>
       </div>
       <p class="lead">
@@ -670,7 +695,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=7875-315">Figma ↗</a>
           ·
-          <a href="badge.html">Playground</a>
+          <a href="showcases/badge.html">Playground</a>
         </span>
       </div>
       <p class="lead">Compact pill for counts and status labels. One axis: type.</p>
@@ -701,7 +726,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=493-12886">Figma ↗</a>
           ·
-          <a href="checkbox.html">Playground</a>
+          <a href="showcases/checkbox.html">Playground</a>
         </span>
       </div>
       <p class="lead">
@@ -798,7 +823,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-19590">Figma ↗</a>
           ·
-          <a href="label.html">Playground</a>
+          <a href="showcases/label.html">Playground</a>
         </span>
       </div>
       <p class="lead">
@@ -868,7 +893,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=545-520">Figma ↗</a>
           ·
-          <a href="section.html">Playground</a>
+          <a href="showcases/section.html">Playground</a>
         </span>
       </div>
       <p class="lead">
@@ -906,7 +931,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=473-4340">Figma ↗</a>
           ·
-          <a href="breadcrumb.html">Playground</a>
+          <a href="showcases/breadcrumb.html">Playground</a>
         </span>
       </div>
       <p class="lead">Path navigation. Use <code>aria-current="page"</code> on the last item; add <code>.breadcrumb__sep</code> after each non-last link; truncate with a leading <code>#angle-double-right-small</code> icon.</p>
@@ -937,7 +962,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-10707">Figma ↗</a>
           ·
-          <a href="btngroup.html">Playground</a>
+          <a href="showcases/btngroup.html">Playground</a>
         </span>
       </div>
       <p class="lead">Segmented control + split button. Add <code>.is-active</code> to the selected segment.</p>
@@ -972,7 +997,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=477-11087">Figma ↗</a>
           ·
-          <a href="btntranslucent.html">Playground</a>
+          <a href="showcases/btntranslucent.html">Playground</a>
         </span>
       </div>
       <p class="lead">Pill button for dark surfaces. Compose with tone modifiers; add a small status dot via the <code>.indicator</code> helper.</p>
@@ -994,7 +1019,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=675-4191">Figma ↗</a>
           ·
-          <a href="card.html">Playground</a>
+          <a href="showcases/card.html">Playground</a>
         </span>
       </div>
       <p class="lead">Default: media + body. Use <code>.card--centered</code> for icon cards, <code>.card--inline</code> for list rows. <code>.is-selected</code> turns the border primary.</p>
@@ -1042,7 +1067,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-19191">Figma ↗</a>
           ·
-          <a href="empty.html">Playground</a>
+          <a href="showcases/empty.html">Playground</a>
         </span>
       </div>
       <p class="lead">Tinted circular media slot + title + description + optional CTA. Use <code>--sm</code> for the compact form.</p>
@@ -1051,13 +1076,13 @@
         <span class="showcase__label">Default with CTA &middot; compact</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-7);">
           <div class="empty-state">
-            <div class="empty-state__media"><img src="illustration-telescope.svg" alt=""></div>
+            <div class="empty-state__media"><img src="illustrations/illustration-telescope.svg" alt=""></div>
             <h3 class="empty-state__title">Place your title here</h3>
             <p class="empty-state__text">Please, fill this text box with your content.</p>
             <button class="btn btn--secondary">Button</button>
           </div>
           <div class="empty-state empty-state--sm">
-            <div class="empty-state__media"><img src="illustration-satellite.svg" alt=""></div>
+            <div class="empty-state__media"><img src="illustrations/illustration-satellite.svg" alt=""></div>
             <h3 class="empty-state__title">No results found</h3>
             <p class="empty-state__text">Try adjusting your filters.</p>
           </div>
@@ -1072,7 +1097,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-6604">Figma ↗</a>
           ·
-          <a href="formsheet.html">Playground</a>
+          <a href="showcases/formsheet.html">Playground</a>
         </span>
       </div>
       <p class="lead">White card with <code>.sheet-header</code> (title + text), content rows (single column or 2 cols via <code>.sheet-row</code>), and an optional <code>.sheet-footer</code> of buttons.</p>
@@ -1109,7 +1134,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=733-14906">Figma ↗</a>
           ·
-          <a href="input.html">Playground</a>
+          <a href="showcases/input.html">Playground</a>
         </span>
       </div>
       <p class="lead">32px tall fill, focus turns primary tint + ring. Validation tones tint the field and colour the feedback row. Textarea via <code>.input__field--textarea</code>.</p>
@@ -1139,7 +1164,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=6502-81849">Figma ↗</a>
           ·
-          <a href="inputgroup.html">Playground</a>
+          <a href="showcases/inputgroup.html">Playground</a>
         </span>
       </div>
       <p class="lead">Combine <code>.input__field</code> with leading/trailing text or button addons. Validation tones flow from the wrapping <code>.input</code>.</p>
@@ -1178,7 +1203,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1039-28790">Figma ↗</a>
           ·
-          <a href="keys.html">Playground</a>
+          <a href="showcases/keys.html">Playground</a>
         </span>
       </div>
       <p class="lead">Keyboard-shortcut chip. Two sizes (regular / <code>--sm</code>) and two types (auto-width / <code>--fixed</code> square).</p>
@@ -1206,7 +1231,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-29024">Figma ↗</a>
           ·
-          <a href="loading.html">Playground</a>
+          <a href="showcases/loading.html">Playground</a>
         </span>
       </div>
       <p class="lead">Default <code>.loading-animation</code> = circle (ring) spinner; <code>.loading-animation-squares</code> = paired squares (standalone, not composed). Sizes <code>-xs/-sm/-md/-lg</code>, colours <code>-primary/-secondary/-light</code>.</p>
@@ -1253,7 +1278,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=532-2847">Figma ↗</a>
           ·
-          <a href="pagination.html">Playground</a>
+          <a href="showcases/pagination.html">Playground</a>
         </span>
       </div>
       <p class="lead">Page-size selector + summary + page list with prev/next chevrons. Use <code>aria-current="page"</code> on the active page.</p>
@@ -1285,7 +1310,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=538-21604">Figma ↗</a>
           ·
-          <a href="progress.html">Playground</a>
+          <a href="showcases/progress.html">Playground</a>
         </span>
       </div>
       <p class="lead">8px tall track. States: loading (partial), <code>--striped</code> (animated 100%), <code>--completed</code> (green + check icon).</p>
@@ -1314,7 +1339,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-16477">Figma ↗</a>
           ·
-          <a href="radio.html">Playground</a>
+          <a href="showcases/radio.html">Playground</a>
         </span>
       </div>
       <p class="lead">Sibling of Checkbox with the same 24×24 circular focus ring. Checked state = 4px primary inner ring.</p>
@@ -1334,7 +1359,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=773-5914">Figma ↗</a>
           ·
-          <a href="search.html">Playground</a>
+          <a href="showcases/search.html">Playground</a>
         </span>
       </div>
       <p class="lead">Reuses <code>.input__field</code> + a trailing magnifier and optional clear button. The clear button is hidden when the field is empty.</p>
@@ -1361,7 +1386,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=550-4359">Figma ↗</a>
           ·
-          <a href="slider.html">Playground</a>
+          <a href="showcases/slider.html">Playground</a>
         </span>
       </div>
       <p class="lead">Native <code>&lt;input type="range"&gt;</code> styled to match Lexicon. The fill follows <code>--value</code> on the wrapper. Optional value tooltip and right-aligned label.</p>
@@ -1397,7 +1422,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=996-11505">Figma ↗</a>
           ·
-          <a href="sticker.html">Playground</a>
+          <a href="showcases/sticker.html">Playground</a>
         </span>
       </div>
       <p class="lead">Avatar-style chip. Three types (image, outline initials, icon), four sizes (<code>--sm/--md/--lg</code>) and rounded-square or <code>--circle</code> shape.</p>
@@ -1420,7 +1445,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1008-17763">Figma ↗</a>
           ·
-          <a href="tab.html">Playground</a>
+          <a href="showcases/tab.html">Playground</a>
         </span>
       </div>
       <p class="lead">Horizontal row over a baseline. Active tab gets a white card via <code>.is-active</code>.</p>
@@ -1451,7 +1476,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=796-14965">Figma ↗</a>
           ·
-          <a href="toggle.html">Playground</a>
+          <a href="showcases/toggle.html">Playground</a>
         </span>
       </div>
       <p class="lead">Two sizes (regular 48×24, <code>--sm</code> 30×16). Optional icon inside the dot, visible only when checked.</p>
@@ -1473,7 +1498,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-20044">Figma ↗</a>
           ·
-          <a href="tooltip.html">Playground</a>
+          <a href="showcases/tooltip.html">Playground</a>
         </span>
       </div>
       <p class="lead">Dark pill with a triangular arrow. Placement: bottom (default) or <code>--top</code>. Arrow alignment: center / <code>--align-start</code> / <code>--align-end</code>.</p>
@@ -1495,7 +1520,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5906-610">Figma ↗</a>
           ·
-          <a href="autocomplete.html">Playground</a>
+          <a href="showcases/autocomplete.html">Playground</a>
         </span>
       </div>
       <p class="lead">Free-text input that opens a filtered list. Editable trigger (vs Picker's read-only). Menu uses <code>.dropdown.autocomplete__menu</code>.</p>
@@ -1524,7 +1549,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-27614">Figma ↗</a>
           ·
-          <a href="colorpicker.html">Playground</a>
+          <a href="showcases/colorpicker.html">Playground</a>
         </span>
       </div>
       <p class="lead">Two surfaces: <code>.color-picker</code> (palette panel with swatch grid) and <code>.color-input</code> (compact swatch + hex field).</p>
@@ -1557,7 +1582,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1574-18443">Figma ↗</a>
           ·
-          <a href="datepicker.html">Playground</a>
+          <a href="showcases/datepicker.html">Playground</a>
         </span>
       </div>
       <p class="lead">Trigger: <code>.input-group</code> with <code>#calendar</code> icon. Panel: <code>.date-picker-panel</code> with month/year controls, weekday row, 7-column day grid, optional time row.</p>
@@ -1583,7 +1608,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-23811">Figma ↗</a>
           ·
-          <a href="dropdown.html">Playground</a>
+          <a href="showcases/dropdown.html">Playground</a>
         </span>
       </div>
       <p class="lead">White card menu. <code>&lt;ul class="dropdown"&gt;</code> of <code>.dropdown__item</code> buttons. Supports group titles, dividers, left/right icons, active state, footer.</p>
@@ -1619,7 +1644,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1397-19158">Figma ↗</a>
           ·
-          <a href="duallistbox.html">Playground</a>
+          <a href="showcases/duallistbox.html">Playground</a>
         </span>
       </div>
       <p class="lead">3-col grid (<code>1fr auto 1fr</code>). Move buttons in <code>.dual-listbox__moves</code>, optional reorder arrows in <code>.dual-listbox__reorder</code>.</p>
@@ -1658,7 +1683,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5034-5991">Figma ↗</a>
           ·
-          <a href="langpicker.html">Playground</a>
+          <a href="showcases/langpicker.html">Playground</a>
         </span>
       </div>
       <p class="lead">Picker variant: <code>.lang-picker__flag</code> emoji flag + locale code + optional status <code>.label--sm</code>.</p>
@@ -1703,7 +1728,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1570-7647">Figma ↗</a>
           ·
-          <a href="list.html">Playground</a>
+          <a href="showcases/list.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>.list__row</code> with optional select checkbox, sticker, content (title + subtitle + detail + labels) and actions. States: <code>.is-active</code>, <code>.has-notification</code>.</p>
@@ -1746,7 +1771,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=472-4478">Figma ↗</a>
           ·
-          <a href="modal.html">Playground</a>
+          <a href="showcases/modal.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>.modal-overlay</code> backdrop + <code>.modal</code> card (600px max). Validation variants tint header + colored border. Footer: first <code>.btn--borderless</code> pushes left automatically.</p>
@@ -1833,7 +1858,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-29598">Figma ↗</a>
           ·
-          <a href="multiselect.html">Playground</a>
+          <a href="showcases/multiselect.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>.multi-select</code> shell: inline chips (<code>.label--sm</code>) + free-text input + clear button. Menu is <code>.dropdown</code>.</p>
@@ -1870,7 +1895,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-22318">Figma ↗</a>
           ·
-          <a href="multistep.html">Playground</a>
+          <a href="showcases/multistep.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>&lt;ol class="stepper"&gt;</code>. States: <code>.is-complete</code> (check icon) / <code>.is-active</code> (primary ring) / pending (number). Connector via <code>::after</code>.</p>
@@ -1895,7 +1920,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=478-8481">Figma ↗</a>
           ·
-          <a href="navbar.html">Playground</a>
+          <a href="showcases/navbar.html">Playground</a>
         </span>
       </div>
       <p class="lead">Horizontal tab bar. <code>.navbar__item.is-active</code> = primary-l1 underline. Also: <code>.is-disabled</code>, <code>.navbar__more</code> overflow button.</p>
@@ -1920,7 +1945,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5982-705">Figma ↗</a>
           ·
-          <a href="picker.html">Playground</a>
+          <a href="showcases/picker.html">Playground</a>
         </span>
       </div>
       <p class="lead">Read-only trigger (<code>.picker__trigger</code>) + <code>.dropdown</code> menu. Active item = primary-l3 soft fill. Use <code>.is-open</code> on the wrapper to show the menu.</p>
@@ -1954,7 +1979,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=800-20734">Figma ↗</a>
           ·
-          <a href="popover.html">Playground</a>
+          <a href="showcases/popover.html">Playground</a>
         </span>
       </div>
       <p class="lead">White card, optional <code>.popover__header</code> + <code>.popover__body</code>. <code>.popover__body--scrollable</code> caps height. Arrow mirrors Tooltip placement classes.</p>
@@ -1985,7 +2010,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=4664-8242">Figma ↗</a>
           ·
-          <a href="sidepanel.html">Playground</a>
+          <a href="showcases/sidepanel.html">Playground</a>
         </span>
       </div>
       <p class="lead">Right drawer: 280px default / <code>.side-panel--lg</code> 480px. Header + scrollable body + footer. Use <code>.side-panel__body--no-padding</code> for edge-to-edge content.</p>
@@ -2018,7 +2043,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1844-20952">Figma ↗</a>
           ·
-          <a href="table.html">Playground</a>
+          <a href="showcases/table.html">Playground</a>
         </span>
       </div>
       <p class="lead">Zebra rows. <code>.is-selected</code> tints with primary-l3. <code>.table__cell--gutter</code> (48px) for checkbox/actions columns. Composes Checkbox, Sticker, Label.</p>
@@ -2064,7 +2089,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-30482">Figma ↗</a>
           ·
-          <a href="timepicker.html">Playground</a>
+          <a href="showcases/timepicker.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>#clock</code> icon + <code>.time-picker__field</code> (HH:MM input + clear + up/down spinner) + optional <code>.time-picker__tz</code> timezone label.</p>
@@ -2091,7 +2116,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1410-25688">Figma ↗</a>
           ·
-          <a href="treeview.html">Playground</a>
+          <a href="showcases/treeview.html">Playground</a>
         </span>
       </div>
       <p class="lead"><code>&lt;ul role="tree"&gt;</code> of <code>.tree__row</code> (toggle + icon + label). Children in <code>&lt;ul role="group"&gt;</code> with +24px indent.</p>
@@ -2139,7 +2164,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1571-15114">Figma ↗</a>
           ·
-          <a href="vertbar.html">Playground</a>
+          <a href="showcases/vertbar.html">Playground</a>
         </span>
       </div>
       <p class="lead">40px icon sidebar. <code>.vert-bar__cluster</code> groups icons; <code>.vert-bar__cluster--end</code> pins a group to the bottom. <code>.is-active</code> = primary-l3 bg + left rail.</p>
@@ -2166,7 +2191,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=512-5857">Figma ↗</a>
           ·
-          <a href="vertnav.html">Playground</a>
+          <a href="showcases/vertnav.html">Playground</a>
         </span>
       </div>
       <p class="lead">40px full-width items (no border-radius). Active: 6px primary left border + primary-l3 bg. Group parent uses <code>.vert-nav__group-header</code>. Icons: <code>.vert-nav__icon-cell</code> (24px wrapper) + <code>.lexicon-icon.vert-nav__icon</code>.</p>
@@ -2215,7 +2240,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297">Figma ↗</a>
           ·
-          <a href="managementtoolbar.html">Playground</a>
+          <a href="showcases/managementtoolbar.html">Playground</a>
         </span>
       </div>
       <p class="lead">Full-width contextual toolbar. Default state: checkbox + filter/order + search + view picker + actions. Active state (<code>.management-toolbar--active</code>): selection count + bulk actions + primary underline. Optional <code>.management-toolbar__results</code> summary bar.</p>
@@ -2317,7 +2342,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193">Figma ↗</a>
           ·
-          <a href="controlmenu.html">Playground</a>
+          <a href="showcases/controlmenu.html">Playground</a>
         </span>
       </div>
       <p class="lead">Application top bar. Product-menu toggle + page title on the left; global-nav icon + user avatar on the right. Add <code>.control-menu__btn</code> with <code>#angle-left</code> for back-navigation context.</p>
@@ -2377,7 +2402,7 @@
         <span class="ref__component-meta">
           <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=2545-4896">Figma ↗</a>
           ·
-          <a href="cmsmenu.html">Playground</a>
+          <a href="showcases/cmsmenu.html">Playground</a>
         </span>
       </div>
       <p class="lead">280px sidebar panel for CMS apps. Reuses <code>.vert-nav__item</code> rows and <code>.vert-nav__group-header</code> section labels inside <code>.cms-menu__groups</code>. Section headers with an add action wrap the button and caret in <code>.vert-nav__group-actions</code>. Space items use <code>.sticker</code> in the icon cell.</p>
@@ -4334,6 +4359,7 @@
   (function () {
     var root = document.documentElement;
     var toggle = document.getElementById('cms-style-toggle');
+    var KEY = 'vanilla-cms-style';
 
     function applyCmsStyle(on) {
       if (on) {
@@ -4347,8 +4373,16 @@
       }
     }
 
+    // Restore from localStorage on load (so prototypes opened later see the same state)
+    try {
+      var stored = localStorage.getItem(KEY) === '1';
+      toggle.checked = stored;
+      applyCmsStyle(stored);
+    } catch (e) {}
+
     toggle.addEventListener('change', function () {
       applyCmsStyle(toggle.checked);
+      try { localStorage.setItem(KEY, toggle.checked ? '1' : ''); } catch (e) {}
     });
   })();
 </script>

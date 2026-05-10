@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Side Panel — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 1100px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+    /* Inline preview of side panels — show as cards next to each other */
+    .panel-preview { height: 600px; border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: hidden; box-shadow: none; display: inline-block; vertical-align: top; }
+    .panel-preview + .panel-preview { margin-left: var(--spacing-7); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Side Panel</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=4664-8242">Figma — Lexicon Components</a>.
+    Right-anchored drawer. Default 280px wide (<code>--lg</code> = 480). Header (title + close), scrollable body and a top-bordered footer of action buttons.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default 280px · large 480px</span>
+    <aside class="side-panel panel-preview" role="dialog" aria-labelledby="sp-title-1">
+      <header class="side-panel__header">
+        <h2 id="sp-title-1" class="side-panel__title">Side Panel Title</h2>
+        <button class="btn btn--borderless btn--icon side-panel__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="side-panel__body">
+        <p>The side panel is a vertical drawer pinned to the right edge of the viewport. It's wider than a popover and used for editing forms or detail views without leaving the page.</p>
+        <br>
+        <div class="input">
+          <label class="input__label">Name</label>
+          <input class="input__field" type="text" value="Vanilla Lexicon">
+        </div>
+      </div>
+      <footer class="side-panel__footer">
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Save</button>
+      </footer>
+    </aside>
+
+    <aside class="side-panel side-panel--lg panel-preview" role="dialog" aria-labelledby="sp-title-2">
+      <header class="side-panel__header">
+        <h2 id="sp-title-2" class="side-panel__title">Side Panel Large</h2>
+        <button class="btn btn--borderless btn--icon side-panel__close" aria-label="Close">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </header>
+      <div class="side-panel__body">
+        <p>The large variant accommodates more content — for instance a 2-column form sheet or a detailed entity editor.</p>
+        <br>
+        <section class="sheet" style="border: 0; padding: 0;">
+          <div class="sheet-row">
+            <div class="input">
+              <label class="input__label">First name</label>
+              <input class="input__field" type="text" value="Marcos">
+            </div>
+            <div class="input">
+              <label class="input__label">Last name</label>
+              <input class="input__field" type="text" value="Castro">
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer class="side-panel__footer">
+        <button class="btn btn--secondary">Cancel</button>
+        <button class="btn btn--primary">Save</button>
+      </footer>
+    </aside>
+  </div>
+
+</main>
+
+</body>
+</html>

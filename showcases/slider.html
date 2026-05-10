@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slider — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-4); }
+  </style>
+  <script>
+    // Update --value live as the user drags. Static prototypes can omit this.
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('.slider__input')) {
+        const w = e.target.closest('.slider');
+        if (w) {
+          w.style.setProperty('--value', e.target.value);
+          const val = w.querySelector('.slider__value');
+          if (val) val.textContent = e.target.value;
+          const tip = w.querySelector('.slider__tooltip');
+          if (tip) tip.textContent = e.target.value;
+        }
+      }
+    });
+  </script>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Slider</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=550-4359">Figma — Lexicon Components</a>.
+    Native <code>&lt;input type="range"&gt;</code> styled to match Lexicon. The fill follows
+    <code>--value</code> on the wrapper. Wrap the input in <code>.slider__field</code> when you want a
+    tooltip — that scopes the absolute positioning to the track only (not the 1fr&nbsp;auto grid).
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default — 0, 30, 70, 100</span>
+    <div class="slider" style="--value: 0">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="0">
+      </div>
+      <span class="slider__value">0</span>
+    </div>
+    <div class="slider" style="--value: 30; margin-top: var(--spacing-5)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="30">
+      </div>
+      <span class="slider__value">30</span>
+    </div>
+    <div class="slider" style="--value: 70; margin-top: var(--spacing-5)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="70">
+      </div>
+      <span class="slider__value">70</span>
+    </div>
+    <div class="slider" style="--value: 100; margin-top: var(--spacing-5)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="100">
+      </div>
+      <span class="slider__value">100</span>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Active — value tooltip pinned above the thumb (drag to update)</span>
+    <div class="slider" style="--value: 30">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="30">
+        <span class="slider__tooltip">30</span>
+      </div>
+      <span class="slider__value">30</span>
+    </div>
+    <div class="slider" style="--value: 50; margin-top: var(--spacing-9)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="50">
+        <span class="slider__tooltip">50</span>
+      </div>
+      <span class="slider__value">50</span>
+    </div>
+    <div class="slider" style="--value: 100; margin-top: var(--spacing-9)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="100">
+        <span class="slider__tooltip">100</span>
+      </div>
+      <span class="slider__value">100</span>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Disabled</span>
+    <div class="slider" style="--value: 30">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="30" disabled>
+      </div>
+      <span class="slider__value">30</span>
+    </div>
+    <div class="slider" style="--value: 100; margin-top: var(--spacing-5)">
+      <div class="slider__field">
+        <input type="range" class="slider__input" min="0" max="100" value="100" disabled>
+      </div>
+      <span class="slider__value">100</span>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

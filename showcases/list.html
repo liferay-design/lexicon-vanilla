@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>List</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1570-7647">Figma — Lexicon Components</a>.
+    Vertical stack of rows with optional headers, checkbox, sticker, title/subtitle/detail/labels and quick actions. Row states: default, <code>.is-active</code>, <code>.has-notification</code>.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Full playground — header + 3 rows + header + compact row</span>
+
+    <ul class="list">
+      <li class="list__header">Header Title</li>
+
+      <!-- Default -->
+      <li class="list__row">
+        <label class="checkbox list__select" aria-label="Select">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+        <span class="list__sticker"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+        <div class="list__content">
+          <a href="#" class="list__title">Row Title</a>
+          <span class="list__subtitle">Row Subtitle</span>
+          <span class="list__detail">Row Detail Text</span>
+          <div class="list__labels">
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+          </div>
+        </div>
+        <div class="list__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="More">
+            <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          </button>
+        </div>
+      </li>
+
+      <!-- Active -->
+      <li class="list__row is-active">
+        <label class="checkbox list__select" aria-label="Select">
+          <input type="checkbox" class="checkbox__input" checked>
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+        <span class="list__sticker"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+        <div class="list__content">
+          <a href="#" class="list__title">Row Title</a>
+          <span class="list__subtitle">Row Subtitle</span>
+          <div class="list__labels">
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+          </div>
+        </div>
+        <div class="list__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Info">
+            <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Delete">
+            <svg class="lexicon-icon"><use href="#trash"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Copy">
+            <svg class="lexicon-icon"><use href="#copy"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="More">
+            <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          </button>
+        </div>
+      </li>
+
+      <!-- Hover with notification -->
+      <li class="list__row has-notification">
+        <label class="checkbox list__select" aria-label="Select">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+        <span class="list__sticker"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+        <div class="list__content">
+          <a href="#" class="list__title">Row Title</a>
+          <span class="list__subtitle">Row Subtitle</span>
+          <div class="list__labels">
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+            <span class="label label--sm label--success">Label text</span>
+          </div>
+        </div>
+        <div class="list__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Info">
+            <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Delete">
+            <svg class="lexicon-icon"><use href="#trash"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Copy">
+            <svg class="lexicon-icon"><use href="#copy"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="More">
+            <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          </button>
+        </div>
+      </li>
+
+      <li class="list__header">Header Title</li>
+
+      <!-- Compact row: title only + notification rail + 3 actions (no ellipsis) -->
+      <li class="list__row has-notification">
+        <label class="checkbox list__select" aria-label="Select">
+          <input type="checkbox" class="checkbox__input">
+          <span class="checkbox__box">
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
+        </label>
+        <div class="list__content">
+          <a href="#" class="list__title">Row Title</a>
+        </div>
+        <div class="list__actions">
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Info">
+            <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Delete">
+            <svg class="lexicon-icon"><use href="#trash"></use></svg>
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" aria-label="Copy">
+            <svg class="lexicon-icon"><use href="#copy"></use></svg>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</main>
+
+</body>
+</html>

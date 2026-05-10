@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi Select — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-9); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Multi Select</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=1047-29598">Figma — Lexicon Components</a>.
+    Input field that holds the current selection as inline tag chips. Composes <code>.input</code> for label/help/feedback, <code>.label--sm</code> for chips and <code>.dropdown</code> for the menu.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Three chips · empty · with results dropdown open</span>
+
+    <div class="input" style="margin-bottom: var(--spacing-7);">
+      <label class="input__label">Label</label>
+      <div class="multi-select">
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <input class="multi-select__input" type="text">
+        <button class="multi-select__clear" aria-label="Clear all">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </div>
+      <ul class="dropdown multi-select__menu" role="listbox">
+        <li><button class="dropdown__item" role="option">Biscuits</button></li>
+        <li><button class="dropdown__item" role="option">Fruits</button></li>
+        <li><button class="dropdown__item" role="option">Grains</button></li>
+        <li><button class="dropdown__item" role="option">Grapes</button></li>
+        <li><button class="dropdown__item" role="option">Groceries</button></li>
+        <li><button class="dropdown__item" role="option">Legumes</button></li>
+      </ul>
+    </div>
+
+    <div class="input" style="margin-bottom: var(--spacing-7);">
+      <label class="input__label">Tags</label>
+      <div class="multi-select">
+        <input class="multi-select__input" type="text" placeholder="">
+        <svg class="lexicon-icon" style="color: var(--color-secondary); margin-left: auto;"><use href="#caret-double-l"></use></svg>
+      </div>
+    </div>
+
+    <div class="input" style="margin-bottom: var(--spacing-7);">
+      <label class="input__label">Tags</label>
+      <div class="multi-select">
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <span class="label label--sm">Label
+          <button class="label__close" aria-label="Remove"><svg class="lexicon-icon"><use href="#times-small"></use></svg></button>
+        </span>
+        <input class="multi-select__input" type="text">
+        <button class="multi-select__clear" aria-label="Clear all">
+          <svg class="lexicon-icon"><use href="#times"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="input">
+      <label class="input__label">Tags <span class="input__help">(Not Localizable)</span></label>
+      <div class="multi-select multi-select--plain">
+        <span class="label label--sm">Label</span>
+        <span class="label label--sm">Label</span>
+        <span class="label label--sm">Label</span>
+        <span class="label label--sm">Label</span>
+        <span class="label label--sm">Label</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
