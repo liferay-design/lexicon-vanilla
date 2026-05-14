@@ -4005,10 +4005,19 @@
 }
 
 .management-toolbar__results-clear {
+  /* button reset */
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  /* visual */
   color: var(--color-dark);
   cursor: pointer;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semi);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .management-toolbar__results-clear:hover { text-decoration: underline; }
 
