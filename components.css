@@ -4172,7 +4172,7 @@
   width: 240px;
   padding: var(--spacing-3) var(--spacing-4);   /* 8px 12px */
   background: var(--color-white);
-  border-radius: var(--rounded-lg);
+  border-radius: var(--rounded-md);
   box-shadow: var(--shadow-dropdown);
 }
 
