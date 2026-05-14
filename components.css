@@ -149,10 +149,10 @@
 
 /* — Icon-only: square button (width = height) — */
 
-.btn--icon          { width: 40px; padding: 0; }
-.btn--icon.btn--xs  { width: 24px; }
-.btn--icon.btn--sm  { width: 32px; }
-.btn--icon.btn--lg  { width: 48px; }
+.btn--icon          { width: 40px; min-width: 40px; padding: 0; flex-shrink: 0; }
+.btn--icon.btn--xs  { width: 24px; min-width: 24px; }
+.btn--icon.btn--sm  { width: 32px; min-width: 32px; }
+.btn--icon.btn--lg  { width: 48px; min-width: 48px; }
 
 
 /* ============================================================
@@ -1378,8 +1378,8 @@
 .search__clear:hover,
 .search__submit:hover { color: var(--color-dark); }
 
-.search__submit { right: var(--spacing-2); }
-.search__clear  { right: 32px; }
+.search__submit { right: var(--spacing-3); }                               /* 8px */
+.search__clear  { right: calc(var(--spacing-7) + var(--spacing-3) + var(--spacing-2)); } /* 24+8+4 = 36px */
 .search__clear[hidden] { display: none; }
 
 
