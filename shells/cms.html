@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen title — Lexicon Vanilla</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+</head>
+<body style="margin: 0;">
+
+<!-- ════════════════════════════════════════════════════════════════
+     CMS shell — Control Menu + CMS sidebar + content area
+     Copy to prototypes/<screen>.html and fill in the content area.
+
+     To customise the chrome:
+       • Change the <title> and .control-menu__title text
+       • Mark a different .vert-nav__item as is-active
+       • Add / remove sidebar groups and items as needed
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Menu (top bar) ──────────────────────────────────── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Screen title</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- ─── App body: sidebar + content ─────────────────────────────── -->
+<div style="display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px);">
+
+  <!-- CMS Menu (left sidebar) -->
+  <aside class="cms-menu">
+    <ul class="cms-menu__groups">
+
+      <!-- Plain items (no group header) -->
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg>
+            </span>
+            Home
+          </li>
+        </ul>
+      </li>
+
+      <!-- Collapsible group -->
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          CONTENT
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item is-active">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#web-content"></use></svg>
+            </span>
+            Web Content
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#documents-and-media"></use></svg>
+            </span>
+            Documents
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#blogs"></use></svg>
+            </span>
+            Blogs
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#document-image"></use></svg>
+            </span>
+            Images
+          </li>
+        </ul>
+      </li>
+
+      <!-- Collapsible group with inline action -->
+      <li>
+        <div class="vert-nav__group-header">
+          STRUCTURE
+          <span class="vert-nav__group-actions">
+            <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add structure">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg>
+            </button>
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </span>
+        </div>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#page"></use></svg>
+            </span>
+            Content Types
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#edit-layout"></use></svg>
+            </span>
+            Display Pages
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#gallery"></use></svg>
+            </span>
+            Fragments
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="display: flex; flex-direction: column; min-width: 0;">
+
+    <!-- paste your components here -->
+
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- Collapsible CMS menu groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.vert-nav__group-header').forEach(function (header) {
+      if (!header.hasAttribute('aria-expanded')) header.setAttribute('aria-expanded', 'true');
+
+      if (header.tagName === 'DIV') {
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+      }
+
+      var icons = header.querySelectorAll('svg.lexicon-icon');
+      var chevron = icons[icons.length - 1] || null;
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      function toggle() {
+        var isExpanded = header.getAttribute('aria-expanded') !== 'false';
+        var next = !isExpanded;
+        header.setAttribute('aria-expanded', String(next));
+        var li = header.parentElement;
+        var list = li && li.querySelector(':scope > .vert-nav__list');
+        if (list) list.style.display = next ? '' : 'none';
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      }
+
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('.vert-nav__group-actions button')) return;
+        toggle();
+      });
+
+      header.addEventListener('keydown', function (e) {
+        if (header.tagName === 'DIV' && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

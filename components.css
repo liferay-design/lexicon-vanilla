@@ -4476,3 +4476,139 @@
 
 /* Navbar active — same tint fix */
 .light-hc .navbar__item.is-active { background: rgba(24, 82, 191, 0.1); }
+
+
+/* ─── Control Panel ─────────────────────────────────────────────────────────── */
+/* Product Menus / Side Navigation file (GYxgfX51jQhrzgChOIC37D, node 2:2209).  */
+/* Overlay sidebar: product icon + title header, collapsible section groups,     */
+/* item rows with 24px icon container + label + 6px primary active rail.         */
+
+.control-panel {
+  background: var(--color-light-l1);
+  border-right: 1px solid var(--color-secondary-l2);
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+}
+
+.control-panel__header {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-3);
+  padding: var(--spacing-7);
+}
+
+/* 40×40 white rounded box housing the product icon */
+.control-panel__sticker {
+  align-items: center;
+  background: var(--color-white);
+  border-radius: var(--rounded-md);
+  display: flex;
+  flex-shrink: 0;
+  height: var(--spacing-9);
+  justify-content: center;
+  padding: var(--spacing-3);
+  width: var(--spacing-9);
+}
+
+.control-panel__title {
+  color: var(--color-dark);
+  flex: 1;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Search field — sits between header and nav body, 16px side padding + 24px below */
+.control-panel__search {
+  padding: 0 var(--spacing-5) var(--spacing-7);
+}
+
+/* Panel body — scrollable section list */
+.control-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: var(--spacing-7);
+}
+
+/* Outer list: gap between section groups */
+.control-panel__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Individual section group: tight gap between its own items */
+.control-panel__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+/* Section header — 12px uppercase label + right chevron */
+.control-panel__group-header {
+  align-items: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  height: var(--spacing-9);
+  justify-content: space-between;
+  letter-spacing: 0.06em;
+  padding: var(--spacing-3) var(--spacing-5);
+  text-transform: uppercase;
+  width: 100%;
+}
+
+/* Item row: left-padding compensates for the 6px border rail so content always
+   aligns at 16px from the panel edge (6px border + 10px padding = 16px total). */
+.control-panel__item {
+  align-items: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  border-left: var(--spacing-2-5) solid transparent;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  gap: var(--spacing-3);
+  height: var(--spacing-9);
+  padding: var(--spacing-3) var(--spacing-5) var(--spacing-3)
+           calc(var(--spacing-5) - var(--spacing-2-5));
+  text-align: left;
+  text-decoration: none;
+  width: 100%;
+}
+.control-panel__item:hover { background: var(--color-light); }
+
+/* Active: primary-l3 fill + 6px primary left rail + semibold label */
+.control-panel__item.is-active {
+  background: var(--color-primary-l3);
+  border-left-color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 24×24 centred container for the 16px lexicon-icon */
+.control-panel__item-icon {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  height: var(--spacing-7);
+  justify-content: center;
+  width: var(--spacing-7);
+}

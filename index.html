@@ -248,6 +248,7 @@
       <li><a href="#comp-cmsmenu">CMS Menu</a></li>
       <li><a href="#comp-cms-breadcrumb">CMS Breadcrumb</a></li>
       <li><a href="#comp-cms-dropdown">CMS Dropdown</a></li>
+      <li><a href="#comp-controlpanel">Control Panel</a></li>
     </ul>
 
     <a
@@ -2606,6 +2607,117 @@
             </span>
             Structure
           </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────  CONTROL PANEL  ─────────────────────────── -->
+    <section id="comp-controlpanel" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Control Panel</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/GYxgfX51jQhrzgChOIC37D/Product-Menus--Side-Navigation-?node-id=2-2209">Figma ↗</a>
+          ·
+          <a href="showcases/controlpanel.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">320px overlay sidebar for DXP administration. <code>.control-panel</code> wrapper · <code>.control-panel__header</code> (sticker + title + close) · <code>.control-panel__search</code> (reuses <code>.search</code>, 16px side padding) · <code>.control-panel__body</code> scrollable area · <code>.control-panel__groups</code> list of groups · <code>.control-panel__group-header</code> 12px uppercase label + chevron · <code>.control-panel__item</code> 40px row; <code>.is-active</code> adds primary-l3 bg + 6px primary left rail.</p>
+      <div class="ref__example">
+        <div class="control-panel">
+          <div class="control-panel__header">
+            <span class="control-panel__sticker">
+              <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+            </span>
+            <span class="control-panel__title">Control Panel</span>
+            <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Close">
+              <svg class="lexicon-icon"><use href="#times"></use></svg>
+            </button>
+          </div>
+          <div class="control-panel__search">
+            <div class="search">
+              <input class="input__field search__field" type="search" placeholder="Search">
+              <button class="search__clear" aria-label="Clear" hidden type="button">
+                <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+              </button>
+              <button class="search__submit" aria-label="Search" type="button">
+                <svg class="lexicon-icon"><use href="#search"></use></svg>
+              </button>
+            </div>
+          </div>
+          <div class="control-panel__body">
+            <ul class="control-panel__groups">
+              <li class="control-panel__group">
+                <button class="control-panel__item is-active" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#home"></use></svg></span>
+                  Home
+                </button>
+              </li>
+              <li class="control-panel__group">
+                <button class="control-panel__group-header" type="button" aria-expanded="true">
+                  Users
+                  <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+                  Users and Organizations
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+                  Roles
+                </button>
+              </li>
+              <li class="control-panel__group">
+                <button class="control-panel__group-header" type="button" aria-expanded="true">
+                  Sites
+                  <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+                  Sites
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+                  Site Templates
+                </button>
+              </li>
+              <li class="control-panel__group">
+                <button class="control-panel__group-header" type="button" aria-expanded="true">
+                  Configuration
+                  <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+                  System Settings
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+                  Instance Settings
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+                  Custom Fields
+                </button>
+              </li>
+              <li class="control-panel__group">
+                <button class="control-panel__group-header" type="button" aria-expanded="true">
+                  Security
+                  <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+                  OAuth 2 Administration
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+                  Password Policies
+                </button>
+                <button class="control-panel__item" type="button">
+                  <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+                  SAML Admin
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

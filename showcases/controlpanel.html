@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Panel — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 1100px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__section { margin-bottom: var(--spacing-9); }
+    .showcase__label { font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); display: block; }
+    .showcase__row { display: flex; gap: var(--spacing-9); align-items: flex-start; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Control Panel</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/GYxgfX51jQhrzgChOIC37D/Product-Menus--Side-Navigation-?node-id=2-2209">Figma — Product Menus / Side Navigation</a>.
+    320px overlay sidebar. <code>.control-panel</code> wrapper ·
+    <code>.control-panel__header</code> top bar (sticker + title + close) ·
+    <code>.control-panel__body</code> scrollable area ·
+    <code>.control-panel__groups</code> list of groups (16px gap) ·
+    <code>.control-panel__group</code> section with 4px item gap ·
+    <code>.control-panel__group-header</code> 12px uppercase label + chevron ·
+    <code>.control-panel__item</code> 40px row; <code>.is-active</code> adds primary-l3 bg + 6px primary left rail.
+  </p>
+
+  <!-- ─── Full panel — all sections ──────────────────────────────── -->
+  <div class="showcase__section">
+    <span class="showcase__label">Full panel — all sections (Home active)</span>
+    <div class="showcase__row">
+
+      <div class="control-panel">
+        <div class="control-panel__header">
+          <span class="control-panel__sticker">
+            <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+          </span>
+          <span class="control-panel__title">Control Panel</span>
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+
+        <div class="control-panel__search">
+          <div class="search">
+            <input class="input__field search__field" type="search" placeholder="Search">
+            <button class="search__clear" aria-label="Clear" hidden type="button">
+              <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+            </button>
+            <button class="search__submit" aria-label="Search" type="button">
+              <svg class="lexicon-icon"><use href="#search"></use></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="control-panel__body">
+          <ul class="control-panel__groups">
+
+            <!-- Home (no section header, single active item) -->
+            <li class="control-panel__group">
+              <button class="control-panel__item is-active" type="button">
+                <span class="control-panel__item-icon">
+                  <svg class="lexicon-icon"><use href="#home"></use></svg>
+                </span>
+                Home
+              </button>
+            </li>
+
+            <!-- Users -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Users
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+                Users and Organizations
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#community"></use></svg></span>
+                User Group
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+                Roles
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+                Monitoring
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#suitcase"></use></svg></span>
+                Service Accounts
+              </button>
+            </li>
+
+            <!-- Sites -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Sites
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+                Sites
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+                Site Templates
+              </button>
+            </li>
+
+            <!-- Accounts -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Accounts
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#briefcase"></use></svg></span>
+                Accounts
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+                Accounts User
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#myspace"></use></svg></span>
+                Account Groups
+              </button>
+            </li>
+
+            <!-- Configuration -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Configuration
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+                System Settings
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+                Instance Settings
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+                Push Notifications
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#box-container"></use></svg></span>
+                Components
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+                Search
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+                Custom Fields
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#automatic-translate"></use></svg></span>
+                Language Override
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+                Adaptive Media
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sheets"></use></svg></span>
+                Job Scheduler
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#flag-full"></use></svg></span>
+                Countries Management
+              </button>
+            </li>
+
+            <!-- Notifications -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Notifications
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+                Templates
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#order-list-down"></use></svg></span>
+                Queue
+              </button>
+            </li>
+
+            <!-- Object -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Object
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#repository"></use></svg></span>
+                MCP Server Prompts
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#braces"></use></svg></span>
+                Objects
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#table2"></use></svg></span>
+                Data Sets
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#list-ol"></use></svg></span>
+                Picklists
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#api-web"></use></svg></span>
+                API Builder
+              </button>
+            </li>
+
+            <!-- Security -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Security
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search-experiences"></use></svg></span>
+                Audit
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+                OAuth Client Administration
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+                OAuth 2 Administration
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+                Password Policies
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+                SAML Admin
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+                Server Logs
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-asterisk"></use></svg></span>
+                Service Access Policy
+              </button>
+            </li>
+
+            <!-- System -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                System
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+                Server Administration
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#grid"></use></svg></span>
+                App Manager
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#code"></use></svg></span>
+                Gogo Shell
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+                Virtual Instances
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#submission"></use></svg></span>
+                On-Demand Admin
+              </button>
+            </li>
+
+            <!-- Marketplace -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Marketplace
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#products"></use></svg></span>
+                Purchased
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shopping-cart"></use></svg></span>
+                Store
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#forms"></use></svg></span>
+                License Manager
+              </button>
+            </li>
+
+          </ul>
+        </div><!-- /body -->
+      </div><!-- /control-panel -->
+
+    </div>
+  </div>
+
+  <!-- ─── Item states ──────────────────────────────────────────────── -->
+  <div class="showcase__section">
+    <span class="showcase__label">Item states — default · active · collapsed section</span>
+    <div class="showcase__row">
+
+      <div class="control-panel" style="height: auto;">
+        <div class="control-panel__header">
+          <span class="control-panel__sticker">
+            <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+          </span>
+          <span class="control-panel__title">Control Panel</span>
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Close">
+            <svg class="lexicon-icon"><use href="#times"></use></svg>
+          </button>
+        </div>
+        <div class="control-panel__search">
+          <div class="search">
+            <input class="input__field search__field" type="search" placeholder="Search">
+            <button class="search__clear" aria-label="Clear" hidden type="button">
+              <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+            </button>
+            <button class="search__submit" aria-label="Search" type="button">
+              <svg class="lexicon-icon"><use href="#search"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="control-panel__body">
+          <ul class="control-panel__groups">
+
+            <!-- Active section -->
+            <li class="control-panel__group">
+              <button class="control-panel__item is-active" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#home"></use></svg></span>
+                Home (active)
+              </button>
+            </li>
+
+            <!-- Expanded section -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="true">
+                Users
+                <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+                Users and Organizations
+              </button>
+              <button class="control-panel__item" type="button">
+                <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+                Roles
+              </button>
+            </li>
+
+            <!-- Collapsed section -->
+            <li class="control-panel__group">
+              <button class="control-panel__group-header" type="button" aria-expanded="false">
+                Configuration
+                <svg class="lexicon-icon" style="transform: rotate(-90deg)"><use href="#angle-down-small"></use></svg>
+              </button>
+              <!-- items hidden via JS or inline style -->
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- Collapsible section headers -->
+<script>
+  (function () {
+    document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+      var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      // Collect sibling items (all .control-panel__item siblings after this button)
+      var group = btn.parentElement;
+      var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+      // Sync initial collapsed state
+      if (btn.getAttribute('aria-expanded') === 'false') {
+        items.forEach(function (el) { el.style.display = 'none'; });
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') !== 'false';
+        var next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

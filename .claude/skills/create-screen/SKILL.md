@@ -29,8 +29,19 @@ Cap clarifying questions at 1–2. If the user's request already names the compo
 
 ### 2. Pick a slug and copy the scaffold
 
+If the screen needs a **full app chrome** (sidebar + top bar already wired), start from a shell instead of `starter.html`:
+
+| Shell | Chrome pattern | When to use |
+|---|---|---|
+| `shells/cms.html` | Control Menu (full width) + CMS Menu (280px sidebar) | CMS / admin screens with a left nav panel |
+| `shells/dxp.html` | Control Panel (320px, full height) + Control Menu (right column only) | DXP Control Panel screens |
+
+Fill in only the `<main>` placeholder inside the shell — the chrome, collapsible groups, and skin script are pre-wired. For everything else, copy from `starter.html`:
+
 ```bash
 cp starter.html prototypes/<kebab-case-slug>.html
+# or
+cp shells/cms.html prototypes/<kebab-case-slug>.html
 ```
 
 Never write the file from scratch — the scaffold has the skin-persistence script and the correct relative paths to `../tokens.css`, `../components.css`, `../icons.js`. Breaking those breaks the prototype.
