@@ -4215,7 +4215,6 @@
 
 .cms-structure-dropdown__item.is-active {
   background: var(--color-primary-l3);
-  box-shadow: inset 0 0 0 1px var(--color-primary);
 }
 
 /* 32×32 sticker (8px padding + 16px icon = 32px) */
