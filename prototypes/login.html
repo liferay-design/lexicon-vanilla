@@ -12,15 +12,9 @@
       var s=localStorage.getItem('vanilla-skin')||'light';
       S.forEach(function(c){r.classList.remove(c);});
       r.classList.add(S.indexOf(s)>-1?s:'light');
-      if(localStorage.getItem('vanilla-cms-style')!==''){
-        r.style.setProperty('--rounded-sm','4px');
-        r.style.setProperty('--rounded-md','8px');
-        r.style.setProperty('--rounded-lg','16px');
-      }else{
-        r.style.removeProperty('--rounded-sm');
-        r.style.removeProperty('--rounded-md');
-        r.style.removeProperty('--rounded-lg');
-      }
+      r.style.setProperty('--rounded-sm','4px');
+      r.style.setProperty('--rounded-md','8px');
+      r.style.setProperty('--rounded-lg','16px');
     }catch(e){}}
     apply();
     window.addEventListener('pageshow',apply);
@@ -169,6 +163,11 @@
       background-color: var(--color-light);
       background-image: radial-gradient(var(--color-secondary-l3) 1.5px, transparent 1.5px);
       background-size: 20px 20px;
+      animation: dots-drift 10s linear infinite;
+    }
+    @keyframes dots-drift {
+      from { background-position: 0 0; }
+      to   { background-position: 20px 20px; }
     }
 
     /* ── Slide states ── */
