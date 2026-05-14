@@ -246,6 +246,8 @@
       <li><a href="#comp-managementtoolbar">Management Toolbar</a></li>
       <li><a href="#comp-controlmenu">Control Menu</a></li>
       <li><a href="#comp-cmsmenu">CMS Menu</a></li>
+      <li><a href="#comp-cms-breadcrumb">CMS Breadcrumb</a></li>
+      <li><a href="#comp-cms-dropdown">CMS Dropdown</a></li>
     </ul>
 
     <a
@@ -952,6 +954,112 @@
             <li aria-current="page">Current Page</li>
           </ol>
         </nav>
+      </div>
+    </section>
+
+    <!-- ───────────────────────  CMS BREADCRUMB (Satellite)  ──────────────────── -->
+    <section id="comp-cms-breadcrumb" class="ref__component">
+      <div class="ref__component-header">
+        <h2>CMS Breadcrumb</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=4481-2724">Figma ↗</a>
+          ·
+          <a href="showcases/cmsbreadcrumb.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">18px breadcrumb for the CMS control bar. Ancestor crumbs: Regular secondary + <code>#slash</code>. Last crumb (<code>aria-current="page"</code>): Semibold dark + <code>.cms-breadcrumb__action</code> (⋮). Optional <code>.cms-breadcrumb__space</code> sticker — colour via inline style (user data).</p>
+
+      <div class="showcase__row showcase__row--block">
+        <span class="showcase__label">3 crumbs without sticker · 3 crumbs with space sticker</span>
+        <nav aria-label="Breadcrumb" style="margin-bottom: var(--spacing-5);">
+          <ol class="cms-breadcrumb">
+            <li class="cms-breadcrumb__item">
+              <a href="#">Breadcrumb</a>
+              <svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg>
+            </li>
+            <li class="cms-breadcrumb__item">
+              <a href="#">Breadcrumb</a>
+              <svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg>
+            </li>
+            <li class="cms-breadcrumb__item" aria-current="page">
+              <span>Breadcrumb</span>
+              <button class="cms-breadcrumb__action" type="button" aria-label="More actions">
+                <svg class="lexicon-icon lexicon-icon-sm"><use href="#ellipsis-v"></use></svg>
+              </button>
+            </li>
+          </ol>
+        </nav>
+        <nav aria-label="Breadcrumb">
+          <ol class="cms-breadcrumb">
+            <li>
+              <span class="cms-breadcrumb__space" style="background:#f2e5ff; border-color:#aa33ff; color:#aa33ff;">L</span>
+            </li>
+            <li class="cms-breadcrumb__item">
+              <a href="#">Breadcrumb</a>
+              <svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg>
+            </li>
+            <li class="cms-breadcrumb__item">
+              <a href="#">Breadcrumb</a>
+              <svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg>
+            </li>
+            <li class="cms-breadcrumb__item" aria-current="page">
+              <span>Breadcrumb</span>
+              <button class="cms-breadcrumb__action" type="button" aria-label="More actions">
+                <svg class="lexicon-icon lexicon-icon-sm"><use href="#ellipsis-v"></use></svg>
+              </button>
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────  CMS DROPDOWN  ────────────────────────────── -->
+    <section id="comp-cms-dropdown" class="ref__component">
+      <div class="ref__component-header">
+        <h2>CMS Dropdown</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=4481-27057">Figma ↗</a>
+          ·
+          <a href="showcases/cmsdropdown.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">240px white panel for selecting a CMS field type or structure. Field items use <code>.cms-structure-dropdown__sticker--field</code> (blue); the Structure item uses <code>.cms-structure-dropdown__sticker--structure</code> (orange). Add <code>.is-active</code> on any item to show selection state.</p>
+      <div class="ref__example">
+        <div class="cms-structure-dropdown">
+          <div class="cms-structure-dropdown__group">
+            <button class="cms-structure-dropdown__item" type="button">
+              <span class="cms-structure-dropdown__sticker cms-structure-dropdown__sticker--field">
+                <svg class="lexicon-icon"><use href="#custom-field"></use></svg>
+              </span>
+              Text
+            </button>
+            <button class="cms-structure-dropdown__item is-active" type="button">
+              <span class="cms-structure-dropdown__sticker cms-structure-dropdown__sticker--field">
+                <svg class="lexicon-icon"><use href="#field-area"></use></svg>
+              </span>
+              Long Text
+            </button>
+            <button class="cms-structure-dropdown__item" type="button">
+              <span class="cms-structure-dropdown__sticker cms-structure-dropdown__sticker--field">
+                <svg class="lexicon-icon"><use href="#number"></use></svg>
+              </span>
+              Integer
+            </button>
+            <button class="cms-structure-dropdown__item" type="button">
+              <span class="cms-structure-dropdown__sticker cms-structure-dropdown__sticker--field">
+                <svg class="lexicon-icon"><use href="#calendar"></use></svg>
+              </span>
+              Date
+            </button>
+          </div>
+          <div class="cms-structure-dropdown__divider"></div>
+          <button class="cms-structure-dropdown__item" type="button">
+            <span class="cms-structure-dropdown__sticker cms-structure-dropdown__sticker--structure">
+              <svg class="lexicon-icon"><use href="#edit-layout"></use></svg>
+            </span>
+            Structure
+          </button>
+        </div>
       </div>
     </section>
 
