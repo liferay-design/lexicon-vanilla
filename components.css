@@ -4022,6 +4022,9 @@
     padding: var(--spacing-3) var(--spacing-4);
   }
   .management-toolbar__count {
+    flex: 1;                                   /* fill available space so it can wrap */
+    min-width: 0;
+    white-space: normal;                       /* allow multi-line on mobile */
     font-size: var(--font-size-sm);            /* 12px on mobile */
   }
 }
