@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Liferay Headless CMS — Full</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+
+    /* ── Page layout — full height, exact 50/50 grid ── */
+    .login-page {
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--color-white);
+    }
+
+    /* ═══════════════════════════════════════════
+       LEFT — Login form
+       Has its own padding; vertically centered
+    ═══════════════════════════════════════════ */
+    .login-form {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--spacing-9);
+      padding: var(--spacing-9) clamp(var(--spacing-7), 4vw, 56px) var(--spacing-9) 30%;
+      overflow-y: auto;
+    }
+
+    .login-heading { margin: 0; }
+    .login-heading__eyebrow {
+      display: block;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semi);
+      color: var(--color-dark);
+      line-height: 1.5;
+    }
+    .login-heading__main {
+      display: block;
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      line-height: 1.25;
+    }
+    .login-tagline {
+      margin: var(--spacing-3) 0 0;
+      font-size: var(--font-size-lg);
+      color: var(--color-secondary);
+      line-height: 1.5;
+    }
+
+    /* Inputs */
+    .login-fields {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-7);
+    }
+    .login-field { display: flex; flex-direction: column; gap: var(--spacing-2); }
+    .login-field__label {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      display: flex;
+      gap: var(--spacing-1);
+      align-items: center;
+    }
+    .login-field__req { color: var(--color-warning); }
+    .login-field__wrap { position: relative; }
+    .login-field__input {
+      width: 100%;
+      box-sizing: border-box;
+      height: 40px;
+      background: var(--color-light);
+      border: 1px solid var(--color-secondary-l3);
+      border-radius: var(--rounded-md);
+      padding: 0 var(--spacing-5);
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-md);
+      color: var(--color-dark);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .login-field__input::placeholder { color: var(--color-dark); opacity: 0.4; }
+    .login-field__input:focus {
+      border-color: var(--color-primary);
+      box-shadow: var(--focus-ring);
+    }
+    .login-field__eye {
+      position: absolute;
+      right: var(--spacing-5);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      color: var(--color-secondary);
+      display: flex;
+      align-items: center;
+    }
+    .login-field__forgot {
+      display: inline-block;
+      align-self: flex-start;
+      margin-top: var(--spacing-2);
+      font-size: var(--font-size-base);
+      color: var(--color-primary);
+      text-decoration: underline;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--font-family-base);
+    }
+
+    /* Actions */
+    .login-actions { display: flex; flex-direction: column; gap: var(--spacing-5); }
+    .login-submit { width: 100%; font-size: var(--font-size-md); }
+    .login-note {
+      font-size: var(--font-size-base);
+      color: var(--color-secondary);
+      text-align: center;
+      margin: 0;
+    }
+    .login-note a { color: var(--color-primary); text-decoration: underline; }
+
+    /* ═══════════════════════════════════════════
+       RIGHT — Carousel (Full variant)
+       708×753 · background --color-light-l1
+       Card overflows top (-48%) showing more image
+       Text at 60% · dots at 84%
+    ═══════════════════════════════════════════ */
+    .login-carousel {
+      min-width: 0;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      border-left: 1px solid var(--color-secondary-l3);
+      /* Lighter background + subtler dots */
+      background-color: var(--color-light-l1);
+      background-image: radial-gradient(color-mix(in srgb, var(--color-light-d2) 40%, transparent) 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+    }
+
+    /* ── Slide states ── */
+    .cslide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cslide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cslide.is-out {
+      animation: cslide-exit 0.32s ease forwards;
+      pointer-events: none;
+    }
+
+    /* Default: animated children hidden */
+    .cslide__card,
+    .cslide__title,
+    .cslide__desc { opacity: 0; }
+
+    /* During exit: keep children visible so parent fades them out */
+    .cslide.is-out .cslide__card,
+    .cslide.is-out .cslide__title,
+    .cslide.is-out .cslide__desc { opacity: 1; animation: none; }
+
+    /* Staggered entrance — bottom to top feel */
+    .cslide.is-active .cslide__card {
+      animation: cslide-enter-card  0.7s  cubic-bezier(0.16, 1, 0.3, 1) 0s    both;
+    }
+    .cslide.is-active .cslide__title {
+      animation: cslide-enter-title 0.62s ease-out                       0.38s  both;
+    }
+    .cslide.is-active .cslide__desc {
+      animation: cslide-enter-desc  0.7s  ease-out                       0.62s  both;
+    }
+
+    /* Larger translateY → stronger bottom-to-top feel */
+    @keyframes cslide-enter-card {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cslide-enter-title {
+      from { opacity: 0; filter: blur(6px); transform: translateY(6px); }
+      to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
+    }
+    @keyframes cslide-enter-desc {
+      from { opacity: 0; filter: blur(3px); }
+      to   { opacity: 1; filter: blur(0); }
+    }
+    @keyframes cslide-exit {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-18px); }
+    }
+
+    /* ── Card: top -48%, contained height 99%
+          Figma: left 79px / top -364px / w 1156px / h 746px in 708×753
+    ── */
+    .cslide__card {
+      position: absolute;
+      top: -28%;
+      left: 11%;
+      width: 163%;
+      height: 99%;
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+    }
+    .cslide__card img {
+      width: 82%;
+      height: 82%;
+      object-fit: cover;
+      object-position: top left;
+      display: block;
+    }
+
+    /* Feature text — 60% from top */
+    .cslide__text {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(367px, 80%);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+    .cslide__title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      line-height: 1.2;
+      margin: 0;
+    }
+    .cslide__desc {
+      font-size: var(--font-size-base);
+      color: var(--color-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Navigation dots — 84% from top */
+    .cnav {
+      position: absolute;
+      top: 84%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: var(--spacing-3);
+      align-items: center;
+      z-index: 10;
+    }
+    .cnav__dot {
+      height: 8px;
+      width: 12px;
+      border-radius: var(--rounded-full);
+      background: var(--color-light-d2);
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .cnav__dot.is-active {
+      width: 24px;
+      background: var(--color-primary);
+    }
+
+    /* Pause / play — floats right of dots, out of flex flow */
+    .cnav__pause {
+      position: absolute;
+      left: calc(100% + var(--spacing-4));
+      top: 50%;
+      transform: translateY(-50%);
+      height: 20px;
+      width: 20px;
+      border-radius: var(--rounded-full);
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      color: var(--color-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      white-space: nowrap;
+    }
+    .login-carousel:hover .cnav__pause { opacity: 0.4; }
+    .cnav__pause:hover                  { opacity: 1 !important; }
+    .cnav__pause.is-paused              { opacity: 0.85 !important; }
+    .cnav__pause .icon-play             { display: none; }
+    .cnav__pause.is-paused .icon-pause  { display: none; }
+    .cnav__pause.is-paused .icon-play   { display: flex; }
+
+    /* ═══════════════════════════════════════════
+       Skin corner — invisible until hover
+    ═══════════════════════════════════════════ */
+    .skin-corner {
+      position: fixed;
+      top: var(--spacing-5);
+      right: var(--spacing-5);
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .skin-corner:hover,
+    .skin-corner.is-open { opacity: 1; }
+
+    .skin-corner:not(.is-open) .dropdown { display: none; }
+    .skin-corner .picker { position: relative; }
+    .skin-corner .picker__trigger { white-space: nowrap; }
+    .skin-corner .dropdown {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      right: 0;
+      left: auto;
+      min-width: 164px;
+      z-index: 300;
+    }
+
+    /* ═══════════════════════════════════════════
+       Responsive
+    ═══════════════════════════════════════════ */
+
+    /* ≤1080px — compress texts only; page layout stays full-height */
+    @media (max-width: 1080px) {
+      .login-heading__eyebrow,
+      .login-heading__main { font-size: var(--font-size-2xl); }
+      .login-tagline        { font-size: var(--font-size-base); }
+      .cslide__title        { font-size: var(--font-size-xl); }
+      .cslide__desc         { font-size: var(--font-size-sm); }
+    }
+
+    /* ≤980px — single column, carousel hidden */
+    @media (max-width: 980px) {
+      .login-page {
+        display: flex;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        align-items: center;
+        justify-content: center;
+      }
+      .login-form {
+        width: 100%;
+        max-width: 448px;
+        padding: var(--spacing-9) var(--spacing-7);
+        justify-content: center;
+        overflow-y: visible;
+      }
+      .login-carousel { display: none; }
+    }
+
+    /* ≤520px — hide carousel */
+    @media (max-width: 520px) {
+      .login-carousel { display: none; }
+      .login-page {
+        padding: var(--spacing-7) var(--spacing-5);
+        gap: 0;
+      }
+      .login-form { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+
+  <!-- ═══════════════════════════════════════════════════
+       LEFT — Login form
+  ═══════════════════════════════════════════════════ -->
+  <div class="login-form">
+
+    <!-- Title -->
+    <div>
+      <h1 class="login-heading">
+        <span class="login-heading__eyebrow">Welcome to</span>
+        <span class="login-heading__main">Liferay Headless CMS</span>
+      </h1>
+      <p class="login-tagline">Start your experience by signing in.</p>
+    </div>
+
+    <!-- Fields -->
+    <div class="login-fields">
+      <div class="login-field">
+        <label class="login-field__label" for="email">Email Address</label>
+        <input id="email" class="login-field__input" type="email" placeholder="your@company.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label class="login-field__label" for="password">
+          Password <span class="login-field__req">*</span>
+        </label>
+        <div class="login-field__wrap">
+          <input id="password" class="login-field__input" type="password" placeholder="Your Password" autocomplete="current-password" style="padding-right: var(--spacing-9);">
+          <button class="login-field__eye" type="button" aria-label="Show password" onclick="this.previousElementSibling.type=this.previousElementSibling.type==='password'?'text':'password'">
+            <svg class="lexicon-icon"><use href="#view"></use></svg>
+          </button>
+        </div>
+        <button class="login-field__forgot" type="button">Forgot your password?</button>
+      </div>
+    </div>
+
+    <!-- Remember me -->
+    <label class="checkbox">
+      <input type="checkbox" class="checkbox__input">
+      <span class="checkbox__box">
+        <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+        <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+      </span>
+      Remember Me
+    </label>
+
+    <!-- Actions -->
+    <div class="login-actions">
+      <button class="btn btn--primary login-submit" type="button" onclick="window.location.href='login.html'">Sign In</button>
+      <p class="login-note">Don't have an account? <a href="#">Contact your admin</a></p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       RIGHT — Carousel (Full variant)
+  ═══════════════════════════════════════════════════ -->
+  <div class="login-carousel" id="carousel">
+
+    <!-- ── Slide 1 ── -->
+    <div class="cslide is-active" data-index="0">
+      <div class="cslide__card">
+        <img src="img/01.png" alt="Media Library screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">All Your Assets,<br>One Smart Library</h2>
+        <p class="cslide__desc">Centralize all your images, videos, and documents in one unified media library.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 2 ── -->
+    <div class="cslide" data-index="1">
+      <div class="cslide__card">
+        <img src="img/02.png" alt="Content Types screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">Structure Your<br>Content, Your Way</h2>
+        <p class="cslide__desc">Define flexible content types with custom fields to power any digital experience.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 3 ── -->
+    <div class="cslide" data-index="2">
+      <div class="cslide__card">
+        <img src="img/03.png" alt="Spaces screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">Organize Work<br>with Spaces</h2>
+        <p class="cslide__desc">Create isolated workspaces for teams, brands, or projects — all in one platform.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 4 ── -->
+    <div class="cslide" data-index="3">
+      <div class="cslide__card">
+        <img src="img/01.png" alt="Headless API screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">Publish Everywhere,<br>Instantly</h2>
+        <p class="cslide__desc">Deliver structured content to any channel through REST and GraphQL APIs.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 5 ── -->
+    <div class="cslide" data-index="4">
+      <div class="cslide__card">
+        <img src="img/02.png" alt="Team and permissions screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">Collaborate<br>Without Limits</h2>
+        <p class="cslide__desc">Invite team members, assign roles, and keep full control over who edits what.</p>
+      </div>
+    </div>
+
+    <!-- ── Slide 6 ── -->
+    <div class="cslide" data-index="5">
+      <div class="cslide__card">
+        <img src="img/03.png" alt="Translation status screenshot">
+      </div>
+      <div class="cslide__text">
+        <h2 class="cslide__title">Speak Every<br>Language</h2>
+        <p class="cslide__desc">Reach a global audience with built-in multilingual support and translation workflows.</p>
+      </div>
+    </div>
+
+    <!-- Navigation dots + pause -->
+    <div class="cnav" id="carousel-nav">
+      <button class="cnav__dot is-active" data-slide="0" aria-label="Slide 1"></button>
+      <button class="cnav__dot" data-slide="1" aria-label="Slide 2"></button>
+      <button class="cnav__dot" data-slide="2" aria-label="Slide 3"></button>
+      <button class="cnav__dot" data-slide="3" aria-label="Slide 4"></button>
+      <button class="cnav__dot" data-slide="4" aria-label="Slide 5"></button>
+      <button class="cnav__dot" data-slide="5" aria-label="Slide 6"></button>
+      <button class="cnav__pause" id="carousel-pause" aria-label="Pause carousel">
+        <svg class="lexicon-icon lexicon-icon-sm icon-pause"><use href="#pause"></use></svg>
+        <svg class="lexicon-icon lexicon-icon-sm icon-play"><use href="#play"></use></svg>
+      </button>
+    </div>
+
+  </div><!-- /carousel -->
+
+</div><!-- /login-page -->
+
+
+<!-- ═══════════════════════════════════════════════════
+     Skin selector — top-right corner, invisible until hover
+═══════════════════════════════════════════════════ -->
+<div class="skin-corner" id="skin-corner">
+  <div class="picker">
+    <button type="button" class="btn btn--secondary btn--xs picker__trigger" id="skin-trigger"
+            aria-haspopup="listbox" aria-expanded="false">
+      <span class="picker__trigger-text">Light</span>
+      <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double-l"></use></svg>
+    </button>
+    <ul class="dropdown" role="listbox" aria-labelledby="skin-trigger">
+      <li><button type="button" class="dropdown__item skin-item is-active" role="option" data-skin="light">
+        <svg class="lexicon-icon dropdown__item-icon skin-check"><use href="#check"></use></svg>
+        Light
+      </button></li>
+      <li><button type="button" class="dropdown__item skin-item" role="option" data-skin="dark">
+        <svg class="lexicon-icon dropdown__item-icon skin-check" style="visibility:hidden"><use href="#check"></use></svg>
+        Dark
+      </button></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* ── Carousel ── */
+(function () {
+  var slides    = Array.from(document.querySelectorAll('.cslide'));
+  var dots      = Array.from(document.querySelectorAll('.cnav__dot'));
+  var pauseBtn  = document.getElementById('carousel-pause');
+  var current   = 0;
+  var paused    = false;
+  var timer;
+  var INTERVAL  = 7000;
+
+  function goTo(n) {
+    if (n === current) return;
+
+    slides[current].classList.add('is-out');
+    slides[current].classList.remove('is-active');
+    dots[current].classList.remove('is-active');
+
+    var prev = current;
+    current  = (n + slides.length) % slides.length;
+
+    setTimeout(function () { slides[prev].classList.remove('is-out'); }, 350);
+
+    slides[current].classList.add('is-active');
+    dots[current].classList.add('is-active');
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    if (!paused) {
+      timer = setInterval(function () {
+        goTo((current + 1) % slides.length);
+      }, INTERVAL);
+    }
+  }
+
+  function setPaused(val) {
+    paused = val;
+    pauseBtn.classList.toggle('is-paused', paused);
+    pauseBtn.setAttribute('aria-label', paused ? 'Resume carousel' : 'Pause carousel');
+    if (paused) { clearInterval(timer); } else { startTimer(); }
+  }
+
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      goTo(parseInt(dot.dataset.slide, 10));
+      startTimer();
+    });
+  });
+
+  pauseBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setPaused(!paused);
+  });
+
+  startTimer();
+})();
+
+/* ── Skin selector ── */
+(function () {
+  var SKINS  = ['light', 'dark'];
+  var LABELS = { light: 'Light', dark: 'Dark' };
+  var corner      = document.getElementById('skin-corner');
+  var trigger     = document.getElementById('skin-trigger');
+  var triggerText = trigger.querySelector('.picker__trigger-text');
+  var items       = Array.from(document.querySelectorAll('.skin-item'));
+
+  function applySkin(s) {
+    var html = document.documentElement;
+    SKINS.forEach(function (c) { html.classList.remove(c); });
+    html.classList.add(s);
+    localStorage.setItem('vanilla-skin', s);
+    triggerText.textContent = LABELS[s] || s;
+    items.forEach(function (item) {
+      var active = item.dataset.skin === s;
+      item.classList.toggle('is-active', active);
+      item.querySelector('.skin-check').style.visibility = active ? '' : 'hidden';
+    });
+    corner.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  trigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = corner.classList.toggle('is-open');
+    trigger.setAttribute('aria-expanded', String(open));
+  });
+
+  items.forEach(function (item) {
+    item.addEventListener('click', function () { applySkin(item.dataset.skin); });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!corner.contains(e.target)) {
+      corner.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      corner.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* Sync with skin already applied by head IIFE */
+  var current = localStorage.getItem('vanilla-skin') || 'light';
+  triggerText.textContent = LABELS[current] || current;
+  items.forEach(function (item) {
+    var active = item.dataset.skin === current;
+    item.classList.toggle('is-active', active);
+    item.querySelector('.skin-check').style.visibility = active ? '' : 'hidden';
+  });
+})();
+</script>
+
+</body>
+</html>
