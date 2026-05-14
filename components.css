@@ -3928,84 +3928,101 @@
    MANAGEMENT TOOLBAR
    Figma: Lexicon-Satellites · node 397:297
    States: default / active (selection) · Devices: desktop / mobile
+
+   Default markup:
+     <div class="management-toolbar">
+       <div class="management-toolbar__bar">
+         <label class="checkbox">…</label>
+         <button class="btn btn--borderless btn--sm">Filter <svg>#caret-bottom</svg></button>
+         <button class="btn btn--borderless btn--sm">Order  <svg>#caret-bottom</svg></button>
+         <div class="management-toolbar__search"><div class="search">…</div></div>
+         <button class="btn btn--borderless btn--sm btn--icon" aria-label="Switch view">…</button>
+         <button class="btn btn--primary btn--sm">New <svg>#caret-bottom</svg></button>
+         <button class="btn btn--borderless btn--sm btn--icon" aria-label="Info">…</button>
+       </div>
+     </div>
+
+   Active state: add .management-toolbar--active to wrapper.
+   Results bar: append <div class="management-toolbar__results"> after __bar.
    ============================================================ */
 
 .management-toolbar {
   background: var(--color-white);
-  border-bottom: 1px solid var(--color-light-d2);
+  /* No border in default state — Figma default is borderless */
   width: 100%;
 }
 
 .management-toolbar__bar {
   align-items: center;
   display: flex;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4) var(--spacing-7);
+  gap: var(--spacing-5);                       /* 16px */
+  padding: var(--spacing-4) var(--spacing-7);  /* 12px 24px */
 }
 
-/* Active / selection mode — primary underline replaces default border */
-.management-toolbar--active {
-  border-bottom: none;
-}
+/* Active / selection mode: primary-l3 bg + 1px primary bottom border */
 .management-toolbar--active .management-toolbar__bar {
   background: var(--color-primary-l3);
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: calc(var(--spacing-4) - 2px);
+  border-bottom: 1px solid var(--color-primary);
+  padding-top: var(--spacing-5);               /* 16px (default state uses 12px) */
+  padding-bottom: var(--spacing-5);
 }
 
 /* Search field stretches to fill available space */
 .management-toolbar__search { flex: 1; min-width: 0; }
 
-/* Pushes right-side items to end in active bar */
+/* Pushes bulk-action buttons to the right end in active bar */
 .management-toolbar__spacer { flex: 1; }
 
 /* "X of Y items selected" label */
 .management-toolbar__count {
   color: var(--color-secondary);
   flex-shrink: 0;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-base);            /* 14px */
   white-space: nowrap;
 }
 
-/* 1 px vertical separator between action groups */
+/* 1px vertical separator between action groups */
 .management-toolbar__divider {
-  background: var(--color-secondary-l2);
+  background: var(--color-secondary-l1);       /* #a7a9bc */
   flex-shrink: 0;
   height: 16px;
   width: 1px;
 }
 
-/* Results / filter-summary bar */
+/* Results / filter-summary bar — blue tint, dark text */
 .management-toolbar__results {
   align-items: center;
-  background: var(--color-light-l1);
-  border-bottom: 1px solid var(--color-light-d2);
+  background: var(--color-primary-l2);         /* #B3CDFF */
+  color: var(--color-dark);
   display: flex;
   justify-content: space-between;
   min-height: 48px;
-  padding: var(--spacing-3) var(--spacing-7);
+  padding: var(--spacing-4) var(--spacing-7);  /* 12px 24px */
 }
 
 .management-toolbar__results-text {
-  color: var(--color-secondary);
   font-size: var(--font-size-base);
 }
 
 .management-toolbar__results-clear {
-  color: var(--color-primary);
+  color: var(--color-dark);
   cursor: pointer;
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
 }
-.management-toolbar__results-clear:hover { color: var(--color-primary-d1); }
+.management-toolbar__results-clear:hover { text-decoration: underline; }
 
-/* Mobile */
+/* Mobile: tighter padding + count drops to 12px */
 @media (max-width: 767px) {
   .management-toolbar__bar {
-    gap: var(--spacing-2);
-    padding: var(--spacing-3) var(--spacing-5);
+    gap: var(--spacing-2);                     /* 4px */
+    padding: var(--spacing-3) var(--spacing-4); /* 8px 12px */
   }
   .management-toolbar__results {
-    padding: var(--spacing-3) var(--spacing-5);
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+  .management-toolbar__count {
+    font-size: var(--font-size-sm);            /* 12px on mobile */
   }
 }
 

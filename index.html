@@ -2362,7 +2362,7 @@
           <a href="showcases/managementtoolbar.html">Playground</a>
         </span>
       </div>
-      <p class="lead">Full-width contextual toolbar. Default state: checkbox + filter/order + search + view picker + actions. Active state (<code>.management-toolbar--active</code>): selection count + bulk actions + primary underline. Optional <code>.management-toolbar__results</code> summary bar.</p>
+      <p class="lead">Full-width contextual toolbar. Default state: checkbox + ghost filter/order buttons + search (flex-1) + ghost view picker + primary New button. Active state (<code>.management-toolbar--active</code>): primary-l3 bg + 1px primary bottom border + count + bulk actions. Optional <code>.management-toolbar__results</code> blue-tint summary bar.</p>
 
       <div class="showcase__row showcase__row--block">
         <span class="showcase__label">Default</span>
@@ -2371,23 +2371,23 @@
             <label class="checkbox">
               <input type="checkbox" class="checkbox__input">
               <span class="checkbox__box">
-              <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
-              <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
-            </span>
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
             </label>
-            <button class="btn btn--secondary btn--sm" type="button">
+            <button class="btn btn--borderless btn--sm" type="button">
               <svg class="lexicon-icon"><use href="#filter"></use></svg>
               Filter
               <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
             </button>
-            <button class="btn btn--secondary btn--sm" type="button">
+            <button class="btn btn--borderless btn--sm" type="button">
               <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
               Order
               <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
             </button>
             <div class="management-toolbar__search">
               <div class="search">
-                <input class="input__field search__field" type="search" placeholder="Search…">
+                <input class="input__field search__field" type="search" placeholder="Search">
                 <button class="search__clear" aria-label="Clear" hidden type="button">
                   <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
                 </button>
@@ -2396,12 +2396,11 @@
                 </button>
               </div>
             </div>
-            <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+            <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
               <svg class="lexicon-icon"><use href="#list"></use></svg>
               <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
             </button>
             <button class="btn btn--primary btn--sm" type="button">
-              <svg class="lexicon-icon"><use href="#plus"></use></svg>
               New
               <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
             </button>
@@ -2419,9 +2418,9 @@
             <label class="checkbox is-indeterminate">
               <input type="checkbox" class="checkbox__input">
               <span class="checkbox__box">
-              <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
-              <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
-            </span>
+                <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+                <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+              </span>
             </label>
             <span class="management-toolbar__count">3 of 17 items selected</span>
             <button class="btn btn--borderless btn--sm" type="button">Clear</button>
@@ -2436,7 +2435,7 @@
               Move
             </button>
             <button class="btn btn--borderless btn--sm" type="button">
-              <svg class="lexicon-icon"><use href="#price-tag"></use></svg>
+              <svg class="lexicon-icon"><use href="#tag"></use></svg>
               Edit Tags
             </button>
             <button class="btn btn--borderless btn--sm btn--danger" type="button">

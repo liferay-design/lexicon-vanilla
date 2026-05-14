@@ -31,7 +31,7 @@
   <script src="../icons.js"></script>
 
   <style>
-    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase { max-width: 1100px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
     .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
     .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
     .showcase__section { margin-bottom: var(--spacing-9); }
@@ -44,43 +44,46 @@
 <main class="showcase">
   <h1>Management Toolbar</h1>
   <p class="lead">
-    Source: <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297">Figma</a>.
-    <code>.management-toolbar</code> wrapper · <code>.management-toolbar__bar</code> main row ·
-    <code>.management-toolbar--active</code> selection state · <code>.management-toolbar__results</code> filter summary bar.
+    Source: <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297">Figma — Lexicon Satellites</a>.
+    <code>.management-toolbar</code> wrapper · <code>.management-toolbar__bar</code> main row (gap 16px, px 24px py 12px) ·
+    <code>.management-toolbar--active</code> adds primary-l3 bg + 1px primary bottom border (py 16px) ·
+    <code>.management-toolbar__results</code> blue-tint results bar.
+    Filter / Order / View picker buttons are <code>btn--borderless btn--sm</code> (ghost). New is <code>btn--primary btn--sm</code>.
   </p>
 
-  <!-- Desktop Default -->
+  <!-- ─── Desktop Default ──────────────────────────────────── -->
   <div class="showcase__section">
     <span class="showcase__label">Desktop — Default</span>
     <div class="management-toolbar">
       <div class="management-toolbar__bar">
+
         <!-- Checkbox -->
         <label class="checkbox">
           <input type="checkbox" class="checkbox__input">
           <span class="checkbox__box">
-              <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
-              <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
-            </span>
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
         </label>
 
-        <!-- Filter button -->
-        <button class="btn btn--secondary btn--sm" type="button">
+        <!-- Filter — ghost button, icon + label + caret -->
+        <button class="btn btn--borderless btn--sm" type="button">
           <svg class="lexicon-icon"><use href="#filter"></use></svg>
           Filter
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
 
-        <!-- Order button -->
-        <button class="btn btn--secondary btn--sm" type="button">
+        <!-- Order — ghost button -->
+        <button class="btn btn--borderless btn--sm" type="button">
           <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
           Order
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
 
-        <!-- Search -->
+        <!-- Search — flex-1 -->
         <div class="management-toolbar__search">
           <div class="search">
-            <input class="input__field search__field" type="search" placeholder="Search…">
+            <input class="input__field search__field" type="search" placeholder="Search">
             <button class="search__clear" aria-label="Clear" hidden type="button">
               <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
             </button>
@@ -90,15 +93,14 @@
           </div>
         </div>
 
-        <!-- View picker -->
-        <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+        <!-- View picker — ghost icon-only + caret-double -->
+        <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
           <svg class="lexicon-icon"><use href="#list"></use></svg>
-          <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+          <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
         </button>
 
-        <!-- New -->
+        <!-- New — primary dropdown button -->
         <button class="btn btn--primary btn--sm" type="button">
-          <svg class="lexicon-icon"><use href="#plus"></use></svg>
           New
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
@@ -107,25 +109,27 @@
         <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
           <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
         </button>
+
       </div>
     </div>
   </div>
 
-  <!-- Desktop Active (selection mode) -->
+  <!-- ─── Desktop Active (selection mode) ──────────────────── -->
   <div class="showcase__section">
     <span class="showcase__label">Desktop — Active (items selected)</span>
     <div class="management-toolbar management-toolbar--active">
       <div class="management-toolbar__bar">
+
         <!-- Checkbox (indeterminate) -->
         <label class="checkbox is-indeterminate">
           <input type="checkbox" class="checkbox__input">
           <span class="checkbox__box">
-              <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
-              <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
-            </span>
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
         </label>
 
-        <!-- Count -->
+        <!-- Selection count -->
         <span class="management-toolbar__count">3 of 17 items selected</span>
 
         <!-- Clear -->
@@ -134,9 +138,10 @@
         <!-- Select All -->
         <button class="btn btn--borderless btn--sm" type="button">Select All</button>
 
+        <!-- Spacer pushes bulk actions to the right -->
         <div class="management-toolbar__spacer"></div>
 
-        <!-- Action buttons -->
+        <!-- Bulk action buttons -->
         <button class="btn btn--borderless btn--sm" type="button">
           <svg class="lexicon-icon"><use href="#download"></use></svg>
           Download
@@ -163,28 +168,29 @@
         <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
           <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
         </button>
+
       </div>
     </div>
   </div>
 
-  <!-- With Results Bar -->
+  <!-- ─── Desktop Default + Results Bar ────────────────────── -->
   <div class="showcase__section">
-    <span class="showcase__label">Desktop — With results bar (active filter/search)</span>
+    <span class="showcase__label">Desktop — With results bar (active filter / search)</span>
     <div class="management-toolbar">
       <div class="management-toolbar__bar">
         <label class="checkbox">
           <input type="checkbox" class="checkbox__input">
           <span class="checkbox__box">
-              <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
-              <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
-            </span>
+            <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
+            <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
+          </span>
         </label>
-        <button class="btn btn--secondary btn--sm" type="button">
+        <button class="btn btn--borderless btn--sm" type="button">
           <svg class="lexicon-icon"><use href="#filter"></use></svg>
           Filter
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
-        <button class="btn btn--secondary btn--sm" type="button">
+        <button class="btn btn--borderless btn--sm" type="button">
           <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
           Order
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
@@ -200,12 +206,11 @@
             </button>
           </div>
         </div>
-        <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+        <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
           <svg class="lexicon-icon"><use href="#list"></use></svg>
-          <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+          <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
         </button>
         <button class="btn btn--primary btn--sm" type="button">
-          <svg class="lexicon-icon"><use href="#plus"></use></svg>
           New
           <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
         </button>
@@ -213,19 +218,25 @@
           <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
         </button>
       </div>
+
+      <!-- Results bar -->
       <div class="management-toolbar__results">
-        <span class="management-toolbar__results-text">5 results found for <strong>"banner"</strong></span>
-        <button class="management-toolbar__results-clear btn btn--borderless btn--sm" type="button">Clear</button>
+        <span class="management-toolbar__results-text">
+          5 results found for <strong>"banner"</strong>
+        </span>
+        <button class="management-toolbar__results-clear" type="button">Clear</button>
       </div>
     </div>
   </div>
 
-  <!-- Mobile Default -->
+  <!-- ─── Mobile Default ───────────────────────────────────── -->
   <div class="showcase__section">
     <span class="showcase__label">Mobile — Default</span>
     <div class="showcase__mobile">
       <div class="management-toolbar">
         <div class="management-toolbar__bar">
+
+          <!-- Checkbox -->
           <label class="checkbox">
             <input type="checkbox" class="checkbox__input">
             <span class="checkbox__box">
@@ -233,34 +244,43 @@
               <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
             </span>
           </label>
-          <button class="btn btn--secondary btn--sm btn--icon" type="button" aria-label="Filter">
+
+          <!-- Filter icon -->
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Filter">
             <svg class="lexicon-icon"><use href="#filter"></use></svg>
           </button>
-          <button class="btn btn--secondary btn--sm btn--icon" type="button" aria-label="Order">
+
+          <!-- Order icon -->
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Order">
             <svg class="lexicon-icon"><use href="#order-list-down"></use></svg>
           </button>
+
+          <!-- Right group -->
           <div class="management-toolbar__spacer"></div>
-          <button class="btn btn--secondary btn--sm btn--icon" type="button" aria-label="Search">
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Search">
             <svg class="lexicon-icon"><use href="#search"></use></svg>
           </button>
-          <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
+          <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
             <svg class="lexicon-icon"><use href="#list"></use></svg>
-            <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+            <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
           </button>
           <button class="btn btn--primary btn--sm btn--icon" type="button" aria-label="New">
             <svg class="lexicon-icon"><use href="#plus"></use></svg>
           </button>
+
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Mobile Active -->
+  <!-- ─── Mobile Active ────────────────────────────────────── -->
   <div class="showcase__section">
     <span class="showcase__label">Mobile — Active (items selected)</span>
     <div class="showcase__mobile">
       <div class="management-toolbar management-toolbar--active">
         <div class="management-toolbar__bar">
+
+          <!-- Checkbox (indeterminate) -->
           <label class="checkbox is-indeterminate">
             <input type="checkbox" class="checkbox__input">
             <span class="checkbox__box">
@@ -268,15 +288,23 @@
               <svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg>
             </span>
           </label>
+
+          <!-- Count (12px on mobile via media query) -->
           <span class="management-toolbar__count">3 of 17 items selected</span>
-          <div class="management-toolbar__spacer"></div>
+
+          <!-- Clear icon -->
           <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Clear selection">
-            <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+            <svg class="lexicon-icon"><use href="#times-circle"></use></svg>
           </button>
+
+          <!-- Select All -->
           <button class="btn btn--borderless btn--sm" type="button">Select All</button>
+
+          <!-- More actions -->
           <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
             <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
           </button>
+
         </div>
       </div>
     </div>
