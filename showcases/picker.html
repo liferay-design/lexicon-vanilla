@@ -31,7 +31,7 @@
   <script src="../icons.js"></script>
 
   <style>
-    .showcase { max-width: 880px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); background: var(--color-light); }
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); background: var(--color-light); }
     .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
     .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
     .showcase__row { margin-bottom: var(--spacing-9); display: flex; gap: var(--spacing-7); align-items: flex-start; flex-wrap: wrap; }
@@ -44,33 +44,115 @@
   <h1>Picker</h1>
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5982-705">Figma — Lexicon Components</a>.
-    Single-select trigger paired with a <code>.dropdown</code> menu. Selected option uses <code>.is-active</code> + a leading <code>#check</code> icon.
+    Single-select trigger paired with a <code>.dropdown</code> menu. Every item carries a
+    <code>#check-small</code> icon slot (hidden via <code>opacity:0</code> when inactive)
+    so text always aligns to the same column regardless of selection state.
   </p>
 
+  <!-- ─── Simple picker · trigger + open menu ─────────────────────── -->
   <div class="showcase__row">
-    <span class="showcase__label">Trigger only · trigger + open menu (selected option highlighted)</span>
+    <span class="showcase__label">Trigger only · trigger + open menu (third option selected)</span>
 
+    <!-- Closed trigger -->
     <div class="picker">
-      <button class="btn btn--secondary picker__trigger" type="button">
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="false">
         <span class="picker__trigger-text">Option</span>
-        <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+        <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
       </button>
     </div>
 
+    <!-- Open menu — all items carry the check slot -->
     <div class="picker">
-      <button class="btn btn--secondary picker__trigger" type="button">
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="true">
         <span class="picker__trigger-text">Option</span>
-        <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+        <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
       </button>
-      <ul class="dropdown" role="listbox">
-        <li><button class="dropdown__item" role="option">Option</button></li>
-        <li><button class="dropdown__item" role="option">Option</button></li>
-        <li><button class="dropdown__item is-active" role="option" aria-selected="true">
-          <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
-          Option
+      <ul class="dropdown" role="listbox" aria-label="Options">
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
         </button></li>
-        <li><button class="dropdown__item" role="option">Option</button></li>
-        <li><button class="dropdown__item" role="option">Option</button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item is-active" role="option" aria-selected="true">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── With alert banner + search + group items ─────────────────── -->
+  <div class="showcase__row">
+    <span class="showcase__label">Alert banner · search input · group items (indented) + plain items</span>
+
+    <div class="picker">
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="true">
+        <span class="picker__trigger-text">Option</span>
+        <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
+      </button>
+      <ul class="dropdown" role="listbox" aria-label="Options" style="min-width: 241px;">
+        <!-- Alert banner at top -->
+        <li>
+          <div class="alert alert--info">
+            <div class="alert__content">
+              <p class="alert__text">This is the alert's message.</p>
+            </div>
+          </div>
+        </li>
+        <!-- Search -->
+        <li style="padding: var(--spacing-5) var(--spacing-5) var(--spacing-3);">
+          <div class="search input--sm">
+            <input class="input__field search__field" type="search" placeholder="Search" aria-label="Search">
+            <button class="search__submit" aria-label="Search">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#search"></use></svg>
+            </button>
+          </div>
+        </li>
+        <!-- Group: plain items (no check slot) + indented items (with check slot) -->
+        <li><button class="dropdown__item" role="option">
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item is-active" role="option" aria-selected="true">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
+        <li><button class="dropdown__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <span class="dropdown__item-text">Option</span>
+        </button></li>
       </ul>
     </div>
   </div>

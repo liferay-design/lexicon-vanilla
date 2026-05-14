@@ -93,11 +93,12 @@
   --line-height-base:   1.5;
 
   /* ── Shadow ── */
-  --shadow-sm:    0 1px 2px rgba(39, 40, 51, 0.10);
-  --shadow-card:  0 2px 4px rgba(39, 40, 51, 0.12);
-  --shadow-md:    0 2px 8px rgba(39, 40, 51, 0.14);
-  --shadow-lg:    0 4px 16px rgba(39, 40, 51, 0.18);
-  --shadow-alert: 0 8px 16px rgba(39, 40, 51, 0.20);
+  --shadow-sm:         0 1px 2px rgba(39, 40, 51, 0.10);
+  --shadow-card:       0 2px 4px rgba(39, 40, 51, 0.12);
+  --shadow-md:         0 2px 8px rgba(39, 40, 51, 0.14);
+  --shadow-dropdown:   0 4px 8px rgba(39, 40, 51, 0.12);
+  --shadow-lg:         0 4px 16px rgba(39, 40, 51, 0.18);
+  --shadow-alert:      0 8px 16px rgba(39, 40, 51, 0.20);
 
   /* ── Focus ring ── */
   --focus-ring: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-primary-l0);

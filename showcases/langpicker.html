@@ -36,13 +36,6 @@
     .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
     .showcase__row { margin-bottom: var(--spacing-9); display: flex; gap: var(--spacing-9); align-items: flex-start; flex-wrap: wrap; }
     .showcase__label { flex: 0 0 100%; display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
-    .flag-us { background: linear-gradient(to bottom, #b22234 0 33%, #fff 33% 66%, #b22234 66%); }
-    .flag-es { background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75%); }
-    .flag-gb { background: #00247d; }
-    .flag-it { background: linear-gradient(to right, #009246 0 33%, #fff 33% 66%, #ce2b37 66%); }
-    .flag-br { background: #009b3a; }
-    .flag-fr { background: linear-gradient(to right, #0055a4 0 33%, #fff 33% 66%, #ef4135 66%); }
-    .flag-ca { background: linear-gradient(to bottom, #ffd000 0 50%, #aa151b 50%); }
   </style>
 </head>
 <body>
@@ -51,110 +44,142 @@
   <h1>Language Picker</h1>
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=5034-5991">Figma — Lexicon Components</a>.
-    Picker variant whose trigger shows a flag + locale code, and whose menu items show flag + locale + status badge.
+    Picker variant: trigger shows the current locale's flag + code (16px semibold). Menu items show
+    a checkmark (opacity-0 when inactive), flag, locale code, and status badge
+    (DEFAULT · TRANSLATED · NOT TRANSLATED · or generic label).
   </p>
 
+  <!-- ─── Translation statuses ─────────────────────────────────── -->
   <div class="showcase__row">
-    <span class="showcase__label">Default · Translated · Generic label</span>
+    <span class="showcase__label">DEFAULT · TRANSLATED · NOT TRANSLATED statuses</span>
 
     <div class="picker lang-picker">
-      <button class="btn btn--secondary picker__trigger" type="button">
-        <span class="lang-picker__flag flag-us"></span>
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="true">
+        <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
         <span class="picker__trigger-text">en-US</span>
-        <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
       </button>
-      <ul class="dropdown" role="listbox">
+      <ul class="dropdown" role="listbox" aria-label="Language">
         <li><button class="dropdown__item lang-picker__item is-active" role="option" aria-selected="true">
-          <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-us"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
           <span class="lang-picker__locale">en-US</span>
-          <span class="label label--sm label--bold label--primary lang-picker__status">Default</span>
+          <span class="label label--sm label--bold label--info lang-picker__status">DEFAULT</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-es"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-es-ES"></use></svg>
           <span class="lang-picker__locale">es-ES</span>
-          <span class="label label--sm label--bold label--success lang-picker__status">Translated</span>
+          <span class="label label--sm label--bold label--success lang-picker__status">TRANSLATED</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-gb"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-en-GB"></use></svg>
           <span class="lang-picker__locale">en-GB</span>
-          <span class="label label--sm label--bold label--success lang-picker__status">Translated</span>
+          <span class="label label--sm label--bold label--success lang-picker__status">TRANSLATED</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-it"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-it-IT"></use></svg>
           <span class="lang-picker__locale">it-IT</span>
-          <span class="label label--sm label--bold label--danger lang-picker__status">Not translated</span>
+          <span class="label label--sm label--bold label--warning lang-picker__status">NOT TRANSLATED</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-br"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-pt-BR"></use></svg>
           <span class="lang-picker__locale">pt-BR</span>
-          <span class="label label--sm label--bold label--danger lang-picker__status">Not translated</span>
+          <span class="label label--sm label--bold label--warning lang-picker__status">NOT TRANSLATED</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-fr"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-fr-FR"></use></svg>
           <span class="lang-picker__locale">fr-FR</span>
-          <span class="label label--sm label--bold label--danger lang-picker__status">Not translated</span>
+          <span class="label label--sm label--bold label--warning lang-picker__status">NOT TRANSLATED</span>
         </button></li>
       </ul>
     </div>
 
+    <!-- ─── Same with ca-ES selected ──────────────────────────── -->
     <div class="picker lang-picker">
-      <button class="btn btn--secondary picker__trigger" type="button">
-        <span class="lang-picker__flag flag-ca"></span>
-        <span class="picker__trigger-text">en-US</span>
-        <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="true">
+        <svg class="lang-picker__flag"><use href="#flags-ca-ES"></use></svg>
+        <span class="picker__trigger-text">ca-ES</span>
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
       </button>
-      <ul class="dropdown" role="listbox">
-        <li><button class="dropdown__item lang-picker__item is-active" role="option" aria-selected="true">
-          <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-us"></span>
+      <ul class="dropdown" role="listbox" aria-label="Language">
+        <li><button class="dropdown__item lang-picker__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
           <span class="lang-picker__locale">en-US</span>
-          <span class="label label--sm label--bold label--primary lang-picker__status">Default</span>
+          <span class="label label--sm label--bold label--info lang-picker__status">DEFAULT</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-es"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-es-ES"></use></svg>
           <span class="lang-picker__locale">es-ES</span>
-          <span class="label label--sm label--bold label--success lang-picker__status">Translated</span>
+          <span class="label label--sm label--bold label--success lang-picker__status">TRANSLATED</span>
+        </button></li>
+        <li><button class="dropdown__item lang-picker__item is-active" role="option" aria-selected="true">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-ca-ES"></use></svg>
+          <span class="lang-picker__locale">ca-ES</span>
+          <span class="label label--sm label--bold label--success lang-picker__status">TRANSLATED</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-gb"></span>
-          <span class="lang-picker__locale">en-GB</span>
-          <span class="label label--sm label--bold label--success lang-picker__status">Translated</span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-de-DE"></use></svg>
+          <span class="lang-picker__locale">de-DE</span>
+          <span class="label label--sm label--bold label--warning lang-picker__status">NOT TRANSLATED</span>
         </button></li>
       </ul>
     </div>
 
+    <!-- ─── Generic labels ────────────────────────────────────── -->
     <div class="picker lang-picker">
-      <button class="btn btn--secondary picker__trigger" type="button">
-        <span class="lang-picker__flag flag-us"></span>
+      <button class="btn btn--secondary picker__trigger" type="button"
+              aria-haspopup="listbox" aria-expanded="true">
+        <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
         <span class="picker__trigger-text">en-US</span>
-        <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
       </button>
-      <ul class="dropdown" role="listbox">
+      <ul class="dropdown" role="listbox" aria-label="Language">
         <li><button class="dropdown__item lang-picker__item is-active" role="option" aria-selected="true">
-          <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-us"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
           <span class="lang-picker__locale">en-US</span>
-          <span class="label label--sm label--bold label--secondary lang-picker__status">Label text</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-es"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-es-ES"></use></svg>
           <span class="lang-picker__locale">es-ES</span>
-          <span class="label label--sm label--bold label--secondary lang-picker__status">Label text</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
         </button></li>
         <li><button class="dropdown__item lang-picker__item" role="option">
-          <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-          <span class="lang-picker__flag flag-gb"></span>
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-en-GB"></use></svg>
           <span class="lang-picker__locale">en-GB</span>
-          <span class="label label--sm label--bold label--secondary lang-picker__status">Label text</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
+        </button></li>
+        <li><button class="dropdown__item lang-picker__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-it-IT"></use></svg>
+          <span class="lang-picker__locale">it-IT</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
+        </button></li>
+        <li><button class="dropdown__item lang-picker__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-pt-BR"></use></svg>
+          <span class="lang-picker__locale">pt-BR</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
+        </button></li>
+        <li><button class="dropdown__item lang-picker__item" role="option">
+          <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+          <svg class="lang-picker__flag"><use href="#flags-fr-FR"></use></svg>
+          <span class="lang-picker__locale">fr-FR</span>
+          <span class="label label--sm label--secondary lang-picker__status">LABEL TEXT</span>
         </button></li>
       </ul>
     </div>

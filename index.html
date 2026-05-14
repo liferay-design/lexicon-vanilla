@@ -163,7 +163,7 @@
     <div class="picker ref__skin">
       <button type="button" class="btn btn--secondary btn--xs picker__trigger" id="skin-trigger" aria-haspopup="listbox" aria-expanded="false">
         <span class="picker__trigger-text">Light</span>
-        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double-l"></use></svg>
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
       </button>
       <ul class="dropdown" role="listbox" aria-labelledby="skin-trigger">
         <li><button type="button" class="dropdown__item is-active" role="option" data-skin="light" aria-selected="true">
@@ -1531,7 +1531,7 @@
           <label class="input__label">Search</label>
           <div class="autocomplete">
             <input class="input__field autocomplete__field" type="text" value="">
-            <span class="autocomplete__caret"><svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></span>
+            <span class="autocomplete__caret"><svg class="lexicon-icon"><use href="#caret-double"></use></svg></span>
           </div>
           <ul class="dropdown autocomplete__menu" role="listbox">
             <li><button class="dropdown__item" role="option">Biscuits</button></li>
@@ -1686,35 +1686,35 @@
           <a href="showcases/langpicker.html">Playground</a>
         </span>
       </div>
-      <p class="lead">Picker variant: <code>.lang-picker__flag</code> emoji flag + locale code + optional status <code>.label--sm</code>.</p>
+      <p class="lead">Picker variant: <code>.lang-picker__flag</code> SVG flag (16×12) + locale code + optional status <code>.label--sm</code>.</p>
 
       <div class="showcase__row">
         <span class="showcase__label">Trigger · with open menu</span>
         <div class="picker lang-picker">
           <button class="btn btn--secondary picker__trigger" type="button">
-            <span class="lang-picker__flag flag-us"></span>
+            <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
             <span class="picker__trigger-text">en-US</span>
-            <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+            <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
           </button>
         </div>
         <div class="picker lang-picker">
           <button class="btn btn--secondary picker__trigger" type="button">
-            <span class="lang-picker__flag flag-es"></span>
+            <svg class="lang-picker__flag"><use href="#flags-es-ES"></use></svg>
             <span class="picker__trigger-text">es-ES</span>
-            <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+            <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-double"></use></svg>
           </button>
-          <ul class="dropdown" role="listbox">
+          <ul class="dropdown" role="listbox" aria-label="Language">
             <li><button class="dropdown__item lang-picker__item is-active" role="option" aria-selected="true">
-              <svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg>
-              <span class="lang-picker__flag flag-us"></span>
+              <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+              <svg class="lang-picker__flag"><use href="#flags-en-US"></use></svg>
               <span class="lang-picker__locale">en-US</span>
-              <span class="label label--sm label--primary lang-picker__status">Default</span>
+              <span class="label label--sm label--bold label--info lang-picker__status">DEFAULT</span>
             </button></li>
             <li><button class="dropdown__item lang-picker__item" role="option">
-              <svg class="lexicon-icon dropdown__item-icon" style="visibility:hidden"><use href="#check"></use></svg>
-              <span class="lang-picker__flag flag-es"></span>
+              <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+              <svg class="lang-picker__flag"><use href="#flags-es-ES"></use></svg>
               <span class="lang-picker__locale">es-ES</span>
-              <span class="label label--sm label--success lang-picker__status">Translated</span>
+              <span class="label label--sm label--bold label--success lang-picker__status">TRANSLATED</span>
             </button></li>
           </ul>
         </div>
@@ -1932,7 +1932,7 @@
             <li><a href="#" class="navbar__item is-active" aria-current="page">Item 1</a></li>
             <li><a href="#" class="navbar__item">Item 2</a></li>
             <li><span class="navbar__item is-disabled">Item 4</span></li>
-            <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg></button></li>
+            <li><button class="navbar__item navbar__more">More <svg class="lexicon-icon"><use href="#caret-double"></use></svg></button></li>
           </ul>
         </nav>
       </div>
@@ -1948,25 +1948,36 @@
           <a href="showcases/picker.html">Playground</a>
         </span>
       </div>
-      <p class="lead">Read-only trigger (<code>.picker__trigger</code>) + <code>.dropdown</code> menu. Active item = primary-l3 soft fill. Use <code>.is-open</code> on the wrapper to show the menu.</p>
+      <p class="lead">Read-only trigger (<code>.picker__trigger</code>) + <code>.dropdown</code> menu. Every item carries a <code>#check-small</code> slot (<code>opacity:0</code> when inactive) so text aligns to the same column. Active item = primary-l3 soft fill + <code>--color-dark</code> text.</p>
 
       <div class="showcase__row">
-        <span class="showcase__label">Trigger · open with selected option</span>
+        <span class="showcase__label">Trigger · open with selected option (all items carry check slot)</span>
         <div class="picker">
-          <button class="btn btn--secondary picker__trigger" type="button">
-            <span class="picker__trigger-text">Option A</span>
-            <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+          <button class="btn btn--secondary picker__trigger" type="button"
+                  aria-haspopup="listbox" aria-expanded="false">
+            <span class="picker__trigger-text">Option</span>
+            <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
           </button>
         </div>
         <div class="picker">
-          <button class="btn btn--secondary picker__trigger" type="button">
-            <span class="picker__trigger-text">Option A</span>
-            <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+          <button class="btn btn--secondary picker__trigger" type="button"
+                  aria-haspopup="listbox" aria-expanded="true">
+            <span class="picker__trigger-text">Option</span>
+            <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
           </button>
-          <ul class="dropdown" role="listbox">
-            <li><button class="dropdown__item" role="option">Option A</button></li>
-            <li><button class="dropdown__item is-active" role="option" aria-selected="true"><svg class="lexicon-icon dropdown__item-icon"><use href="#check"></use></svg> Option B</button></li>
-            <li><button class="dropdown__item" role="option">Option C</button></li>
+          <ul class="dropdown" role="listbox" aria-label="Options">
+            <li><button class="dropdown__item" role="option">
+              <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+              <span class="dropdown__item-text">Option</span>
+            </button></li>
+            <li><button class="dropdown__item is-active" role="option" aria-selected="true">
+              <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+              <span class="dropdown__item-text">Option</span>
+            </button></li>
+            <li><button class="dropdown__item" role="option">
+              <svg class="lexicon-icon dropdown__item-icon"><use href="#check-small"></use></svg>
+              <span class="dropdown__item-text">Option</span>
+            </button></li>
           </ul>
         </div>
       </div>
@@ -2279,7 +2290,7 @@
             </div>
             <button class="btn btn--secondary btn--sm" type="button" aria-label="Switch view">
               <svg class="lexicon-icon"><use href="#list"></use></svg>
-              <svg class="lexicon-icon"><use href="#caret-double-l"></use></svg>
+              <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
             </button>
             <button class="btn btn--primary btn--sm" type="button">
               <svg class="lexicon-icon"><use href="#plus"></use></svg>

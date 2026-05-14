@@ -2384,7 +2384,8 @@
   background: var(--color-white);
   border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
-  box-shadow: var(--shadow-md);
+  /* Figma: Shadow/Dropdown — y=4, blur=8, opacity=12% */
+  box-shadow: var(--shadow-dropdown);
   font-family: var(--font-family-base);
   min-width: 240px;
 }
@@ -2394,9 +2395,11 @@
   align-items: center;
   gap: var(--spacing-4);
   width: 100%;
-  padding: var(--spacing-2) var(--spacing-5);
+  /* Figma: pt=5px pb=6px px=16px — nearest token is spacing-2-5 (6px) */
+  padding: var(--spacing-2-5) var(--spacing-5);
   font-family: inherit;
   font-size: var(--font-size-base);
+  /* Figma: 14/Regular = weight 400 = --font-weight-semi in this token scale */
   font-weight: var(--font-weight-semi);
   color: var(--color-secondary);
   background: var(--color-white);
@@ -2404,25 +2407,31 @@
   text-align: left;
   cursor: pointer;
   text-decoration: none;
-  line-height: 1.5;
+  line-height: var(--line-height-base);
 }
 
 .dropdown__item:hover { background: var(--color-light-l1); color: var(--color-dark); }
 .dropdown__item:disabled { color: var(--color-secondary-l1); cursor: not-allowed; background: var(--color-white); }
-.dropdown__item.is-active { color: var(--color-primary); }
+/* Active item: text stays at its default color; only the indicator icon turns primary */
+.dropdown__item.is-active { color: var(--color-secondary); }
+.dropdown__item.is-active .dropdown__item-icon,
+.dropdown__item.is-active .dropdown__item-meta { color: var(--color-primary); }
 
 .dropdown__item-icon { flex-shrink: 0; color: var(--color-secondary); }
 .dropdown__item-text { flex: 1 1 auto; min-width: 0; }
+/* Meta icon sits at far-right (submenu caret, shortcut key, action icon) */
 .dropdown__item-meta { flex-shrink: 0; margin-left: auto; color: var(--color-secondary); }
 
 .dropdown__group-title {
-  padding: var(--spacing-2) var(--spacing-5);
+  /* Figma: py=7px — nearest token is spacing-2-5 (6px) */
+  padding: var(--spacing-2-5) var(--spacing-5);
   font-size: var(--font-size-sm);
+  /* Figma: 12/Semibold = weight 600 = --font-weight-bold in this token scale */
   font-weight: var(--font-weight-bold);
   color: var(--color-dark);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  line-height: 1.5;
+  line-height: var(--line-height-base);
 }
 
 .dropdown__divider {
@@ -2439,6 +2448,17 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
+}
+
+/* Alert banner docked at the top of a dropdown (e.g. Picker with alert).
+   Figma: info-l2 bg, info-l1 bottom border only, px=16 py=8, no radius. */
+.dropdown .alert {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding: var(--spacing-3) var(--spacing-5);
+  margin-bottom: 0;
 }
 
 .dropdown__caption {
@@ -2677,12 +2697,20 @@
 .picker__trigger-text { flex: 1 1 auto; min-width: 0; text-align: left; }
 .picker__trigger > .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
 
-/* Picker uses .dropdown but tints the active option with a soft fill
-   to match Figma — the bare .dropdown__item.is-active stays primary text. */
+/* Picker uses .dropdown but tints the active option with a soft fill.
+   Text → --color-dark; check icon → --color-primary (explicit rule needed
+   because color:dark set on the button inherits to child SVGs). */
 .picker .dropdown__item.is-active {
   background: var(--color-primary-l3);
   color: var(--color-dark);
 }
+.picker .dropdown__item.is-active .dropdown__item-icon { color: var(--color-dark); }
+
+/* Tabulation: the check icon slot is always present in the DOM (opacity 0
+   when inactive) so text aligns at the same column across all items.
+   Figma: gap check→text is spacing-2 (4px), not the standard spacing-4 (12px). */
+.picker .dropdown__item { gap: var(--spacing-2); }
+.picker .dropdown__item:not(.is-active) .dropdown__item-icon { opacity: 0; }
 
 
 /* ============================================================
@@ -2754,24 +2782,44 @@
      </div>
    ============================================================ */
 
-.lang-picker__flag {
-  width: 16px;
-  height: 12px;
-  display: inline-block;
-  flex-shrink: 0;
-  background: var(--color-secondary-l2);
-  border-radius: var(--rounded-sm);
-  vertical-align: middle;
+/* Trigger locale text: Figma 16px Semibold */
+.lang-picker .picker__trigger-text {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
 }
 
+/* Flag icon: 16×12 (4:3). No CSS fill — letting SVG presentation attributes
+   control flag colours. Any CSS fill cascades and overrides them. */
+.lang-picker__flag {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--spacing-5);
+  height: var(--spacing-4);
+  overflow: hidden;
+  border-radius: var(--rounded-sm);
+}
+
+/* Item: asymmetric padding per Figma — pl=8 pr=16 py=4 */
 .lang-picker__item {
+  padding: var(--spacing-2) var(--spacing-5) var(--spacing-2) var(--spacing-3);
   gap: var(--spacing-3);
 }
 
-.lang-picker__locale { flex: 1 1 auto; font-weight: var(--font-weight-bold); color: var(--color-dark); }
-.lang-picker__item.is-active .lang-picker__locale { color: var(--color-dark); }
+/* Checkmark: always in the DOM, hidden on inactive items via CSS */
+.lang-picker__item:not(.is-active) .dropdown__item-icon { opacity: 0; }
 
-.lang-picker__status { margin-left: auto; }
+/* Locale text: regular + secondary by default, semibold + dark when active */
+.lang-picker__locale {
+  flex: 1 1 auto;
+  font-weight: var(--font-weight-semi);
+  color: var(--color-secondary);
+}
+.lang-picker__item.is-active .lang-picker__locale {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+}
+
+.lang-picker__status { margin-left: auto; flex-shrink: 0; }
 
 
 /* ============================================================
@@ -3330,32 +3378,41 @@
   list-style: none;
   margin: 0;
   padding: var(--spacing-3) 0;
-  background: var(--color-light-l1);
+  /* Figma: bg = --color-light (#F1F2F5), border secondary-l3 */
+  background: var(--color-light);
+  border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-md);
   min-height: 200px;
   flex: 1 1 auto;
 }
 
 .dual-listbox__list.is-focused {
+  /* Figma: bg tint + border change — no box-shadow/focus-ring */
   background: var(--color-primary-l3);
-  box-shadow: var(--focus-ring);
+  border-color: var(--color-primary-l2);
 }
 
 .dual-listbox__item {
-  padding: var(--spacing-2) var(--spacing-5);
+  /* Figma: px=8px py=6px (within items container that already has 8px sides) */
+  padding: var(--spacing-2-5) var(--spacing-5);
   font-size: var(--font-size-base);
   color: var(--color-dark);
   cursor: pointer;
 }
 
-.dual-listbox__item:hover { background: rgba(11, 95, 255, 0.06); }
-.dual-listbox__item.is-active { background: var(--color-primary); color: var(--color-white); }
+.dual-listbox__item:hover { background: var(--color-primary-l3); }
+/* Figma: selected item uses primary-d2 (#004AD7), not plain primary */
+.dual-listbox__item.is-active { background: var(--color-primary-d2); color: var(--color-white); }
 
 .dual-listbox__moves {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
-  align-self: center;
+  gap: 0;
+  /* Figma: grid item stretches (default), buttons centered vertically.
+     pt ≈ title height (21px) + gap (8px) shifts the center point to align
+     with the list area rather than the full column (title + list). */
+  justify-content: center;
+  padding-top: calc(var(--spacing-5) + var(--spacing-4));
 }
 
 .dual-listbox__reorder {
@@ -3440,10 +3497,10 @@
    Source: Figma — Lexicon Components, node 1410:22318
    Horizontal stepper. Each step is a 32×32 circle connected by
    a 4px line to the next. States:
-     • Completed = dark filled circle, white #check-small icon,
-       dark connector to the right.
+     • Completed = secondary (#6B6C7E) filled circle, white check icon,
+       secondary connector to the right.
      • Active    = primary circle, white number, light connector.
-     • Pending   = light circle, dark number, light connector.
+     • Pending   = secondary-l3 circle, secondary number, light connector.
    Optional labels above each step (full layout) or only above
    the active step (compact layout).
    Markup:
@@ -3478,7 +3535,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-2);
+  /* Figma: gap=8px between label and circle row */
+  gap: var(--spacing-3);
   position: relative;
   min-width: 64px;
 }
@@ -3487,18 +3545,22 @@
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 15px;
+  /* Figma: 4px thick connector centered on 32px circle = (32/2)-(4/2)=14px from bottom */
+  bottom: calc(var(--spacing-5) - var(--spacing-1));
   width: 100%;
-  height: 2px;
+  height: 4px;
   background: var(--color-secondary-l3);
   z-index: 0;
 }
 
-.stepper__step.is-complete:not(:last-child)::after { background: var(--color-dark); }
+/* Figma: completed connector is secondary (#6B6C7E), NOT dark */
+.stepper__step.is-complete:not(:last-child)::after { background: var(--color-secondary); }
 
 .stepper__label {
   font-size: var(--font-size-base);
-  color: var(--color-dark);
+  /* Figma: Semibold + secondary color on ALL label states */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
   white-space: nowrap;
 }
 
@@ -3517,8 +3579,9 @@
   font-weight: var(--font-weight-bold);
 }
 
-.stepper__step.is-complete .stepper__circle { background: var(--color-dark); color: var(--color-white); }
-.stepper__step.is-active   .stepper__circle { background: var(--color-primary); color: var(--color-white); }
+/* Figma: completed = secondary fill (#6B6C7E), NOT dark/black */
+.stepper__step.is-complete .stepper__circle { background: var(--color-secondary); color: var(--color-white); }
+.stepper__step.is-active   .stepper__circle { background: var(--color-primary);   color: var(--color-white); }
 
 
 /* ============================================================
@@ -4170,12 +4233,12 @@
 .light-hc .modal--success .modal__title,
 .light-hc .modal--success .modal__close { color: var(--color-success-d1); }
 
-/* Dual listbox — light-l1 = white in HC, list becomes invisible without border */
+/* Dual listbox — HC: stronger border + focused uses same primary-l3 tint */
 .light-hc .dual-listbox__list {
-  border: 1px solid var(--color-secondary);
+  border-color: var(--color-secondary);
 }
 .light-hc .dual-listbox__list.is-focused {
-  background: rgba(24, 82, 191, 0.05);
+  background: var(--color-primary-l3);
   border-color: var(--color-primary);
 }
 
