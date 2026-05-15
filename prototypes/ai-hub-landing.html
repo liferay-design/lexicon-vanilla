@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liferay AI Hub — Beta</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    html, body { margin: 0; }
+    body { background: var(--color-white); }
+
+    /* ────────────────────────────── Soft marketing pill (local utility) */
+    .ai-tag {
+      background: var(--color-info-l2);
+      color: var(--color-info);
+      border-color: transparent;
+      border-radius: var(--rounded-full);
+      padding: 0 var(--spacing-4);
+      height: 28px;
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-sm);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ────────────────────────────── Sticky control menu wrapper */
+    .ai-topbar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .ai-topbar-wrap .control-menu__title {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    /* ────────────────────────────── Reveal-on-scroll */
+    .ai-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity   0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .ai-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Staggered children inside a revealed parent */
+    .ai-reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity   0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ai-reveal-stagger.is-visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ai-reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.18s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.31s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.44s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.57s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.70s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 0.83s; }
+    .ai-reveal-stagger.is-visible > *:nth-child(8) { transition-delay: 0.96s; }
+    @media (prefers-reduced-motion: reduce) {
+      .ai-reveal, .ai-reveal-stagger > * {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* ────────────────────────────── Sections */
+    .ai-section {
+      padding: 110px clamp(var(--spacing-8), 6vw, 120px);
+    }
+    .ai-section--hero {
+      background: linear-gradient(
+        180deg,
+        var(--color-primary-l3) 0%,
+        color-mix(in srgb, var(--color-primary-l3) 40%, var(--color-white)) 100%
+      );
+      text-align: center;
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .ai-section--dots {
+      background-color: var(--color-light);
+      background-image: radial-gradient(
+        color-mix(in srgb, var(--color-secondary-l2) 70%, transparent) 1.5px,
+        transparent 1.5px
+      );
+      background-size: 20px 20px;
+    }
+
+    /* ────────────────────────────── Hero */
+    .ai-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      margin: 0 0 var(--spacing-4);
+      line-height: 1.2;
+    }
+    .ai-hero__title-accent { color: var(--color-primary); }
+    .ai-hero__tagline {
+      font-size: var(--font-size-md);
+      color: var(--color-secondary);
+      max-width: 520px;
+      margin: 0 auto var(--spacing-9);
+      line-height: 1.5;
+    }
+    .ai-hero__media {
+      max-width: 880px;
+      margin: 0 auto;
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-secondary-l3);
+      background: var(--color-white);
+    }
+    .ai-hero__actions {
+      display: flex;
+      gap: var(--spacing-4);
+      justify-content: center;
+      margin-top: var(--spacing-9);
+    }
+    .ai-hero__fineprint {
+      margin-top: var(--spacing-5);
+      font-size: var(--font-size-base);
+      color: var(--color-secondary);
+    }
+    .ai-hero__fineprint a { color: var(--color-primary); }
+
+    /* ────────────────────────────── Two-column feature section */
+    .ai-feature {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(var(--spacing-8), 6vw, 96px);
+      align-items: center;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .ai-feature--reverse .ai-feature__text { order: 2; }
+    .ai-feature__text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-5);
+      align-items: flex-start;
+    }
+    .ai-feature__title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      margin: 0;
+      line-height: 1.25;
+    }
+    .ai-feature__desc {
+      font-size: var(--font-size-md);
+      color: var(--color-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .ai-feature__media {
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-secondary-l3);
+      background: var(--color-white);
+      aspect-ratio: 4 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-secondary-l1);
+    }
+
+    /* "Powered by" lockup */
+    .ai-poweredby {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-5);
+    }
+    .ai-poweredby__label {
+      font-size: var(--font-size-sm);
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .ai-poweredby__brand {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+    }
+
+    /* ────────────────────────────── Roadmap (dark section) */
+    .ai-roadmap {
+      background:
+        radial-gradient(circle at 90% 50%, color-mix(in srgb, var(--color-primary) 35%, transparent) 0%, transparent 45%),
+        var(--color-dark-d2);
+      padding: 80px clamp(var(--spacing-8), 6vw, 120px);
+      color: var(--color-white);
+    }
+    .ai-roadmap__head {
+      text-align: center;
+      margin-bottom: var(--spacing-9);
+    }
+    .ai-roadmap__title {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      margin: var(--spacing-4) 0 0;
+      color: var(--color-white);
+    }
+    .ai-roadmap__table {
+      max-width: 1080px;
+      margin: 0 auto;
+      border: 1px solid color-mix(in srgb, var(--color-white) 12%, transparent);
+      border-radius: var(--rounded-md);
+      overflow: hidden;
+    }
+    .ai-roadmap__row {
+      display: grid;
+      grid-template-columns: 1fr 160px 160px;
+      gap: var(--spacing-6);
+      padding: var(--spacing-5) var(--spacing-6);
+      align-items: center;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-white) 8%, transparent);
+      font-size: var(--font-size-base);
+    }
+    .ai-roadmap__row:last-child { border-bottom: 0; }
+    .ai-roadmap__row--head {
+      background: color-mix(in srgb, var(--color-white) 5%, transparent);
+      font-size: var(--font-size-sm);
+      color: color-mix(in srgb, var(--color-white) 60%, transparent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: var(--font-weight-bold);
+    }
+    .ai-roadmap__feature {
+      color: var(--color-white);
+      font-weight: var(--font-weight-semi);
+    }
+    .ai-roadmap__date {
+      color: color-mix(in srgb, var(--color-white) 70%, transparent);
+    }
+
+    /* ────────────────────────────── Feedback form */
+    .ai-feedback {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .ai-feedback__title {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      margin: var(--spacing-4) 0 var(--spacing-5);
+      color: var(--color-dark);
+    }
+    .ai-feedback__desc {
+      font-size: var(--font-size-md);
+      color: var(--color-secondary);
+      line-height: 1.5;
+      margin: 0 auto var(--spacing-8);
+    }
+    .ai-feedback__form {
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l3);
+      border-radius: var(--rounded-md);
+      padding: var(--spacing-7);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-5);
+      text-align: left;
+    }
+    .ai-feedback__legal {
+      font-size: var(--font-size-sm);
+      color: var(--color-secondary);
+      margin: var(--spacing-5) 0 0;
+    }
+
+    /* ────────────────────────────── Footer */
+    .ai-footer {
+      text-align: center;
+      padding: var(--spacing-7) 0 var(--spacing-9);
+      font-size: var(--font-size-base);
+      color: var(--color-secondary);
+    }
+
+    /* ────────────────────────────── Placeholder media decoration */
+    .media-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, var(--color-light-l1) 0%, var(--color-light) 100%);
+    }
+
+    /* Responsive collapse */
+    @media (max-width: 900px) {
+      .ai-feature {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-7);
+      }
+      .ai-feature--reverse .ai-feature__text { order: 0; }
+      .ai-roadmap__row { grid-template-columns: 1fr 100px; }
+      .ai-roadmap__row > :nth-child(2) { display: none; }
+      .ai-hero__title { font-size: var(--font-size-2xl); }
+      .ai-section, .ai-roadmap { padding: var(--spacing-9) var(--spacing-6); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Top bar — Control Menu component
+═════════════════════════════════════════════════════════════════ -->
+<div class="ai-topbar-wrap">
+  <div class="control-menu">
+    <div class="control-menu__left">
+      <div class="control-menu__btns">
+        <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+          <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+        </button>
+      </div>
+      <span class="control-menu__title">
+        Liferay AI Hub
+        <span class="label label--bold label--info">Beta</span>
+      </span>
+    </div>
+    <div class="control-menu__right">
+      <span class="sticker sticker--md sticker--outline sticker--circle sticker--success" aria-label="Marcos Castro">MC</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Hero
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-section ai-section--hero ai-reveal-stagger">
+  <h1 class="ai-hero__title">
+    Welcome to the AI Hub <span class="ai-hero__title-accent">Beta</span>
+  </h1>
+  <p class="ai-hero__tagline">
+    Test our AI orchestration tools early and help shape the future.<br>
+    For prototypes and PoCs only. Not production-ready.
+  </p>
+
+  <div class="ai-hero__media">
+    <div class="media-placeholder" style="aspect-ratio: 16 / 11;">
+      <svg class="lexicon-icon lexicon-icon-2xl" style="color: var(--color-secondary-l1);"><use href="#picture"></use></svg>
+    </div>
+  </div>
+
+  <div class="ai-hero__actions">
+    <button class="btn btn--primary">See Agents</button>
+    <button class="btn btn--secondary">Book the Demo</button>
+  </div>
+
+  <p class="ai-hero__fineprint">
+    Are you new to the beta? <a href="#">Read the FAQ</a>
+  </p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Feature 1 — Custom AI Agents
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-section">
+  <div class="ai-feature">
+    <div class="ai-feature__text ai-reveal-stagger">
+      <span class="label ai-tag">Personalized</span>
+      <h2 class="ai-feature__title">Custom AI Agents</h2>
+      <p class="ai-feature__desc">
+        Create and configure personalized AI workflows powered by Google Gemini
+        services. Build once, reuse everywhere — from internal tooling to
+        customer-facing chat experiences.
+      </p>
+      <button class="btn btn--primary">
+        Create an Agent
+        <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+      </button>
+    </div>
+    <div class="ai-feature__media ai-reveal">
+      <div class="media-placeholder">
+        <svg class="lexicon-icon lexicon-icon-2xl"><use href="#users"></use></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Feature 2 — Liferay AI Assistant (dotted bg)
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-section ai-section--dots">
+  <div class="ai-feature ai-feature--reverse">
+    <div class="ai-feature__text ai-reveal-stagger">
+      <span class="label ai-tag">Intelligent Productivity</span>
+      <h2 class="ai-feature__title">Liferay AI Assistant</h2>
+      <p class="ai-feature__desc">
+        Use an intelligent assistant within the CMS to query Liferay data and
+        trigger AI tasks — including writing tools and custom workflows —
+        directly from the chat.
+      </p>
+      <div class="ai-poweredby">
+        <span class="ai-poweredby__label">Powered by</span>
+        <span class="ai-poweredby__brand">✦ Google Gemini</span>
+      </div>
+    </div>
+    <div class="ai-feature__media ai-reveal">
+      <div class="media-placeholder">
+        <svg class="lexicon-icon lexicon-icon-2xl"><use href="#message"></use></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Feature 3 — CMS Writing Assistant
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-section">
+  <div class="ai-feature">
+    <div class="ai-feature__text ai-reveal-stagger">
+      <span class="label ai-tag">The Best Way Now</span>
+      <h2 class="ai-feature__title">CMS Writing Assistant</h2>
+      <p class="ai-feature__desc">
+        Access a dedicated plugin within the new CMS to instantly improve
+        writing, fix spelling and grammar, or adjust content length — make
+        shorter or longer — in real time.
+      </p>
+      <button class="btn btn--primary">
+        View More
+        <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
+      </button>
+    </div>
+    <div class="ai-feature__media ai-reveal">
+      <div class="media-placeholder">
+        <svg class="lexicon-icon lexicon-icon-2xl"><use href="#pencil"></use></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Roadmap (dark section)
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-roadmap">
+  <div class="ai-roadmap__head ai-reveal-stagger">
+    <span class="label ai-tag">Coming soon</span>
+    <h2 class="ai-roadmap__title">AI Hub Roadmap</h2>
+  </div>
+
+  <div class="ai-roadmap__table ai-reveal-stagger">
+    <div class="ai-roadmap__row ai-roadmap__row--head">
+      <span>Feature</span>
+      <span>Target</span>
+      <span>Status</span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Custom Code Snippets integration with MCP</span>
+      <span class="ai-roadmap__date">Q2 2026</span>
+      <span><span class="label label--bold label--warning">In Progress</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Multi-tenant Liferay AI Workspace</span>
+      <span class="ai-roadmap__date">Q2 2026</span>
+      <span><span class="label label--bold label--info">Planning</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Embeddings Studio</span>
+      <span class="ai-roadmap__date">Q3 2026</span>
+      <span><span class="label label--bold label--info">Planning</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Page Creation Assistant</span>
+      <span class="ai-roadmap__date">Q3 2026</span>
+      <span><span class="label label--bold label--info">Planning</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Compliance requirements logs, throttling rates, data minimization</span>
+      <span class="ai-roadmap__date">Q4 2026</span>
+      <span><span class="label label--bold label--secondary">Discovery</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Self-published custom AI Agents to the Marketplace</span>
+      <span class="ai-roadmap__date">Q4 2026</span>
+      <span><span class="label label--bold label--secondary">Discovery</span></span>
+    </div>
+    <div class="ai-roadmap__row">
+      <span class="ai-roadmap__feature">Voice-based interaction</span>
+      <span class="ai-roadmap__date">2027</span>
+      <span><span class="label label--bold label--secondary">Discovery</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Feedback form
+═════════════════════════════════════════════════════════════════ -->
+<section class="ai-section">
+  <div class="ai-feedback ai-reveal-stagger">
+    <span class="label ai-tag">Help us evolve</span>
+    <h2 class="ai-feedback__title">Let's shape the future together</h2>
+    <p class="ai-feedback__desc">
+      The primary goal of this private beta is to put our foundational AI
+      orchestration tools into your hands early, allowing your direct feedback
+      to help us shape and refine the product's evolution. Please note this
+      environment is intended strictly for prototypes and PoCs; it is not
+      currently supported for production data.
+    </p>
+
+    <form class="ai-feedback__form" onsubmit="event.preventDefault();">
+      <label class="input">
+        <span class="input__label">Select a Feedback Feature</span>
+        <select class="input__field">
+          <option>Custom AI Agents</option>
+          <option>Liferay AI Assistant</option>
+          <option>CMS Writing Assistant</option>
+          <option>General feedback</option>
+        </select>
+      </label>
+
+      <label class="input">
+        <span class="input__label">Your Comments</span>
+        <textarea class="input__field input__field--textarea" rows="4" placeholder="Tell us what's working, what's not, what you'd love to see..."></textarea>
+      </label>
+
+      <button class="btn btn--primary" type="submit">Submit</button>
+    </form>
+
+    <p class="ai-feedback__legal">
+      Information will be processed in accordance with your team's Liferay
+      Privacy Policy.
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Footer
+═════════════════════════════════════════════════════════════════ -->
+<footer class="ai-footer ai-reveal">
+  Liferay AI Hub Beta, 2026
+</footer>
+
+</main>
+
+<script>
+/* ── Reveal on scroll ── IntersectionObserver one-shot */
+(function () {
+  var targets = document.querySelectorAll('.ai-reveal, .ai-reveal-stagger');
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('is-visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+  targets.forEach(function (el) { io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
