@@ -27,24 +27,27 @@ Reserve clarifying questions for genuinely **structural** decisions, where the a
 
 Cap clarifying questions at 1–2. If the user's request already names the components they want (e.g. "control menu + management toolbar + table"), trust it and proceed — don't re-litigate the structure.
 
-### 2. Pick a slug and copy the scaffold
+### 2. Pick a starting point
 
-If the screen needs a **full app chrome** (sidebar + top bar already wired), start from a shell instead of `starter.html`:
+Four options:
 
-| Shell | Chrome pattern | When to use |
-|---|---|---|
-| `shells/cms.html` | Control Menu (full width) + CMS Menu (280px sidebar) | CMS / admin screens with a left nav panel |
-| `shells/dxp.html` | Control Panel (320px, full height) + Control Menu (right column only) | DXP Control Panel screens |
+| Source | What it gives you |
+|---|---|
+| `starter.html` | **Blank page** — only the skin script and stylesheets. |
+| `shells/cms.html` | Top bar (Control Menu) + 280px left sidebar (CMS Menu) already wired. |
+| `shells/dxp.html` | Control Panel (320px, full height) + Control Menu in the right column already wired. |
+| Any `prototypes/*.html` | Existing prototype — copy as a base or use as visual reference. |
 
-Fill in only the `<main>` placeholder inside the shell — the chrome, collapsible groups, and skin script are pre-wired. For everything else, copy from `starter.html`:
+If the request makes the choice obvious (e.g. "CMS admin page" → `shells/cms.html`), pick it. Otherwise ask the user once, listing the current contents of `shells/` and `prototypes/` (`ls shells/ prototypes/`) so they can choose — this counts toward the 1–2 question cap in step 1.
 
+Copy the chosen file:
 ```bash
-cp starter.html prototypes/<kebab-case-slug>.html
-# or
-cp shells/cms.html prototypes/<kebab-case-slug>.html
+cp starter.html prototypes/<kebab-case-slug>.html        # blank
+cp shells/cms.html prototypes/<kebab-case-slug>.html     # shell
+cp prototypes/login.html prototypes/<kebab-case-slug>.html  # base on existing
 ```
 
-Never write the file from scratch — the scaffold has the skin-persistence script and the correct relative paths to `../tokens.css`, `../components.css`, `../icons.js`. Breaking those breaks the prototype.
+Never write the file from scratch — the scaffold contains the skin-persistence script and the relative paths to `../tokens.css`, `../components.css`, `../icons.js`. Breaking those breaks the prototype.
 
 ### 3. Inventory the components you'll need
 
