@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant — Lexicon Vanilla</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* ───────────────────────────── Floating AI Assistant panel */
+    .ai-chat {
+      position: fixed;
+      bottom: var(--spacing-6);
+      right: var(--spacing-6);
+      width: 448px;
+      max-height: calc(100vh - var(--spacing-9));
+      display: flex;
+      flex-direction: column;
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--shadow-lg);
+      font-family: var(--font-family-base);
+      color: var(--color-dark);
+      z-index: 100;
+      overflow: hidden;
+      transition: width 0.25s ease, border-radius 0.25s ease;
+    }
+
+    /* Expanded — docked full-height right sidebar */
+    .ai-chat.is-expanded {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      height: 100vh;
+      max-height: none;
+      border: 0;
+      border-left: 1px solid var(--color-secondary-l2);
+      border-radius: 0;
+      box-shadow: var(--shadow-md);
+    }
+    /* Push the whole page content left when the sidebar is docked */
+    body { transition: padding-right 0.25s ease; }
+    body.ai-chat-expanded { padding-right: 480px; }
+
+    /* Header */
+    .ai-chat__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-5);
+      border-bottom: 1px solid var(--color-secondary-l3);
+    }
+    .ai-chat__title {
+      margin: 0;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+    }
+
+    /* Identity — title becomes a borderless button (avatar + name) */
+    .ai-chat__identity { position: relative; }
+    .ai-chat__title-btn {
+      gap: var(--spacing-2);
+      padding-left: var(--spacing-2);
+      font-size: var(--font-size-base);
+    }
+    .ai-chat__title-avatar { width: 24px; height: 24px; background: var(--color-light-l1); }
+    .ai-chat__title-avatar .lexicon-icon { width: 14px; height: 14px; color: var(--color-primary); }
+
+    /* Hover/focus tooltip on the identity button */
+    .ai-chat__tooltip {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 0;
+      z-index: 20;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+    }
+    .ai-chat__title-btn:hover ~ .ai-chat__tooltip,
+    .ai-chat__title-btn:focus-visible ~ .ai-chat__tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+    .ai-chat__identity.is-open .ai-chat__tooltip { display: none; }
+
+    /* Persona picker menu */
+    .ai-chat__persona-menu {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 0;
+      z-index: 30;
+    }
+    .ai-chat__identity:not(.is-open) .ai-chat__persona-menu { display: none; }
+    .ai-chat__persona-avatar { width: 24px; height: 24px; background: var(--color-light-l1); }
+    .ai-chat__persona-avatar .lexicon-icon { width: 14px; height: 14px; color: var(--color-primary); }
+    .ai-chat__persona-check { color: var(--color-primary); }
+
+    /* Photo avatars fill the greeting / title circles */
+    .ai-chat__avatar img,
+    .ai-chat__title-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ai-chat__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+    .ai-chat__divider {
+      width: 1px;
+      height: 24px;
+      background: var(--color-secondary-l2);
+      margin: 0 var(--spacing-2);
+    }
+
+    /* Body — conversation area */
+    .ai-chat__body {
+      flex: 1 1 auto;
+      min-height: 320px;
+      padding: var(--spacing-5);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-5);
+    }
+    .ai-chat__message {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-3);
+    }
+    .ai-chat__message--user { justify-content: flex-end; }
+    .ai-chat__avatar {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: var(--rounded-full);
+      background: var(--color-light-l1);
+      color: var(--color-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-chat__avatar .lexicon-icon { width: 14px; height: 14px; }
+    .ai-chat__bubble {
+      margin: 0;
+      padding-top: var(--spacing-1);
+      font-size: var(--font-size-base);
+      line-height: 1.5;
+      color: var(--color-dark);
+      white-space: pre-wrap;
+    }
+    .ai-chat__bubble--user {
+      padding: var(--spacing-3) var(--spacing-4);
+      max-width: 80%;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border-radius: var(--rounded-md);
+    }
+
+    /* Typing indicator — three bouncing dots */
+    .ai-chat__typing {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) 0;
+    }
+    .ai-chat__typing span {
+      width: var(--spacing-2-5);
+      height: var(--spacing-2-5);
+      border-radius: var(--rounded-full);
+      background: var(--color-dark);
+      opacity: 0.35;
+      animation: ai-typing 1.2s infinite ease-in-out;
+    }
+    .ai-chat__typing span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-chat__typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ai-typing {
+      0%, 60%, 100% { transform: translateY(0);                        opacity: 0.35; }
+      30%           { transform: translateY(calc(var(--spacing-2) * -1)); opacity: 0.9; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ai-chat__typing span { animation: none; opacity: 0.55; }
+    }
+
+    /* Footer — quick actions + composer */
+    .ai-chat__footer {
+      padding: var(--spacing-4) var(--spacing-5) var(--spacing-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+    .ai-chat__section-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-dark);
+      opacity: 0.7;
+    }
+    .ai-chat__quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-2);
+    }
+    /* Label-like quick-action chip — no border, soft light-l1 fill */
+    .ai-chat__quick {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-1) var(--spacing-3);
+      border: 0;
+      border-radius: var(--rounded-md);
+      background: var(--color-light-l1);
+      color: var(--color-secondary);
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+    .ai-chat__quick:hover { background: var(--color-light); }
+    .ai-chat__quick:focus-visible { outline: 0; box-shadow: var(--focus-ring); }
+    .ai-chat__quick .lexicon-icon { color: var(--color-primary); }
+
+    /* Composer — textarea with inline actions */
+    .ai-chat__composer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+      padding: var(--spacing-3);
+      background: var(--color-light-l1);
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--rounded-md);
+      margin-top: var(--spacing-2);
+    }
+    .ai-chat__composer:focus-within {
+      border-color: var(--color-primary-l1);
+      box-shadow: var(--focus-ring);
+    }
+    .ai-chat__composer-field {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 0 var(--spacing-2);
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      color: var(--color-dark);
+      resize: none;
+      outline: none;
+      min-height: 44px;
+    }
+    .ai-chat__composer-field::placeholder {
+      color: var(--color-dark);
+      opacity: 0.55;
+    }
+    .ai-chat__composer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Selected-context chips */
+    .ai-chat__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-2);
+    }
+  </style>
+</head>
+<body style="margin: 0;">
+
+<!-- ════════════════════════════════════════════════════════════════
+     CMS shell — Control Menu + CMS sidebar + content area
+     Copy to prototypes/<screen>.html and fill in the content area.
+
+     To customise the chrome:
+       • Change the <title> and .control-menu__title text
+       • Mark a different .vert-nav__item as is-active
+       • Add / remove sidebar groups and items as needed
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Menu (top bar) ──────────────────────────────────── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Web Content</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- ─── App body: sidebar + content ─────────────────────────────── -->
+<div style="display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px);">
+
+  <!-- CMS Menu (left sidebar) -->
+  <aside class="cms-menu">
+    <ul class="cms-menu__groups">
+
+      <!-- Plain items (no group header) -->
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg>
+            </span>
+            Home
+          </li>
+        </ul>
+      </li>
+
+      <!-- Collapsible group -->
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          CONTENT
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item is-active">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#web-content"></use></svg>
+            </span>
+            Web Content
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#documents-and-media"></use></svg>
+            </span>
+            Documents
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#blogs"></use></svg>
+            </span>
+            Blogs
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#document-image"></use></svg>
+            </span>
+            Images
+          </li>
+        </ul>
+      </li>
+
+      <!-- Collapsible group with inline action -->
+      <li>
+        <div class="vert-nav__group-header">
+          STRUCTURE
+          <span class="vert-nav__group-actions">
+            <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add structure">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg>
+            </button>
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </span>
+        </div>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#page"></use></svg>
+            </span>
+            Content Types
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#edit-layout"></use></svg>
+            </span>
+            Display Pages
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell">
+              <svg class="lexicon-icon vert-nav__icon"><use href="#gallery"></use></svg>
+            </span>
+            Fragments
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="display: flex; flex-direction: column; min-width: 0; background: var(--color-light); opacity: 0.2; pointer-events: none;">
+
+    <!-- Page header -->
+    <header style="padding: var(--spacing-6) var(--spacing-7) var(--spacing-4); background: var(--color-white); border-bottom: 1px solid var(--color-secondary-l3);">
+      <ol class="breadcrumb" style="margin-bottom: var(--spacing-3);">
+        <li><a href="#">Content</a></li>
+        <li><a href="#">Web Content</a></li>
+        <li aria-current="page">Spring Campaign</li>
+      </ol>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4);">
+        <h1 style="margin: 0; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">Spring Campaign — Landing</h1>
+        <div style="display: flex; gap: var(--spacing-2);">
+          <button class="btn btn--secondary">Cancel</button>
+          <button class="btn btn--secondary">Save as Draft</button>
+          <button class="btn btn--primary">Publish</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Form sheet -->
+    <section style="padding: var(--spacing-7); display: flex; flex-direction: column; gap: var(--spacing-5); max-width: 880px;">
+      <div class="sheet">
+        <header class="sheet-header">
+          <h2 class="sheet-header__title">Basic Information</h2>
+          <p class="sheet-header__subtitle">Required fields for publishing this content.</p>
+        </header>
+
+        <label class="input">
+          <span class="input__label">Title <span class="input__required">*</span></span>
+          <input type="text" class="input__field" value="Spring Campaign 2026">
+        </label>
+
+        <label class="input">
+          <span class="input__label">Summary</span>
+          <textarea class="input__field input__field--textarea" rows="3">Discover our new spring collection — fresh designs, sustainable materials, and limited-edition pieces.</textarea>
+        </label>
+
+        <div class="sheet-row">
+          <label class="input">
+            <span class="input__label">Category</span>
+            <input type="text" class="input__field" value="Marketing / Campaigns">
+          </label>
+          <label class="input">
+            <span class="input__label">Author</span>
+            <input type="text" class="input__field" value="Veronica Gonzalez">
+          </label>
+        </div>
+      </div>
+
+      <div class="sheet">
+        <header class="sheet-header">
+          <h2 class="sheet-header__title">Tags</h2>
+        </header>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-2);">
+          <span class="label label--secondary">spring</span>
+          <span class="label label--secondary">campaign</span>
+          <span class="label label--secondary">2026</span>
+          <span class="label label--secondary">marketing</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- ─── Floating AI Assistant chatbot ─────────────────────────── -->
+<aside class="ai-chat" role="dialog" aria-label="AI Assistant">
+
+  <header class="ai-chat__header">
+    <div class="ai-chat__identity">
+      <button class="btn btn--borderless btn--sm ai-chat__title-btn" type="button" id="ai-persona-trigger" aria-haspopup="menu" aria-expanded="false">
+        <span class="sticker sticker--circle ai-chat__title-avatar" style="display:none">
+          <svg class="lexicon-icon"><use href="#stars"></use></svg>
+        </span>
+        <span class="ai-chat__title-text">AI Assistant</span>
+      </button>
+      <span class="tooltip tooltip--top tooltip--align-start ai-chat__tooltip" role="tooltip">Customize your assistant</span>
+
+      <ul class="dropdown ai-chat__persona-menu" role="menu" aria-labelledby="ai-persona-trigger">
+        <li class="dropdown__group-title">Change assistant</li>
+        <li><button class="dropdown__item is-active" role="menuitemradio" type="button" data-name="AI Assistant">
+          <span class="sticker sticker--circle ai-chat__persona-avatar"><svg class="lexicon-icon"><use href="#stars"></use></svg></span>
+          <span class="dropdown__item-text">AI Assistant</span>
+          <svg class="lexicon-icon dropdown__item-meta ai-chat__persona-check"><use href="#check"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" role="menuitemradio" type="button" data-name="Allow">
+          <span class="sticker sticker--circle ai-chat__persona-avatar"><img src="https://messenger-assets.qualified.com/uploads/7uiedq1NC2YL2HfEPqfSnFDoDTz8dT2iSJiF5/bfa0a5e1cdb3037dec0d7cf26af41e18a07a8f9602edb40826ae6e108ce5b953.png" alt=""></span>
+          <span class="dropdown__item-text">Allow</span>
+          <svg class="lexicon-icon dropdown__item-meta ai-chat__persona-check" style="visibility:hidden"><use href="#check"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" role="menuitemradio" type="button" data-name="Nova">
+          <span class="sticker sticker--circle sticker--outline sticker--primary ai-chat__persona-avatar">N</span>
+          <span class="dropdown__item-text">Nova</span>
+          <svg class="lexicon-icon dropdown__item-meta ai-chat__persona-check" style="visibility:hidden"><use href="#check"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" role="menuitemradio" type="button" data-name="Atlas">
+          <span class="sticker sticker--circle sticker--outline sticker--success ai-chat__persona-avatar">A</span>
+          <span class="dropdown__item-text">Atlas</span>
+          <svg class="lexicon-icon dropdown__item-meta ai-chat__persona-check" style="visibility:hidden"><use href="#check"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" role="menuitemradio" type="button" data-name="Iris">
+          <span class="sticker sticker--circle sticker--outline sticker--info ai-chat__persona-avatar">I</span>
+          <span class="dropdown__item-text">Iris</span>
+          <svg class="lexicon-icon dropdown__item-meta ai-chat__persona-check" style="visibility:hidden"><use href="#check"></use></svg>
+        </button></li>
+      </ul>
+    </div>
+    <div class="ai-chat__actions">
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="New chat">
+        <svg class="lexicon-icon"><use href="#plus"></use></svg>
+      </button>
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Chat history">
+        <svg class="lexicon-icon"><use href="#comments"></use></svg>
+      </button>
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Expand">
+        <svg class="lexicon-icon"><use href="#expand"></use></svg>
+      </button>
+      <span class="ai-chat__divider" aria-hidden="true"></span>
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="ai-chat__body">
+    <div class="ai-chat__message">
+      <span class="sticker sticker--circle ai-chat__avatar" aria-hidden="true">
+        <svg class="lexicon-icon"><use href="#stars"></use></svg>
+      </span>
+      <p class="ai-chat__bubble">Hi! I can help you generate content, titles, tags, or translate your work. What would you like to do?</p>
+    </div>
+  </div>
+
+  <div class="ai-chat__footer">
+    <span class="ai-chat__section-label">Quick Actions</span>
+    <div class="ai-chat__quick-actions">
+      <button class="ai-chat__quick" type="button">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#stars"></use></svg>
+        Generate Content
+      </button>
+      <button class="ai-chat__quick" type="button">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#stars"></use></svg>
+        Generate Title
+      </button>
+      <button class="ai-chat__quick" type="button">
+        <svg class="lexicon-icon lexicon-icon-sm"><use href="#stars"></use></svg>
+        Translate
+      </button>
+    </div>
+
+    <div class="ai-chat__composer">
+      <textarea class="ai-chat__composer-field" rows="2" placeholder="Ask me anything..."></textarea>
+      <div class="ai-chat__composer-bar">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Attach file">
+          <svg class="lexicon-icon"><use href="#upload"></use></svg>
+        </button>
+        <button class="btn btn--primary btn--sm btn--icon" type="button" aria-label="Send message">
+          <svg class="lexicon-icon"><use href="#order-arrow-up"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ai-chat__chips">
+      <span class="label label--info">
+        <svg class="lexicon-icon"><use href="#page-template"></use></svg>
+        Hero Banner
+        <button class="label__close" type="button" aria-label="Remove">
+          <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+        </button>
+      </span>
+      <span class="label label--info">
+        <svg class="lexicon-icon"><use href="#page-template"></use></svg>
+        Feature Cards
+        <button class="label__close" type="button" aria-label="Remove">
+          <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+        </button>
+      </span>
+      <span class="label label--info">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+        Grid
+        <button class="label__close" type="button" aria-label="Remove">
+          <svg class="lexicon-icon"><use href="#times-small"></use></svg>
+        </button>
+      </span>
+    </div>
+  </div>
+
+</aside>
+
+<!-- Expand / collapse the AI Assistant into a docked sidebar -->
+<script>
+  (function () {
+    var chat = document.querySelector('.ai-chat');
+    if (!chat) return;
+    var btn = chat.querySelector('[aria-label="Expand"]');
+    if (!btn) return;
+    var use = btn.querySelector('use');
+    btn.addEventListener('click', function () {
+      var expanded = chat.classList.toggle('is-expanded');
+      document.body.classList.toggle('ai-chat-expanded', expanded);
+      btn.setAttribute('aria-label', expanded ? 'Collapse' : 'Expand');
+      if (use) use.setAttribute('href', expanded ? '#compress' : '#expand');
+    });
+  })();
+</script>
+
+<!-- Persona picker — change the assistant's avatar + name -->
+<script>
+  (function () {
+    var chat = document.querySelector('.ai-chat');
+    if (!chat) return;
+    var identity = chat.querySelector('.ai-chat__identity');
+    var trigger  = identity && identity.querySelector('.ai-chat__title-btn');
+    var menu     = identity && identity.querySelector('.ai-chat__persona-menu');
+    if (!identity || !trigger || !menu) return;
+
+    var titleText     = identity.querySelector('.ai-chat__title-text');
+    var titleAvatar   = identity.querySelector('.ai-chat__title-avatar');
+    var greetingAvatar = chat.querySelector('.ai-chat__avatar');
+
+    var PERSONAS = {
+      'AI Assistant': { kind: 'icon' },
+      'Allow': { kind: 'image', src: 'https://messenger-assets.qualified.com/uploads/7uiedq1NC2YL2HfEPqfSnFDoDTz8dT2iSJiF5/bfa0a5e1cdb3037dec0d7cf26af41e18a07a8f9602edb40826ae6e108ce5b953.png' },
+      'Nova':  { kind: 'initial', initial: 'N', tone: 'primary' },
+      'Atlas': { kind: 'initial', initial: 'A', tone: 'success' },
+      'Iris':  { kind: 'initial', initial: 'I', tone: 'info' }
+    };
+
+    function avatarInner(p) {
+      return p.kind === 'image'   ? '<img src="' + p.src + '" alt="">'
+           : p.kind === 'initial' ? p.initial
+           : '<svg class="lexicon-icon"><use href="#stars"></use></svg>';
+    }
+    function applyAvatar(slot, base, p, hideOnIcon) {
+      // The default "AI Assistant" persona shows its icon in the menu and in
+      // chat messages, but NOT in the header button when selected.
+      if (p.kind === 'icon' && hideOnIcon) {
+        slot.style.display = 'none';
+        slot.innerHTML = '';
+        return;
+      }
+      slot.style.display = '';
+      slot.className = base + (p.kind === 'initial' ? ' sticker--outline sticker--' + p.tone : '');
+      slot.innerHTML = avatarInner(p);
+    }
+    function close() {
+      identity.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = identity.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+
+    menu.querySelectorAll('.dropdown__item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var name = item.getAttribute('data-name');
+        var p = PERSONAS[name] || PERSONAS['AI Assistant'];
+
+        titleText.textContent = name;
+        applyAvatar(titleAvatar, 'sticker sticker--circle ai-chat__title-avatar', p, true);
+        if (greetingAvatar) applyAvatar(greetingAvatar, 'sticker sticker--circle ai-chat__avatar', p, false);
+
+        menu.querySelectorAll('.dropdown__item').forEach(function (i) {
+          i.classList.remove('is-active');
+          var c = i.querySelector('.ai-chat__persona-check');
+          if (c) c.style.visibility = 'hidden';
+        });
+        item.classList.add('is-active');
+        var chk = item.querySelector('.ai-chat__persona-check');
+        if (chk) chk.style.visibility = 'visible';
+
+        close();
+      });
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!identity.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+
+    /* ── Messaging — send a message, assistant "thinks", then replies random ── */
+    var body    = chat.querySelector('.ai-chat__body');
+    var field   = chat.querySelector('.ai-chat__composer-field');
+    var sendBtn = chat.querySelector('[aria-label="Send message"]');
+
+    var RESPONSES = [
+      'Sure — I can draft that for you. Do you want a formal or a casual tone?',
+      'Here are three title options:\n1. Spring Into Style\n2. Fresh Looks for a New Season\n3. The 2026 Spring Edit',
+      'Done! I generated a summary from your content. Let me know if you want it shorter.',
+      'I translated the text into Spanish. Want me to add French and German as well?',
+      'Good question. Based on the current draft, I would lead with the sustainability angle.',
+      'I added a few suggested tags: spring, new-collection, sustainable, limited-edition.',
+      'I can tighten that paragraph. Here is a more concise version you can drop in.',
+      'No problem — I kept your original tone and just cleaned up the grammar.'
+    ];
+
+    function currentPersona() { return PERSONAS[titleText.textContent] || PERSONAS['AI Assistant']; }
+    function avatarSpanHTML(p) {
+      var cls = 'sticker sticker--circle ai-chat__avatar' + (p.kind === 'initial' ? ' sticker--outline sticker--' + p.tone : '');
+      return '<span class="' + cls + '" aria-hidden="true">' + avatarInner(p) + '</span>';
+    }
+    function scrollDown() { body.scrollTop = body.scrollHeight; }
+
+    function addUser(text) {
+      var row = document.createElement('div');
+      row.className = 'ai-chat__message ai-chat__message--user';
+      var p = document.createElement('p');
+      p.className = 'ai-chat__bubble ai-chat__bubble--user';
+      p.textContent = text;
+      row.appendChild(p);
+      body.appendChild(row);
+    }
+    function addThinking() {
+      var row = document.createElement('div');
+      row.className = 'ai-chat__message';
+      row.innerHTML = avatarSpanHTML(currentPersona()) +
+        '<p class="ai-chat__bubble"><span class="ai-chat__typing" role="status" aria-label="Typing"><span></span><span></span><span></span></span></p>';
+      body.appendChild(row);
+      return row;
+    }
+    function addAssistant(text) {
+      var row = document.createElement('div');
+      row.className = 'ai-chat__message';
+      row.innerHTML = avatarSpanHTML(currentPersona());
+      var p = document.createElement('p');
+      p.className = 'ai-chat__bubble';
+      p.textContent = text;
+      row.appendChild(p);
+      body.appendChild(row);
+    }
+
+    function send() {
+      var text = field.value.trim();
+      if (!text) return;
+      addUser(text);
+      field.value = '';
+      scrollDown();
+      var thinking = addThinking();
+      scrollDown();
+      var delay = 1400 + Math.floor(Math.random() * 2000);
+      setTimeout(function () {
+        thinking.remove();
+        addAssistant(RESPONSES[Math.floor(Math.random() * RESPONSES.length)]);
+        scrollDown();
+      }, delay);
+    }
+
+    if (sendBtn) sendBtn.addEventListener('click', send);
+    if (field) field.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+  })();
+</script>
+
+<!-- Collapsible CMS menu groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.vert-nav__group-header').forEach(function (header) {
+      if (!header.hasAttribute('aria-expanded')) header.setAttribute('aria-expanded', 'true');
+
+      if (header.tagName === 'DIV') {
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+      }
+
+      var icons = header.querySelectorAll('svg.lexicon-icon');
+      var chevron = icons[icons.length - 1] || null;
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      function toggle() {
+        var isExpanded = header.getAttribute('aria-expanded') !== 'false';
+        var next = !isExpanded;
+        header.setAttribute('aria-expanded', String(next));
+        var li = header.parentElement;
+        var list = li && li.querySelector(':scope > .vert-nav__list');
+        if (list) list.style.display = next ? '' : 'none';
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      }
+
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('.vert-nav__group-actions button')) return;
+        toggle();
+      });
+
+      header.addEventListener('keydown', function (e) {
+        if (header.tagName === 'DIV' && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
