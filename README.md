@@ -4,6 +4,32 @@ Lexicon Vanilla is a plain HTML/CSS rebuild of the Lexicon design system. It is 
 
 There is no build step and no local server. Open files directly from Finder or with `file://`.
 
+## Install as a Claude Code plugin
+
+The easiest way to use Lexicon Vanilla on any project, without cloning this repo. Run these once in the Claude Code terminal:
+
+```text
+/plugin marketplace add https://github.com/marcoscv-work/lexicon-vanilla.git
+/plugin install lexicon-vanilla@lexicon
+```
+
+When it asks, choose "Install for me" to install it globally (available in any folder).
+
+Then, in the folder where you want your prototypes, describe the screen in natural language:
+
+```text
+create a login screen with a CMS sidebar
+```
+
+or use the command `/lexicon-vanilla:create-screen ...`. The first time in each folder it downloads the kit and asks whether to open prototypes in the browser. After that it works locally.
+
+Updating:
+
+- `/lexicon-vanilla:lexicon-refresh` updates the kit in your project (it never deletes your own prototypes).
+- `/plugin marketplace update lexicon` updates the plugin itself.
+
+Notes: use the HTTPS URL shown above, not the `owner/repo` shortcut (that defaults to SSH and fails without keys). The terminal CLI is the reliable path; plugin support in the desktop app is currently limited.
+
 ## Create Screen Skill
 
 The fastest way to build a screen. This repo ships a Claude Code skill that automates the whole prototyping workflow: it picks a starting point, creates the file under `prototypes/`, invents realistic sample data when needed, and composes the screen using only existing Lexicon Vanilla components, tokens, and icons.
