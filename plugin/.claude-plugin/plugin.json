@@ -1,0 +1,9 @@
+{
+  "name": "lexicon-vanilla",
+  "version": "1.0.0",
+  "description": "Build Lexicon Vanilla prototype screens from natural language, using only kit components, tokens, and icons.",
+  "author": { "name": "Marcos Castro" },
+  "repository": "https://github.com/marcoscv-work/lexicon-vanilla",
+  "license": "MIT",
+  "keywords": ["lexicon", "design-system", "prototype", "html", "liferay"]
+}

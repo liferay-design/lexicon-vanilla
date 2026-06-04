@@ -1,0 +1,14 @@
+{
+  "name": "lexicon",
+  "owner": { "name": "Marcos Castro" },
+  "description": "Lexicon Vanilla prototyping tools for designers and product profiles.",
+  "plugins": [
+    {
+      "name": "lexicon-vanilla",
+      "description": "Build Lexicon Vanilla prototype screens from natural language, using only kit components, tokens, and icons. Bootstraps the kit into the working directory on first use.",
+      "source": "./plugin",
+      "version": "1.0.0",
+      "keywords": ["lexicon", "design-system", "prototype", "html", "liferay"]
+    }
+  ]
+}

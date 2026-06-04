@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "runtime": [
+    "tokens.css",
+    "tokens-high-contrast.css",
+    "tokens-dark.css",
+    "components.css",
+    "icons.svg",
+    "icons.js",
+    "starter.html"
+  ],
+  "reference": ["shells", "showcases"],
+  "canonicalPrototypes": [
+    "login.html",
+    "loginFull.html",
+    "user-administration.html",
+    "ai-hub-landing.html",
+    "ai-assistant-chatbot.html"
+  ]
+}
