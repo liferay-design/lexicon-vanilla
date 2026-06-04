@@ -47,6 +47,8 @@ Use the command like this:
 
 Because the skill follows the repo's hard rules automatically, you normally don't need to copy files or wire up the scaffold by hand. Just describe the screen.
 
+> Two entry points, same workflow: inside this cloned repo the command is `/create-screen` (the repo-scoped skill, no namespace). Installed as a plugin (see above), it is `/lexicon-vanilla:create-screen` (namespaced). The composition logic is identical; only the entry point differs.
+
 ## Starting points and references
 
 Before prototyping, look at what already exists. There may already be a screen close to what you need.
