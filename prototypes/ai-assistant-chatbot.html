@@ -77,6 +77,7 @@
       gap: var(--spacing-3);
       padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-5);
       border-bottom: 1px solid var(--color-secondary-l3);
+      flex-shrink: 0;
     }
     .ai-chat__title {
       margin: 0;
@@ -221,6 +222,7 @@
       display: flex;
       flex-direction: column;
       gap: var(--spacing-3);
+      flex-shrink: 0;
     }
     .ai-chat__section-label {
       font-size: var(--font-size-sm);
@@ -295,6 +297,63 @@
       flex-wrap: wrap;
       gap: var(--spacing-2);
     }
+
+    /* ───────────────────────────── Dark/light toggle tooltip */
+    .skin-toggle-wrap { position: relative; display: inline-flex; }
+    .skin-toggle-tip {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+    }
+    .skin-toggle-wrap:hover .skin-toggle-tip,
+    .skin-toggle-wrap:focus-within .skin-toggle-tip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ───────────────────────────── App body grid (sidebar + content) */
+    .ai-app-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* ───────────────────────────── Responsive */
+    /* < 960px — expanded chat floats above the content as an overlay
+       drawer instead of pushing it (width capped so it never overflows). */
+    @media (max-width: 959px) {
+      body.ai-chat-expanded { padding-right: 0; }
+      .ai-chat.is-expanded { width: min(480px, calc(100%)); }
+    }
+
+    /* < 600px — drop the CMS sidebar, content goes full width */
+    @media (max-width: 599px) {
+      .ai-app-body { grid-template-columns: 1fr; }
+      .cms-menu { display: none; }
+    }
+
+    /* < 510px — the floating chat width becomes fluid */
+    @media (max-width: 509px) {
+      .ai-chat { width: calc(100% - 40px); }
+    }
+
+    /* Short viewports — keep the composer (send/attach) always visible.
+       The header and footer never shrink (flex-shrink: 0), so the
+       conversation area yields its min-height and scrolls instead. */
+    @media (max-height: 700px) {
+      .ai-chat__body { min-height: 0; }
+    }
+    /* Very short — also trim the composer height to guarantee the
+       interactive controls fit on screen. */
+    @media (max-height: 560px) {
+      .ai-chat__composer-field { min-height: var(--spacing-8); }
+    }
   </style>
 </head>
 <body style="margin: 0;">
@@ -320,6 +379,12 @@
     <span class="control-menu__title">Web Content</span>
   </div>
   <div class="control-menu__right">
+    <span class="skin-toggle-wrap">
+      <button class="control-menu__btn" type="button" id="skin-toggle" aria-label="Switch to dark mode">
+        <svg class="lexicon-icon"><use href="#moon"></use></svg>
+      </button>
+      <span class="tooltip tooltip--top skin-toggle-tip" id="skin-toggle-tip" role="tooltip">Switch to dark mode</span>
+    </span>
     <button class="control-menu__btn" type="button" aria-label="Global navigation">
       <svg class="lexicon-icon"><use href="#grid"></use></svg>
     </button>
@@ -330,7 +395,7 @@
 </div>
 
 <!-- ─── App body: sidebar + content ─────────────────────────────── -->
-<div style="display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px);">
+<div class="ai-app-body" style="min-height: calc(100vh - 60px);">
 
   <!-- CMS Menu (left sidebar) -->
   <aside class="cms-menu">
@@ -430,9 +495,9 @@
         <li><a href="#">Web Content</a></li>
         <li aria-current="page">Spring Campaign</li>
       </ol>
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4);">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-4);">
         <h1 style="margin: 0; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">Spring Campaign — Landing</h1>
-        <div style="display: flex; gap: var(--spacing-2);">
+        <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-2);">
           <button class="btn btn--secondary">Cancel</button>
           <button class="btn btn--secondary">Save as Draft</button>
           <button class="btn btn--primary">Publish</button>
@@ -781,6 +846,41 @@
     if (field) field.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
     });
+  })();
+</script>
+
+<!-- Dark / light skin toggle (control menu) -->
+<script>
+  (function () {
+    var btn = document.getElementById('skin-toggle');
+    if (!btn) return;
+    var use = btn.querySelector('use');
+    var tip = document.getElementById('skin-toggle-tip');
+    var root = document.documentElement;
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+
+    function isDark() {
+      var s = localStorage.getItem('vanilla-skin') || 'light';
+      return s === 'dark' || s === 'dark-hc';
+    }
+    function render() {
+      var dark = isDark();
+      // Show the icon + label for the action: moon = switch to dark, sun = switch to light
+      var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+      if (use) use.setAttribute('href', dark ? '#sun' : '#moon');
+      btn.setAttribute('aria-label', label);
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      SKINS.forEach(function (c) { root.classList.remove(c); });
+      root.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
   })();
 </script>
 
