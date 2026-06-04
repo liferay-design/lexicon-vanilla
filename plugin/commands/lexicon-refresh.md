@@ -6,21 +6,22 @@ Refresh the Lexicon Vanilla kit in the current directory to the latest published
 
 ```bash
 REPO="marcoscv-work/lexicon-vanilla"
-VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null || echo "main")
+VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
+if [ -n "$VER" ]; then REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"; else REF="refs/heads/main"; DIR="lexicon-vanilla-main"; VER="main"; fi
 TMP=$(mktemp -d)
-curl -fsSL "https://github.com/$REPO/archive/refs/heads/main.tar.gz" \
+curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
   | tar xz --strip-components=1 -C "$TMP" \
-      lexicon-vanilla-main/tokens.css \
-      lexicon-vanilla-main/tokens-high-contrast.css \
-      lexicon-vanilla-main/tokens-dark.css \
-      lexicon-vanilla-main/components.css \
-      lexicon-vanilla-main/icons.svg \
-      lexicon-vanilla-main/icons.js \
-      lexicon-vanilla-main/starter.html \
-      lexicon-vanilla-main/shells \
-      lexicon-vanilla-main/showcases \
-      lexicon-vanilla-main/prototypes \
-      lexicon-vanilla-main/kit-manifest.json
+      "$DIR/tokens.css" \
+      "$DIR/tokens-high-contrast.css" \
+      "$DIR/tokens-dark.css" \
+      "$DIR/components.css" \
+      "$DIR/icons.svg" \
+      "$DIR/icons.js" \
+      "$DIR/starter.html" \
+      "$DIR/shells" \
+      "$DIR/showcases" \
+      "$DIR/prototypes" \
+      "$DIR/kit-manifest.json"
 
 # Runtime + reference material: overwrite wholesale
 cp "$TMP"/tokens*.css "$TMP"/components.css "$TMP"/icons.svg "$TMP"/icons.js "$TMP"/starter.html ./

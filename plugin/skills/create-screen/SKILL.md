@@ -14,19 +14,21 @@ Before composing, make sure the kit exists in the current directory. Run this in
 ```bash
 REPO="marcoscv-work/lexicon-vanilla"
 if [ ! -f .lexicon ]; then
-  VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null || echo "main")
-  curl -fsSL "https://github.com/$REPO/archive/refs/heads/main.tar.gz" \
+  # Pin to the published release tag; fall back to main only if VERSION is unreachable.
+  VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
+  if [ -n "$VER" ]; then REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"; else REF="refs/heads/main"; DIR="lexicon-vanilla-main"; VER="main"; fi
+  curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
     | tar xz --strip-components=1 \
-        lexicon-vanilla-main/tokens.css \
-        lexicon-vanilla-main/tokens-high-contrast.css \
-        lexicon-vanilla-main/tokens-dark.css \
-        lexicon-vanilla-main/components.css \
-        lexicon-vanilla-main/icons.svg \
-        lexicon-vanilla-main/icons.js \
-        lexicon-vanilla-main/starter.html \
-        lexicon-vanilla-main/shells \
-        lexicon-vanilla-main/showcases \
-        lexicon-vanilla-main/prototypes
+        "$DIR/tokens.css" \
+        "$DIR/tokens-high-contrast.css" \
+        "$DIR/tokens-dark.css" \
+        "$DIR/components.css" \
+        "$DIR/icons.svg" \
+        "$DIR/icons.js" \
+        "$DIR/starter.html" \
+        "$DIR/shells" \
+        "$DIR/showcases" \
+        "$DIR/prototypes"
   # Only stamp .lexicon if the kit really landed, so a failed download retries next time.
   if [ -f components.css ] && [ -f prototypes/login.html ] && [ -d showcases ]; then
     printf '{"version":"%s","lastCheck":"%s"}\n' "$VER" "$(date +%F)" > .lexicon
