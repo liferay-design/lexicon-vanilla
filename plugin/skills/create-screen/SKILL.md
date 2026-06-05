@@ -89,9 +89,15 @@ Examine `prototypes/` and `showcases/` first: a similar layout may already exist
 - No per-prototype CSS file; if a primitive is missing, extend `components.css`, not the prototype.
 - Icon-only buttons need `aria-label`.
 
-## Step 4: Open in the browser (ask once per directory)
+## Step 4: Record, then open in the browser (ask once per directory)
 
-After writing the prototype, always tell the user the path. Then handle opening it:
+After writing the prototype, record it so `/lexicon-vanilla:export` knows which files are the user's (one filename per line, no path):
+
+```bash
+echo "<slug>.html" >> .lexicon-mine
+```
+
+For a multi-page prototype, append one line per page you created. Then always tell the user the path and handle opening it:
 
 - Check whether `.lexicon-open` exists in the working directory.
 - If it does NOT exist, this is the first screen created here: ask the user "Do you want to open prototypes in the browser?" Record the answer with `echo yes > .lexicon-open` or `echo no > .lexicon-open`.

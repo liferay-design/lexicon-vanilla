@@ -28,6 +28,10 @@ Updating:
 - `/lexicon-vanilla:lexicon-refresh` updates the kit in your project (it never deletes your own prototypes).
 - `/plugin marketplace update lexicon` updates the plugin itself.
 
+Exporting and sharing:
+
+- `/lexicon-vanilla:export` bundles only your prototypes plus the minimal dependencies (the token CSS, `components.css`, `icons.js`, and any local images they use) into `export/` and `export.zip`, ready to share or open by double-click offline. Pass a name to export just one, e.g. `/lexicon-vanilla:export spring`. It can also produce a single self-contained HTML per page or push the bundle to a repo if you ask.
+
 Notes: use the HTTPS URL shown above, not the `owner/repo` shortcut (that defaults to SSH and fails without keys). The terminal CLI is the reliable path; plugin support in the desktop app is currently limited.
 
 ## Create Screen Skill
