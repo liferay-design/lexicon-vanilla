@@ -4495,7 +4495,7 @@
   align-items: center;
   display: flex;
   gap: var(--spacing-3);
-  padding: var(--spacing-7);
+  padding: var(--spacing-7) var(--spacing-5);
 }
 
 /* 40×40 white rounded box housing the product icon */

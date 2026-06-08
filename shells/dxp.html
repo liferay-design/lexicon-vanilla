@@ -33,10 +33,67 @@
 
   <style>
     html, body { height: 100%; }
+
+    /* ── Control Panel collapse ─────────────────────────────────
+       The Control Menu toggle (and the panel's own close button)
+       collapse the left grid column from 320px to 0. The base
+       grid-template lives here (not inline) so this override wins. */
+    body { grid-template-columns: 320px 1fr; transition: grid-template-columns 200ms ease; }
+    body.cp-collapsed { grid-template-columns: 0 1fr; }
+    .control-panel { transition: width 200ms ease; }
+    body.cp-collapsed .control-panel {
+      width: 0;
+      overflow: hidden;
+      border-right-width: 0;
+    }
+
+    /* ── Header action buttons ──────────────────────────────────
+       Theme switch + Sites + Close, pinned to the right of the title. */
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+
+    /* Close button: behaves like Bootstrap's visually-hidden-focusable.
+       While it lacks keyboard focus it is pulled out of flow (position:
+       absolute → no longer a flex item), so it reserves no space and no
+       gap. On keyboard focus it snaps back into the row at full size.
+       It is first in the DOM (first Tab stop) but `order` renders it last. */
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* The panel receives focus (tabindex=-1) when opened by keyboard; it is
+       a deliberate jump, so suppress the container outline. */
+    .control-panel:focus { outline: none; }
+
+    /* ── Hover / focus tooltip ──────────────────────────────────
+       Reuses the .tooltip component visual; the wrapper anchors it
+       below the button and reveals it on hover or keyboard focus. */
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
   </style>
 </head>
 <!-- Grid: Control Panel (320px, full height) | right column (Control Menu + content) -->
-<body style="margin:0; display:grid; grid-template-columns:320px 1fr; height:100vh; overflow:hidden;">
+<body style="margin:0; display:grid; height:100vh; overflow:hidden;">
 
 <!-- ════════════════════════════════════════════════════════════════
      DXP Admin shell — Control Panel (left) + Control Menu + content (right)
@@ -50,16 +107,37 @@
      ════════════════════════════════════════════════════════════════ -->
 
 <!-- ─── Control Panel (left column, full height) ────────────────── -->
-<aside class="control-panel" style="height:100vh;">
+<aside class="control-panel" id="control-panel" tabindex="-1" style="height:100vh;">
 
   <div class="control-panel__header">
     <span class="control-panel__sticker">
       <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
     </span>
     <span class="control-panel__title">Control Panel</span>
-    <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Close">
-      <svg class="lexicon-icon"><use href="#times"></use></svg>
-    </button>
+
+    <div class="control-panel__actions">
+      <!-- Close — first in the DOM so it is the first Tab stop inside the panel;
+           CSS `order` keeps it visually last of the three. Appears only on focus. -->
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+
+      <!-- Sites -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
+      </span>
+    </div>
   </div>
 
   <div class="control-panel__search">
@@ -339,8 +417,8 @@
   <div class="control-menu">
     <div class="control-menu__left">
       <div class="control-menu__btns">
-        <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
-          <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+        <button class="control-menu__btn" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="true" aria-controls="control-panel">
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-open"></use></svg>
         </button>
       </div>
       <span class="control-menu__title">Screen title</span>
@@ -393,6 +471,76 @@
         if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
       });
     });
+  })();
+</script>
+
+<!-- Control Panel open/close — driven by the Control Menu toggle and the panel's close button -->
+<script>
+  (function () {
+    var toggle = document.getElementById('cp-toggle');
+    var toggleIcon = document.getElementById('cp-toggle-icon');
+    var close = document.getElementById('cp-close');
+    var panel = document.getElementById('control-panel');
+
+    function setOpen(open) {
+      document.body.classList.toggle('cp-collapsed', !open);
+      if (toggle) toggle.setAttribute('aria-expanded', String(open));
+      if (toggleIcon) {
+        var use = toggleIcon.querySelector('use');
+        if (use) use.setAttribute('href', open ? '#product-menu-open' : '#product-menu-closed');
+      }
+    }
+
+    if (toggle) toggle.addEventListener('click', function (e) {
+      var willOpen = document.body.classList.contains('cp-collapsed');
+      setOpen(willOpen);
+      // Keyboard activation (Enter/Space) reports detail === 0. When opened that
+      // way, move focus into the panel so the next Tab lands on the Close button.
+      if (willOpen && e.detail === 0 && panel) panel.focus();
+    });
+
+    // Closing from inside the panel returns focus to the menu toggle.
+    if (close) close.addEventListener('click', function (e) {
+      setOpen(false);
+      if (e.detail === 0 && toggle) toggle.focus();
+    });
+  })();
+</script>
+
+<!-- Dark / Light switch -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var btn = document.getElementById('cp-theme-toggle');
+    var icon = document.getElementById('cp-theme-icon');
+    var tip = document.getElementById('cp-theme-tip');
+    if (!btn) return;
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function render() {
+      var isDark = current().indexOf('dark') === 0;
+      // Moon → "switch to dark" (light now); Sun → "switch to light" (dark now)
+      var use = icon.querySelector('use');
+      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(isDark));
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var next = current().indexOf('dark') === 0 ? 'light' : 'dark';
+      var r = document.documentElement;
+      SKINS.forEach(function (c) { r.classList.remove(c); });
+      r.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
   })();
 </script>
 
