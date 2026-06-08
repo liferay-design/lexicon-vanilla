@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skins — Lexicon Vanilla</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    var A=['underline','spacing','expand','reduce-motion','focus-anim'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+      var a={}; try{a=JSON.parse(localStorage.getItem('vanilla-a11y')||'{}');}catch(_){}
+      A.forEach(function(k){r.classList.toggle('a11y-'+k, !!a[k]);});
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    html, body { height: 100%; }
+
+    /* ── Control Panel collapse ─────────────────────────────────
+       The Control Menu toggle (and the panel's own close button)
+       collapse the left grid column from 320px to 0. The base
+       grid-template lives here (not inline) so this override wins. */
+    body { grid-template-columns: 320px 1fr; transition: grid-template-columns 200ms ease; }
+    body.cp-collapsed { grid-template-columns: 0 1fr; }
+    .control-panel { transition: width 200ms ease; }
+    body.cp-collapsed .control-panel {
+      width: 0;
+      overflow: hidden;
+      border-right-width: 0;
+    }
+
+    /* ── Header action buttons ──────────────────────────────────
+       Theme switch + Sites + Close, pinned to the right of the title. */
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+
+    /* Close button: behaves like Bootstrap's visually-hidden-focusable.
+       While it lacks keyboard focus it is pulled out of flow (position:
+       absolute → no longer a flex item), so it reserves no space and no
+       gap. On keyboard focus it snaps back into the row at full size.
+       It is first in the DOM (first Tab stop) but `order` renders it last. */
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* The panel receives focus (tabindex=-1) when opened by keyboard; it is
+       a deliberate jump, so suppress the container outline. */
+    .control-panel:focus { outline: none; }
+
+    /* ── Hover / focus tooltip ──────────────────────────────────
+       Reuses the .tooltip component visual; the wrapper anchors it
+       below the button and reveals it on hover or keyboard focus. */
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+
+    /* ── Accessibility Menu trigger ─────────────────────────────
+       First focusable element on the page (skip-link style). Hidden
+       off-screen until it receives focus, then slides into the top-left
+       as a dark pill. Out of flow, so it never disturbs the grid. */
+    .a11y-trigger {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1100;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-3);
+      background: var(--color-dark-d2);
+      color: var(--color-white);
+      border: 0;
+      border-radius: 0 0 var(--rounded-md) 0;
+      padding: var(--spacing-4) var(--spacing-6);
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semi);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(calc(-1 * (var(--spacing-9) + var(--spacing-8))));
+      transition: transform 150ms ease, opacity 150ms ease;
+    }
+    .a11y-trigger:focus-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ── Accessibility Menu modal ───────────────────────────────
+       (.modal-overlay defaults to display:flex, so hidden needs help.) */
+    .modal-overlay[hidden] { display: none; }
+
+    .a11y-option { padding: var(--spacing-5) 0; }
+    .a11y-option + .a11y-option { border-top: 1px solid var(--color-secondary-l3); }
+    .a11y-option .toggle__label { font-weight: var(--font-weight-bold); }
+    .a11y-option__desc {
+      margin: var(--spacing-3) 0 0;
+      color: var(--color-dark);
+      opacity: 0.65;
+    }
+
+    /* ── Accessibility feature effects (classes set on <html>) ── */
+    /* Underlined Links */
+    html.a11y-underline a { text-decoration: underline; }
+    /* Increased Text Spacing (inherits to all text) */
+    html.a11y-spacing body { letter-spacing: 0.08em; word-spacing: 0.16em; line-height: 1.7; }
+    /* Expanded Text — undo truncation on title-style elements */
+    html.a11y-expand .control-menu__title,
+    html.a11y-expand .control-panel__title,
+    html.a11y-expand .control-panel__item {
+      overflow: visible;
+      white-space: normal;
+      text-overflow: clip;
+    }
+    /* Reduced Motion — neutralise transitions and animations */
+    html.a11y-reduce-motion *,
+    html.a11y-reduce-motion *::before,
+    html.a11y-reduce-motion *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+    /* Focus Ring Animation — expanding pop as focus lands */
+    @keyframes skins-focus-pop { from { transform: scale(0.94); } to { transform: scale(1); } }
+    html.a11y-focus-anim :focus-visible { animation: skins-focus-pop 180ms ease-out; }
+
+    /* ── User menu (avatar → dropdown) ────────────────────────── */
+    .user-menu { position: relative; }
+    .user-menu__trigger { border: 0; padding: 0; background: transparent; cursor: pointer; }
+    .user-menu__trigger:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    .user-menu__dropdown {
+      position: absolute;
+      top: calc(100% + var(--spacing-3));
+      right: 0;
+      z-index: 60;
+      max-height: calc(100vh - var(--spacing-9) - var(--spacing-7));
+      overflow-y: auto;
+    }
+    .user-menu:not(.is-open) .user-menu__dropdown { display: none; }
+
+    /* Intro copy */
+    .skins-content { max-width: 760px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); display: flex; flex-direction: column; gap: var(--spacing-7); }
+    .skins-content h1 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0; }
+    .skins-content p { margin: 0; color: var(--color-dark); line-height: 1.6; }
+  </style>
+</head>
+<!-- Grid: Control Panel (320px, full height) | right column (Control Menu + content) -->
+<body style="margin:0; display:grid; height:100vh; overflow:hidden;">
+
+<!-- First keyboard stop: reveals on Tab, opens the Accessibility Menu -->
+<button class="a11y-trigger" id="a11y-trigger" type="button" aria-haspopup="dialog" aria-controls="a11y-modal">
+  <svg class="lexicon-icon"><use href="#accessibility"></use></svg>
+  Open Accessibility Menu
+</button>
+
+<!-- ════════════════════════════════════════════════════════════════
+     DXP Admin shell — Control Panel (left) + Control Menu + content (right)
+     Layout difference from cms.html: the Control Panel spans the full viewport
+     height on the left; the Control Menu sits only in the right column.
+
+     To customise:
+       • Change <title> and .control-menu__title
+       • Mark a different .control-panel__item as is-active
+       • Add / remove sidebar groups as needed
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Panel (left column, full height) ────────────────── -->
+<aside class="control-panel" id="control-panel" tabindex="-1" style="height:100vh;">
+
+  <div class="control-panel__header">
+    <span class="control-panel__sticker">
+      <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+    </span>
+    <span class="control-panel__title">Control Panel</span>
+
+    <div class="control-panel__actions">
+      <!-- Close — first in the DOM so it is the first Tab stop inside the panel;
+           CSS `order` keeps it visually last of the three. Appears only on focus. -->
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+
+      <!-- Sites -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="control-panel__search">
+    <div class="search">
+      <input class="input__field search__field" type="search" placeholder="Search">
+      <button class="search__clear" aria-label="Clear" hidden type="button">
+        <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+      </button>
+      <button class="search__submit" aria-label="Search" type="button">
+        <svg class="lexicon-icon"><use href="#search"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="control-panel__body">
+    <ul class="control-panel__groups">
+
+      <!-- Home (active) -->
+      <li class="control-panel__group">
+        <button class="control-panel__item is-active" type="button">
+          <span class="control-panel__item-icon">
+            <svg class="lexicon-icon"><use href="#home"></use></svg>
+          </span>
+          Home
+        </button>
+      </li>
+
+      <!-- Users — expanded by default -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Users
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+          Users and Organizations
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#community"></use></svg></span>
+          User Groups
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+          Roles
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Monitoring
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#suitcase"></use></svg></span>
+          Service Accounts
+        </button>
+      </li>
+
+      <!-- Sites — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Sites
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+          Sites
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+          Site Templates
+        </button>
+      </li>
+
+      <!-- Accounts — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Accounts
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#briefcase"></use></svg></span>
+          Accounts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+          Accounts User
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#myspace"></use></svg></span>
+          Account Groups
+        </button>
+      </li>
+
+      <!-- Configuration — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Configuration
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+          System Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+          Instance Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Push Notifications
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#box-container"></use></svg></span>
+          Components
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+          Search
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+          Custom Fields
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#automatic-translate"></use></svg></span>
+          Language Override
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+          Adaptive Media
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sheets"></use></svg></span>
+          Job Scheduler
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#flag-full"></use></svg></span>
+          Countries Management
+        </button>
+      </li>
+
+      <!-- Notifications — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Notifications
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Templates
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#order-list-down"></use></svg></span>
+          Queue
+        </button>
+      </li>
+
+      <!-- Object — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Object
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#repository"></use></svg></span>
+          MCP Server Prompts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#braces"></use></svg></span>
+          Objects
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#table2"></use></svg></span>
+          Data Sets
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#list-ol"></use></svg></span>
+          Picklists
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#api-web"></use></svg></span>
+          API Builder
+        </button>
+      </li>
+
+      <!-- Security — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Security
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search-experiences"></use></svg></span>
+          Audit
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth Client Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth 2 Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+          Password Policies
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+          SAML Admin
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Logs
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-asterisk"></use></svg></span>
+          Service Access Policy
+        </button>
+      </li>
+
+      <!-- System — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          System
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#grid"></use></svg></span>
+          App Manager
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#code"></use></svg></span>
+          Gogo Shell
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Virtual Instances
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#submission"></use></svg></span>
+          On-Demand Admin
+        </button>
+      </li>
+
+      <!-- Marketplace — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Marketplace
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#products"></use></svg></span>
+          Purchased
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shopping-cart"></use></svg></span>
+          Store
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#forms"></use></svg></span>
+          License Manager
+        </button>
+      </li>
+
+    </ul>
+  </div><!-- /control-panel__body -->
+
+</aside>
+
+<!-- ─── Right column: Control Menu + content ─────────────────────── -->
+<div style="display:flex; flex-direction:column; min-height:100vh; overflow:visible; min-width:0;">
+
+  <!-- Control Menu -->
+  <div class="control-menu">
+    <div class="control-menu__left">
+      <div class="control-menu__btns">
+        <button class="control-menu__btn" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="true" aria-controls="control-panel">
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-open"></use></svg>
+        </button>
+      </div>
+      <span class="control-menu__title">Skins</span>
+    </div>
+    <div class="control-menu__right">
+      <button class="control-menu__btn" type="button" aria-label="Global navigation">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+      </button>
+      <div class="user-menu">
+        <button class="control-menu__avatar user-menu__trigger" id="user-menu-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="User menu">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+        </button>
+        <ul class="dropdown user-menu__dropdown" role="menu" aria-labelledby="user-menu-trigger">
+          <li class="dropdown__group-title">Test Test</li>
+          <li><button class="dropdown__item" role="menuitem" type="button">
+            My Sites
+            <svg class="lexicon-icon dropdown__item-meta"><use href="#sites"></use></svg>
+          </button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My CMS Homepage</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Profile</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Dashboard</button></li>
+
+          <li class="dropdown__divider" role="separator"></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">Notifications</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">Shared Content</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Submissions</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Workflow Tasks</button></li>
+
+          <li class="dropdown__divider" role="separator"></li>
+          <li><button class="dropdown__item" id="user-menu-a11y" role="menuitem" type="button">Accessibility Menu</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">Account Settings</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Connected Applications</button></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">My Organizations</button></li>
+
+          <li class="dropdown__divider" role="separator"></li>
+          <li><button class="dropdown__item" role="menuitem" type="button">Sign Out</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; min-width:0;">
+
+    <div class="skins-content">
+      <h1>Skins &amp; Accessibility</h1>
+      <p>
+        Press <strong>Tab</strong> to reveal the <em>Open Accessibility Menu</em> button in the
+        top-left: it is the first keyboard stop on the page. Toggle <strong>High Contrast</strong>
+        there, and switch <strong>Light</strong> / <strong>Dark</strong> with the moon/sun button in
+        the Control Panel header. High Contrast layers on top of whichever mode is active, so you get
+        Light, Light HC, Dark, or Dark HC.
+      </p>
+    </div>
+
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- ─── Accessibility Menu modal ─────────────────────────────────── -->
+<div class="modal-overlay" id="a11y-modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="a11y-title">
+    <header class="modal__header">
+      <h2 id="a11y-title" class="modal__title">
+        <svg class="lexicon-icon"><use href="#accessibility"></use></svg>
+        Accessibility Menu
+      </h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" id="a11y-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+    <div class="modal__body">
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" data-a11y="underline">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">Underlined Links</span>
+        </label>
+        <p class="a11y-option__desc">Force underline effect for all links.</p>
+      </div>
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" data-a11y="spacing">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">Increased Text Spacing</span>
+        </label>
+        <p class="a11y-option__desc">Increase horizontal spacing between text characters.</p>
+      </div>
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" data-a11y="expand">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">Expanded Text</span>
+        </label>
+        <p class="a11y-option__desc">Expand all truncated text.</p>
+      </div>
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" data-a11y="reduce-motion">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">Reduced Motion</span>
+        </label>
+        <p class="a11y-option__desc">Stop all motion and animations.</p>
+      </div>
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" data-a11y="focus-anim">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">Focus Ring Animation</span>
+        </label>
+        <p class="a11y-option__desc">Add an expanding animation when focus moves to a new element.</p>
+      </div>
+
+      <div class="a11y-option">
+        <label class="toggle">
+          <input type="checkbox" class="toggle__input" id="a11y-hc">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+          <span class="toggle__label">High Contrast</span>
+        </label>
+        <p class="a11y-option__desc">Improves UI contrast across the entire interface.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Collapsible Control Panel groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+      var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      var group = btn.parentElement;
+      var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+      // Sync initial collapsed state
+      if (btn.getAttribute('aria-expanded') === 'false') {
+        items.forEach(function (el) { el.style.display = 'none'; });
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') !== 'false';
+        var next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      });
+    });
+  })();
+</script>
+
+<!-- Control Panel open/close — driven by the Control Menu toggle and the panel's close button -->
+<script>
+  (function () {
+    var toggle = document.getElementById('cp-toggle');
+    var toggleIcon = document.getElementById('cp-toggle-icon');
+    var close = document.getElementById('cp-close');
+    var panel = document.getElementById('control-panel');
+
+    function setOpen(open) {
+      document.body.classList.toggle('cp-collapsed', !open);
+      if (toggle) toggle.setAttribute('aria-expanded', String(open));
+      if (toggleIcon) {
+        var use = toggleIcon.querySelector('use');
+        if (use) use.setAttribute('href', open ? '#product-menu-open' : '#product-menu-closed');
+      }
+    }
+
+    if (toggle) toggle.addEventListener('click', function (e) {
+      var willOpen = document.body.classList.contains('cp-collapsed');
+      setOpen(willOpen);
+      // Keyboard activation (Enter/Space) reports detail === 0. When opened that
+      // way, move focus into the panel so the next Tab lands on the Close button.
+      if (willOpen && e.detail === 0 && panel) panel.focus();
+    });
+
+    // Closing from inside the panel returns focus to the menu toggle.
+    if (close) close.addEventListener('click', function (e) {
+      setOpen(false);
+      if (e.detail === 0 && toggle) toggle.focus();
+    });
+  })();
+</script>
+
+<!-- Dark / Light switch -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var btn = document.getElementById('cp-theme-toggle');
+    var icon = document.getElementById('cp-theme-icon');
+    var tip = document.getElementById('cp-theme-tip');
+    if (!btn) return;
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function render() {
+      var isDark = current().indexOf('dark') === 0;
+      // Moon → "switch to dark" (light now); Sun → "switch to light" (dark now)
+      var use = icon.querySelector('use');
+      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(isDark));
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var s = current();
+      var nextBase = s.indexOf('dark') === 0 ? 'light' : 'dark';
+      var keepHc = s.indexOf('-hc') > -1;          // preserve High Contrast across modes
+      var next = nextBase + (keepHc ? '-hc' : '');
+      var r = document.documentElement;
+      SKINS.forEach(function (c) { r.classList.remove(c); });
+      r.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
+  })();
+</script>
+
+<!-- Accessibility Menu — modal open/close + feature toggles -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var root = document.documentElement;
+
+    function getSkin() { try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; } }
+    function setSkin(s) {
+      SKINS.forEach(function (c) { root.classList.remove(c); });
+      root.classList.add(s);
+      try { localStorage.setItem('vanilla-skin', s); } catch (e) {}
+    }
+    function baseMode(s) { return s.indexOf('dark') === 0 ? 'dark' : 'light'; }
+    function isHC(s) { return s.indexOf('-hc') > -1; }
+    function compose(base, hc) { return base + (hc ? '-hc' : ''); }
+
+    // ── Feature toggles (the five non-skin options) ──
+    function readA11y() { try { return JSON.parse(localStorage.getItem('vanilla-a11y') || '{}'); } catch (e) { return {}; } }
+    function writeA11y(o) { try { localStorage.setItem('vanilla-a11y', JSON.stringify(o)); } catch (e) {} }
+
+    var store = readA11y();
+    document.querySelectorAll('.toggle__input[data-a11y]').forEach(function (cb) {
+      var key = cb.getAttribute('data-a11y');
+      cb.checked = !!store[key];
+      root.classList.toggle('a11y-' + key, !!store[key]);
+      cb.addEventListener('change', function () {
+        store[key] = cb.checked;
+        writeA11y(store);
+        root.classList.toggle('a11y-' + key, cb.checked);
+      });
+    });
+
+    // ── High Contrast — layers onto the active Light / Dark mode ──
+    var hcCb = document.getElementById('a11y-hc');
+    function syncHc() { if (hcCb) hcCb.checked = isHC(getSkin()); }
+    if (hcCb) hcCb.addEventListener('change', function () {
+      setSkin(compose(baseMode(getSkin()), hcCb.checked));
+    });
+
+    // ── Modal open / close ──
+    var modal = document.getElementById('a11y-modal');
+    var trigger = document.getElementById('a11y-trigger');
+    var closeBtn = document.getElementById('a11y-close');
+
+    var returnFocusTo = trigger;
+    function open(returnTo) {
+      returnFocusTo = returnTo || trigger;
+      syncHc();                       // reflect whatever the header toggle left us in
+      modal.hidden = false;
+      if (closeBtn) closeBtn.focus();
+    }
+    function close() {
+      modal.hidden = true;
+      if (returnFocusTo) returnFocusTo.focus();   // return focus to whatever opened it
+    }
+
+    // Let the user menu (or anything else) raise the same modal.
+    window.openAccessibilityMenu = open;
+
+    if (trigger) trigger.addEventListener('click', function () { open(trigger); });
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal && !modal.hidden) close();
+    });
+
+    // Keep keyboard focus inside the dialog while it is open.
+    if (modal) modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = Array.prototype.slice
+        .call(modal.querySelectorAll('button, input'))
+        .filter(function (el) { return !el.disabled; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  })();
+</script>
+
+<!-- User menu — avatar opens a dropdown; "Accessibility Menu" raises the modal -->
+<script>
+  (function () {
+    var menu = document.querySelector('.user-menu');
+    var trigger = document.getElementById('user-menu-trigger');
+    var a11yItem = document.getElementById('user-menu-a11y');
+    if (!menu || !trigger) return;
+
+    function openMenu() { menu.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); }
+    function closeMenu() { menu.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (menu.classList.contains('is-open')) closeMenu(); else openMenu();
+    });
+
+    // Close on outside click and on Escape.
+    document.addEventListener('click', function (e) {
+      if (menu.classList.contains('is-open') && !menu.contains(e.target)) closeMenu();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) { closeMenu(); trigger.focus(); }
+    });
+
+    // Selecting any item closes the menu (placeholder items in this prototype).
+    menu.querySelectorAll('.dropdown__item').forEach(function (item) {
+      item.addEventListener('click', closeMenu);
+    });
+
+    // Accessibility Menu item → raise the modal, return focus here on close.
+    if (a11yItem) a11yItem.addEventListener('click', function () {
+      if (window.openAccessibilityMenu) window.openAccessibilityMenu(trigger);
+    });
+  })();
+</script>
+
+</body>
+</html>
