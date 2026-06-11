@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sam Sample — Performance Review — May 2026</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* ── Page-specific composition (tokens only). Nothing here overrides a kit component. ── */
+    .pr-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+               padding: var(--spacing-10) var(--spacing-7); }
+
+    /* Floating Dark / Light toggle, top-right */
+    .skin-toggle { position: fixed; top: var(--spacing-6); right: var(--spacing-6); z-index: 50;
+                   box-shadow: var(--shadow-lg); background: var(--color-white); }
+
+    /* Headline card — elevated, with a soft skin-aware gradient surface */
+    .pr-card { position: relative; width: 100%; max-width: 1120px; margin: 0;
+               padding: var(--spacing-10);
+               background:
+                 radial-gradient(120% 140% at 100% 0%, var(--color-primary-l3) 0%, transparent 45%),
+                 linear-gradient(150deg, var(--color-light-l1) 0%, var(--color-white) 60%);
+               border: 1px solid var(--color-secondary-l3);
+               border-radius: var(--rounded-lg);
+               box-shadow: var(--shadow-md), var(--shadow-lg), var(--shadow-alert);
+               display: flex; gap: var(--spacing-10); align-items: center;
+               justify-content: center; flex-wrap: wrap; }
+    /* Dark skins: the token shadows are dark-on-dark and vanish — use a deep cast
+       plus a faint top highlight ring so the card still reads as elevated. */
+    .dark .pr-card, .dark-hc .pr-card {
+      box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5),
+                  inset 0 1px 0 var(--color-secondary-l3); }
+
+    /* ── Load-in animations ── */
+    @keyframes pr-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes pr-pop  { from { opacity: 0; transform: scale(.92); }       to { opacity: 1; transform: none; } }
+    .pr-card  { animation: pr-rise .6s cubic-bezier(.2,.7,.2,1) both; }
+    .pr-head  { animation: pr-rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: .15s; }
+    .pr-rating{ animation: pr-rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: .25s; }
+    .pr-summary{ animation: pr-rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: .33s; }
+    .pr-radar { animation: pr-pop .7s cubic-bezier(.2,.7,.2,1) both; animation-delay: .3s; }
+    .skin-toggle { animation: pr-pop .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: .5s; }
+    .pr-counts .pr-chip { animation: pr-rise .45s ease both; }
+    .pr-counts .pr-chip:nth-child(1) { animation-delay: .45s; }
+    .pr-counts .pr-chip:nth-child(2) { animation-delay: .52s; }
+    .pr-counts .pr-chip:nth-child(3) { animation-delay: .59s; }
+    .pr-counts .pr-chip:nth-child(4) { animation-delay: .66s; }
+    .pr-counts .pr-chip:nth-child(5) { animation-delay: .73s; }
+    /* Radar dots fade + pop in once the chart has landed (staggered by circle order) */
+    .pr-radar .radar-dot, .pr-radar .radar-ping { animation: pr-pop .4s ease both; transform-box: fill-box; transform-origin: center; }
+    .pr-radar circle:nth-of-type(1),  .pr-radar circle:nth-of-type(2)  { animation-delay: .60s; }
+    .pr-radar circle:nth-of-type(3),  .pr-radar circle:nth-of-type(4)  { animation-delay: .68s; }
+    .pr-radar circle:nth-of-type(5),  .pr-radar circle:nth-of-type(6)  { animation-delay: .76s; }
+    .pr-radar circle:nth-of-type(7),  .pr-radar circle:nth-of-type(8)  { animation-delay: .84s; }
+    .pr-radar circle:nth-of-type(9),  .pr-radar circle:nth-of-type(10) { animation-delay: .92s; }
+    .pr-radar circle:nth-of-type(11), .pr-radar circle:nth-of-type(12) { animation-delay: 1.0s; }
+    @media (prefers-reduced-motion: reduce) {
+      .pr-card, .pr-head, .pr-rating, .pr-summary, .pr-radar, .skin-toggle,
+      .pr-counts .pr-chip, .pr-radar .radar-dot, .pr-radar .radar-ping, .pr-radar .radar-shape { animation: none; }
+    }
+    .pr-main { flex: 1 1 440px; min-width: 0; }
+    .pr-head { display: flex; gap: var(--spacing-6); align-items: center; margin-bottom: var(--spacing-7); }
+    .pr-avatar { width: 96px; height: 96px; flex: none;
+                 border: 2px solid var(--color-white);
+                 box-shadow: 0 0 0 2px var(--color-primary-l1), var(--shadow-md); }
+    .pr-name { font-size: var(--font-size-3xl); line-height: 1.1; margin: 0 0 var(--spacing-2);
+               font-weight: var(--font-weight-bold); letter-spacing: -.01em; color: var(--color-dark); }
+    .pr-role { color: var(--color-dark); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); }
+    .pr-period { color: var(--color-dark); opacity: .6; font-size: var(--font-size-base); margin-top: var(--spacing-1); }
+
+    .pr-rating { margin: 0 0 var(--spacing-5); cursor: pointer; }
+    /* Rating badge → gradient pill, white text */
+    .pr-rating .label { border: none; color: var(--color-white);
+                        padding: var(--spacing-2) var(--spacing-5);
+                        background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-info) 100%);
+                        box-shadow: var(--shadow-md); }
+    .pr-rating .pulse-dot { background: var(--color-white); }
+    .pr-rating .pulse-dot::after { box-shadow: 0 0 0 2px var(--color-white); }
+
+    /* Count chips → each tone a gradient fill */
+    .pr-chip { border: none; }
+    .pr-chip.label--primary { background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-d1) 100%); }
+    .pr-chip.label--info    { background: linear-gradient(120deg, var(--color-info) 0%, var(--color-info-d1) 100%); }
+    .pr-chip.label--success { background: linear-gradient(120deg, var(--color-success) 0%, var(--color-success-d1) 100%); }
+    .pr-chip.label--warning { background: linear-gradient(120deg, var(--color-warning) 0%, var(--color-warning-d1) 100%); }
+    .pr-chip.label--danger  { background: linear-gradient(120deg, var(--color-danger) 0%, var(--color-danger-d1) 100%); }
+    .pr-chip { color: var(--color-white); box-shadow: var(--shadow-sm); }
+    .pr-chip b { color: var(--color-white); }
+    .pr-summary { font-size: var(--font-size-lg); line-height: 1.55; color: var(--color-dark);
+                  max-width: 600px; }
+    .pr-counts { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-7); }
+
+    /* Radar */
+    .pr-radar { flex: 0 1 440px; min-width: 280px; }
+    .pr-radar svg { width: 100%; height: auto; overflow: visible; display: block; }
+    .pr-radar .radar-grid { fill: none; stroke: var(--color-secondary-l2); }
+    .pr-radar .radar-spoke { stroke: var(--color-secondary-l2); }
+    .pr-radar .radar-axis { fill: var(--color-dark); opacity: .65; font-size: 13px;
+                            font-weight: var(--font-weight-bold); font-family: var(--font-family-base); }
+    .pr-radar .radar-shape { fill: url(#radarFill); stroke: var(--color-primary); stroke-width: 2.5;
+                             transform-box: view-box; transform-origin: 160px 150px;
+                             animation: radar-grow .85s cubic-bezier(.2,.8,.2,1) both; animation-delay: .45s; }
+    @keyframes radar-grow { from { transform: scale(0); opacity: 0; } 55% { opacity: 1; } to { transform: scale(1); opacity: 1; } }
+    .pr-radar .radar-stop-0 { stop-color: var(--color-primary); stop-opacity: .42; }
+    .pr-radar .radar-stop-1 { stop-color: var(--color-primary); stop-opacity: .04; }
+    .pr-radar .radar-dot { fill: var(--color-primary); stroke: var(--color-white); stroke-width: 2; cursor: pointer; }
+    .pr-radar .radar-ping { fill: none; stroke: var(--color-primary); stroke-width: 1.5; pointer-events: none; }
+
+    /* ── Pulsing interactive dot (inline affordance + summary). Tokens only, skin-safe. ── */
+    .pulse-dot { display: inline-block; vertical-align: middle; width: 11px; height: 11px;
+                 border-radius: var(--rounded-full); background: var(--color-primary);
+                 position: relative; cursor: pointer; margin: 0 var(--spacing-1); }
+    .pulse-dot::after { content: ""; position: absolute; inset: 0; border-radius: var(--rounded-full);
+                        box-shadow: 0 0 0 2px var(--color-primary);
+                        animation: pulse-ring 2s ease-out infinite; }
+    @keyframes pulse-ring { 0% { transform: scale(.75); opacity: .6; } 70% { opacity: 0; } 100% { transform: scale(2.4); opacity: 0; } }
+
+    /* ── Drill-down modal (uses kit .modal-overlay / .modal; hidden until opened) ── */
+    #gscrim { display: none; }
+    #gscrim.is-open { display: flex; }
+    .pr-modal { max-width: 660px; }
+    .pr-modal .modal__header { background: linear-gradient(120deg, var(--color-primary-l3) 0%, var(--color-white) 70%); }
+    .pr-modal .modal__body { display: flex; flex-direction: column; gap: var(--spacing-2); }
+    .g-eyebrow { font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: .06em;
+                 font-weight: var(--font-weight-bold); color: var(--color-dark); opacity: .55; }
+    .g-title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold);
+               line-height: 1.25; color: var(--color-dark); margin: var(--spacing-1) 0 var(--spacing-3); }
+    .g-badges { display: flex; flex-wrap: wrap; gap: var(--spacing-3); align-items: center; }
+    .g-text { font-size: var(--font-size-base); line-height: 1.6; color: var(--color-dark);
+              opacity: .85; margin-top: var(--spacing-4); }
+    .g-meta { font-size: var(--font-size-sm); color: var(--color-dark); opacity: .6; margin-top: var(--spacing-3); }
+    .g-section { font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: .06em;
+                 font-weight: var(--font-weight-bold); color: var(--color-dark); opacity: .55;
+                 margin: var(--spacing-7) 0 var(--spacing-3); }
+    .g-edge { display: flex; align-items: center; gap: var(--spacing-4); width: 100%; text-align: left;
+              padding: var(--spacing-5); border: 1px solid var(--color-secondary-l3);
+              border-radius: var(--rounded-md); background: var(--color-light-l1);
+              cursor: pointer; font-family: var(--font-family-base); margin-top: var(--spacing-3);
+              transition: border-color .12s ease, background .12s ease; }
+    .g-edge:hover { border-color: var(--color-primary); background: var(--color-primary-l3); }
+    .g-edge__main { flex: 1; min-width: 0; }
+    .g-edge__label { font-size: var(--font-size-base); font-weight: var(--font-weight-bold);
+                     color: var(--color-dark); margin: var(--spacing-1) 0; }
+    .g-edge__why { font-size: var(--font-size-sm); color: var(--color-dark); opacity: .6; }
+    .g-edge .lexicon-icon { color: var(--color-dark); opacity: .5; flex: none; }
+    .g-leaf { align-self: flex-start; margin-top: var(--spacing-6); }
+    .g-score b { font-weight: var(--font-weight-bold); margin-right: var(--spacing-2); color: var(--color-dark); }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════ EDIT BELOW ═══ -->
+
+<!-- Floating Dark / Light toggle -->
+<button type="button" class="btn btn--secondary btn--icon skin-toggle" id="skin-toggle" aria-label="Switch to dark mode">
+  <svg class="lexicon-icon"><use href="#moon"></use></svg>
+</button>
+
+<div class="pr-wrap">
+  <div class="pr-card">
+    <div class="pr-main">
+      <div class="pr-head">
+        <span class="sticker sticker--circle pr-avatar">
+          <img src="https://github.com/octocat.png" alt="Sam Sample">
+        </span>
+        <div>
+          <h1 class="pr-name">Sam Sample</h1>
+          <div class="pr-role">Senior Software Engineer</div>
+          <div class="pr-period">May 2026 review</div>
+        </div>
+      </div>
+
+      <!-- Rating badge → opens the `rating` node -->
+      <div class="pr-rating">
+        <span class="label label--bold label--info" data-node="rating">
+          <span class="pulse-dot"></span> Meets expectations
+        </span>
+      </div>
+
+      <!-- Summary. The trailing pulse dot opens the `summary` node; the inline dot
+           inside the sentence opens the headline finding (inline-in-paragraph use). -->
+      <p class="pr-summary">Synthetic sample: solid end-to-end delivery of the widget with strong test
+        coverage<span class="pulse-dot" data-node="summary:finding:1" title="See finding"></span>; review and
+        discovery are steady. Use this to iterate on the template without real data.<span class="pulse-dot" data-node="summary" title="Open summary"></span></p>
+
+      <div class="pr-counts">
+        <span class="label label--bold label--primary pr-chip"><b>1</b>&nbsp; commits</span>
+        <span class="label label--bold label--info pr-chip"><b>1</b>&nbsp; PRs</span>
+        <span class="label label--bold label--success pr-chip"><b>1</b>&nbsp; peer reviews</span>
+        <span class="label label--bold label--warning pr-chip"><b>1</b>&nbsp; Jira comments</span>
+        <span class="label label--bold label--danger pr-chip"><b>1</b>&nbsp; tickets filed</span>
+      </div>
+    </div>
+
+    <div class="pr-radar">
+      <!-- Hexagon, six axes clockwise from top: PR Reviews, LPP, Testing, Delivery, Discovery, Speed.
+           Centre (160,150), R=120. Each axis carries a pulsing clickable dot at its score point. -->
+      <svg viewBox="-24 4 372 300" role="img" aria-label="Rating radar">
+        <defs>
+          <linearGradient id="radarFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" class="radar-stop-0"/>
+            <stop offset="1" class="radar-stop-1"/>
+          </linearGradient>
+        </defs>
+        <polygon class="radar-grid" points="160,120 185.98,135 185.98,165 160,180 134.02,165 134.02,135"/>
+        <polygon class="radar-grid" points="160,90 211.96,120 211.96,180 160,210 108.04,180 108.04,120"/>
+        <polygon class="radar-grid" points="160,60 237.94,105 237.94,195 160,240 82.06,195 82.06,105"/>
+        <polygon class="radar-grid" points="160,30 263.92,90 263.92,210 160,270 56.08,210 56.08,90"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="160" y2="30"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="263.92" y2="90"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="263.92" y2="210"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="160" y2="270"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="56.08" y2="210"/>
+        <line class="radar-spoke" x1="160" y1="150" x2="56.08" y2="90"/>
+        <polygon class="radar-shape" points="160.0,78.0 201.57,126.0 241.06,196.8 160.0,234.0 102.84,183.0 108.04,120.0"/>
+        <text class="radar-axis" x="160" y="22" text-anchor="middle">PR Reviews</text>
+        <text class="radar-axis" x="272" y="86" text-anchor="start">LPP</text>
+        <text class="radar-axis" x="272" y="218" text-anchor="start">Testing</text>
+        <text class="radar-axis" x="160" y="290" text-anchor="middle">Delivery</text>
+        <text class="radar-axis" x="48" y="218" text-anchor="end">Discovery</text>
+        <text class="radar-axis" x="48" y="86" text-anchor="end">Speed</text>
+
+        <circle class="radar-ping" cx="160.0" cy="78.0" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:pr_reviews" cx="160.0" cy="78.0" r="6"/>
+        <circle class="radar-ping" cx="201.57" cy="126.0" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:lpp" cx="201.57" cy="126.0" r="6"/>
+        <circle class="radar-ping" cx="241.06" cy="196.8" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:testing" cx="241.06" cy="196.8" r="6"/>
+        <circle class="radar-ping" cx="160.0" cy="234.0" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:delivery" cx="160.0" cy="234.0" r="6"/>
+        <circle class="radar-ping" cx="102.84" cy="183.0" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:discovery" cx="102.84" cy="183.0" r="6"/>
+        <circle class="radar-ping" cx="108.04" cy="120.0" r="6"><animate attributeName="r" values="6;15" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".55;0;0" keyTimes="0;0.7;1" dur="2s" repeatCount="indefinite"/></circle>
+        <circle class="radar-dot" data-node="axis:speed" cx="108.04" cy="120.0" r="6"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Drill-down modal (kit modal-overlay + modal) -->
+<div class="modal-overlay" id="gscrim">
+  <div class="modal pr-modal" role="dialog" aria-modal="true" aria-labelledby="gtitle">
+    <header class="modal__header">
+      <button class="btn btn--borderless btn--sm btn--icon" id="gback" aria-label="Back" hidden>
+        <svg class="lexicon-icon"><use href="#angle-left"></use></svg>
+      </button>
+      <h2 class="modal__title" id="gtitle">Detail</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" id="gclose" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+    <div class="modal__body" id="gbody"></div>
+  </div>
+</div>
+
+<script id="graph" type="application/json">{"nodes": [{"id": "ev:c1", "type": "commit", "label": "DEMO-1 Implement the widget", "url": "https://example.com/commit/c1", "date": "2026-03-02"}, {"id": "ev:p1", "type": "pull_request", "label": "DEMO-1 Implement the widget", "url": "https://example.com/pull/1", "date": "2026-03-03"}, {"id": "ev:rc1", "type": "review_comment", "label": "DEMO-7 Tidy the loader — review note", "url": "https://example.com/pull/7#c1", "date": "2026-03-05"}, {"id": "ev:jc1", "type": "jira_comment", "label": "Traced the failure to the cache layer", "url": "https://example.com/browse/DEMO-2?c=1", "date": "2026-03-06"}, {"id": "ev:ct1", "type": "created_ticket", "label": "DEMO-2 Crash on empty input", "url": "https://example.com/browse/DEMO-2", "date": "2026-03-01"}, {"id": "wi:DEMO-1", "type": "work_item", "label": "Implement the widget", "ticket": "DEMO-1", "role": "authored the widget and its tests, drove it to merge", "grade": "meets", "theme": ["delivery", "testing"], "text": "Built the widget end-to-end"}, {"id": "axis:pr_reviews", "type": "radar_axis", "label": "PR Reviews", "grade": "meets", "score": 60, "text": "Steady review volume, mostly tactical notes."}, {"id": "axis:lpp", "type": "radar_axis", "label": "LPP (Support)", "grade": "meets", "score": 40, "text": "One customer bug triaged; light support load."}, {"id": "axis:testing", "type": "radar_axis", "label": "Testing", "grade": "exceeds", "score": 78, "text": "Shipped a full test suite alongside the feature."}, {"id": "axis:delivery", "type": "radar_axis", "label": "Delivery", "grade": "meets", "score": 70, "text": "Shipped the widget end-to-end."}, {"id": "axis:discovery", "type": "radar_axis", "label": "Discovery", "grade": "meets", "score": 55, "text": "Root-caused one cache-layer failure."}, {"id": "axis:speed", "type": "radar_axis", "label": "Speed", "grade": "meets", "score": 50, "text": "Median ~5 d to land."}, {"id": "rating", "type": "rating", "label": "Meets expectations", "grade": "meets", "text": "Overall rating for the May 2026 review, weighed across the six radar axes."}, {"id": "summary", "type": "summary", "label": "Summary", "grade": "meets", "text": "Synthetic sample: solid end-to-end delivery of the widget with strong test coverage; review and discovery are steady. Use this to iterate on the template without real data."}, {"id": "summary:finding:1", "type": "finding", "grade": "exceeds", "label": "Widget shipped with its own test suite", "text": "Spans Delivery + Testing."}, {"id": "discovery:finding:1", "type": "finding", "label": "Root-caused the empty-input crash", "grade": "meets", "text": "Traced the empty-input failure to the cache layer and filed a sharp repro (DEMO-2)."}, {"id": "wi:DEMO-7", "type": "work_item", "label": "Tidy the loader", "ticket": "DEMO-7", "role": "reviewer — reviewed the loader cleanup", "grade": "meets", "text": "reviewed the loader change and suggested a tidy-up"}], "edges": [{"from": "wi:DEMO-1", "to": "ev:c1", "why": "commit on the ticket"}, {"from": "wi:DEMO-1", "to": "ev:p1", "why": "pull request"}, {"from": "axis:speed", "to": "ev:c1", "why": "5 d to land"}, {"from": "rating", "to": "axis:pr_reviews", "why": "axis weighed in the rating"}, {"from": "rating", "to": "axis:lpp", "why": "axis weighed in the rating"}, {"from": "rating", "to": "axis:testing", "why": "axis weighed in the rating"}, {"from": "rating", "to": "axis:delivery", "why": "axis weighed in the rating"}, {"from": "rating", "to": "axis:discovery", "why": "axis weighed in the rating"}, {"from": "rating", "to": "axis:speed", "why": "axis weighed in the rating"}, {"from": "rating", "to": "summary:finding:1", "why": "the headline win"}, {"from": "summary", "to": "axis:testing", "why": "drawn into the summary"}, {"from": "summary", "to": "axis:delivery", "why": "drawn into the summary"}, {"from": "summary", "to": "summary:finding:1", "why": "drawn into the summary"}, {"from": "summary:finding:1", "to": "axis:testing", "why": "the test suite"}, {"from": "summary:finding:1", "to": "axis:delivery", "why": "shipped end-to-end"}, {"from": "summary:finding:1", "to": "wi:DEMO-1", "why": "the widget itself"}, {"from": "axis:lpp", "to": "ev:ct1", "why": "Triaged a customer crash report"}, {"from": "axis:testing", "to": "wi:DEMO-1", "why": "Unit + integration coverage shipped with the feature."}, {"from": "axis:delivery", "to": "wi:DEMO-1", "why": "Delivered the widget feature"}, {"from": "axis:discovery", "to": "discovery:finding:1", "why": "the investigation behind the score"}, {"from": "discovery:finding:1", "to": "ev:jc1", "why": "root-cause analysis in the ticket thread"}, {"from": "discovery:finding:1", "to": "ev:ct1", "why": "filed the sharp bug repro"}, {"from": "wi:DEMO-7", "to": "ev:rc1", "why": "inline review comment"}, {"from": "axis:pr_reviews", "to": "wi:DEMO-7", "why": "reviewed DEMO-7"}]}</script>
+
+<script>
+(function(){
+  var G = JSON.parse(document.getElementById('graph').textContent);
+  var N = {}; G.nodes.forEach(function(n){ N[n.id]=n; });
+  var OUT = {}; G.edges.forEach(function(e){ (OUT[e.from]=OUT[e.from]||[]).push(e); });
+  var stack = [];
+  var scrim = document.getElementById('gscrim');
+  var body  = document.getElementById('gbody');
+  var title = document.getElementById('gtitle');
+  var back  = document.getElementById('gback');
+
+  var TYPE_LABEL = {pull_request:'pull request', review_comment:'review comment', jira_comment:'jira comment',
+    created_ticket:'filed ticket', commit:'commit', comment:'comment', work_item:'work item',
+    radar_axis:'radar axis', finding:'finding', summary:'summary', rating:'rating'};
+  var TONE  = {below:'label--danger', meets:'label--info', exceeds:'label--success', 'exceeds-enables':'label--success'};
+  var GTEXT = {below:'Below', meets:'Meets', exceeds:'Exceeds', 'exceeds-enables':'Enables'};
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':s; return d.innerHTML; }
+  function tone(g){ return TONE[g] || 'label--secondary'; }
+  function gtext(g){ return GTEXT[g] || g; }
+  function badge(g){ return '<span class="label '+tone(g)+'">'+esc(gtext(g))+'</span>'; }
+
+  function render(){
+    var id = stack[stack.length-1], nd = N[id]; if(!nd) return;
+    title.textContent = nd.label;
+    back.hidden = stack.length <= 1;
+
+    var h = '<div class="g-eyebrow">'+esc(TYPE_LABEL[nd.type]||nd.type)+'</div>';
+    h += '<div class="g-title">'+esc(nd.label)+'</div>';
+
+    var badges = [];
+    if(nd.grade) badges.push(badge(nd.grade));
+    if(nd.score!=null) badges.push('<span class="label label--secondary g-score"><b>'+nd.score+'</b>score</span>');
+    if(badges.length) h += '<div class="g-badges">'+badges.join('')+'</div>';
+
+    if(nd.role) h += '<div class="g-meta">Role: '+esc(nd.role)+'</div>';
+    if(nd.text) h += '<div class="g-text">'+esc(nd.text)+'</div>';
+    if(nd.date) h += '<div class="g-meta">'+esc(nd.date)+'</div>';
+    if(nd.url)  h += '<a class="btn btn--secondary btn--sm g-leaf" href="'+esc(nd.url)+'" target="_blank" rel="noopener">'
+                   + '<svg class="lexicon-icon lexicon-icon-sm"><use href="#link"></use></svg> Open source</a>';
+
+    var outs = OUT[id]||[];
+    if(outs.length){
+      h += '<div class="g-section">Grounded in ('+outs.length+')</div>';
+      outs.forEach(function(e){
+        var t = N[e.to]; if(!t) return;
+        var inner = '<div class="g-edge__main">'
+                  + '<div class="g-eyebrow">'+esc(TYPE_LABEL[t.type]||t.type)+'</div>'
+                  + '<div class="g-edge__label">'+esc(t.label)+'</div>'
+                  + '<div class="g-edge__why">'+esc(e.why)+'</div></div>'
+                  + (t.grade ? badge(t.grade) : '');
+        // a grounding row that points at a bare evidence leaf IS the source link
+        if(!(OUT[e.to]||[]).length && t.url){
+          h += '<a class="g-edge" href="'+esc(t.url)+'" target="_blank" rel="noopener">'+inner
+             + '<svg class="lexicon-icon"><use href="#link"></use></svg></a>';
+        } else {
+          h += '<button class="g-edge" data-to="'+esc(e.to)+'">'+inner
+             + '<svg class="lexicon-icon"><use href="#angle-right"></use></svg></button>';
+        }
+      });
+    }
+    body.innerHTML = h;
+    body.scrollTop = 0;
+  }
+
+  function open(id){ if(!N[id]) return; stack=[id]; render(); scrim.classList.add('is-open'); }
+  function close(){ scrim.classList.remove('is-open'); }
+
+  document.addEventListener('click', function(ev){
+    var nav = ev.target.closest('[data-node]');
+    if(nav){ open(nav.getAttribute('data-node')); return; }
+    var edge = ev.target.closest('.g-edge[data-to]');
+    if(edge){ stack.push(edge.getAttribute('data-to')); render(); return; }
+    if(ev.target.closest('#gback')){ stack.pop(); render(); return; }
+    if(ev.target.closest('#gclose') || ev.target === scrim){ close(); return; }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+
+  // ── Floating Dark / Light toggle ──
+  var SKINS = ['light','light-hc','dark','dark-hc'];
+  var toggle = document.getElementById('skin-toggle');
+  function isDark(){ return (localStorage.getItem('vanilla-skin')||'light').indexOf('dark') === 0; }
+  function paint(){
+    var dark = isDark();
+    toggle.querySelector('use').setAttribute('href', dark ? '#sun' : '#moon');
+    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  toggle.addEventListener('click', function(){
+    var next = isDark() ? 'light' : 'dark';
+    localStorage.setItem('vanilla-skin', next);
+    var r = document.documentElement;
+    SKINS.forEach(function(c){ r.classList.remove(c); });
+    r.classList.add(next);
+    paint();
+  });
+  paint();
+})();
+</script>
+
+</body>
+</html>
