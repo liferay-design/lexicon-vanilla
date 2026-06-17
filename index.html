@@ -152,6 +152,27 @@
       text-decoration: none;
     }
     .ref__download:hover { color: var(--color-primary); }
+
+    .ref__install code { font-size: var(--font-size-sm); }
+    .ref__cmd {
+      background: var(--color-light-l1);
+      border: 1px solid var(--color-light-d2);
+      border-radius: var(--rounded-md);
+      padding: var(--spacing-4) var(--spacing-5);
+      margin: 0 0 var(--spacing-4);
+      max-width: 60ch;
+      overflow-x: auto;
+      font-size: var(--font-size-sm);
+      line-height: 1.7;
+      color: var(--color-dark);
+    }
+    .ref__cmd code { color: inherit; }
+    .ref__more {
+      color: var(--color-primary);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .ref__more:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -253,7 +274,7 @@
 
     <a
       class="ref__download"
-      href="https://github.com/marcoscv-work/lexicon-vanilla/archive/refs/heads/main.zip"
+      href="https://github.com/liferay-design/lexicon-vanilla/archive/refs/heads/main.zip"
       download
     >
       <svg class="lexicon-icon lexicon-icon-sm"><use href="#download"></use></svg>
@@ -262,6 +283,21 @@
   </nav>
 
   <main class="ref__main">
+
+    <section id="comp-install" class="ref__intro ref__install">
+      <h1>Install as a Claude Code plugin</h1>
+      <p>
+        Use Lexicon Vanilla on any project without cloning this repo. Run these once in the
+        Claude Code terminal, then describe a screen in natural language:
+      </p>
+      <pre class="ref__cmd"><code>/plugin marketplace add https://github.com/liferay-design/lexicon-vanilla.git
+/plugin install lexicon-vanilla@lexicon</code></pre>
+      <p>
+        Afterwards, run <code>/lexicon-vanilla:create-screen …</code> inside the folder where you
+        want your prototypes.
+        <a class="ref__more" href="https://github.com/liferay-design/lexicon-vanilla#install-as-a-claude-code-plugin">More info ↗</a>
+      </p>
+    </section>
 
     <section id="comp-intro" class="ref__intro">
       <h1>Component Reference</h1>

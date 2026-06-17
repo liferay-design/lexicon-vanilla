@@ -12,7 +12,7 @@ Turn a screen description into a working `prototypes/<slug>.html` that opens ove
 Before composing, make sure the kit exists in the current directory. Run this in Bash:
 
 ```bash
-REPO="marcoscv-work/lexicon-vanilla"
+REPO="liferay-design/lexicon-vanilla"
 if [ ! -f .lexicon ]; then
   # Pin to the published release tag; fall back to main only if VERSION is unreachable.
   VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
@@ -44,7 +44,7 @@ Run this command exactly as written. Do not drop entries from the tar list: `pro
 Then a throttled update check (at most once per day). If it prints `update:<version>`, tell the user one line: "Lexicon Vanilla `<version>` is available, run /lexicon-refresh." Do not auto-update.
 
 ```bash
-REPO="marcoscv-work/lexicon-vanilla"
+REPO="liferay-design/lexicon-vanilla"
 if [ -f .lexicon ]; then
   LAST=$(sed -n 's/.*"lastCheck":"\([^"]*\)".*/\1/p' .lexicon)
   TODAY=$(date +%F)

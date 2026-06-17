@@ -9,7 +9,7 @@ There is no build step and no local server. Open files directly from Finder or w
 The easiest way to use Lexicon Vanilla on any project, without cloning this repo. Run these once in the Claude Code terminal:
 
 ```text
-/plugin marketplace add https://github.com/marcoscv-work/lexicon-vanilla.git
+/plugin marketplace add https://github.com/liferay-design/lexicon-vanilla.git
 /plugin install lexicon-vanilla@lexicon
 ```
 

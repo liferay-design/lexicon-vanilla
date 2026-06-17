@@ -5,7 +5,7 @@ description: Update the local Lexicon Vanilla kit to the latest published versio
 Refresh the Lexicon Vanilla kit in the current directory to the latest published version. Run this in Bash, then report the version installed:
 
 ```bash
-REPO="marcoscv-work/lexicon-vanilla"
+REPO="liferay-design/lexicon-vanilla"
 VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
 if [ -n "$VER" ]; then REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"; else REF="refs/heads/main"; DIR="lexicon-vanilla-main"; VER="main"; fi
 TMP=$(mktemp -d)
