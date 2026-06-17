@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototypes — Lexicon Vanilla</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    body { background: var(--color-light-l1); }
+    .proto-page { max-width: 1080px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .proto-back {
+      display: inline-flex; align-items: center; gap: var(--spacing-2);
+      font-size: var(--font-size-sm); color: var(--color-secondary);
+      text-decoration: none; margin-bottom: var(--spacing-5);
+    }
+    .proto-back:hover { color: var(--color-primary); }
+    .proto-page h1 {
+      font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .proto-page .proto-lead {
+      color: var(--color-secondary); font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-8); max-width: 60ch;
+    }
+    .proto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--spacing-6);
+    }
+    a.proto-card { text-decoration: none; color: inherit; cursor: pointer; }
+    a.proto-card:hover { border-color: var(--color-primary-l1); }
+    a.proto-card:hover .card__title { color: var(--color-primary); }
+    .proto-card .card__media { aspect-ratio: 16 / 7; }
+    .proto-card .card__file {
+      font-size: var(--font-size-sm); color: var(--color-secondary);
+      font-family: var(--font-family-base); margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="proto-page">
+  <a class="proto-back" href="../index.html">
+    <svg class="lexicon-icon lexicon-icon-sm"><use href="#angle-left"></use></svg>
+    Component Reference
+  </a>
+
+  <h1>Prototypes</h1>
+  <p class="proto-lead">
+    Example screens built with the Lexicon Vanilla kit. Click any card to open the prototype.
+    All of them run over <code>file://</code> — no build, no server. To add your own, copy
+    <code>../starter.html</code> into this folder and edit inside the marked region.
+  </p>
+
+  <div class="proto-grid">
+
+    <a class="card proto-card" href="login.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#lock"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Login</h2>
+        <p class="card__subtitle">Headless CMS sign-in screen.</p>
+        <p class="card__file">login.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="loginFull.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#key"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Login (Full)</h2>
+        <p class="card__subtitle">Full-page sign-in variant.</p>
+        <p class="card__file">loginFull.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="user-administration.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#users"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">User Administration</h2>
+        <p class="card__subtitle">Users table with management toolbar and CMS shell.</p>
+        <p class="card__file">user-administration.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="token-editor.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#color-picker"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Token Editor</h2>
+        <p class="card__subtitle">User administration with a live color-token editor panel.</p>
+        <p class="card__file">token-editor.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="ai-hub-landing.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#magic"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">AI Hub Landing</h2>
+        <p class="card__subtitle">Liferay AI Hub beta landing page.</p>
+        <p class="card__file">ai-hub-landing.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="ai-assistant-chatbot.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#comments"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">AI Assistant Chatbot</h2>
+        <p class="card__subtitle">Floating AI chat over the CMS shell.</p>
+        <p class="card__file">ai-assistant-chatbot.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="performance-review.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#analytics"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Performance Review</h2>
+        <p class="card__subtitle">Radar drill-down review with modal detail.</p>
+        <p class="card__file">performance-review.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="performance-review-no-modal.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#analytics"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Performance Review (inline)</h2>
+        <p class="card__subtitle">Same review with an inline drill-down, no modal.</p>
+        <p class="card__file">performance-review-no-modal.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="skins.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#adjust"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Skins</h2>
+        <p class="card__subtitle">Skin switcher and accessibility menu demo.</p>
+        <p class="card__file">skins.html</p>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>
