@@ -373,33 +373,26 @@
       .cslide__desc         { font-size: var(--font-size-sm); }
     }
 
-    /* ≤980px — stack: form on top, carousel below */
+    /* ≤980px — hide the carousel, center the form (no stacking) */
     @media (max-width: 980px) {
+      .login-carousel { display: none; }
       .login-page {
         flex-direction: column;
         align-items: center;
         padding: var(--spacing-8) var(--spacing-6);
-        gap: var(--spacing-8);
+        gap: 0;
       }
       .login-form {
         flex: none;
         width: 100%;
         max-width: 448px;
       }
-      .login-carousel {
-        flex: none;
-        width: 100%;
-        max-width: 560px;
-        aspect-ratio: 684 / 500;
-      }
     }
 
-    /* ≤520px — hide the carousel, center the form */
+    /* ≤520px — tighten the padding */
     @media (max-width: 520px) {
-      .login-carousel { display: none; }
       .login-page {
         padding: var(--spacing-7) var(--spacing-5);
-        gap: 0;
       }
       .login-form { max-width: 100%; }
     }
