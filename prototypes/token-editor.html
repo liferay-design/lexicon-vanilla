@@ -5581,6 +5581,10 @@
     function scale(base, variants) {
       return variants.map(function (v) { return '--color-' + base + (v ? '-' + v : ''); });
     }
+    // Chart colors are bare (Clay-aligned): --blue-l4, not --color-chart-blue-l4.
+    function chartScale(hue, variants) {
+      return variants.map(function (v) { return '--' + hue + (v ? '-' + v : ''); });
+    }
     function fam(label, tokens, collapsed) {
       GROUPS.push({ label: label, tokens: tokens, collapsed: !!collapsed });
     }
@@ -5597,8 +5601,7 @@
     ['blue', 'orange', 'red', 'teal', 'pink', 'green', 'purple', 'yellow', 'cyan', 'indigo']
       .forEach(function (hue) {
         fam('Chart · ' + hue.charAt(0).toUpperCase() + hue.slice(1),
-            ['d4', 'd3', 'd2', 'd1', '', 'l1', 'l2', 'l3', 'l4', 'l5']
-              .map(function (v) { return '--' + hue + (v ? '-' + v : ''); }),
+            chartScale(hue, ['d4', 'd3', 'd2', 'd1', '', 'l1', 'l2', 'l3', 'l4', 'l5']),
             true);
       });
 
@@ -5681,7 +5684,7 @@
         meta.className = 'token-row__meta';
         var name = document.createElement('code');
         name.className = 'token-row__name';
-        name.textContent = token.replace('--color-', '');
+        name.textContent = token.replace(/^--(?:color-)?/, '');
         var value = document.createElement('span');
         value.className = 'token-row__value';
         meta.appendChild(name);
@@ -5843,7 +5846,7 @@
       var m, count = 0;
       while ((m = blockRe.exec(text))) {
         var target = /dark/i.test(m[1]) ? 'dark' : 'light';
-        m[2].replace(/(--color-[a-z0-9-]+)\s*:\s*([^;]+)/gi, function (_, name, val) {
+        m[2].replace(/(--[a-z0-9-]+)\s*:\s*([^;]+)/gi, function (_, name, val) {
           if (KNOWN[name]) {
             overrides[target][name] = val.trim();
             count++;
