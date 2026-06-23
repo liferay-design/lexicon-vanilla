@@ -185,6 +185,42 @@
     .skins-content { max-width: 760px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); display: flex; flex-direction: column; gap: var(--spacing-7); }
     .skins-content h1 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0; }
     .skins-content p { margin: 0; color: var(--color-dark); line-height: 1.6; }
+
+    /* Animated sun / moon theme toggle (see prototypes/switch-skin.html).
+       Engine only — the .btn--borderless.btn--sm.btn--icon supplies chrome;
+       the two icon layers clip + swap inside it. */
+    .skin-toggle { position: relative; overflow: hidden; }
+    .skin-toggle__icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        transform 0.55s cubic-bezier(0.34, 1.45, 0.5, 1),
+        opacity   0.4s ease,
+        color     0.3s ease;
+    }
+    /* At rest the icons inherit currentColor like every other control-panel
+       icon. The warm sun / cool moon tints only reveal on hover or focus. */
+    button.skin-toggle:is(:hover, :focus-visible) .skin-toggle__icon--sun  { color: var(--color-warning); }
+    button.skin-toggle:is(:hover, :focus-visible) .skin-toggle__icon--moon { color: var(--color-info); }
+
+    /* Light: sun shown, moon parked below the clip */
+    .skin-toggle__icon--sun  { transform: translateY(0)     rotate(0deg);   opacity: 1; }
+    .skin-toggle__icon--moon { transform: translateY(118%)  rotate(-45deg); opacity: 0; }
+    button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-48%) rotate(-32deg); opacity: 0.4; }
+    button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(34%)  rotate(-12deg); opacity: 1; }
+
+    /* Dark: moon shown, sun parked above the clip */
+    .skin-toggle.is-dark .skin-toggle__icon--moon { transform: translateY(0)      rotate(0deg);  opacity: 1; }
+    .skin-toggle.is-dark .skin-toggle__icon--sun  { transform: translateY(-118%)  rotate(45deg); opacity: 0; }
+    button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-34%) rotate(32deg); opacity: 1; }
+    button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(48%)  rotate(12deg); opacity: 0.4; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skin-toggle__icon { transition: opacity 0.2s ease; }
+    }
   </style>
 </head>
 <!-- Grid: Control Panel (320px, full height) | right column (Control Menu + content) -->
@@ -225,8 +261,13 @@
 
       <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
       <span class="cp-tip">
-        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        <button class="btn btn--borderless btn--sm btn--icon skin-toggle" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="skin-toggle__icon skin-toggle__icon--sun">
+            <svg class="lexicon-icon"><use href="#sun"></use></svg>
+          </span>
+          <span class="skin-toggle__icon skin-toggle__icon--moon">
+            <svg class="lexicon-icon"><use href="#moon"></use></svg>
+          </span>
         </button>
         <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
       </span>
@@ -721,28 +762,27 @@
   (function () {
     var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
     var btn = document.getElementById('cp-theme-toggle');
-    var icon = document.getElementById('cp-theme-icon');
     var tip = document.getElementById('cp-theme-tip');
     if (!btn) return;
 
     function current() {
       try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
     }
+    function isDark(s) { return s.indexOf('dark') === 0; }
 
     function render() {
-      var isDark = current().indexOf('dark') === 0;
-      // Moon → "switch to dark" (light now); Sun → "switch to light" (dark now)
-      var use = icon.querySelector('use');
-      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
-      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      var dark = isDark(current());
+      // .is-dark drives the animated sun ⇄ moon swap (see CSS above).
+      btn.classList.toggle('is-dark', dark);
+      var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
       btn.setAttribute('aria-label', label);
-      btn.setAttribute('aria-pressed', String(isDark));
+      btn.setAttribute('aria-pressed', String(dark));
       if (tip) tip.textContent = label;
     }
 
     btn.addEventListener('click', function () {
       var s = current();
-      var nextBase = s.indexOf('dark') === 0 ? 'light' : 'dark';
+      var nextBase = isDark(s) ? 'light' : 'dark';
       var keepHc = s.indexOf('-hc') > -1;          // preserve High Contrast across modes
       var next = nextBase + (keepHc ? '-hc' : '');
       var r = document.documentElement;
@@ -750,7 +790,12 @@
       r.classList.add(next);
       try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
       render();
+      // Pointer is still over the button — freeze the peek so the swapped-in
+      // icon lands centered; it fires again on the next leave + re-enter.
+      btn.classList.add('is-settling');
     });
+    btn.addEventListener('mouseleave', function () { btn.classList.remove('is-settling'); });
+    btn.addEventListener('blur', function () { btn.classList.remove('is-settling'); });
 
     render();
   })();
