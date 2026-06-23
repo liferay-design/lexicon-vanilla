@@ -102,32 +102,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Motion axis — vertical by default (move along Y). Each state only
+       declares a distance (--d) + rotation (--rot); the axis multipliers
+       decide whether that distance travels on Y (default) or X. */
+    --ax: 0;
+    --ay: 1;
+    transform:
+      translate(calc(var(--d, 0%) * var(--ax)), calc(var(--d, 0%) * var(--ay)))
+      rotate(var(--rot, 0deg));
     transition:
       transform 0.55s cubic-bezier(0.34, 1.45, 0.5, 1),
       opacity   0.4s ease;
   }
+  /* Horizontal mode (sun left / moon right): flip the axis to X. One rule
+     re-routes every state because no state hard-codes a direction. */
+  .skin-stage.is-horizontal .skin-toggle__icon { --ax: 1; --ay: 0; }
+
   .skin-toggle__icon--sun  { color: var(--color-warning); }
   .skin-toggle__icon--moon { color: var(--color-info); }
 
-  /* ── Light (sun on stage, moon waiting below the clip) ── */
-  .skin-toggle__icon--sun  { transform: translateY(0)     rotate(0deg);   opacity: 1; }
-  .skin-toggle__icon--moon { transform: translateY(118%)  rotate(-45deg); opacity: 0; }
+  /* ── Light (sun on stage, moon waiting off the clip edge) ── */
+  .skin-toggle__icon--sun  { --d: 0%;    --rot: 0deg;   opacity: 1; }
+  .skin-toggle__icon--moon { --d: 118%;  --rot: -45deg; opacity: 0; }
 
-  /* hover OR keyboard-focus in light → moon peeks well up, sun steps aside.
+  /* hover OR keyboard-focus in light → moon peeks well in, sun steps aside.
      Scoped to button.skin-toggle so only the real control peeks; the
      decorative hero never reacts to its own hover (it only mirrors the
      committed swap via .is-dark). :not(.is-settling) so a fresh click
      lands the icon at its final spot instead of snapping back. */
-  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-48%) rotate(-32deg); opacity: 0.4; }
-  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(34%)  rotate(-12deg); opacity: 1; }
+  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { --d: -48%; --rot: -32deg; opacity: 0.4; }
+  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { --d: 34%;  --rot: -12deg; opacity: 1; }
 
-  /* ── Dark (moon on stage, sun waiting above the clip) ── */
-  .skin-toggle.is-dark .skin-toggle__icon--moon { transform: translateY(0)      rotate(0deg);  opacity: 1; }
-  .skin-toggle.is-dark .skin-toggle__icon--sun  { transform: translateY(-118%)  rotate(45deg); opacity: 0; }
+  /* ── Dark (moon on stage, sun waiting off the clip edge) ── */
+  .skin-toggle.is-dark .skin-toggle__icon--moon { --d: 0%;    --rot: 0deg;  opacity: 1; }
+  .skin-toggle.is-dark .skin-toggle__icon--sun  { --d: -118%; --rot: 45deg; opacity: 0; }
 
-  /* hover OR keyboard-focus in dark → sun peeks well down, moon steps aside */
-  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-34%) rotate(32deg); opacity: 1; }
-  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(48%)  rotate(12deg); opacity: 0.4; }
+  /* hover OR keyboard-focus in dark → sun peeks well in, moon steps aside */
+  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { --d: -34%; --rot: 32deg; opacity: 1; }
+  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { --d: 48%;  --rot: 12deg; opacity: 0.4; }
 
   /* Hero presentation — decorative preview, not a button, so it carries
      its own size + circular shape. Scaled up; no px literals.
@@ -140,6 +152,11 @@
     transform: scale(2.6);
     margin: calc(var(--spacing-8) + var(--spacing-2));
   }
+  /* Relative auto-zoom: on bigger viewports the preview grows so it stays
+     legible from a distance. `zoom` is a relative multiplier and stacks on
+     top of the hero's scale() — layout (margin included) scales with it. */
+  @media (min-width: 1200px) { .skin-toggle--hero { zoom: 1.3; } }
+  @media (min-width: 1680px) { .skin-toggle--hero { zoom: 1.6; } }
 
   /* In-context utility bar mock */
   .skin-context {
@@ -172,6 +189,12 @@
       Hover or focus and the opposite icon peeks in. The big one is just a preview —
       the live switch is the toggle in the bar below.
     </p>
+
+    <label class="toggle toggle--sm">
+      <input type="checkbox" class="toggle__input" id="axis-switch">
+      <span class="toggle__track"><span class="toggle__dot"></span></span>
+      <span>Horizontal motion (sun left / moon right)</span>
+    </label>
   </div>
 
   <!-- Hero — decorative preview of the animation (not interactive: too big
@@ -264,6 +287,16 @@
     });
     render();
     window.addEventListener('pageshow', render);
+
+    // Motion-direction switch: vertical (default) ⇄ horizontal. Toggles
+    // .is-horizontal on the stage, which re-routes the animation axis.
+    var axisSwitch = document.getElementById('axis-switch');
+    var stage = document.querySelector('.skin-stage');
+    if (axisSwitch && stage) {
+      axisSwitch.addEventListener('change', function () {
+        stage.classList.toggle('is-horizontal', axisSwitch.checked);
+      });
+    }
   })();
 </script>
 

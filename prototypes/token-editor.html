@@ -91,7 +91,7 @@
       z-index: 20;
     }
     .cp-tip:hover .cp-tip__bubble,
-    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+    .cp-tip:has(:focus-visible) .cp-tip__bubble { opacity: 1; }
 
     /* ── Token editor panel (right column, this screen only) ──── */
     .token-panel {

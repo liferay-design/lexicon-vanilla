@@ -91,8 +91,12 @@
       transition: opacity 120ms ease;
       z-index: 20;
     }
+    /* Show on hover or KEYBOARD focus only. :has(:focus-visible) (not
+       :focus-within) so a mouse click — which leaves :focus on the button
+       but not :focus-visible — doesn't keep the tooltip stuck open after
+       the pointer leaves. */
     .cp-tip:hover .cp-tip__bubble,
-    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+    .cp-tip:has(:focus-visible) .cp-tip__bubble { opacity: 1; }
 
     /* ── Accessibility Menu trigger ─────────────────────────────
        First focusable element on the page (skip-link style). Hidden

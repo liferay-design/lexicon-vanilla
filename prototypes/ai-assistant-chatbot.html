@@ -313,7 +313,7 @@
       transition: opacity 0.1s ease;
     }
     .skin-toggle-wrap:hover .skin-toggle-tip,
-    .skin-toggle-wrap:focus-within .skin-toggle-tip {
+    .skin-toggle-wrap:has(:focus-visible) .skin-toggle-tip {
       opacity: 1;
       visibility: visible;
     }
