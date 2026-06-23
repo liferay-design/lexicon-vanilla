@@ -5576,7 +5576,7 @@
     overrides.light = overrides.light || {};
     overrides.dark = overrides.dark || {};
 
-    // ── Token inventory (mirrors tokens.css — 140 color tokens) ────
+    // ── Token inventory (mirrors tokens.css — 142 color tokens) ────
     var GROUPS = [];
     function scale(base, variants) {
       return variants.map(function (v) { return '--color-' + base + (v ? '-' + v : ''); });
@@ -5587,7 +5587,7 @@
     fam('Primary', scale('primary', ['d2', 'd1', '', 'l0', 'l1', 'l2', 'l3']));
     fam('Secondary', scale('secondary', ['', 'l0', 'l1', 'l2', 'l3']));
     fam('Dark, Light & White',
-        scale('dark', ['d2', 'd1', ''])
+        scale('dark', ['d2', 'd1', '', 'l1', 'l2'])
           .concat(scale('light', ['d2', 'd1', '', 'l1']))
           .concat(['--color-white']));
     fam('Success', scale('success', ['d2', 'd1', '', 'l1', 'l2']), true);

@@ -14,20 +14,20 @@
 
   /* Primary */
   --color-primary-d3: #D6E4FF;
-  --color-primary-d2: #ADC9FF;
+  --color-primary-d2: #D6E4FF;
   --color-primary-d1: #7AA8FF;
   --color-primary: #6198FF;
   --color-primary-l0: #0F62FF;
   --color-primary-l1: #004CDB;
   --color-primary-l2: #003AA8;
-  --color-primary-l3: #002266;
+  --color-primary-l3: #001A4D;
 
   /* Secondary */
-  --color-secondary: #A2A2B9;
-  --color-secondary-l0: #7D7F9C;
-  --color-secondary-l1: #636682;
-  --color-secondary-l2: #525361;
-  --color-secondary-l3: #34343D;
+  --color-secondary: #B3B3C6;
+  --color-secondary-l0: #9A9CB2;
+  --color-secondary-l1: #7D809C;
+  --color-secondary-l2: #696A7C;
+  --color-secondary-l3: #4D4E5B;
 
   /* Dark */
   --color-dark-d2: #FFFFFF;
@@ -37,39 +37,39 @@
   --color-dark-l2: #E2E4EA;
 
   /* Light */
-  --color-light-d2: #30313F;
-  --color-light-d1: #30313F;
-  --color-light: #272833;
-  --color-light-l1: #1C1C24;
-  --color-white: #111116;
+  --color-light-d2: #47485D;
+  --color-light-d1: #3E3F51;
+  --color-light: #313240;
+  --color-light-l1: #262631;
+  --color-white: #1B1B23;
 
   /* Success */
-  --color-success-d2: #8BDA9E;
+  --color-success-d2: #BAE8C6;
   --color-success-d1: #59C974;
   --color-success: #3BB959;
   --color-success-l1: #2A8340;
-  --color-success-l2: #216430;
+  --color-success-l2: #13391B;
 
   /* Info */
-  --color-info-d2: #BECFEE;
+  --color-info-d2: #DCE4F5;
   --color-info-d1: #9EB7E6;
   --color-info: #7E9FDD;
   --color-info-l1: #4E7BD0;
-  --color-info-l2: #3263BD;
+  --color-info-l2: #142648;
 
   /* Warning */
-  --color-warning-d2: #FFBA85;
+  --color-warning-d2: #FFDFC7;
   --color-warning-d1: #FF9A4D;
   --color-warning: #FF7A14;
   --color-warning-l1: #D15B00;
-  --color-warning-l2: #9E4400;
+  --color-warning-l2: #4D2100;
 
   /* Danger */
-  --color-danger-d2: #FABCBC;
+  --color-danger-d2: #FDE2E2;
   --color-danger-d1: #F69D9D;
   --color-danger: #F67474;
   --color-danger-l1: #EC2D2D;
-  --color-danger-l2: #B11111;
+  --color-danger-l2: #470606;
 
   /* Charts */
   --color-chart-blue: #429AFF;
@@ -351,20 +351,20 @@
 
     /* Primary */
     --color-primary-d3: #D6E4FF;
-    --color-primary-d2: #ADC9FF;
+    --color-primary-d2: #D6E4FF;
     --color-primary-d1: #7AA8FF;
     --color-primary: #6198FF;
     --color-primary-l0: #0F62FF;
     --color-primary-l1: #004CDB;
     --color-primary-l2: #003AA8;
-    --color-primary-l3: #002266;
+    --color-primary-l3: #001A4D;
 
     /* Secondary */
-    --color-secondary: #A2A2B9;
-    --color-secondary-l0: #7D7F9C;
-    --color-secondary-l1: #636682;
-    --color-secondary-l2: #525361;
-    --color-secondary-l3: #34343D;
+    --color-secondary: #B3B3C6;
+    --color-secondary-l0: #9A9CB2;
+    --color-secondary-l1: #7D809C;
+    --color-secondary-l2: #696A7C;
+    --color-secondary-l3: #4D4E5B;
 
     /* Dark */
     --color-dark-d2: #FFFFFF;
@@ -374,39 +374,39 @@
     --color-dark-l2: #E2E4EA;
 
     /* Light */
-    --color-light-d2: #30313F;
-    --color-light-d1: #30313F;
-    --color-light: #272833;
-    --color-light-l1: #1C1C24;
-    --color-white: #111116;
+    --color-light-d2: #47485D;
+    --color-light-d1: #3E3F51;
+    --color-light: #313240;
+    --color-light-l1: #262631;
+    --color-white: #1B1B23;
 
     /* Success */
-    --color-success-d2: #8BDA9E;
+    --color-success-d2: #BAE8C6;
     --color-success-d1: #59C974;
     --color-success: #3BB959;
     --color-success-l1: #2A8340;
-    --color-success-l2: #216430;
+    --color-success-l2: #13391B;
 
     /* Info */
-    --color-info-d2: #BECFEE;
+    --color-info-d2: #DCE4F5;
     --color-info-d1: #9EB7E6;
     --color-info: #7E9FDD;
     --color-info-l1: #4E7BD0;
-    --color-info-l2: #3263BD;
+    --color-info-l2: #142648;
 
     /* Warning */
-    --color-warning-d2: #FFBA85;
+    --color-warning-d2: #FFDFC7;
     --color-warning-d1: #FF9A4D;
     --color-warning: #FF7A14;
     --color-warning-l1: #D15B00;
-    --color-warning-l2: #9E4400;
+    --color-warning-l2: #4D2100;
 
     /* Danger */
-    --color-danger-d2: #FABCBC;
+    --color-danger-d2: #FDE2E2;
     --color-danger-d1: #F69D9D;
     --color-danger: #F67474;
     --color-danger-l1: #EC2D2D;
-    --color-danger-l2: #B11111;
+    --color-danger-l2: #470606;
 
     /* Charts */
     --color-chart-blue: #429AFF;
