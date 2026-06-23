@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch Skin — Sun / Moon toggle animation</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     EDIT BELOW.
+     Components: see ../components.html for live variants (all components, one page).
+     Icons: <svg class="lexicon-icon"><use href="#name"></use></svg>
+            (513 names — grep ../icons.svg for `<symbol id=`)
+     Tokens only: var(--color-…), var(--spacing-…), var(--font-size-…).
+     ════════════════════════════════════════════════════════════════ -->
+
+<style>
+  /* ──────────────────────────────────────────────────────────────
+     Animated Sun / Moon skin toggle.
+     The component is the kit's existing borderless icon toggle
+     (id="cp-theme-toggle" in skins.html); here it is rebuilt as a
+     self-contained .skin-toggle so we can choreograph the swap:
+
+       · Light  → sun shown, moon parked just below the clip edge.
+       · Hover  → the hidden icon "peeks" in (moon rises from below,
+                  or sun drops from above in dark) while the current
+                  one steps aside.
+       · Click  → the peeking icon travels fully into place and the
+                  outgoing one exits the opposite edge. Whole page
+                  reskins (vanilla-skin light ⇄ dark).
+
+     Only animation geometry uses raw numbers (translate %, rotation,
+     timing, unitless scale) — every colour / size is a token. ────── */
+
+  .skin-stage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-8);
+    text-align: center;
+    padding: var(--spacing-9) var(--spacing-7);
+  }
+
+  .skin-stage__title {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-dark);
+  }
+  .skin-stage__subtitle {
+    margin: 0;
+    max-width: 34em;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base, 1.5);
+    color: var(--color-dark);
+    opacity: 0.6;
+  }
+
+  /* Animation engine only — clips its two layered icons so they can
+     peek / swap. Add it to an existing button for the real control
+     (.btn.btn--borderless.btn--sm.btn--icon supplies all the chrome:
+     size, --rounded-md, borderless hover, focus ring), or to a sized
+     box for the decorative hero. */
+  .skin-toggle {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skin-toggle__icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.55s cubic-bezier(0.34, 1.45, 0.5, 1),
+      opacity   0.4s ease;
+  }
+  .skin-toggle__icon--sun  { color: var(--color-warning); }
+  .skin-toggle__icon--moon { color: var(--color-info); }
+
+  /* ── Light (sun on stage, moon waiting below the clip) ── */
+  .skin-toggle__icon--sun  { transform: translateY(0)     rotate(0deg);   opacity: 1; }
+  .skin-toggle__icon--moon { transform: translateY(118%)  rotate(-45deg); opacity: 0; }
+
+  /* hover OR keyboard-focus in light → moon peeks well up, sun steps aside.
+     Scoped to button.skin-toggle so only the real control peeks; the
+     decorative hero never reacts to its own hover (it only mirrors the
+     committed swap via .is-dark). :not(.is-settling) so a fresh click
+     lands the icon at its final spot instead of snapping back. */
+  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-48%) rotate(-32deg); opacity: 0.4; }
+  button.skin-toggle:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(34%)  rotate(-12deg); opacity: 1; }
+
+  /* ── Dark (moon on stage, sun waiting above the clip) ── */
+  .skin-toggle.is-dark .skin-toggle__icon--moon { transform: translateY(0)      rotate(0deg);  opacity: 1; }
+  .skin-toggle.is-dark .skin-toggle__icon--sun  { transform: translateY(-118%)  rotate(45deg); opacity: 0; }
+
+  /* hover OR keyboard-focus in dark → sun peeks well down, moon steps aside */
+  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--sun  { transform: translateY(-34%) rotate(32deg); opacity: 1; }
+  button.skin-toggle.is-dark:not(.is-settling):is(:hover, :focus-visible) .skin-toggle__icon--moon { transform: translateY(48%)  rotate(12deg); opacity: 0.4; }
+
+  /* Hero presentation — decorative preview, not a button, so it carries
+     its own size + circular shape. Scaled up; no px literals.
+     48px box = --spacing-10 (matches lexicon-icon-2xl).
+     36px breathing room = --spacing-8 (32) + --spacing-2 (4). */
+  .skin-toggle--hero {
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+    border-radius: 50%;
+    transform: scale(2.6);
+    margin: calc(var(--spacing-8) + var(--spacing-2));
+  }
+
+  /* In-context utility bar mock */
+  .skin-context {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid var(--color-secondary-l2);
+    border-radius: var(--rounded-md);
+    background: var(--color-white);
+  }
+  .skin-context__spacer { width: 1px; height: var(--spacing-7); background: var(--color-secondary-l2); }
+  .skin-readout {
+    font-size: var(--font-size-sm);
+    color: var(--color-dark);
+    opacity: 0.55;
+  }
+  .skin-readout strong { font-weight: var(--font-weight-bold); opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skin-toggle__icon { transition: opacity 0.2s ease; }
+  }
+</style>
+
+<main class="skin-stage">
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: var(--spacing-5);">
+    <h1 class="skin-stage__title">Light ⇄ Dark</h1>
+    <p class="skin-stage__subtitle">
+      Hover or focus and the opposite icon peeks in. The big one is just a preview —
+      the live switch is the toggle in the bar below.
+    </p>
+  </div>
+
+  <!-- Hero — decorative preview of the animation (not interactive: too big
+       to be the real control). Mirrors the live skin via .is-dark sync. -->
+  <div class="skin-toggle skin-toggle--hero" aria-hidden="true">
+    <span class="skin-toggle__icon skin-toggle__icon--sun">
+      <svg class="lexicon-icon lexicon-icon-2xl"><use href="#sun"></use></svg>
+    </span>
+    <span class="skin-toggle__icon skin-toggle__icon--moon">
+      <svg class="lexicon-icon lexicon-icon-2xl"><use href="#moon"></use></svg>
+    </span>
+  </div>
+
+  <!-- The real control at product size, sitting in a utility bar -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: var(--spacing-3); margin-top: var(--spacing-7);">
+    <p class="skin-readout"><strong>Click this one</strong> to switch the skin</p>
+    <div class="skin-context">
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Search">
+        <svg class="lexicon-icon"><use href="#search"></use></svg>
+      </button>
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Notifications">
+        <svg class="lexicon-icon"><use href="#bell-on"></use></svg>
+      </button>
+      <span class="skin-context__spacer"></span>
+      <button class="btn btn--borderless btn--sm btn--icon skin-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="skin-toggle__icon skin-toggle__icon--sun">
+          <svg class="lexicon-icon"><use href="#sun"></use></svg>
+        </span>
+        <span class="skin-toggle__icon skin-toggle__icon--moon">
+          <svg class="lexicon-icon"><use href="#moon"></use></svg>
+        </span>
+      </button>
+      <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Help">
+        <svg class="lexicon-icon"><use href="#question-circle"></use></svg>
+      </button>
+    </div>
+    <p class="skin-readout">Current skin: <strong id="skin-readout">light</strong></p>
+  </div>
+
+</main>
+
+<script>
+  /* Wire every .skin-toggle: click flips vanilla-skin light ⇄ dark
+     (High Contrast preserved), syncs the .is-dark class + aria, and
+     updates the readout. Mirrors the cp-theme-toggle logic in skins.html. */
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var root = document.documentElement;
+    var toggles = [].slice.call(document.querySelectorAll('.skin-toggle'));        // all (incl. decorative hero) — kept in sync
+    var buttons = [].slice.call(document.querySelectorAll('button.skin-toggle'));  // only the real, clickable controls
+    var readout = document.getElementById('skin-readout');
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+    function isDark(s) { return s.indexOf('dark') === 0; }
+
+    function render() {
+      var s = current();
+      var dark = isDark(s);
+      toggles.forEach(function (t) {
+        t.classList.toggle('is-dark', dark);
+        var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+        t.setAttribute('aria-label', label);
+        t.setAttribute('aria-pressed', String(dark));
+      });
+      if (readout) readout.textContent = s;
+    }
+
+    function toggle(e) {
+      var s = current();
+      var nextBase = isDark(s) ? 'light' : 'dark';
+      var keepHc = s.indexOf('-hc') > -1;          // keep High Contrast across modes
+      var next = nextBase + (keepHc ? '-hc' : '');
+      SKINS.forEach(function (c) { root.classList.remove(c); });
+      root.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+      // The pointer is still over the button after a click, so freeze the
+      // peek: the swapped-in icon lands at its final spot. The peek only
+      // fires again once the pointer leaves and comes back (or refocuses).
+      if (e && e.currentTarget) e.currentTarget.classList.add('is-settling');
+    }
+    function release(e) { e.currentTarget.classList.remove('is-settling'); }
+
+    buttons.forEach(function (t) {
+      t.addEventListener('click', toggle);
+      t.addEventListener('mouseleave', release);
+      t.addEventListener('blur', release);
+    });
+    render();
+    window.addEventListener('pageshow', render);
+  })();
+</script>
+
+</body>
+</html>
