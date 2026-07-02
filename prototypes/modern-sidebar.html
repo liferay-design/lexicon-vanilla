@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Sidebar — Lexicon Vanilla</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    html, body { height: 100%; }
+    body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* ── Floating sidebar (Claude / Codex pattern) ───────────────
+       The Control Panel detaches from the layout: fixed, 8px off
+       every screen edge, rounded and elevated. Three states:
+         · hidden   — default when unpinned
+         · sb-peek  — hover on the menu toggle reveals it as overlay
+         · sb-pinned— click on the toggle docks it; content shifts  */
+    .control-panel--floating {
+      position: fixed;
+      top: var(--spacing-3);
+      left: var(--spacing-3);
+      bottom: var(--spacing-3);
+      width: 320px;
+      z-index: 50;
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--shadow-card);
+      /* Hidden state: short 24px slide + fade instead of a full off-screen
+         travel; visibility flips after the fade so it can't catch the pointer. */
+      transform: translateX(calc(-1 * var(--spacing-7)));
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 140ms ease-out, opacity 140ms ease-out,
+                  visibility 0s linear 140ms, box-shadow 140ms ease;
+    }
+    body.sb-pinned .control-panel--floating,
+    body.sb-peek .control-panel--floating {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+      transition: transform 140ms ease-out, opacity 140ms ease-out,
+                  visibility 0s, box-shadow 140ms ease;
+    }
+    body.sb-peek:not(.sb-pinned) .control-panel--floating { box-shadow: var(--shadow-lg); }
+
+    /* The menu toggle never moves: it stays in the Control Menu flow but
+       paints above the floating panel, becoming part of its header row.
+       Nudged 4px right so it doesn't hug the panel's rounded corner. */
+    .control-menu__btns { position: relative; z-index: 60; margin-left: var(--spacing-2); }
+
+    /* Taller Control Menu: +6px of vertical padding on each side
+       (10px base + 6px = 16px), so the bar grows from 56px to 68px. */
+    .control-menu {
+      padding-top: var(--spacing-5);
+      padding-bottom: var(--spacing-5);
+    }
+
+    /* Header row geometry: 52px tall so its centre (8px inset + 26px)
+       matches the toggle centre (16px bar padding + 18px = 34px), and
+       left padding clears the 32px toggle (now at x 20–52) overlaying
+       this corner. */
+    .control-panel--floating .control-panel__header {
+      height: calc(var(--spacing-10) + var(--spacing-2));
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
+    }
+    .control-panel--floating .control-panel__search { padding-top: var(--spacing-4); }
+
+    /* Tighter rhythm between section groups (base is --spacing-5). */
+    .control-panel--floating .control-panel__groups { gap: var(--spacing-3); }
+
+    /* The panel itself stays overflow-visible so the header tooltips can
+       escape it; only the scrollable body clips to the rounded corners
+       (inset 1px so the panel border stays visible under the radius). */
+    .control-panel--floating .control-panel__body {
+      border-bottom-left-radius: calc(var(--rounded-lg) - 1px);
+      border-bottom-right-radius: calc(var(--rounded-lg) - 1px);
+    }
+
+    /* ── Modern scrollbar ───────────────────────────────────────
+       Thin floating pill, no track. The 2px transparent border +
+       background-clip insets a 4px thumb inside an 8px gutter. The
+       secondary scale is defined per skin, so it follows dark/HC. */
+    .control-panel__body,
+    main {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-secondary-l2) transparent;
+    }
+    .control-panel__body::-webkit-scrollbar,
+    main::-webkit-scrollbar { width: var(--spacing-3); }
+    .control-panel__body::-webkit-scrollbar-track,
+    main::-webkit-scrollbar-track { background: transparent; }
+    .control-panel__body::-webkit-scrollbar-thumb,
+    main::-webkit-scrollbar-thumb {
+      background: var(--color-secondary-l2);
+      background-clip: padding-box;
+      border: var(--spacing-1) solid transparent;
+      border-radius: var(--rounded-full);
+    }
+    .control-panel__body::-webkit-scrollbar-thumb:hover,
+    main::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-secondary-l0);
+      background-clip: padding-box;
+    }
+
+    /* Docked: page content and Control Menu title make room. */
+    /* Content shift on pin/unpin: ease-out quint — fast start that
+       decelerates into place, so the reflow reads as one soft glide. */
+    main { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.sb-pinned main { margin-left: calc(320px + var(--spacing-3) + var(--spacing-3)); }
+    .control-menu__title { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.sb-pinned .control-menu__title { margin-left: calc(320px - var(--spacing-9) - var(--spacing-2)); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .control-panel--floating, main, .control-menu__title { transition: none; }
+    }
+
+    /* ── Header action buttons ──────────────────────────────────
+       Theme switch + Sites + Close, pinned to the right of the title. */
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+
+    /* Close button: behaves like Bootstrap's visually-hidden-focusable.
+       While it lacks keyboard focus it is pulled out of flow (position:
+       absolute → no longer a flex item), so it reserves no space and no
+       gap. On keyboard focus it snaps back into the row at full size.
+       It is first in the DOM (first Tab stop) but `order` renders it last. */
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* The panel receives focus (tabindex=-1) when opened by keyboard; it is
+       a deliberate jump, so suppress the container outline. */
+    .control-panel:focus { outline: none; }
+
+    /* ── Hover / focus tooltip ──────────────────────────────────
+       Reuses the .tooltip component visual; the wrapper anchors it
+       below the button and reveals it on hover or keyboard focus. */
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Modern Sidebar shell — floating Control Panel + Control Menu + content
+
+     Interaction (Claude / Codex sidebar pattern):
+       • The panel floats 8px off the screen edges, rounded + elevated.
+       • The Control Menu toggle never moves. Hovering it while the
+         panel is unpinned peeks the panel as an overlay; clicking it
+         pins/unpins the panel (pinned = content shifts right).
+       • Esc dismisses a peeked panel; the hidden Close button inside
+         the header keeps the keyboard path from dxp.html.
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Menu (full width, always on top of the page flow) ── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="false" aria-controls="control-panel">
+        <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Site Builder</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- ─── Floating Control Panel ────────────────────────────────────── -->
+<aside class="control-panel control-panel--floating" id="control-panel" tabindex="-1">
+
+  <div class="control-panel__header">
+    <span class="control-panel__title">Control Panel</span>
+
+    <div class="control-panel__actions">
+      <!-- Close — first in the DOM so it is the first Tab stop inside the panel;
+           CSS `order` keeps it visually last of the three. Appears only on focus. -->
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+
+      <!-- Sites -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="control-panel__search">
+    <div class="search">
+      <input class="input__field search__field" type="search" placeholder="Search">
+      <button class="search__clear" aria-label="Clear" hidden type="button">
+        <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+      </button>
+      <button class="search__submit" aria-label="Search" type="button">
+        <svg class="lexicon-icon"><use href="#search"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="control-panel__body">
+    <ul class="control-panel__groups">
+
+      <!-- Home (active) -->
+      <li class="control-panel__group">
+        <button class="control-panel__item is-active" type="button">
+          <span class="control-panel__item-icon">
+            <svg class="lexicon-icon"><use href="#home"></use></svg>
+          </span>
+          Home
+        </button>
+      </li>
+
+      <!-- Users — expanded by default -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Users
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+          Users and Organizations
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#community"></use></svg></span>
+          User Groups
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+          Roles
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Monitoring
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#suitcase"></use></svg></span>
+          Service Accounts
+        </button>
+      </li>
+
+      <!-- Sites — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Sites
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+          Sites
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+          Site Templates
+        </button>
+      </li>
+
+      <!-- Accounts — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Accounts
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#briefcase"></use></svg></span>
+          Accounts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+          Accounts User
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#myspace"></use></svg></span>
+          Account Groups
+        </button>
+      </li>
+
+      <!-- Configuration — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Configuration
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+          System Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+          Instance Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Push Notifications
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#box-container"></use></svg></span>
+          Components
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+          Search
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+          Custom Fields
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#automatic-translate"></use></svg></span>
+          Language Override
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+          Adaptive Media
+        </button>
+      </li>
+
+      <!-- Notifications — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Notifications
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Templates
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#order-list-down"></use></svg></span>
+          Queue
+        </button>
+      </li>
+
+      <!-- Security — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Security
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search-experiences"></use></svg></span>
+          Audit
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth Client Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+          Password Policies
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+          SAML Admin
+        </button>
+      </li>
+
+      <!-- System — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          System
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#grid"></use></svg></span>
+          App Manager
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Virtual Instances
+        </button>
+      </li>
+
+    </ul>
+  </div><!-- /control-panel__body -->
+
+</aside>
+
+<!-- ─── Page content ──────────────────────────────────────────────── -->
+<main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; min-width:0;">
+
+  <!-- Light, centred content: it slides with the margin shift but never reflows -->
+  <div style="flex:1; display:flex; align-items:center; justify-content:center; padding: var(--spacing-7);">
+    <div class="empty-state">
+      <div class="empty-state__media">
+        <img src="../illustrations/illustration-spaceship.svg" alt="">
+      </div>
+      <h2 class="empty-state__title">Start building your site</h2>
+      <p class="empty-state__text">Create your first page or pick a template to get going.</p>
+      <button class="btn btn--primary">New Page</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Collapsible Control Panel groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+      var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      var group = btn.parentElement;
+      var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+      // Sync initial collapsed state
+      if (btn.getAttribute('aria-expanded') === 'false') {
+        items.forEach(function (el) { el.style.display = 'none'; });
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') !== 'false';
+        var next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      });
+    });
+  })();
+</script>
+
+<!-- Pin / peek behaviour — hover the menu toggle to peek, click to pin -->
+<script>
+  (function () {
+    var body = document.body;
+    var toggle = document.getElementById('cp-toggle');
+    var toggleIcon = document.getElementById('cp-toggle-icon');
+    var panel = document.getElementById('control-panel');
+    var close = document.getElementById('cp-close');
+    var hideTimer = null;
+
+    function pinned() { return body.classList.contains('sb-pinned'); }
+
+    function setIcon() {
+      var use = toggleIcon && toggleIcon.querySelector('use');
+      if (use) use.setAttribute('href', pinned() ? '#product-menu-open' : '#product-menu-closed');
+    }
+
+    function setPinned(on) {
+      body.classList.toggle('sb-pinned', on);
+      if (on) body.classList.remove('sb-peek');
+      toggle.setAttribute('aria-expanded', String(on));
+      setIcon();
+    }
+
+    function peek(on) {
+      if (pinned()) return;
+      body.classList.toggle('sb-peek', on);
+    }
+
+    // Small grace period so the pointer can travel toggle → panel
+    function scheduleHide() {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () { peek(false); }, 250);
+    }
+    function cancelHide() { clearTimeout(hideTimer); }
+
+    [toggle, panel].forEach(function (el) {
+      el.addEventListener('mouseenter', function () { cancelHide(); peek(true); });
+      el.addEventListener('mouseleave', scheduleHide);
+    });
+
+    toggle.addEventListener('click', function (e) {
+      if (pinned()) {
+        setPinned(false);
+        // Pointer is still over the trigger/panel → degrade to overlay
+        // instead of vanishing under the cursor.
+        if (toggle.matches(':hover') || panel.matches(':hover')) body.classList.add('sb-peek');
+      } else {
+        setPinned(true);
+        // Keyboard activation (Enter/Space) reports detail === 0. When opened
+        // that way, move focus into the panel so the next Tab lands on Close.
+        if (e.detail === 0) panel.focus();
+      }
+    });
+
+    // Closing from inside the panel returns focus to the menu toggle.
+    close.addEventListener('click', function (e) {
+      setPinned(false);
+      body.classList.remove('sb-peek');
+      if (e.detail === 0) toggle.focus();
+    });
+
+    // Keyboard parity with hover: focus inside the panel keeps it revealed.
+    panel.addEventListener('focusin', function () { cancelHide(); peek(true); });
+    panel.addEventListener('focusout', function (e) {
+      if (!panel.contains(e.relatedTarget)) scheduleHide();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && body.classList.contains('sb-peek')) peek(false);
+    });
+
+    setIcon();
+  })();
+</script>
+
+<!-- Dark / Light switch -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var btn = document.getElementById('cp-theme-toggle');
+    var icon = document.getElementById('cp-theme-icon');
+    var tip = document.getElementById('cp-theme-tip');
+    if (!btn) return;
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function render() {
+      var isDark = current().indexOf('dark') === 0;
+      // Moon → "switch to dark" (light now); Sun → "switch to light" (dark now)
+      var use = icon.querySelector('use');
+      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(isDark));
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var next = current().indexOf('dark') === 0 ? 'light' : 'dark';
+      var r = document.documentElement;
+      SKINS.forEach(function (c) { r.classList.remove(c); });
+      r.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
+  })();
+</script>
+
+</body>
+</html>
