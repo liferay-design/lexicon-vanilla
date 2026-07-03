@@ -32,6 +32,22 @@
   <script src="../icons.js"></script>
 
   <style>
+    /* Page-level token: display font for the two shell titles. Falls back
+       to the system stack when Source Sans 3 isn't installed. */
+    :root {
+      --font-family-title: 'Source Sans 3', system-ui, -apple-system, 'system-ui',
+        'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue',
+        Arial, sans-serif;
+    }
+
+    /* Bigger, display-face titles: Site Builder (Control Menu) and
+       Control Panel (sidebar header). */
+    .control-menu__title,
+    .control-panel--floating .control-panel__title {
+      font-family: var(--font-family-title);
+      font-size: var(--font-size-lg);
+    }
+
     html, body { height: 100%; }
     body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
@@ -138,6 +154,16 @@
 
     @media (prefers-reduced-motion: reduce) {
       .control-panel--floating, main, .control-menu__title { transition: none; }
+    }
+
+    /* ── Empty-state illustration in dark skins ─────────────────
+       The SVG ships hardcoded light grays and loads via <img>, so it
+       can't see tokens. Partial invert re-maps whites/grays into dark
+       tones (hue-rotate keeps any colour accents true); mid-gray
+       details stay mid-gray, so nothing washes out. */
+    .dark .empty-state__media img,
+    .dark-hc .empty-state__media img {
+      filter: invert(0.86) hue-rotate(180deg);
     }
 
     /* ── Header action buttons ──────────────────────────────────
