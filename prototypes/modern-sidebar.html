@@ -248,7 +248,7 @@
     .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
   </style>
 </head>
-<body>
+<body class="sb-docked">
 
 <!-- ════════════════════════════════════════════════════════════════
      Modern Sidebar shell — floating Control Panel + Control Menu + content
@@ -328,10 +328,10 @@
   <div class="control-panel__body">
     <ul class="control-panel__groups">
 
-      <!-- Floating / docked mode switch — on = docked, off = modern floating -->
+      <!-- Floating / docked mode switch — on = docked (default), off = modern floating -->
       <li class="control-panel__group">
         <label class="toggle toggle--sm cp-dock-toggle">
-          <input type="checkbox" class="toggle__input" id="cp-dock-input">
+          <input type="checkbox" class="toggle__input" id="cp-dock-input" checked>
           <span class="toggle__track">
             <span class="toggle__dot"></span>
           </span>
@@ -638,7 +638,9 @@
   })();
 </script>
 
-<!-- Floating / docked switch — checked = docked, unchecked = modern floating -->
+<!-- Floating / docked switch — checked = docked (default), unchecked = modern floating.
+     The <body> ships with sb-docked so the first paint is docked; the saved
+     choice ('0' = floating) is applied here. -->
 <script>
   (function () {
     var input = document.getElementById('cp-dock-input');
@@ -651,12 +653,12 @@
 
     input.addEventListener('change', function () {
       apply(input.checked);
-      try { localStorage.setItem('modern-sidebar-docked', input.checked ? '1' : ''); } catch (e) {}
+      try { localStorage.setItem('modern-sidebar-docked', input.checked ? '1' : '0'); } catch (e) {}
     });
 
     var saved = '';
     try { saved = localStorage.getItem('modern-sidebar-docked') || ''; } catch (e) {}
-    apply(saved === '1');
+    apply(saved !== '0');
   })();
 </script>
 
