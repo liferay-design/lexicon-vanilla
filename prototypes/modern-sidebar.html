@@ -47,6 +47,7 @@
       font-family: var(--font-family-title);
       font-size: var(--font-size-lg);
     }
+    .control-panel--floating .control-panel__title { margin-left: var(--spacing-3); }
 
     html, body { height: 100%; }
     body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -91,19 +92,19 @@
     .control-menu__btns { position: relative; z-index: 60; margin-left: var(--spacing-2); }
 
     /* Taller Control Menu: +6px of vertical padding on each side
-       (10px base + 6px = 16px), so the bar grows from 56px to 68px. */
-    .control-menu {
+       (10px base + 6px = 16px), so the bar grows from 56px to 68px.
+       Docked mode keeps the component's default paddings, so the rule
+       is scoped out when body.sb-docked is set. */
+    body:not(.sb-docked) .control-menu {
       padding-top: var(--spacing-5);
       padding-bottom: var(--spacing-5);
     }
 
-    /* Header row geometry: 52px tall so its centre (8px inset + 26px)
-       matches the toggle centre (16px bar padding + 18px = 34px), and
-       left padding clears the 32px toggle (now at x 20–52) overlaying
-       this corner. */
+    /* Header row geometry: 56px tall, and left padding clears the 32px
+       menu toggle (at x 20–52) overlaying this corner. */
     .control-panel--floating .control-panel__header {
-      height: calc(var(--spacing-10) + var(--spacing-2));
-      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
+      height: calc(var(--spacing-10) + var(--spacing-3));
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-3));
     }
     .control-panel--floating .control-panel__search { padding-top: var(--spacing-4); }
 
@@ -151,6 +152,42 @@
     body.sb-pinned main { margin-left: calc(320px + var(--spacing-3) + var(--spacing-3)); }
     .control-menu__title { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
     body.sb-pinned .control-menu__title { margin-left: calc(320px - var(--spacing-9) - var(--spacing-2)); }
+
+    /* ── Docked variant (switch next to Home) ───────────────────
+       body.sb-docked flattens the floating panel against the screen
+       edge: full height, square corners, no elevation — the classic
+       dxp drawer. The Control Menu paddings return to the component
+       defaults (56px bar), so the panel header centre (52px / 2 = 26px)
+       lines up again with the toggle centre (10px padding + 16px). */
+    body.sb-docked .control-panel--floating {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      border: 0;
+      border-left: 1px solid var(--color-secondary-l2);
+      border-radius: 0;
+    }
+    /* Pinned while docked: the panel sits in the layout, so it recovers
+       the right-hand separator against the shifted content and drops the
+       elevation. Unpinned (peek) keeps the floating shadows. */
+    body.sb-docked.sb-pinned .control-panel--floating {
+      border-right: 1px solid var(--color-secondary-l2);
+      box-shadow: none;
+    }
+    body.sb-docked .control-panel--floating .control-panel__body {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    /* Panel right edge sits at 320px instead of 8 + 320 + 8: the pinned
+       shifts lose the two 8px gutters (content) / the left one (title). */
+    body.sb-docked.sb-pinned main { margin-left: 320px; }
+    body.sb-docked.sb-pinned .control-menu__title {
+      margin-left: calc(320px - var(--spacing-9) - var(--spacing-2) - var(--spacing-3));
+    }
+
+    /* Mode switch row: its own group above Home, aligned to the same
+       16px content inset the panel items use. */
+    .cp-dock-toggle { margin: 0 var(--spacing-5); }
 
     @media (prefers-reduced-motion: reduce) {
       .control-panel--floating, main, .control-menu__title { transition: none; }
@@ -290,6 +327,17 @@
 
   <div class="control-panel__body">
     <ul class="control-panel__groups">
+
+      <!-- Floating / docked mode switch — on = docked, off = modern floating -->
+      <li class="control-panel__group">
+        <label class="toggle toggle--sm cp-dock-toggle">
+          <input type="checkbox" class="toggle__input" id="cp-dock-input">
+          <span class="toggle__track">
+            <span class="toggle__dot"></span>
+          </span>
+          <span class="toggle__label">Modern floating</span>
+        </label>
+      </li>
 
       <!-- Home (active) -->
       <li class="control-panel__group">
@@ -587,6 +635,28 @@
     });
 
     setIcon();
+  })();
+</script>
+
+<!-- Floating / docked switch — checked = docked, unchecked = modern floating -->
+<script>
+  (function () {
+    var input = document.getElementById('cp-dock-input');
+    if (!input) return;
+
+    function apply(docked) {
+      document.body.classList.toggle('sb-docked', docked);
+      input.checked = docked;
+    }
+
+    input.addEventListener('change', function () {
+      apply(input.checked);
+      try { localStorage.setItem('modern-sidebar-docked', input.checked ? '1' : ''); } catch (e) {}
+    });
+
+    var saved = '';
+    try { saved = localStorage.getItem('modern-sidebar-docked') || ''; } catch (e) {}
+    apply(saved === '1');
   })();
 </script>
 
