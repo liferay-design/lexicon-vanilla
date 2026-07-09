@@ -195,12 +195,11 @@
 
     /* ── Empty-state illustration in dark skins ─────────────────
        The SVG ships hardcoded light grays and loads via <img>, so it
-       can't see tokens. Partial invert re-maps whites/grays into dark
-       tones (hue-rotate keeps any colour accents true); mid-gray
-       details stay mid-gray, so nothing washes out. */
+       can't see tokens. The filter chain re-maps whites/grays into
+       dark blue-tinted tones that sit well on the dark surfaces. */
     .dark .empty-state__media img,
     .dark-hc .empty-state__media img {
-      filter: invert(0.86) hue-rotate(180deg);
+      filter: invert(0.8) sepia(0.8) hue-rotate(198deg) saturate(1) brightness(0.52);
     }
 
     /* ── Header action buttons ──────────────────────────────────
