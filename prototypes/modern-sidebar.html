@@ -163,15 +163,17 @@
       top: 0;
       left: 0;
       bottom: 0;
+      /* Both side borders live in every docked state: toggling a border
+         on pin would steal 1px from the content box (border-box) and make
+         the whole panel flicker. Only the shadow changes — and it fades. */
       border: 0;
       border-left: 1px solid var(--color-secondary-l2);
+      border-right: 1px solid var(--color-secondary-l2);
       border-radius: 0;
     }
-    /* Pinned while docked: the panel sits in the layout, so it recovers
-       the right-hand separator against the shifted content and drops the
-       elevation. Unpinned (peek) keeps the floating shadows. */
+    /* Pinned while docked: the panel sits in the layout, so it drops the
+       floating elevation. Unpinned (peek) keeps the floating shadows. */
     body.sb-docked.sb-pinned .control-panel--floating {
-      border-right: 1px solid var(--color-secondary-l2);
       box-shadow: none;
     }
     body.sb-docked .control-panel--floating .control-panel__body {
