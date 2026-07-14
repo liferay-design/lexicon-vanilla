@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLG — Request access card</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../../tokens.css">
+  <link rel="stylesheet" href="../../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../../tokens-dark.css">
+  <link rel="stylesheet" href="../../components.css">
+  <script src="../../icons.js"></script>
+
+  <style>
+    html, body { height: 100%; }
+
+    /* ── Control Panel collapse (from shells/dxp.html) ───────── */
+    body { grid-template-columns: 320px 1fr; transition: grid-template-columns 200ms ease; }
+    body.cp-collapsed { grid-template-columns: 0 1fr; }
+    .control-panel { transition: width 200ms ease; }
+    body.cp-collapsed .control-panel {
+      width: 0;
+      overflow: hidden;
+      border-right-width: 0;
+    }
+
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .control-panel:focus { outline: none; }
+
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+
+    /* ── PLG request-access info popover ────────────────────────
+       Locked cards pair a disabled CTA with an info button; hover
+       or keyboard focus reveals a popover above it explaining how
+       to get access. The ::after bridge covers the gap so the
+       pointer can travel into the popover without losing :hover. */
+    .plg-info { position: relative; display: inline-flex; }
+    .plg-info__popover {
+      position: absolute;
+      bottom: calc(100% + var(--spacing-3));
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      max-width: 320px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 30;
+    }
+    .plg-info__popover::after {
+      content: '';
+      position: absolute;
+      bottom: calc(-1 * var(--spacing-3));
+      left: 0;
+      right: 0;
+      height: var(--spacing-3);
+    }
+    .plg-info:hover .plg-info__popover,
+    .plg-info:focus-within .plg-info__popover { opacity: 1; pointer-events: auto; }
+
+    /* The kit card clips overflow; these cards must let the info
+       popover escape. Media and body keep their own rounded corners. */
+    .plg-app-card { overflow: visible; }
+    .plg-app-card > .card__body {
+      border-bottom-left-radius: inherit;
+      border-bottom-right-radius: inherit;
+    }
+
+  </style>
+</head>
+<!-- Grid: Control Panel (320px, full height) | right column (Control Menu + content) -->
+<body style="margin:0; display:grid; height:100vh; overflow:hidden;">
+
+<!-- ─── Control Panel (left column, full height) ────────────────── -->
+<aside class="control-panel" id="control-panel" tabindex="-1" style="height:100vh;">
+
+  <div class="control-panel__header">
+    <span class="control-panel__sticker">
+      <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+    </span>
+    <span class="control-panel__title">Control Panel</span>
+
+    <div class="control-panel__actions">
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Walkthrough target 1: new Control Panel search -->
+  <div class="control-panel__search" id="tour-search">
+    <div class="search">
+      <input class="input__field search__field" type="search" placeholder="Search">
+      <button class="search__clear" aria-label="Clear" hidden type="button">
+        <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+      </button>
+      <button class="search__submit" aria-label="Search" type="button">
+        <svg class="lexicon-icon"><use href="#search"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="control-panel__body">
+    <ul class="control-panel__groups">
+
+      <!-- Home (active) -->
+      <li class="control-panel__group">
+        <button class="control-panel__item is-active" type="button">
+          <span class="control-panel__item-icon">
+            <svg class="lexicon-icon"><use href="#home"></use></svg>
+          </span>
+          Home
+        </button>
+      </li>
+
+      <!-- Users — expanded by default -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Users
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+          Users and Organizations
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#community"></use></svg></span>
+          User Groups
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+          Roles
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Monitoring
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#suitcase"></use></svg></span>
+          Service Accounts
+        </button>
+      </li>
+
+      <!-- Sites — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Sites
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+          Sites
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+          Site Templates
+        </button>
+      </li>
+
+      <!-- Accounts — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Accounts
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#briefcase"></use></svg></span>
+          Accounts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+          Accounts User
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#myspace"></use></svg></span>
+          Account Groups
+        </button>
+      </li>
+
+      <!-- Configuration — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Configuration
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+          System Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+          Instance Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Push Notifications
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#box-container"></use></svg></span>
+          Components
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+          Search
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+          Custom Fields
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#automatic-translate"></use></svg></span>
+          Language Override
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+          Adaptive Media
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sheets"></use></svg></span>
+          Job Scheduler
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#flag-full"></use></svg></span>
+          Countries Management
+        </button>
+      </li>
+
+      <!-- Notifications — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Notifications
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Templates
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#order-list-down"></use></svg></span>
+          Queue
+        </button>
+      </li>
+
+      <!-- Object — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Object
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#repository"></use></svg></span>
+          MCP Server Prompts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#braces"></use></svg></span>
+          Objects
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#table2"></use></svg></span>
+          Data Sets
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#list-ol"></use></svg></span>
+          Picklists
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#api-web"></use></svg></span>
+          API Builder
+        </button>
+      </li>
+
+      <!-- Security — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Security
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search-experiences"></use></svg></span>
+          Audit
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth Client Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth 2 Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+          Password Policies
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+          SAML Admin
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Logs
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-asterisk"></use></svg></span>
+          Service Access Policy
+        </button>
+      </li>
+
+      <!-- System — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          System
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#grid"></use></svg></span>
+          App Manager
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#code"></use></svg></span>
+          Gogo Shell
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Virtual Instances
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#submission"></use></svg></span>
+          On-Demand Admin
+        </button>
+      </li>
+
+      <!-- Marketplace — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Marketplace
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#products"></use></svg></span>
+          Purchased
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shopping-cart"></use></svg></span>
+          Store
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#forms"></use></svg></span>
+          License Manager
+        </button>
+      </li>
+
+    </ul>
+  </div><!-- /control-panel__body -->
+
+</aside>
+
+<!-- ─── Right column: Control Menu + content ─────────────────────── -->
+<div style="display:flex; flex-direction:column; min-height:100vh; overflow:hidden;">
+
+  <!-- Control Menu -->
+  <div class="control-menu">
+    <div class="control-menu__left">
+      <div class="control-menu__btns">
+        <button class="control-menu__btn" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="true" aria-controls="control-panel">
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-open"></use></svg>
+        </button>
+      </div>
+      <span class="control-menu__title">Screen title</span>
+    </div>
+    <div class="control-menu__right">
+      <button class="control-menu__btn" type="button" aria-label="Global navigation">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+      </button>
+      <div class="control-menu__avatar">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; min-width:0;">
+
+    <div style="width:100%; max-width:980px; margin:0 auto; padding: var(--spacing-10); display:flex; flex-direction:column; gap: var(--spacing-7); box-sizing:border-box;">
+
+      <h1 style="margin:0; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">Marketplace</h1>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: var(--spacing-6); align-items:start;">
+
+      <div class="card plg-app-card">
+        <div class="card__media">
+          <img src="../../illustrations/product-image-0.svg" alt="">
+        </div>
+        <div class="card__body" style="gap: var(--spacing-4); padding: var(--spacing-5);">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--spacing-4);">
+            <div style="display:flex; flex-direction:column; gap: var(--spacing-2); min-width:0;">
+              <h2 class="card__title" style="text-decoration:none; font-size: var(--font-size-lg);">Digital Sales Room</h2>
+              <p class="card__subtitle">Liferay Inc.</p>
+            </div>
+            <button class="btn btn--primary btn--sm" type="button">Request Access</button>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap: var(--spacing-3);">
+            <span class="label">DXP 7.4</span>
+            <span class="label">SaaS Ready</span>
+            <span class="label">Beta
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card plg-app-card">
+        <div class="card__media">
+          <img src="../../illustrations/product-image-1.svg" alt="">
+        </div>
+        <div class="card__body" style="gap: var(--spacing-4); padding: var(--spacing-5);">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--spacing-4);">
+            <div style="display:flex; flex-direction:column; gap: var(--spacing-2); min-width:0;">
+              <h2 class="card__title" style="text-decoration:none; font-size: var(--font-size-lg);">Analytics Cloud</h2>
+              <p class="card__subtitle">Liferay Inc.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap: var(--spacing-2);">
+            <button class="btn btn--primary btn--sm" type="button" disabled>Request Access</button>
+            <span class="plg-info">
+              <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-haspopup="true" aria-label="How to get access">
+                <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+              </button>
+              <div class="popover plg-info__popover" role="tooltip">
+                <div class="popover__header">
+                  <h3 class="popover__title">Request Access</h3>
+                </div>
+                <div class="popover__body" style="display:flex; align-items:center; gap: var(--spacing-5);">
+                  <span style="flex:1;">Ask your administrator to grant you access to this app.</span>
+                  <button class="btn btn--primary btn--sm" type="button">Request</button>
+                </div>
+                <span class="popover__arrow"></span>
+              </div>
+            </span>
+          </div>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap: var(--spacing-3);">
+            <span class="label">DXP 7.4</span>
+            <span class="label">SaaS Ready</span>
+            <span class="label">Beta
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card plg-app-card">
+        <div class="card__media">
+          <img src="../../illustrations/product-image-2.svg" alt="">
+        </div>
+        <div class="card__body" style="gap: var(--spacing-4); padding: var(--spacing-5);">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--spacing-4);">
+            <div style="display:flex; flex-direction:column; gap: var(--spacing-2); min-width:0;">
+              <h2 class="card__title" style="text-decoration:none; font-size: var(--font-size-lg);">Commerce Accelerator</h2>
+              <p class="card__subtitle">Liferay Inc.</p>
+            </div>
+            <button class="btn btn--primary btn--sm" type="button">Request Access</button>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap: var(--spacing-3);">
+            <span class="label">DXP 7.4</span>
+            <span class="label">SaaS Ready</span>
+            <span class="label">Beta
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card plg-app-card">
+        <div class="card__media">
+          <img src="../../illustrations/product-image-0.svg" alt="">
+        </div>
+        <div class="card__body" style="gap: var(--spacing-4); padding: var(--spacing-5);">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--spacing-4);">
+            <div style="display:flex; flex-direction:column; gap: var(--spacing-2); min-width:0;">
+              <h2 class="card__title" style="text-decoration:none; font-size: var(--font-size-lg);">AI Content Wizard</h2>
+              <p class="card__subtitle">Liferay Inc.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap: var(--spacing-2);">
+            <button class="btn btn--primary btn--sm" type="button" disabled>Request Access</button>
+            <span class="plg-info">
+              <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-haspopup="true" aria-label="How to get access">
+                <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+              </button>
+              <div class="popover plg-info__popover" role="tooltip">
+                <div class="popover__header">
+                  <h3 class="popover__title">Request Access</h3>
+                </div>
+                <div class="popover__body" style="display:flex; align-items:center; gap: var(--spacing-5);">
+                  <span style="flex:1;">Ask your administrator to grant you access to this app.</span>
+                  <button class="btn btn--primary btn--sm" type="button">Request</button>
+                </div>
+                <span class="popover__arrow"></span>
+              </div>
+            </span>
+          </div>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap: var(--spacing-3);">
+            <span class="label">DXP 7.4</span>
+            <span class="label">SaaS Ready</span>
+            <span class="label">Beta
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#info-circle"></use></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+    </div>
+
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- Collapsible Control Panel groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+      var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      var group = btn.parentElement;
+      var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+      if (btn.getAttribute('aria-expanded') === 'false') {
+        items.forEach(function (el) { el.style.display = 'none'; });
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') !== 'false';
+        var next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      });
+    });
+  })();
+</script>
+
+<!-- Control Panel open/close -->
+<script>
+  (function () {
+    var toggle = document.getElementById('cp-toggle');
+    var toggleIcon = document.getElementById('cp-toggle-icon');
+    var close = document.getElementById('cp-close');
+    var panel = document.getElementById('control-panel');
+
+    function setOpen(open) {
+      document.body.classList.toggle('cp-collapsed', !open);
+      if (toggle) toggle.setAttribute('aria-expanded', String(open));
+      if (toggleIcon) {
+        var use = toggleIcon.querySelector('use');
+        if (use) use.setAttribute('href', open ? '#product-menu-open' : '#product-menu-closed');
+      }
+    }
+
+    if (toggle) toggle.addEventListener('click', function (e) {
+      var willOpen = document.body.classList.contains('cp-collapsed');
+      setOpen(willOpen);
+      if (willOpen && e.detail === 0 && panel) panel.focus();
+    });
+
+    if (close) close.addEventListener('click', function (e) {
+      setOpen(false);
+      if (e.detail === 0 && toggle) toggle.focus();
+    });
+  })();
+</script>
+
+<!-- Dark / Light switch -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var btn = document.getElementById('cp-theme-toggle');
+    var icon = document.getElementById('cp-theme-icon');
+    var tip = document.getElementById('cp-theme-tip');
+    if (!btn) return;
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function render() {
+      var isDark = current().indexOf('dark') === 0;
+      var use = icon.querySelector('use');
+      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(isDark));
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var next = current().indexOf('dark') === 0 ? 'light' : 'dark';
+      var r = document.documentElement;
+      SKINS.forEach(function (c) { r.classList.remove(c); });
+      r.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
+  })();
+</script>
+
+</body>
+</html>

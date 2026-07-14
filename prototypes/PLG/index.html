@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLG Patterns — Lexicon Vanilla</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../../tokens.css">
+  <link rel="stylesheet" href="../../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../../tokens-dark.css">
+  <link rel="stylesheet" href="../../components.css">
+  <script src="../../icons.js"></script>
+
+  <style>
+    body { background: var(--color-light-l1); }
+    .proto-page { max-width: 1080px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .proto-back {
+      display: inline-flex; align-items: center; gap: var(--spacing-2);
+      font-size: var(--font-size-sm); color: var(--color-secondary);
+      text-decoration: none; margin-bottom: var(--spacing-5);
+    }
+    .proto-back:hover { color: var(--color-primary); }
+    .proto-page h1 {
+      font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .proto-section-title {
+      font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+      margin: 0 0 var(--spacing-3);
+    }
+    .proto-divider {
+      border: 0; border-top: 1px solid var(--color-secondary-l3);
+      margin: var(--spacing-9) 0;
+    }
+    .proto-page .proto-lead {
+      color: var(--color-secondary); font-size: var(--font-size-sm);
+      margin: 0 0 var(--spacing-8); max-width: 60ch;
+    }
+    .proto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--spacing-6);
+    }
+    a.proto-card { text-decoration: none; color: inherit; cursor: pointer; }
+    a.proto-card:hover { border-color: var(--color-primary-l1); }
+    a.proto-card:hover .card__title { color: var(--color-primary); }
+    .proto-card .card__media { aspect-ratio: 16 / 7; }
+    .proto-card .card__file {
+      font-size: var(--font-size-sm); color: var(--color-secondary);
+      font-family: var(--font-family-base); margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="proto-page">
+  <a class="proto-back" href="../index.html">
+    <svg class="lexicon-icon lexicon-icon-sm"><use href="#angle-left"></use></svg>
+    Prototypes
+  </a>
+
+  <h1>PLG Patterns</h1>
+  <p class="proto-lead">
+    Product-led growth patterns for the new Control Panel experience — first-access
+    announcements and guided walkthroughs over the DXP shell. Click any card to open
+    the pattern. All of them run over <code>file://</code> — no build, no server.
+  </p>
+
+  <h2 class="proto-section-title">Patterns</h2>
+  <p class="proto-lead">
+    Reusable PLG building blocks, isolated one per page — each pattern shows a single
+    mechanic (an announcement modal, a guided tour…) ready to copy into a prototype.
+  </p>
+
+  <div class="proto-grid">
+
+    <a class="card proto-card" href="modal.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#announcement"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">First-Access Modal</h2>
+        <p class="card__subtitle">Standalone announcement modal, no walkthrough.</p>
+        <p class="card__file">modal.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="walkthrough.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#stars"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Walkthrough</h2>
+        <p class="card__subtitle">3-step spotlight tour, starts on load — no modal.</p>
+        <p class="card__file">walkthrough.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="alert-modal.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#warning-full"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Alert Modal</h2>
+        <p class="card__subtitle">Warning modal: plan limit reached, upgrade actions.</p>
+        <p class="card__file">alert-modal.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="banner.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#crown"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Sidebar Banner</h2>
+        <p class="card__subtitle">Enterprise upsell card embedded in the left sidebar.</p>
+        <p class="card__file">banner.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="feature-activation-label.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#diamond"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Feature Activation Label</h2>
+        <p class="card__subtitle">Enterprise pill in the top bar — hover reveals an upsell popover.</p>
+        <p class="card__file">feature-activation-label.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="request-access-card.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#products"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Request Access Card</h2>
+        <p class="card__subtitle">App cards with active CTA or disabled CTA + info popover.</p>
+        <p class="card__file">request-access-card.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="empty-state.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#picture"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Empty State</h2>
+        <p class="card__subtitle">Enterprise upsell empty state centered in the content area.</p>
+        <p class="card__file">empty-state.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="disabled-functionality-button.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#magic"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Disabled Functionality Button</h2>
+        <p class="card__subtitle">Disabled toolbar action + info popover explaining the locked feature.</p>
+        <p class="card__file">disabled-functionality-button.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="alerts.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#warning-full"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Alerts</h2>
+        <p class="card__subtitle">Plan-limit alerts: page stripe, workspace rows, inline upsell.</p>
+        <p class="card__file">alerts.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="contact-sales.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#envelope-open"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Contact Sales</h2>
+        <p class="card__subtitle">Sales contact form in a modal, open by default.</p>
+        <p class="card__file">contact-sales.html</p>
+      </div>
+    </a>
+
+    <a class="card proto-card" href="trial.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#rocket"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Trial</h2>
+        <p class="card__subtitle">Recommended product cards with Try CTA, labels and feature list.</p>
+        <p class="card__file">trial.html</p>
+      </div>
+    </a>
+
+  </div>
+
+  <hr class="proto-divider">
+
+  <h2 class="proto-section-title">Implementation Exercises</h2>
+  <p class="proto-lead">
+    Full flows that combine several patterns into a realistic end-to-end scenario,
+    the way they would ship in the product.
+  </p>
+
+  <div class="proto-grid">
+
+    <a class="card proto-card" href="control-panel-onboarding.html">
+      <div class="card__media"><svg class="lexicon-icon"><use href="#rocket"></use></svg></div>
+      <div class="card__body">
+        <h2 class="card__title">Control Panel Onboarding</h2>
+        <p class="card__subtitle">Full flow: first-access modal + 3-step walkthrough.</p>
+        <p class="card__file">control-panel-onboarding.html</p>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>
