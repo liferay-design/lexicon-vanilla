@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PLG — Alerts</title>
+  <title>PLG — Feature preview</title>
 
   <script>(function(){
     var S=['light','light-hc','dark','dark-hc'];
@@ -408,98 +408,49 @@
   <!-- ════════════════════════════════════════════════════════════
        ↓  YOUR CONTENT STARTS HERE  ↓
        ════════════════════════════════════════════════════════════ -->
-  <main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; min-width:0;">
+  <main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:0;">
 
-    <!-- 1. Edge-to-edge stripe alert, flush under the Control Menu -->
-    <div class="alert alert--stripe alert--warning">
-      <div class="alert__content">
-        <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
-        <p class="alert__text"><strong>Warning:</strong> You are approaching your workspace limit. Consider upgrading your plan. <a href="#" style="color: var(--color-primary);">View details</a>.</p>
-      </div>
-      <div class="alert__actions">
-        <button class="btn btn--primary btn--warning btn--sm" type="button">Contact Sales</button>
-      </div>
-    </div>
-
-    <div style="width:100%; max-width:980px; margin:0 auto; padding: var(--spacing-10); display:flex; flex-direction:column; gap: var(--spacing-6); box-sizing:border-box;">
-
-      <!-- 2. Usage warning with progress bar (approaching limit) -->
-      <div class="alert alert--warning">
-        <div class="alert__content" style="flex:1;">
-          <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
-          <div style="flex:1; display:flex; flex-direction:column; gap: var(--spacing-3); min-width:0;">
-            <p class="alert__text"><strong>Warning:</strong> You have used 8,000 of the 10,000 known individuals included in your plan.</p>
-            <div class="progress" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress__bar"><div class="progress__fill" style="width: 80%"></div></div>
-              <span class="progress__value">80%</span>
-            </div>
-          </div>
-        </div>
-        <div class="alert__actions">
-          <button class="btn btn--primary btn--warning btn--sm" type="button">Contact Sales</button>
-        </div>
-      </div>
-
-      <!-- 3. Workspace limit — warning row with left rail -->
-      <div class="alert alert--warning" style="border:0; border-left: var(--spacing-2) solid var(--color-warning); border-radius: var(--rounded-sm);">
-        <div class="alert__content" style="flex-direction:column; align-items:flex-start; gap: var(--spacing-2); color: var(--color-dark);">
-          <p class="alert__text" style="font-weight: var(--font-weight-bold);">Beryl Corporate Intranet</p>
-          <p class="alert__text" style="font-size: var(--font-size-sm); opacity:0.7;">Basic Plan</p>
-          <p class="alert__text" style="font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-warning);">80% of plan limit used</p>
-        </div>
-        <div class="alert__actions" style="align-items:center; gap: var(--spacing-3);">
-          <button class="btn btn--secondary" type="button">Contact Sales</button>
-          <button class="btn btn--borderless btn--icon" type="button" aria-label="View workspace details">
-            <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Workspace restricted — danger row with left rail -->
-      <div class="alert alert--danger" style="border:0; border-left: var(--spacing-2) solid var(--color-danger); border-radius: var(--rounded-sm);">
-        <div class="alert__content" style="flex-direction:column; align-items:flex-start; gap: var(--spacing-2); color: var(--color-dark);">
-          <p class="alert__text" style="font-weight: var(--font-weight-bold);">Beryl Corporate Intranet</p>
-          <p class="alert__text" style="font-size: var(--font-size-sm); opacity:0.8; max-width: 60ch;">Access to AC has been restricted because your workspace has reached its known individuals or page view limit. Access will be restored after your plan is upgraded. Please contact Sales to proceed.</p>
-        </div>
-        <div class="alert__actions" style="align-items:center; gap: var(--spacing-3);">
-          <button class="btn btn--secondary" type="button">Contact Sales</button>
-          <button class="btn btn--borderless btn--icon" type="button" aria-label="View workspace details">
-            <svg class="lexicon-icon"><use href="#angle-right"></use></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 5. Inline upsell alert inside an autocomplete menu -->
-      <div style="max-width: 480px;">
-        <label class="input">
-          <span class="input__label">Add people to collaborate <span style="color: var(--color-danger);">*</span></span>
-          <span style="position:relative; display:block;">
-            <input class="input__field" type="text" value="emma.stone@films.com" style="padding-right: var(--spacing-9); width:100%; box-sizing:border-box;">
-            <svg class="lexicon-icon" style="position:absolute; right: var(--spacing-4); top:50%; transform:translateY(-50%); color: var(--color-dark); opacity:0.55;"><use href="#caret-double-l"></use></svg>
-          </span>
-        </label>
-        <ul class="dropdown" style="display:block; width:100%; margin-top: var(--spacing-2); padding-top:0; overflow:hidden; box-sizing:border-box;">
-          <li>
-            <div class="alert alert--stripe alert--info">
-              <div class="alert__content">
-                <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
-                <p class="alert__text"><strong>Upgrade to Enterprise:</strong> Inviting external users is available on the Enterprise subscription. <a href="#" style="color: var(--color-info);">Get Enterprise Details</a>.</p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <p class="dropdown__item" style="cursor:default; margin:0;">No results found</p>
-          </li>
-        </ul>
-      </div>
-
-    </div>
+    <!-- Feature Preview trigger — the pattern is the read-only preview modal -->
+    <button class="btn btn--primary" id="plg-open-preview" type="button">
+      <svg class="lexicon-icon"><use href="#view"></use></svg>
+      Preview Feature
+    </button>
 
   </main>
   <!-- ════════════════════════════════════════════════════════════
        ↑  YOUR CONTENT ENDS HERE  ↑
        ════════════════════════════════════════════════════════════ -->
 
+</div>
+
+<!-- ─── Feature Preview modal (opens from the card) ──────────────── -->
+<div class="modal-overlay" id="plg-preview" style="display:none;">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="plg-preview-title" style="max-width: 720px;">
+
+    <header class="modal__header">
+      <h2 id="plg-preview-title" class="modal__title">AI Hub Preview</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" id="plg-preview-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+
+    <div class="modal__body" style="display:flex; flex-direction:column; gap: var(--spacing-6);">
+      <!-- Read-only interface preview -->
+      <div style="background: var(--color-light-l1); border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); padding: var(--spacing-7); display:flex; align-items:center; justify-content:center;">
+        <img src="../../illustrations/Illustration-plg.svg" alt="Read-only preview of the AI Hub dashboard" style="max-width:100%;">
+      </div>
+      <p style="margin:0; color: var(--color-secondary); line-height:1.6;">This is a read-only preview. AI Hub brings AI-powered capabilities directly into Liferay — activate it to generate content suggestions in your real workflow.</p>
+    </div>
+
+    <footer class="modal__footer">
+      <button class="btn btn--secondary" id="plg-preview-cancel" type="button">Close</button>
+      <button class="btn btn--primary" type="button">
+        <svg class="lexicon-icon"><use href="#crown"></use></svg>
+        Get Enterprise Details
+      </button>
+    </footer>
+
+  </div>
 </div>
 
 <!-- Collapsible Control Panel groups -->
@@ -591,6 +542,24 @@
     });
 
     render();
+  })();
+</script>
+
+<!-- PLG feature preview — the card opens the read-only preview modal -->
+<script>
+  (function () {
+    var modal = document.getElementById('plg-preview');
+
+    document.getElementById('plg-open-preview').addEventListener('click', function () {
+      modal.style.display = '';
+    });
+
+    function dismiss() { modal.style.display = 'none'; }
+    document.getElementById('plg-preview-close').addEventListener('click', dismiss);
+    document.getElementById('plg-preview-cancel').addEventListener('click', dismiss);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') dismiss();
+    });
   })();
 </script>
 
