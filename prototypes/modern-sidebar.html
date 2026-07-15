@@ -300,6 +300,16 @@
     }
     .cp-tip:hover .cp-tip__bubble,
     .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+
+    /* Toggle sits at the screen's left edge → left-align its tooltip so it
+       opens rightward with the arrow near the left (tooltip--align-start puts
+       the arrow 12px in; offset the bubble so that arrow points at the button
+       centre). */
+    #cp-toggle-tip { left: var(--spacing-2); transform: none; }
+    /* JS-controlled visibility (timed show / auto-hide / reset on click); the
+       ID specificity overrides the shared .cp-tip:hover/:focus-within rule. */
+    #cp-toggle-tip { opacity: 0; }
+    #cp-toggle-tip.is-visible { opacity: 1; }
   </style>
 </head>
 <body class="sb-docked">
@@ -320,14 +330,18 @@
 <div class="control-menu">
   <div class="control-menu__left">
     <div class="control-menu__btns">
-      <button class="control-menu__btn cp-toggle--branded" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="false" aria-controls="control-panel">
-        <!-- Single static button. Closed → menu icon (top-bar look). Panel out
-             (peek/pinned) → brand image at rest, menu icon on hover/focus. The
-             button never disappears; only its content swaps, so the panel body
-             dissolves beneath a stationary button (natural close). -->
-        <span class="sticker sticker--md cp-toggle__brand" aria-hidden="true"><img src="img/control-panel-icon.png" alt=""></span>
-        <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-closed"></use></svg>
-      </button>
+      <span class="cp-tip">
+        <button class="control-menu__btn cp-toggle--branded" id="cp-toggle" type="button" aria-label="Pin Menu" aria-expanded="false" aria-controls="control-panel">
+          <!-- Single static button. Closed → menu icon (top-bar look). Panel out
+               (peek/pinned) → brand image at rest, menu icon on hover/focus. The
+               button never disappears; only its content swaps, so the panel body
+               dissolves beneath a stationary button (natural close). -->
+          <span class="sticker sticker--md cp-toggle__brand" aria-hidden="true"><img src="img/control-panel-icon.png" alt=""></span>
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-closed"></use></svg>
+        </button>
+        <!-- "Pin Menu" when unpinned, "Close Menu" when pinned (text set in JS). -->
+        <span class="tooltip tooltip--top tooltip--align-start cp-tip__bubble" id="cp-toggle-tip" role="tooltip">Pin Menu</span>
+      </span>
     </div>
     <span class="control-menu__title">Site Builder</span>
   </div>
@@ -629,13 +643,19 @@
     var toggleIcon = document.getElementById('cp-toggle-icon');
     var panel = document.getElementById('control-panel');
     var close = document.getElementById('cp-close');
+    var toggleTip = document.getElementById('cp-toggle-tip');
     var hideTimer = null;
 
     function pinned() { return body.classList.contains('sb-pinned'); }
 
     function setIcon() {
+      var p = pinned();
       var use = toggleIcon && toggleIcon.querySelector('use');
-      if (use) use.setAttribute('href', pinned() ? '#product-menu-open' : '#product-menu-closed');
+      if (use) use.setAttribute('href', p ? '#product-menu-open' : '#product-menu-closed');
+      // Tooltip + accessible name follow the action the click will perform.
+      var label = p ? 'Close Menu' : 'Pin Menu';
+      if (toggleTip) toggleTip.textContent = label;
+      toggle.setAttribute('aria-label', label);
     }
 
     function setPinned(on) {
@@ -692,6 +712,37 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && body.classList.contains('sb-peek')) peek(false);
     });
+
+    // Tooltip timing: show after a short hover delay, self-dismiss after a
+    // while (even if still hovered), hide the instant the pointer leaves, and
+    // on click hide + reset the delay so it can reappear with the new label.
+    if (toggleTip) {
+      var TIP_SHOW = 400, TIP_AUTOHIDE = 3000;
+      var tipShowT = null, tipHideT = null, tipPointerFocus = false;
+      var showTip = function () {
+        toggleTip.classList.add('is-visible');
+        clearTimeout(tipHideT);
+        tipHideT = setTimeout(function () { toggleTip.classList.remove('is-visible'); }, TIP_AUTOHIDE);
+      };
+      var hideTip = function () {
+        clearTimeout(tipShowT); clearTimeout(tipHideT);
+        toggleTip.classList.remove('is-visible');
+      };
+      var deferTip = function () {
+        clearTimeout(tipShowT);
+        tipShowT = setTimeout(showTip, TIP_SHOW);
+      };
+      toggle.addEventListener('mouseenter', deferTip);
+      toggle.addEventListener('mouseleave', hideTip);
+      // Show at once on keyboard focus, but not when focus came from a click.
+      toggle.addEventListener('mousedown', function () { tipPointerFocus = true; });
+      toggle.addEventListener('focus', function () { if (!tipPointerFocus) showTip(); tipPointerFocus = false; });
+      toggle.addEventListener('blur', hideTip);
+      toggle.addEventListener('click', function () {
+        hideTip();
+        if (toggle.matches(':hover')) deferTip();
+      });
+    }
 
     setIcon();
   })();
