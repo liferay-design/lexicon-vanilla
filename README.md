@@ -78,23 +78,3 @@ These constraints apply to every screen (the Create Screen Skill enforces them f
 Keep changes small and component-driven. If a screen needs a primitive that does not exist yet, add it to `components.css` instead of creating one-off prototype CSS.
 
 Do not start a server for review. Share or open the generated HTML file directly. If something looks off, update the prototype or the shared component styles and review again via `file://`.
-
-## Contributing
-
-Two ways to get your work into the official kit, pick whichever fits you:
-
-### The easy way (plugin users)
-
-If you built something with the Create Screen Skill, just ask Claude from your working folder:
-
-> "Contribute my prototype to the official Lexicon Vanilla kit"
-
-Claude will take it from there: fork `liferay-design/lexicon-vanilla` (via the `gh` CLI), copy your prototype — and any `components.css` additions — into the right place following the [authoring rules](#authoring-rules), and open a pull request for the maintainers to review. You only need a GitHub account; if `gh` is not available, Claude will fall back to exporting a shareable bundle (`/lexicon-export`) you can attach to a [new issue](https://github.com/liferay-design/lexicon-vanilla/issues).
-
-### The classic way (git users)
-
-1. Fork or branch, and make your changes following `CLAUDE.md` (tokens only, shared `components.css`, sprite icons, everything must open over `file://`).
-2. If you add a prototype meant to ship to every designer, also list it in `kit-manifest.json` (`canonicalPrototypes` or `canonicalPrototypeDirs`).
-3. Open a pull request against `main`. Keep it small and component-driven — one screen or one primitive per PR reviews fastest.
-
-Maintainers review, merge, and periodically cut a release (`VERSION` + tag) so every plugin user gets your contribution on their next `/lexicon-refresh`.

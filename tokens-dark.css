@@ -511,17 +511,3 @@
     --indigo-l5: #000A66;
   }
 }
-
-/* ── Skeleton shimmer — dark counterparts ──────────────────── */
-.dark, [data-theme="dark"],
-.dark-hc, [data-theme="dark-hc"] {
-  --skeleton-shimmer-rgb: 99, 102, 130;   /* secondary-l1 (light scale) */
-  --skeleton-shimmer-alpha: 0.35;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light):not([data-theme="light"]):not(.light-hc):not([data-theme="light-hc"]):not(.dark):not([data-theme="dark"]):not(.dark-hc):not([data-theme="dark-hc"]) {
-    --skeleton-shimmer-rgb: 99, 102, 130;
-    --skeleton-shimmer-alpha: 0.35;
-  }
-}

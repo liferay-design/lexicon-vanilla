@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.0.0",
   "runtime": [
     "tokens.css",
     "tokens-high-contrast.css",
@@ -9,24 +9,12 @@
     "icons.js",
     "starter.html"
   ],
-  "reference": [
-    "shells",
-    "showcases"
-  ],
+  "reference": ["shells", "showcases"],
   "canonicalPrototypes": [
-    "index.html",
     "login.html",
     "loginFull.html",
     "user-administration.html",
-    "token-editor.html",
     "ai-hub-landing.html",
-    "ai-assistant-chatbot.html",
-    "performance-review.html",
-    "performance-review-no-modal.html",
-    "modern-sidebar.html",
-    "skins.html",
-    "switch-skin.html",
-    "skeletons.html"
-  ],
-  "canonicalPrototypeDirs": ["PLG", "img"]
+    "ai-assistant-chatbot.html"
+  ]
 }
