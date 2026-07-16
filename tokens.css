@@ -243,3 +243,16 @@ p { margin: 0; }
 
 a { color: var(--color-primary); }
 a:hover { color: var(--color-primary-d1); }
+
+/* ============================================================
+   SKELETON tokens — loading-state shapes and shimmer sweep.
+   Shape and surface resolve from the semantic scale (they flip
+   per skin automatically); the shimmer gradient needs raw RGB
+   components, overridden for dark skins in tokens-dark.css.
+   ============================================================ */
+:root {
+  --skeleton-shape: var(--color-secondary-l3);
+  --skeleton-surface: var(--color-light-l1);
+  --skeleton-shimmer-rgb: 247, 248, 249;  /* light-l1 */
+  --skeleton-shimmer-alpha: 0.6;
+}

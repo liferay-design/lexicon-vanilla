@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skeletons — Lexicon Vanilla</title>
-
+  <title>Skeleton — Vanilla Lexicon</title>
   <script>(function(){
     var S=['light','light-hc','dark','dark-hc'];
     function apply(){try{
@@ -32,42 +31,28 @@
   <script src="../icons.js"></script>
 
   <style>
-	/* ============================================================
-	   Skeleton collection — imported from
-	   https://diegoalo.github.io/liferay-tests/lexicon-skeleton-previews.html
-	   (crafted by Diego Alonso). The skeleton primitives (.skeleton,
-	   .sk, .row, .fade, .surface) and their tokens now live in the
-	   kit — components.css / tokens.css. This page keeps only the
-	   component compositions (sk-*) and the layout screens.
-	   ============================================================ */
+    .showcase { max-width: 1080px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); max-width: 72ch; }
+    .showcase__row { margin-bottom: var(--spacing-8); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); }
 
-	/* ── Collection layout: label + stage per skeleton ──────────── */
-	.sk-page { padding: var(--spacing-7); display: flex; flex-direction: column; gap: var(--spacing-8); }
-	.sk-section-title {
-		margin: 0; font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
-		text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary);
-	}
-	.sk-demo__head { display: flex; align-items: baseline; gap: var(--spacing-3); padding: 0 var(--spacing-2); }
-	.sk-demo__head h2 { margin: 0; font-size: var(--font-size-base); font-weight: var(--font-weight-bold); color: var(--color-dark); }
-	.sk-demo__head small { color: var(--color-secondary); }
-	.sk-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-		gap: var(--spacing-7);
-	}
-	.sk-demo { display: flex; flex-direction: column; gap: var(--spacing-4); min-width: 0; }
-	.sk-demo--layout { grid-column: 1 / -1; }
-	.stage {
-		background: var(--skeleton-surface);
-		border: 1px solid var(--color-secondary-l3);
-		border-radius: var(--rounded-lg);
-		padding: var(--spacing-7);
-		flex: 1; min-width: 0;
-		display: flex; align-items: flex-start; justify-content: center;
-		position: relative;
-		overflow: hidden;
-	}
+    /* Demo stage: the surface each skeleton previews on */
+    .stage {
+      background: var(--skeleton-surface);
+      border: 1px solid var(--color-secondary-l3);
+      border-radius: var(--rounded-lg);
+      padding: var(--spacing-7);
+      display: flex; align-items: flex-start; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
 
+    /* ============================================================
+       Reference compositions — built exclusively from the kit
+       primitives (.skeleton / .sk / .row / .fade / .surface).
+       Copy the block you need into your prototype.
+       ============================================================ */
 	/* ── Card — media + body (lexicon-vanilla .card) ───────────── */
 	.sk-card { width: 280px; overflow: hidden; box-shadow: var(--shadow-card); }
 	.sk-card .img { width: 100%; height: 140px; border-radius: 0; }
@@ -147,9 +132,9 @@
 	.sk-autocomplete { width: 100%; max-width: 300px; padding: var(--spacing-5); display: flex; flex-direction: column; gap: var(--spacing-3); }
 	.amenu { border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: hidden; box-shadow: var(--shadow-dropdown); background: var(--color-white); }
 	.amenu .aitem { display: flex; align-items: center; height: 36px; padding: 0 var(--spacing-4); }
-
 	/* ============================================================
-	   Layout screens — full DXP pages composed with the skeletons
+	   Full screen composition — a complete DXP page assembled from
+	   the same primitives (more layouts in prototypes/skeletons.html)
 	   ============================================================ */
 	.screen {
 		display: flex; flex-direction: column; width: 100%; min-height: 480px;
@@ -237,30 +222,66 @@
 	.screen .mgmt-search .amenu { position: absolute; top: 44px; left: 0; right: 0; z-index: 5; }
 
 	/* modal overlay: dims the screen behind an in-context dialog (Add User) */
-	.screen .scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 10; }
-  </style>
+	.screen .scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 10; }  </style>
 </head>
 <body>
 
-<!-- ─── Control Menu: title + dark/light switch ──────────────────── -->
-<div class="control-menu">
-  <div class="control-menu__left">
-    <span class="control-menu__title">Skeletons</span>
+<main class="showcase">
+  <h1>Skeleton</h1>
+  <p class="lead">
+    Source: <a href="https://diegoalo.github.io/liferay-tests/lexicon-skeleton-previews.html">Lexicon skeleton collection</a> by Diego Alonso.
+    Loading-state placeholders: <code>.sk</code> shapes inside a <code>.skeleton</code> container. The shimmer is painted per shape and every
+    shape shares one viewport-fixed gradient, so the wave sweeps the whole composition as a single front — critical on dark surfaces.
+    Modifiers: <code>.circle</code>, <code>.row</code>, <code>.fade</code>, <code>.surface</code>. Speed: set <code>--skeleton-duration</code>
+    (default 1.6s) or <code>--skeleton-play: paused</code> on any ancestor. Sizes are set inline per shape — they mimic the real component&#39;s metrics.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Building blocks — bar, circle, row</span>
+    <div class="stage">
+      <div class="skeleton" style="display:flex; flex-direction:column; gap: var(--spacing-4); width:280px;">
+        <div class="row">
+          <div class="sk circle" style="width:32px;height:32px"></div>
+          <div class="sk" style="width:140px;height:14px"></div>
+        </div>
+        <div class="sk" style="width:100%;height:10px"></div>
+        <div class="sk" style="width:80%;height:10px"></div>
+        <div class="sk" style="width:60%;height:10px"></div>
+      </div>
+    </div>
   </div>
-  <div class="control-menu__right">
-    <button class="control-menu__btn" id="skin-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-      <svg class="lexicon-icon" id="skin-toggle-icon"><use href="#moon"></use></svg>
-    </button>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Fade — repeating structures dim towards the tail (from the 4th child)</span>
+    <div class="stage">
+      <div class="skeleton fade" style="display:flex; flex-direction:column; gap: var(--spacing-4); width:280px;">
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+        <div class="sk" style="width:100%;height:12px"></div>
+      </div>
+    </div>
   </div>
-</div>
 
-<main class="sk-page">
+  <div class="showcase__row">
+    <span class="showcase__label">Surface — elevated white panel for cards, dropdowns, modals</span>
+    <div class="stage">
+      <div class="skeleton surface" style="width:280px; padding: var(--spacing-5); display:flex; flex-direction:column; gap: var(--spacing-4);">
+        <div class="row">
+          <div class="sk circle" style="width:24px;height:24px"></div>
+          <div class="sk" style="width:120px;height:12px"></div>
+        </div>
+        <div class="sk" style="width:100%;height:10px"></div>
+        <div class="sk" style="width:70%;height:10px"></div>
+      </div>
+    </div>
+  </div>
 
-  <h2 class="sk-section-title">Components</h2>
-  <div class="sk-grid">
-
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Card</h2><small>media + body</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Card — media + body</span>
     <div class="stage">
 <div class="skeleton surface sk-card">
 		<div class="sk img"></div>
@@ -277,8 +298,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Table</h2><small>zebra rows · 48px gutters</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Table — zebra rows · 48px gutters</span>
     <div class="stage">
 <div class="skeleton surface sk-table fade">
 		<div class="tr">
@@ -327,8 +348,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>List</h2><small>sticker + content + actions</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">List — sticker + content + actions</span>
     <div class="stage">
 <div class="skeleton surface sk-list fade">
 		<div class="li">
@@ -375,8 +396,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Vertical Navigation</h2><small>CMS menu · 40px rows</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Vertical Navigation — CMS menu · 40px rows</span>
     <div class="stage" style="padding:0;justify-content:flex-start">
 <div class="skeleton sk-vnav fade">
 		<div class="head">
@@ -417,8 +438,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Navigation Bar</h2><small>items + actions</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Navigation Bar — items + actions</span>
     <div class="stage">
 <div class="skeleton surface sk-navbar">
 		<div class="sk" style="width:28px;height:28px"></div>
@@ -432,8 +453,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Tabs</h2><small>tab bar + panel</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Tabs — tab bar + panel</span>
     <div class="stage">
 <div class="skeleton surface sk-tabs">
 		<div class="bar">
@@ -452,8 +473,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Side Panel</h2><small>280px right drawer</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Side Panel — 280px right drawer</span>
     <div class="stage" style="padding:0;justify-content:flex-end">
 <div class="skeleton surface sk-sidepanel">
 		<div class="head">
@@ -475,8 +496,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Multi Step</h2><small>32px circles + connectors</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Multi Step — 32px circles + connectors</span>
     <div class="stage" style="align-items:center">
 <div class="skeleton sk-multistep">
 		<div class="step">
@@ -497,8 +518,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Form / Input</h2><small>label + 32px fields</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Form / Input — label + 32px fields</span>
     <div class="stage">
 <div class="skeleton surface sk-form fade">
 		<div class="field">
@@ -517,8 +538,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Dual Listbox</h2><small>1fr · moves · 1fr</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Dual Listbox — 1fr · moves · 1fr</span>
     <div class="stage">
 <div class="skeleton sk-duallist">
 		<div class="box fade">
@@ -541,8 +562,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Breadcrumb</h2><small>path segments + separators</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Breadcrumb — path segments + separators</span>
     <div class="stage">
 <div class="skeleton surface sk-breadcrumb">
 		<div class="sk" style="width:64px;height:12px;opacity:.6"></div>
@@ -554,8 +575,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Tree View</h2><small>32px rows · 24px indent</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Tree View — 32px rows · 24px indent</span>
     <div class="stage">
 <div class="skeleton surface sk-treeview fade">
 		<div class="trow3"><div class="sk" style="width:12px;height:12px"></div><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:120px;height:12px"></div></div>
@@ -569,8 +590,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Modal</h2><small>header + body + footer</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Modal — header + body + footer</span>
     <div class="stage">
 <div class="skeleton surface sk-modal">
 		<div class="mhead"><div class="sk" style="width:45%;height:16px"></div><div class="sk" style="width:16px;height:16px"></div></div>
@@ -588,8 +609,8 @@
     </div>
   </div>
 
-  <div class="sk-demo">
-    <div class="sk-demo__head"><h2>Autocomplete</h2><small>input + open results</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Autocomplete — input + open results</span>
     <div class="stage">
 <div class="skeleton sk-autocomplete">
 		<div class="sk" style="width:35%;height:12px"></div>
@@ -604,13 +625,8 @@
     </div>
   </div>
 
-  </div>
-
-  <h2 class="sk-section-title">Layouts</h2>
-  <div class="sk-grid">
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Style Books</h2><small>product menu + control menu + management toolbar + card grid</small></div>
+  <div class="showcase__row">
+    <span class="showcase__label">Style Books — product menu + control menu + management toolbar + card grid</span>
     <div class="stage">
 <div class="skeleton screen">
 		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
@@ -625,182 +641,12 @@
     </div>
   </div>
 
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Admin List</h2><small>product menu + management toolbar + table + pagination</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="cols">
-			<div class="pnav fade"><div class="it"><div class="sk" style="width:24px;height:24px"></div><div class="sk" style="width:110px;height:14px"></div></div><div class="it"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:70px;height:12px"></div></div><div class="hd"><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="it it--active"><div class="sk" style="width:90px;height:12px"></div></div><div class="it"><div class="sk" style="width:80px;height:12px"></div></div><div class="it"><div class="sk" style="width:86px;height:12px"></div></div><div class="hd"><div class="sk" style="width:92px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="hd"><div class="sk" style="width:100px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="hd"><div class="sk" style="width:86px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div></div>
-			<div class="work">
-				<div class="mgmt"><div class="sk" style="width:72px;height:16px"></div><div class="sk" style="flex:1;height:40px"></div><div class="sk" style="width:88px;height:40px"></div></div>
-				<div class="content" style="padding:0"><div class="fade"><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:50%;height:12px"></div><div class="sk" style="width:45%;height:12px"></div><div class="sk" style="width:40%;height:12px"></div><div class="sk" style="width:80%;height:12px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div></div></div>
-				<div class="mgmt" style="border-bottom:0;border-top:1px solid var(--skeleton-surface)"><div class="sk" style="width:90px;height:12px"></div><span class="grow"></span><div class="sk" style="width:160px;height:12px"></div></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Edit Entry</h2><small>control menu + form sheet + side panel</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="formcols">
-			<div class="formmain fade">
-				<div class="sk" style="width:45%;height:18px"></div>
-				<div class="ffield"><div class="sk" style="width:30%;height:12px"></div><div class="sk" style="width:100%;height:40px"></div></div><div class="ffield"><div class="sk" style="width:40%;height:12px"></div><div class="sk" style="width:100%;height:40px"></div></div><div class="ffield"><div class="sk" style="width:35%;height:12px"></div><div class="sk" style="width:100%;height:72px"></div></div>
-				<div class="row" style="justify-content:flex-end;gap:var(--spacing-3)"><div class="sk" style="width:88px;height:40px"></div><div class="sk" style="width:96px;height:40px"></div></div>
-			</div>
-			<div class="spanel fade">
-				<div class="sk" style="width:50%;height:14px"></div>
-				<div class="sk" style="width:40%;height:12px"></div><div class="sk" style="width:100%;height:40px"></div>
-				<div class="sk" style="width:35%;height:12px"></div><div class="sk" style="width:100%;height:40px"></div>
-				<div class="sk" style="width:100%;height:64px"></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Fragments</h2><small>product menu + sets pane + detail with search and cards</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="cols">
-			<div class="pnav fade"><div class="it"><div class="sk" style="width:24px;height:24px"></div><div class="sk" style="width:110px;height:14px"></div></div><div class="it"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:70px;height:12px"></div></div><div class="hd"><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="it it--active"><div class="sk" style="width:90px;height:12px"></div></div><div class="it"><div class="sk" style="width:80px;height:12px"></div></div><div class="it"><div class="sk" style="width:86px;height:12px"></div></div><div class="hd"><div class="sk" style="width:92px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="hd"><div class="sk" style="width:100px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="hd"><div class="sk" style="width:86px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div></div>
-			<div class="setpane fade">
-				<div class="sethead"><div class="sk" style="width:110px;height:14px"></div><span class="grow"></span><div class="sk" style="width:14px;height:14px"></div><div class="sk" style="width:14px;height:14px"></div><div class="sk" style="width:14px;height:14px"></div></div>
-				<div class="sk" style="width:60px;height:12px"></div>
-				<div class="setitem setitem--active"><div class="sk" style="width:70%;height:12px"></div></div>
-				<div class="setitem"><div class="sk" style="width:80%;height:12px"></div></div>
-				<div class="setitem"><div class="sk" style="width:75%;height:12px"></div></div>
-				<div class="setitem"><div class="sk" style="width:50%;height:12px"></div></div>
-				<div class="setitem"><div class="sk" style="width:65%;height:12px"></div></div>
-				<div class="setitem"><div class="sk" style="width:55%;height:12px"></div></div>
-			</div>
-			<div class="detail">
-				<div class="sk" style="width:120px;height:18px"></div>
-				<div class="searchrow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="flex:1;height:40px"></div></div>
-				<div class="cardgrid fade"><div class="c" style="max-width:280px"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="row"><div class="sk" style="width:60%;height:12px"></div><span class="grow"></span><div class="sk" style="width:12px;height:12px"></div></div></div></div><div class="c" style="max-width:280px"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="row"><div class="sk" style="width:60%;height:12px"></div><span class="grow"></span><div class="sk" style="width:12px;height:12px"></div></div></div></div><div class="c" style="max-width:280px"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="row"><div class="sk" style="width:60%;height:12px"></div><span class="grow"></span><div class="sk" style="width:12px;height:12px"></div></div></div></div></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Page Tree</h2><small>tree sidebar + management toolbar + table</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="cols">
-			<div class="treenav fade"><div class="trow2"><div class="sk" style="width:12px;height:12px"></div><div class="sk" style="width:90px;height:12px"></div></div><div class="sk" style="width:100%;height:40px"></div><div class="trow2"><div class="sk" style="width:150px;height:32px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow2"><div class="sk" style="width:12px;height:8px"></div><div class="sk" style="width:60px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:80px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:64px;height:12px"></div></div></div>
-			<div class="work">
-				<div class="mgmt"><div class="sk" style="width:72px;height:16px"></div><div class="sk" style="flex:1;height:40px"></div><div class="sk" style="width:88px;height:40px"></div></div>
-				<div class="content" style="padding:0"><div class="fade"><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div></div></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Document Library</h2><small>tree sidebar + breadcrumb + open autocomplete search + card grid</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="cols">
-			<div class="treenav fade"><div class="trow2"><div class="sk" style="width:12px;height:12px"></div><div class="sk" style="width:90px;height:12px"></div></div><div class="sk" style="width:100%;height:40px"></div><div class="trow2"><div class="sk" style="width:150px;height:32px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow2"><div class="sk" style="width:12px;height:8px"></div><div class="sk" style="width:60px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:80px;height:12px"></div></div><div class="trow2 indent"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:64px;height:12px"></div></div></div>
-			<div class="work">
-				<div class="sbreadcrumb"><div class="sk" style="width:70px;height:12px;opacity:.6"></div><div class="sk" style="width:10px;height:10px;opacity:.4"></div><div class="sk" style="width:130px;height:12px"></div></div>
-				<div class="mgmt">
-					<div class="sk" style="width:72px;height:16px"></div>
-					<div class="mgmt-search">
-						<div class="sk" style="height:40px;width:100%"></div>
-						<div class="amenu fade">
-							<div class="aitem"><div class="sk" style="width:55%;height:12px"></div></div>
-							<div class="aitem"><div class="sk" style="width:42%;height:12px"></div></div>
-							<div class="aitem"><div class="sk" style="width:65%;height:12px"></div></div>
-						</div>
-					</div>
-					<div class="sk" style="width:88px;height:40px"></div>
-				</div>
-				<div class="content"><div class="cardgrid fade">
-					<div class="c"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="sk" style="width:75%;height:14px"></div><div class="sk" style="width:45%;height:10px"></div></div></div>
-					<div class="c"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="sk" style="width:65%;height:14px"></div><div class="sk" style="width:40%;height:10px"></div></div></div>
-					<div class="c"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="sk" style="width:80%;height:14px"></div><div class="sk" style="width:50%;height:10px"></div></div></div>
-					<div class="c"><div class="cimg"><div class="sk" style="width:100%;height:100%"></div></div><div class="cbody"><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:35%;height:10px"></div></div></div>
-				</div></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  <div class="sk-demo sk-demo--layout">
-    <div class="sk-demo__head"><h2>Add User (Modal)</h2><small>admin list dimmed behind + centered modal form</small></div>
-    <div class="stage">
-<div class="skeleton screen">
-		<div class="cbar"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:120px;height:16px"></div><span class="grow"></span><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:20px;height:20px"></div><div class="sk circle" style="width:28px;height:28px"></div></div>
-		<div class="cols">
-			<div class="pnav fade"><div class="it"><div class="sk" style="width:24px;height:24px"></div><div class="sk" style="width:110px;height:14px"></div></div><div class="it"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:70px;height:12px"></div></div><div class="hd"><div class="sk" style="width:80px;height:12px"></div><div class="sk" style="width:12px;height:8px"></div></div><div class="it it--active"><div class="sk" style="width:90px;height:12px"></div></div><div class="it"><div class="sk" style="width:80px;height:12px"></div></div><div class="it"><div class="sk" style="width:86px;height:12px"></div></div></div>
-			<div class="work">
-				<div class="mgmt"><div class="sk" style="width:72px;height:16px"></div><div class="sk" style="flex:1;height:40px"></div><div class="sk" style="width:88px;height:40px"></div></div>
-				<div class="content" style="padding:0"><div class="fade"><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:50%;height:12px"></div><div class="sk" style="width:45%;height:12px"></div><div class="sk" style="width:40%;height:12px"></div><div class="sk" style="width:80%;height:12px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div><div class="trow"><div class="sk" style="width:16px;height:16px"></div><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:55%;height:14px"></div><div class="sk" style="width:100%;height:20px"></div><div class="sk" style="width:16px;height:16px"></div></div></div></div>
-			</div>
-		</div>
-		<div class="scrim">
-			<div class="surface sk-modal">
-				<div class="mhead"><div class="sk" style="width:40%;height:16px"></div><div class="sk" style="width:16px;height:16px"></div></div>
-				<div class="mbody fade">
-					<div class="sk" style="width:30%;height:12px"></div><div class="sk" style="width:100%;height:36px"></div>
-					<div class="sk" style="width:35%;height:12px"></div><div class="sk" style="width:100%;height:36px"></div>
-					<div class="sk" style="width:40%;height:12px"></div><div class="sk" style="width:100%;height:36px"></div>
-				</div>
-				<div class="mfoot"><div class="sk" style="width:80px;height:36px"></div><div class="sk" style="width:96px;height:36px"></div></div>
-			</div>
-		</div>
-	</div>
-    </div>
-  </div>
-
-  </div>
+  <p class="lead" style="margin-top: calc(-1 * var(--spacing-5));">
+    Six more full-screen layouts (Admin List, Edit Entry, Fragments, Page Tree, Document Library, Add User)
+    live in <a href="../prototypes/skeletons.html">prototypes/skeletons.html</a>.
+  </p>
 
 </main>
-
-<!-- Dark / Light switch (same pattern as the DXP shell) -->
-<script>
-  (function () {
-    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
-    var r = document.documentElement;
-    var btn = document.getElementById('skin-toggle');
-    var icon = document.getElementById('skin-toggle-icon');
-
-    function isDark() { return r.classList.contains('dark') || r.classList.contains('dark-hc'); }
-
-    function render() {
-      var dark = isDark();
-      var use = icon.querySelector('use');
-      if (use) use.setAttribute('href', dark ? '#sun' : '#moon');
-      var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
-      btn.setAttribute('aria-label', label);
-      btn.setAttribute('aria-pressed', String(dark));
-    }
-
-    btn.addEventListener('click', function () {
-      var next = isDark() ? 'light' : 'dark';
-      SKINS.forEach(function (c) { r.classList.remove(c); });
-      r.classList.add(next);
-      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
-      render();
-    });
-
-    render();
-  })();
-</script>
 
 </body>
 </html>
