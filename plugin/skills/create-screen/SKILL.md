@@ -14,9 +14,14 @@ Before composing, make sure the kit exists in the current directory. Run this in
 ```bash
 REPO="liferay-design/lexicon-vanilla"
 if [ ! -f .lexicon ]; then
-  # Pin to the published release tag; fall back to main only if VERSION is unreachable.
+  # Pin to the published release tag; fall back to main if VERSION or its tag is unreachable.
   VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
-  if [ -n "$VER" ]; then REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"; else REF="refs/heads/main"; DIR="lexicon-vanilla-main"; VER="main"; fi
+  REF="refs/heads/main"; DIR="lexicon-vanilla-main"
+  if [ -n "$VER" ] && curl -fsIL -o /dev/null "https://github.com/$REPO/archive/refs/tags/v$VER.tar.gz" 2>/dev/null; then
+    REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"
+  else
+    VER="main"
+  fi
   curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
     | tar xz --strip-components=1 \
         "$DIR/tokens.css" \
