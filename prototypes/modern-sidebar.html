@@ -38,6 +38,12 @@
       --font-family-title: 'Source Sans 3', system-ui, -apple-system, 'system-ui',
         'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue',
         Arial, sans-serif;
+      /* Page-wide Source Sans Pro trial — every component reads
+         --font-family-base, so overriding it here re-fonts the whole page.
+         'Source Sans 3' covers newer installs (same face, renamed). Delete
+         this one declaration to revert to the system stack. */
+      --font-family-base: 'Source Sans Pro', 'Source Sans 3', -apple-system,
+        BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
 
     /* Bigger, display-face titles: Site Builder (Control Menu) and
@@ -51,22 +57,24 @@
     html, body { height: 100%; }
     body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-    /* ── Floating sidebar (Claude / Codex pattern) ───────────────
-       The Control Panel detaches from the layout: fixed, 8px off
-       every screen edge, rounded and elevated. Three states:
+    /* ── Modern sidebar (docked drawer) ──────────────────────────
+       The Control Panel sits flush to the screen edge, full height.
+       Three states:
          · hidden   — default when unpinned
          · sb-peek  — hover on the menu toggle reveals it as overlay
          · sb-pinned— click on the toggle docks it; content shifts  */
     .control-panel--floating {
       position: fixed;
-      top: var(--spacing-3);
-      left: var(--spacing-3);
-      bottom: var(--spacing-3);
-      width: 320px;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
       z-index: 50;
-      border: 1px solid var(--color-secondary-l2);
-      border-radius: var(--rounded-lg);
-      box-shadow: var(--shadow-card);
+      /* Right border only — the panel sits flush to the screen edge, so a
+         left border would paint a stray 1px line along it. The border lives
+         in every state (never toggled on pin) to avoid the 1px content-box
+         flicker. */
+      border-right: 1px solid var(--color-secondary-l2);
       /* Hidden state: short 24px slide + fade. The corner button sits above the
          panel (z-index), so only the panel body slides/fades beneath a
          stationary button. Visibility flips after the fade so it can't catch
@@ -85,6 +93,7 @@
       transition: transform 140ms ease-out, opacity 140ms ease-out,
                   visibility 0s, box-shadow 140ms ease;
     }
+    /* Peek overlays the content → elevated; pinned sits in the layout → flat. */
     body.sb-peek:not(.sb-pinned) .control-panel--floating { box-shadow: var(--shadow-lg); }
 
     /* The menu toggle never moves: it stays in the Control Menu flow but
@@ -116,61 +125,51 @@
        sticker's default fill so no grey shows behind its margins. */
     .cp-toggle__brand { background: transparent; }
 
+    /* Two artworks, one per skin family: light PNG by default, dark PNG
+       (own dark rounded backplate) when a dark skin class sits on <html>.
+       The .cp-toggle__brand > … compound outranks the kit's `.sticker > img`
+       rule, which would otherwise force both images to display. */
+    .cp-toggle__brand > .cp-toggle__brand-img--dark { display: none; }
+    .dark .cp-toggle__brand > .cp-toggle__brand-img--dark,
+    .dark-hc .cp-toggle__brand > .cp-toggle__brand-img--dark { display: block; }
+    .dark .cp-toggle__brand > .cp-toggle__brand-img--light,
+    .dark-hc .cp-toggle__brand > .cp-toggle__brand-img--light { display: none; }
+
     /* Closed (button reads as the top-bar toggle): menu icon, never the image. */
     #cp-toggle .cp-toggle__brand { display: none; }
     #cp-toggle #cp-toggle-icon { display: block; }
 
-    /* Panel out (peek/pinned): the same button now reads as the panel's header
-       button → brand image at rest; on hover / keyboard focus it swaps to the
-       menu icon (what the click will do). */
-    body.sb-peek #cp-toggle .cp-toggle__brand,
-    body.sb-pinned #cp-toggle .cp-toggle__brand { display: inline-flex; }
-    body.sb-peek #cp-toggle #cp-toggle-icon,
-    body.sb-pinned #cp-toggle #cp-toggle-icon { display: none; }
-    body.sb-peek #cp-toggle:hover .cp-toggle__brand,
-    body.sb-pinned #cp-toggle:hover .cp-toggle__brand,
-    body.sb-peek #cp-toggle:focus-visible .cp-toggle__brand,
-    body.sb-pinned #cp-toggle:focus-visible .cp-toggle__brand { display: none; }
-    body.sb-peek #cp-toggle:hover #cp-toggle-icon,
-    body.sb-pinned #cp-toggle:hover #cp-toggle-icon,
-    body.sb-peek #cp-toggle:focus-visible #cp-toggle-icon,
-    body.sb-pinned #cp-toggle:focus-visible #cp-toggle-icon { display: block; }
-
-    /* Taller Control Menu: +6px of vertical padding on each side
-       (10px base + 6px = 16px), so the bar grows from 56px to 68px.
-       Docked mode keeps the component's default paddings, so the rule
-       is scoped out when body.sb-docked is set. */
-    body:not(.sb-docked) .control-menu {
-      padding-top: var(--spacing-5);
-      padding-bottom: var(--spacing-5);
+    /* Pinned: the toggle reads as active. light-d1 (#E2E4EA) reads too
+       strong here, so soften it: 8% of --color-dark over the white bar
+       ≈ #EEEEEF, and the token flips per skin (a light tint in dark mode).
+       Hover doesn't override it. */
+    body.sb-pinned #cp-toggle,
+    body.sb-pinned #cp-toggle:hover {
+      background: color-mix(in srgb, var(--color-dark) 8%, transparent);
     }
+
+    /* Panel peeked (unpinned): the button reads as the panel's header button →
+       brand image at rest; on hover / keyboard focus it swaps to the menu icon
+       (what the click will do). Pinned: no image swap — the base rules above
+       keep the menu icon (product-menu-open → "click closes") at all times. */
+    body.sb-peek:not(.sb-pinned) #cp-toggle .cp-toggle__brand { display: inline-flex; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle #cp-toggle-icon { display: none; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle:hover .cp-toggle__brand,
+    body.sb-peek:not(.sb-pinned) #cp-toggle:focus-visible .cp-toggle__brand { display: none; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle:hover #cp-toggle-icon,
+    body.sb-peek:not(.sb-pinned) #cp-toggle:focus-visible #cp-toggle-icon { display: block; }
 
     /* Header row geometry: 56px tall, and left padding clears the 32px
-       menu toggle (at x 20–52) overlaying this corner. */
+       menu toggle overlaying this corner — it leaves an 8px button→title
+       gap. */
     .control-panel--floating .control-panel__header {
       height: calc(var(--spacing-10) + var(--spacing-3));
-      /* Left gutter clears the overlapping 32px toggle and leaves an 8px
-         button→title gap. Floating: the panel is inset 8px, so less padding is
-         needed. The -1px offsets the panel's 1px left border. */
-      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) - 1px);
-    }
-    /* Docked: the panel is flush to the edge (+8px vs floating), so add 8px of
-       padding to keep the same 8px button→title gap. */
-    body.sb-docked .control-panel--floating .control-panel__header {
-      padding-left: calc(var(--spacing-10) + var(--spacing-3) - 1px);
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-3));
     }
     .control-panel--floating .control-panel__search { padding-top: var(--spacing-4); }
 
     /* Tighter rhythm between section groups (base is --spacing-5). */
     .control-panel--floating .control-panel__groups { gap: var(--spacing-3); }
-
-    /* The panel itself stays overflow-visible so the header tooltips can
-       escape it; only the scrollable body clips to the rounded corners
-       (inset 1px so the panel border stays visible under the radius). */
-    .control-panel--floating .control-panel__body {
-      border-bottom-left-radius: calc(var(--rounded-lg) - 1px);
-      border-bottom-right-radius: calc(var(--rounded-lg) - 1px);
-    }
 
     /* ── Modern scrollbar ───────────────────────────────────────
        Thin floating pill, no track. The 2px transparent border +
@@ -198,51 +197,18 @@
       background-clip: padding-box;
     }
 
-    /* Docked: page content and Control Menu title make room. */
+    /* Pinned: page content and Control Menu title make room. */
     /* Content shift on pin/unpin: ease-out quint — fast start that
        decelerates into place, so the reflow reads as one soft glide. */
     main { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
-    body.sb-pinned main { margin-left: calc(320px + var(--spacing-3) + var(--spacing-3)); }
+    body.sb-pinned main { margin-left: 280px; }
     .control-menu__title { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
-    body.sb-pinned .control-menu__title { margin-left: calc(320px - var(--spacing-8) - var(--spacing-2)); }
-
-    /* ── Docked variant (switch next to Home) ───────────────────
-       body.sb-docked flattens the floating panel against the screen
-       edge: full height, square corners, no elevation — the classic
-       dxp drawer. The Control Menu paddings return to the component
-       defaults (56px bar), so the panel header centre (52px / 2 = 26px)
-       lines up again with the toggle centre (10px padding + 16px). */
-    body.sb-docked .control-panel--floating {
-      top: 0;
-      left: 0;
-      bottom: 0;
-      /* Both side borders live in every docked state: toggling a border
-         on pin would steal 1px from the content box (border-box) and make
-         the whole panel flicker. Only the shadow changes — and it fades. */
-      border: 0;
-      border-left: 1px solid var(--color-secondary-l2);
-      border-right: 1px solid var(--color-secondary-l2);
-      border-radius: 0;
+    /* Title rests at x 56 (16px bar padding + 32px toggle + 8px gap); the
+       panel's right edge is at 280px. 280 - 32 = 248px puts the title at
+       x 304 → a 24px gap from the panel edge. */
+    body.sb-pinned .control-menu__title {
+      margin-left: calc(280px - var(--spacing-8));
     }
-    /* Pinned while docked: the panel sits in the layout, so it drops the
-       floating elevation. Unpinned (peek) keeps the floating shadows. */
-    body.sb-docked.sb-pinned .control-panel--floating {
-      box-shadow: none;
-    }
-    body.sb-docked .control-panel--floating .control-panel__body {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    /* Panel right edge sits at 320px instead of 8 + 320 + 8: the pinned
-       shifts lose the two 8px gutters (content) / the left one (title). */
-    body.sb-docked.sb-pinned main { margin-left: 320px; }
-    body.sb-docked.sb-pinned .control-menu__title {
-      margin-left: calc(320px - var(--spacing-9) - var(--spacing-2));
-    }
-
-    /* Mode switch row: its own group above Home, aligned to the same
-       16px content inset the panel items use. */
-    .cp-dock-toggle { margin: 0 var(--spacing-5); }
 
     @media (prefers-reduced-motion: reduce) {
       .control-panel--floating, main, .control-menu__title { transition: none; }
@@ -298,8 +264,10 @@
       transition: opacity 120ms ease;
       z-index: 20;
     }
+    /* Show on hover or *keyboard* focus only — a plain :focus-within would
+       pin the tooltip after a mouse click, since the button keeps focus. */
     .cp-tip:hover .cp-tip__bubble,
-    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+    .cp-tip:has(:focus-visible) .cp-tip__bubble { opacity: 1; }
 
     /* Toggle sits at the screen's left edge → left-align its tooltip so it
        opens rightward with the arrow near the left (tooltip--align-start puts
@@ -312,13 +280,13 @@
     #cp-toggle-tip.is-visible { opacity: 1; }
   </style>
 </head>
-<body class="sb-docked">
+<body>
 
 <!-- ════════════════════════════════════════════════════════════════
-     Modern Sidebar shell — floating Control Panel + Control Menu + content
+     Modern Sidebar shell — docked Control Panel + Control Menu + content
 
-     Interaction (Claude / Codex sidebar pattern):
-       • The panel floats 8px off the screen edges, rounded + elevated.
+     Interaction:
+       • The panel sits flush to the screen edge, full height.
        • The Control Menu toggle never moves. Hovering it while the
          panel is unpinned peeks the panel as an overlay; clicking it
          pins/unpins the panel (pinned = content shifts right).
@@ -336,14 +304,17 @@
                (peek/pinned) → brand image at rest, menu icon on hover/focus. The
                button never disappears; only its content swaps, so the panel body
                dissolves beneath a stationary button (natural close). -->
-          <span class="sticker sticker--md cp-toggle__brand" aria-hidden="true"><img src="img/control-panel-icon.png" alt=""></span>
+          <span class="sticker sticker--md cp-toggle__brand" aria-hidden="true">
+            <img class="cp-toggle__brand-img--light" src="img/control-panel-icon.png" alt="">
+            <img class="cp-toggle__brand-img--dark" src="img/control-panel-icon-dark.png" alt="">
+          </span>
           <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-closed"></use></svg>
         </button>
         <!-- "Pin Menu" when unpinned, "Close Menu" when pinned (text set in JS). -->
         <span class="tooltip tooltip--top tooltip--align-start cp-tip__bubble" id="cp-toggle-tip" role="tooltip">Pin Menu</span>
       </span>
     </div>
-    <span class="control-menu__title">Site Builder</span>
+    <span class="control-menu__title">Home</span>
   </div>
   <div class="control-menu__right">
     <button class="control-menu__btn" type="button" aria-label="Global navigation">
@@ -376,13 +347,6 @@
         <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
       </span>
 
-      <!-- Sites -->
-      <span class="cp-tip">
-        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
-          <svg class="lexicon-icon"><use href="#sites"></use></svg>
-        </button>
-        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
-      </span>
     </div>
   </div>
 
@@ -400,17 +364,6 @@
 
   <div class="control-panel__body">
     <ul class="control-panel__groups">
-
-      <!-- Floating / docked mode switch — on = docked (default), off = modern floating -->
-      <li class="control-panel__group">
-        <label class="toggle toggle--sm cp-dock-toggle">
-          <input type="checkbox" class="toggle__input" id="cp-dock-input" checked>
-          <span class="toggle__track">
-            <span class="toggle__dot"></span>
-          </span>
-          <span class="toggle__label">Modern floating</span>
-        </label>
-      </li>
 
       <!-- Home (active) -->
       <li class="control-panel__group">
@@ -745,30 +698,6 @@
     }
 
     setIcon();
-  })();
-</script>
-
-<!-- Floating / docked switch — checked = docked (default), unchecked = modern floating.
-     The <body> ships with sb-docked so the first paint is docked; the saved
-     choice ('0' = floating) is applied here. -->
-<script>
-  (function () {
-    var input = document.getElementById('cp-dock-input');
-    if (!input) return;
-
-    function apply(docked) {
-      document.body.classList.toggle('sb-docked', docked);
-      input.checked = docked;
-    }
-
-    input.addEventListener('change', function () {
-      apply(input.checked);
-      try { localStorage.setItem('modern-sidebar-docked', input.checked ? '1' : '0'); } catch (e) {}
-    });
-
-    var saved = '';
-    try { saved = localStorage.getItem('modern-sidebar-docked') || ''; } catch (e) {}
-    apply(saved !== '0');
   })();
 </script>
 
