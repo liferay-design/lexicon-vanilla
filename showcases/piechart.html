@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pie Chart — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-8); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-4); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Pie Chart</h1>
+  <p class="lead">
+    Source: <a href="https://marcoscv-work.github.io/lexicon-vanilla-charts/?path=/story/charts-piechart--responsive">Lexicon Charts — Pie chart</a>.
+    A donut from SVG <code>stroke-dasharray</code> segments (gaps fall back to the plot surface, so separators stay crisp in every skin) with a running total in the hole.
+    <code>.chart-pie</code> keeps the legend to the right and lets it drop below the donut when the container runs out of room — pure flex-wrap, no media query.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Legend right (default)</span>
+    <div class="chart">
+      <h3 class="chart__title">Traffic by source</h3>
+      <div class="chart-pie">
+        <div class="chart-donut">
+          <svg class="chart-donut__svg" viewBox="0 0 120 120" role="img" aria-label="Traffic by source, total 900">
+            <g transform="rotate(-90 60 60)">
+              <circle class="chart-donut__seg chart-c1" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="120.8 143.1" stroke-dashoffset="262.7"/>
+              <circle class="chart-donut__seg chart-c2" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="59.1 204.8" stroke-dashoffset="139.5"/>
+              <circle class="chart-donut__seg chart-c3" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="50.4 213.5" stroke-dashoffset="78"/>
+              <circle class="chart-donut__seg chart-c4" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="24 239.9" stroke-dashoffset="25.2"/>
+            </g>
+          </svg>
+          <div class="chart-donut__center">
+            <span class="chart-donut__label">Total</span>
+            <span class="chart-donut__total">900</span>
+          </div>
+        </div>
+        <ul class="chart-legend chart-legend--rows">
+          <li class="chart-legend__item chart-c1"><span class="chart-legend__swatch"></span>Organic search <span class="chart-legend__value">46.7%</span></li>
+          <li class="chart-legend__item chart-c2"><span class="chart-legend__swatch"></span>Paid social <span class="chart-legend__value">23.3%</span></li>
+          <li class="chart-legend__item chart-c3"><span class="chart-legend__swatch"></span>Direct <span class="chart-legend__value">20.0%</span></li>
+          <li class="chart-legend__item chart-c4"><span class="chart-legend__swatch"></span>Referral <span class="chart-legend__value">10.0%</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Narrow container — legend drops below</span>
+    <div class="chart" style="max-width: 300px;">
+      <h3 class="chart__title">Traffic by source</h3>
+      <div class="chart-pie">
+        <div class="chart-donut">
+          <svg class="chart-donut__svg" viewBox="0 0 120 120" role="img" aria-label="Traffic by source, total 900">
+            <g transform="rotate(-90 60 60)">
+              <circle class="chart-donut__seg chart-c1" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="120.8 143.1" stroke-dashoffset="262.7"/>
+              <circle class="chart-donut__seg chart-c2" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="59.1 204.8" stroke-dashoffset="139.5"/>
+              <circle class="chart-donut__seg chart-c3" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="50.4 213.5" stroke-dashoffset="78"/>
+              <circle class="chart-donut__seg chart-c4" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="24 239.9" stroke-dashoffset="25.2"/>
+            </g>
+          </svg>
+          <div class="chart-donut__center">
+            <span class="chart-donut__label">Total</span>
+            <span class="chart-donut__total">900</span>
+          </div>
+        </div>
+        <ul class="chart-legend chart-legend--rows">
+          <li class="chart-legend__item chart-c1"><span class="chart-legend__swatch"></span>Organic search <span class="chart-legend__value">46.7%</span></li>
+          <li class="chart-legend__item chart-c2"><span class="chart-legend__swatch"></span>Paid social <span class="chart-legend__value">23.3%</span></li>
+          <li class="chart-legend__item chart-c3"><span class="chart-legend__swatch"></span>Direct <span class="chart-legend__value">20.0%</span></li>
+          <li class="chart-legend__item chart-c4"><span class="chart-legend__swatch"></span>Referral <span class="chart-legend__value">10.0%</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

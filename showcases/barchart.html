@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bar Chart — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-8); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-4); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Bar Chart</h1>
+  <p class="lead">
+    Source: <a href="https://marcoscv-work.github.io/lexicon-vanilla-charts/?path=/story/charts-barchart--inline-multiple">Lexicon Charts — Bar chart</a>.
+    Two pure-CSS layouts. <code>.chart-bars</code> is a labelled row list with the value pinned to the fill tip;
+    <code>.chart-stacked</code> is one 100% segmented bar. Colours come from <code>.chart-c1..10</code>.
+  </p>
+
+  <!-- Inline multiple — single series -->
+  <div class="showcase__row">
+    <span class="showcase__label">Inline multiple — single series</span>
+    <div class="chart">
+      <h3 class="chart__title">Quota usage</h3>
+      <div class="chart-bars">
+        <div class="chart-bars__row">
+          <span class="chart-bars__label">Storage</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:62%"></div><span class="chart-bars__value">62</span></div>
+        </div>
+        <div class="chart-bars__row">
+          <span class="chart-bars__label">Bandwidth</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:28%"></div><span class="chart-bars__value">28</span></div>
+        </div>
+        <div class="chart-bars__row">
+          <span class="chart-bars__label">API calls</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:91%"></div><span class="chart-bars__value">91</span></div>
+        </div>
+        <div class="chart-bars__row">
+          <span class="chart-bars__label">Seats</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:45%"></div><span class="chart-bars__value">45</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline multiple — colour-coded rows -->
+  <div class="showcase__row">
+    <span class="showcase__label">Inline multiple — colour per row (<code>.chart-c*</code>)</span>
+    <div class="chart">
+      <h3 class="chart__title">Weekly active users by plan</h3>
+      <div class="chart-bars">
+        <div class="chart-bars__row chart-c2">
+          <span class="chart-bars__label">Enterprise</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:88%"></div><span class="chart-bars__value">8.8k</span></div>
+        </div>
+        <div class="chart-bars__row chart-c3">
+          <span class="chart-bars__label">Business</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:64%"></div><span class="chart-bars__value">6.4k</span></div>
+        </div>
+        <div class="chart-bars__row chart-c4">
+          <span class="chart-bars__label">Team</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:37%"></div><span class="chart-bars__value">3.7k</span></div>
+        </div>
+        <div class="chart-bars__row chart-c5">
+          <span class="chart-bars__label">Free</span>
+          <div class="chart-bars__track"><div class="chart-bars__fill" style="width:19%"></div><span class="chart-bars__value">1.9k</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline stacked -->
+  <div class="showcase__row">
+    <span class="showcase__label">Inline stacked — one segmented bar + legend</span>
+    <div class="chart">
+      <h3 class="chart__title">Content progress</h3>
+      <div class="chart-stacked">
+        <div class="chart-stacked__segment chart-c1" style="flex:42"></div>
+        <div class="chart-stacked__segment chart-c2" style="flex:22"></div>
+        <div class="chart-stacked__segment chart-c3" style="flex:18"></div>
+        <div class="chart-stacked__segment chart-c4" style="flex:12"></div>
+        <div class="chart-stacked__segment chart-c5" style="flex:6"></div>
+      </div>
+      <ul class="chart-legend">
+        <li class="chart-legend__item chart-c1"><span class="chart-legend__swatch"></span>Published <span class="chart-legend__value">42%</span></li>
+        <li class="chart-legend__item chart-c2"><span class="chart-legend__swatch"></span>Approved <span class="chart-legend__value">22%</span></li>
+        <li class="chart-legend__item chart-c3"><span class="chart-legend__swatch"></span>In review <span class="chart-legend__value">18%</span></li>
+        <li class="chart-legend__item chart-c4"><span class="chart-legend__swatch"></span>Draft <span class="chart-legend__value">12%</span></li>
+        <li class="chart-legend__item chart-c5"><span class="chart-legend__swatch"></span>Rejected <span class="chart-legend__value">6%</span></li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

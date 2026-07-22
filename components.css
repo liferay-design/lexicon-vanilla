@@ -4689,3 +4689,204 @@
   border: 1px solid var(--color-secondary-l3);
   border-radius: var(--rounded-lg);
 }
+
+/* ============================================================
+   CHART
+   Source: Lexicon Charts (vanilla) —
+   https://marcoscv-work.github.io/lexicon-vanilla-charts/
+   Static, no-JS simplifications of four chart families. All
+   colour comes from the chart tokens in tokens.css: categorical
+   --chart-1..10 (aliasing the base hues in an accessibility
+   order), sequential --chart-seq-1..3, and the structural
+   --chart-track / --chart-grid / --chart-halo / --chart-axis /
+   --chart-land tokens (which flip per skin). Pick a colour by
+   adding a helper class — .chart-c1..10 or .chart-seq1..3 — which
+   sets the local --c that every fill / stroke / swatch reads.
+
+   Families:
+     .chart-bars     — horizontal labelled bars, value at the tip
+     .chart-stacked  — one 100% segmented bar
+     .chart-line     — multi-series line (SVG); one hue, the
+                       series are told apart by marker + dashes
+     .chart-donut    — donut / pie (SVG) with a centre total
+     .map-chart      — choropleth dots over a world map
+                       (plain inline SVG, no script)
+   Shared: .chart (title + plot + legend scaffold) · .chart-legend
+   ============================================================ */
+
+/* ---- Colour helpers: set the --c consumed by fills/strokes/swatches ---- */
+.chart-c1  { --c: var(--chart-1); }
+.chart-c2  { --c: var(--chart-2); }
+.chart-c3  { --c: var(--chart-3); }
+.chart-c4  { --c: var(--chart-4); }
+.chart-c5  { --c: var(--chart-5); }
+.chart-c6  { --c: var(--chart-6); }
+.chart-c7  { --c: var(--chart-7); }
+.chart-c8  { --c: var(--chart-8); }
+.chart-c9  { --c: var(--chart-9); }
+.chart-c10 { --c: var(--chart-10); }
+.chart-seq1 { --c: var(--chart-seq-1); }
+.chart-seq2 { --c: var(--chart-seq-2); }
+.chart-seq3 { --c: var(--chart-seq-3); }
+
+/* ---- Shared scaffold ---- */
+.chart { display: flex; flex-direction: column; gap: var(--spacing-5); }
+.chart__title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-dark);
+}
+
+/* ---- Shared legend (swatch + label + optional bold value) ---- */
+.chart-legend {
+  display: flex; flex-wrap: wrap;
+  gap: var(--spacing-2) var(--spacing-5);
+  margin: 0; padding: 0; list-style: none;
+}
+.chart-legend__item {
+  display: inline-flex; align-items: center; gap: var(--spacing-2);
+  font-size: var(--font-size-sm); color: var(--color-dark);
+}
+.chart-legend__swatch {
+  width: 12px; height: 12px; flex-shrink: 0;
+  border-radius: var(--rounded-sm);
+  background: var(--c, var(--chart-1));
+}
+.chart-legend__value { font-weight: var(--font-weight-bold); }
+
+/* ============================================================
+   Bar chart — inline multiple (horizontal labelled bars).
+   Each row: label · track+fill · value pinned to the fill tip.
+   Set the fill width inline (style="width:62%"); the value
+   overflows into the reserved right gutter.
+   ============================================================ */
+.chart-bars { display: flex; flex-direction: column; gap: var(--spacing-4); padding-right: var(--spacing-8); }
+.chart-bars__row { display: flex; align-items: center; gap: var(--spacing-4); }
+.chart-bars__label {
+  flex: 0 0 auto; width: 76px; text-align: right;
+  font-size: var(--font-size-sm); color: var(--color-dark);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.chart-bars__track {
+  position: relative; flex: 1 1 auto;
+  display: flex; align-items: center;
+  height: 8px; border-radius: var(--rounded-full);
+  background: var(--chart-track);
+}
+.chart-bars__fill {
+  flex: 0 0 auto; height: 100%;
+  border-radius: var(--rounded-full);
+  background: var(--c, var(--chart-2));
+}
+.chart-bars__value {
+  flex: 0 0 auto; margin-left: var(--spacing-3);
+  font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+  color: var(--color-dark); white-space: nowrap;
+}
+
+/* ============================================================
+   Bar chart — inline stacked (one 100% segmented bar).
+   Segments are proportional flex ratios (style="flex:46.7"),
+   so the numbers need not sum to 100; 2px gaps sit between them.
+   Only the whole bar's outer ends are pill-rounded (left of the
+   first segment, right of the last) — inner corners stay square.
+   ============================================================ */
+.chart-stacked {
+  display: flex; align-items: stretch;
+  gap: var(--spacing-1);
+  width: 100%; height: 8px;
+}
+.chart-stacked__segment {
+  flex: 1 1 0; min-width: 2px;
+  background: var(--c, var(--chart-1));
+}
+.chart-stacked__segment:first-child {
+  border-top-left-radius: var(--rounded-full);
+  border-bottom-left-radius: var(--rounded-full);
+}
+.chart-stacked__segment:last-child {
+  border-top-right-radius: var(--rounded-full);
+  border-bottom-right-radius: var(--rounded-full);
+}
+
+/* ============================================================
+   Line chart (SVG). One hue for every series; they're told
+   apart by marker shape (circle / square / triangle / diamond)
+   and line style (solid / dashed / dotted). Markers carry a
+   halo so they read where lines cross.
+   ============================================================ */
+.chart-line__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart-line__grid line { stroke: var(--chart-grid); stroke-width: 1; }
+.chart-line__axis text {
+  fill: var(--chart-axis);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+}
+.chart-line__series {
+  fill: none; stroke: var(--c, var(--chart-2)); stroke-width: 2;
+  stroke-linejoin: round; stroke-linecap: round;
+}
+.chart-line__series--dashed { stroke-dasharray: 6 4; }
+.chart-line__series--dotted { stroke-dasharray: 0.5 5; }
+.chart-line__marker { fill: var(--c, var(--chart-2)); stroke: var(--chart-halo); stroke-width: 1.5; }
+
+/* Legend row: mini sample (line + marker) · label · bold last value */
+.chart-line__legend { display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-5); margin: 0; padding: 0; list-style: none; }
+.chart-line__legend-item { display: inline-flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm); color: var(--color-dark); }
+.chart-line__legend-sample { display: block; width: 26px; height: 12px; flex-shrink: 0; overflow: visible; }
+.chart-line__legend-value { font-weight: var(--font-weight-bold); }
+
+/* ============================================================
+   Donut / pie (SVG). Segments are circles positioned with
+   stroke-dasharray; the gaps fall back to the plot surface so
+   the separators stay crisp in every skin. Centre holds a total.
+   ============================================================ */
+.chart-donut { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+.chart-donut__svg { display: block; width: 100%; height: 100%; }
+.chart-donut__seg { fill: none; stroke: var(--c, var(--chart-1)); stroke-linecap: butt; }
+.chart-donut__center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--spacing-1); pointer-events: none;
+}
+.chart-donut__label { font-size: var(--font-size-sm); color: var(--color-secondary); }
+.chart-donut__total { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-dark); }
+
+/* Responsive donut + legend: the legend sits to the RIGHT of the
+   donut and, when its container runs out of room, wraps below it —
+   pure flex-wrap, so it reacts to the container, not the viewport. */
+.chart-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-5) var(--spacing-8);
+}
+.chart-pie > .chart-donut { flex: 0 0 auto; }
+.chart-pie > .chart-legend { flex: 1 1 200px; }
+
+/* Legend as stacked rows (label left · value right) — the form
+   used beside a donut. */
+.chart-legend--rows { flex-direction: column; align-items: stretch; gap: var(--spacing-3); }
+.chart-legend--rows .chart-legend__item { width: 100%; }
+.chart-legend--rows .chart-legend__value { margin-left: auto; }
+
+/* ============================================================
+   Map chart (SVG choropleth). The land <path>s are inlined
+   directly in a plain <svg> (no script); dots carry the bucket
+   colour via .chart-seq1..3. Legend shows a less → more scale.
+   ============================================================ */
+.map-chart { display: flex; flex-direction: column; gap: var(--spacing-4); }
+.map-chart__svg { display: block; width: 100%; height: auto; }
+.map-chart__land path { fill: var(--chart-land); stroke: var(--chart-land-line); stroke-width: 0.5; }
+.map-chart__dot { fill: var(--c, var(--chart-seq-3)); stroke: var(--chart-halo); stroke-width: 1; }
+.map-chart__legend {
+  display: inline-flex; align-items: center; gap: var(--spacing-2);
+  font-size: var(--font-size-sm); color: var(--color-secondary);
+}
+.map-chart__scale { display: inline-flex; gap: var(--spacing-1); }
+.map-chart__scale > * {
+  width: 22px; height: 8px;
+  border-radius: var(--rounded-sm);
+  background: var(--c, var(--chart-seq-1));
+}

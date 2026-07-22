@@ -256,3 +256,44 @@ a:hover { color: var(--color-primary-d1); }
   --skeleton-shimmer-rgb: 247, 248, 249;  /* light-l1 */
   --skeleton-shimmer-alpha: 0.6;
 }
+
+/* ============================================================
+   CHART tokens — categorical series, sequential buckets and
+   plot structure.
+   Categorical series alias the base chart hues (--yellow, --blue,
+   …) in a fixed order chosen for maximum adjacent contrast and
+   accessibility; the base hues already carry per-skin overrides,
+   so charts reskin for free. (Never point a series at a -l2/-l3
+   tint — those collapse to near-white in the HC skins.) The
+   sequential buckets alias the --blue scale, and the structural
+   tokens alias the semantic scale so grid / track / halo / axis /
+   land flip per skin automatically.
+   ============================================================ */
+:root {
+  /* Categorical series — bar (stacked), pie, multi-series line.
+     Ordered for maximum adjacent contrast + accessibility; alias
+     the base chart hues so each series reskins per skin. */
+  --chart-1:  var(--yellow);
+  --chart-2:  var(--blue);
+  --chart-3:  var(--orange);
+  --chart-4:  var(--teal);
+  --chart-5:  var(--pink);
+  --chart-6:  var(--cyan);
+  --chart-7:  var(--red);
+  --chart-8:  var(--purple);
+  --chart-9:  var(--green);
+  --chart-10: var(--indigo);
+
+  /* Sequential buckets — single hue, less → more (map, heat) */
+  --chart-seq-1: var(--blue-l4);
+  --chart-seq-2: var(--blue-l2);
+  --chart-seq-3: var(--blue);
+
+  /* Plot structure — flip per skin through the semantic scale */
+  --chart-track:     var(--color-light-d1);   /* bar track / gridlines (#E2E4EA) */
+  --chart-grid:      var(--color-light-d1);   /* axis gridlines */
+  --chart-halo:      var(--color-white);      /* marker + segment separators */
+  --chart-axis:      var(--color-secondary);  /* axis + tick labels */
+  --chart-land:      var(--color-light);      /* map land fill (#F1F2F5) */
+  --chart-land-line: var(--color-light-d1);   /* map land borders (#E2E4EA) */
+}

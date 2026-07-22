@@ -143,6 +143,7 @@ For text/icons that must stay legible in every skin, use `var(--color-dark)` wit
 | CMS Dropdown *(satellite)* | [`4481:27057`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=4481-27057) | `.cms-structure-dropdown` 240px white panel. Field items in `.cms-structure-dropdown__group` (4px gap); each item is a `<button class="cms-structure-dropdown__item">` with a `.cms-structure-dropdown__sticker--field` (blue) or `--structure` (orange) 32×32 icon sticker and 12px semibold label. Divider: `.cms-structure-dropdown__divider`. Active state: `.is-active`. |
 | Control Panel | [`2:2209`](https://www.figma.com/design/GYxgfX51jQhrzgChOIC37D/Product-Menus--Side-Navigation-?node-id=2-2209) | `.control-panel` 320px overlay sidebar (light-l1 bg, secondary-l0 right border). Header: `.control-panel__sticker` (40×40 white rounded box) + `.control-panel__title` + close btn. Body: `.control-panel__body` (scrollable, 24px v-padding). Groups list: `.control-panel__groups` (16px gap) → `.control-panel__group` (4px gap) → `.control-panel__group-header` (12px uppercase + chevron) + `.control-panel__item` (40px, 24px icon container). Active item: `.is-active` → primary-l3 bg + 6px primary left rail. |
 | Skeleton | [collection ↗](https://diegoalo.github.io/liferay-tests/lexicon-skeleton-previews.html) | Loading states by Diego Alonso. `.skeleton` container + `.sk` shapes (sizes inline, mimicking the real component's metrics). Shimmer painted per shape over a viewport-fixed gradient → single sweeping front. Modifiers: `.circle`, `.row`, `.fade`, `.surface`. Tokens `--skeleton-*` in `tokens.css`/`tokens-dark.css`. Speed via `--skeleton-duration` / `--skeleton-play: paused`. Compositions in `showcases/skeleton.html`; full DXP layouts in `prototypes/skeletons.html`. |
+| Charts *(source: [Lexicon Charts ↗](https://marcoscv-work.github.io/lexicon-vanilla-charts/))* | four static, no-JS families | **Bar** — `.chart-bars` (inline multiple; label + track + fill, value pinned to the fill tip via `style="width:N%"`) and `.chart-stacked` (one 100% segmented bar; proportional `style="flex:N"` ratios, pill ends). **Line** — `.chart-line` SVG; every series uses one hue, told apart by marker shape (circle / square / triangle / diamond) + line style (`--dashed` / `--dotted`); markers carry a `--chart-halo`. **Pie** — `.chart-donut` SVG `stroke-dasharray` segments in a `rotate(-90 60 60)` group + `.chart-donut__center` total; gaps fall back to the plot surface so separators stay crisp per skin. Wrap donut + `.chart-legend--rows` in `.chart-pie` for a responsive layout (legend right, drops below when the container narrows — flex-wrap, no media query). **Map** — `.map-chart` choropleth dots over a simplified world map inlined as a plain `<svg>` (no script); dots + legend scale use `.chart-seq1..3`. Colour any part with helper classes `.chart-c1..10` (categorical, ordered for accessibility: yellow → blue → orange → teal → pink → cyan → red → purple → green → indigo) / `.chart-seq1..3` (sequential), which set the local `--c`. Tokens in `tokens.css`: `--chart-1..10` (alias the base hues), `--chart-seq-1..3` (`--blue` scale), `--chart-track/grid/halo/axis/land`. Showcases: `barchart.html` · `linechart.html` · `piechart.html` · `mapchart.html`. |
 
 For new Figma components, get the Playground node-id, fetch the node JSON + PNG via the REST API, map fills to tokens, write the CSS + showcase HTML, and append a row here.
 
@@ -216,6 +217,55 @@ For new Figma components, get the Playground node-id, fetch the node JSON + PNG 
 
 - **Size:** default (14/21) · `section--sm` (12/18)
 - **Type:** default (header) · `section--link` (render as `<a>`, add `#angle-right`)
+
+### Charts
+
+Four static, no-JS families — all pure CSS or a plain inline `<svg>` (no scripts, no build). Colour with helper classes — `.chart-c1..10` (categorical) / `.chart-seq1..3` (sequential) — which set the local `--c`. The categorical tokens alias the base hues in a fixed accessibility order (`--yellow → --blue → --orange → --teal → --pink → --cyan → --red → --purple → --green → --indigo`); structural tokens (`--chart-track/grid/halo/axis/land`) flip per skin.
+
+```html
+<!-- Bar — inline multiple (value at the fill tip) -->
+<div class="chart-bars">
+  <div class="chart-bars__row">
+    <span class="chart-bars__label">Storage</span>
+    <div class="chart-bars__track"><div class="chart-bars__fill" style="width:62%"></div><span class="chart-bars__value">62</span></div>
+  </div>
+</div>
+
+<!-- Bar — inline stacked (proportional flex ratios) -->
+<div class="chart-stacked">
+  <div class="chart-stacked__segment chart-c1" style="flex:42"></div>
+  <div class="chart-stacked__segment chart-c2" style="flex:22"></div>
+</div>
+
+<!-- Pie — donut + legend. .chart-pie puts the legend to the right
+     and drops it below the donut when the container is narrow. -->
+<div class="chart-pie">
+  <div class="chart-donut">
+    <svg class="chart-donut__svg" viewBox="0 0 120 120">
+      <g transform="rotate(-90 60 60)">
+        <circle class="chart-donut__seg chart-c1" cx="60" cy="60" r="42" stroke-width="18" stroke-dasharray="120.8 143.1" stroke-dashoffset="262.7"></circle>
+      </g>
+    </svg>
+    <div class="chart-donut__center"><span class="chart-donut__label">Total</span><span class="chart-donut__total">900</span></div>
+  </div>
+  <ul class="chart-legend chart-legend--rows">
+    <li class="chart-legend__item chart-c1"><span class="chart-legend__swatch"></span>Organic <span class="chart-legend__value">46.7%</span></li>
+  </ul>
+</div>
+
+<!-- Map — dots on a world map (plain inline SVG, no script) -->
+<div class="map-chart">
+  <svg class="map-chart__svg" viewBox="0 0 558 282">
+    <g class="map-chart__land"><!-- world-map <path>s — copy from showcases/mapchart.html --></g>
+    <g class="map-chart__dots">
+      <circle class="map-chart__dot chart-seq3" cx="115" cy="113" r="6"></circle>
+    </g>
+  </svg>
+</div>
+```
+
+- **Line chart** is SVG geometry — copy `showcases/linechart.html` and edit the `<polyline points>` + markers. Donut `stroke-dasharray`/`-dashoffset` are precomputed per slice (see `showcases/piechart.html`).
+- **Categorical order** is fixed for adjacent contrast + accessibility; the `--chart-*` tokens alias the base chart hues (`--yellow`, `--blue`, …), which carry per-skin overrides, so charts reskin for free. Never point a series at a `-l2`/`-l3` tint — those collapse to near-white in HC.
 
 ---
 

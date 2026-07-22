@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Line Chart — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    .showcase { max-width: 720px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase__row { margin-bottom: var(--spacing-8); }
+    .showcase__label { display: block; font-size: 10px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-4); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Line Chart</h1>
+  <p class="lead">
+    Source: <a href="https://marcoscv-work.github.io/lexicon-vanilla-charts/?path=/story/charts-linechart--default">Lexicon Charts — Line chart</a>.
+    Multi-series SVG line chart. Every series uses one hue (<code>--chart-2</code>, blue); they're told apart by marker
+    shape (circle / square / triangle / diamond) and line style (<code>--dashed</code> / <code>--dotted</code>).
+    Colourblind-safe: it never relies on colour alone. Add <code>.chart-c1</code>…<code>.chart-c4</code> to the series groups for a multi-colour version.
+    The legend repeats the marker and prints the last value in bold.
+  </p>
+
+  <div class="showcase__row">
+    <span class="showcase__label">Default — 4 series, monthly</span>
+    <div class="chart">
+      <h3 class="chart__title">Value per year</h3>
+      <svg class="chart-line__svg" viewBox="0 0 640 320" role="img" aria-label="Value per year, four series across twelve months">
+  <g class="chart-line__grid">
+    <line x1="34" y1="286" x2="628" y2="286"/>
+    <line x1="34" y1="218.5" x2="628" y2="218.5"/>
+    <line x1="34" y1="151" x2="628" y2="151"/>
+    <line x1="34" y1="83.5" x2="628" y2="83.5"/>
+    <line x1="34" y1="16" x2="628" y2="16"/>
+  </g>
+  <g class="chart-line__axis">
+    <text x="26" y="289" text-anchor="end">0</text>
+    <text x="26" y="221.5" text-anchor="end">100</text>
+    <text x="26" y="154" text-anchor="end">200</text>
+    <text x="26" y="86.5" text-anchor="end">300</text>
+    <text x="26" y="19" text-anchor="end">400</text>
+    <text x="34" y="304" text-anchor="middle">Jan</text>
+    <text x="88" y="304" text-anchor="middle">Feb</text>
+    <text x="142" y="304" text-anchor="middle">Mar</text>
+    <text x="196" y="304" text-anchor="middle">Apr</text>
+    <text x="250" y="304" text-anchor="middle">May</text>
+    <text x="304" y="304" text-anchor="middle">Jun</text>
+    <text x="358" y="304" text-anchor="middle">Jul</text>
+    <text x="412" y="304" text-anchor="middle">Aug</text>
+    <text x="466" y="304" text-anchor="middle">Sep</text>
+    <text x="520" y="304" text-anchor="middle">Oct</text>
+    <text x="574" y="304" text-anchor="middle">Nov</text>
+    <text x="628" y="304" text-anchor="middle">Dec</text>
+  </g>
+  <g class="chart-line__plot">
+    <polyline class="chart-line__series" points="34,277.9 88,242.1 142,245.5 196,192.8 250,191.5 304,205 358,151 412,70 466,113.9 520,95.7 574,66.6 628,39.6"/>
+    <circle class="chart-line__marker" cx="34" cy="277.9" r="3.5"/><circle class="chart-line__marker" cx="88" cy="242.1" r="3.5"/><circle class="chart-line__marker" cx="142" cy="245.5" r="3.5"/><circle class="chart-line__marker" cx="196" cy="192.8" r="3.5"/><circle class="chart-line__marker" cx="250" cy="191.5" r="3.5"/><circle class="chart-line__marker" cx="304" cy="205" r="3.5"/><circle class="chart-line__marker" cx="358" cy="151" r="3.5"/><circle class="chart-line__marker" cx="412" cy="70" r="3.5"/><circle class="chart-line__marker" cx="466" cy="113.9" r="3.5"/><circle class="chart-line__marker" cx="520" cy="95.7" r="3.5"/><circle class="chart-line__marker" cx="574" cy="66.6" r="3.5"/><circle class="chart-line__marker" cx="628" cy="39.6" r="3.5"/>
+  </g>
+  <g class="chart-line__plot">
+    <polyline class="chart-line__series" points="34,208.4 88,233.3 142,171.2 196,129.4 250,174.6 304,92.3 358,124 412,95 466,211.8 520,181.4 574,137.5 628,161.8"/>
+    <rect class="chart-line__marker" x="31" y="205.4" width="6" height="6"/><rect class="chart-line__marker" x="85" y="230.3" width="6" height="6"/><rect class="chart-line__marker" x="139" y="168.2" width="6" height="6"/><rect class="chart-line__marker" x="193" y="126.4" width="6" height="6"/><rect class="chart-line__marker" x="247" y="171.6" width="6" height="6"/><rect class="chart-line__marker" x="301" y="89.3" width="6" height="6"/><rect class="chart-line__marker" x="355" y="121" width="6" height="6"/><rect class="chart-line__marker" x="409" y="92" width="6" height="6"/><rect class="chart-line__marker" x="463" y="208.8" width="6" height="6"/><rect class="chart-line__marker" x="517" y="178.4" width="6" height="6"/><rect class="chart-line__marker" x="571" y="134.5" width="6" height="6"/><rect class="chart-line__marker" x="625" y="158.8" width="6" height="6"/>
+  </g>
+  <g class="chart-line__plot">
+    <polyline class="chart-line__series chart-line__series--dashed" points="34,232 88,198.2 142,174.6 196,167.9 250,111.8 304,137.5 358,107.1 412,127.4 466,184.8 520,184.8 574,208.4 628,260.4"/>
+    <path class="chart-line__marker" d="M34 228L37.7 235.2L30.3 235.2Z"/><path class="chart-line__marker" d="M88 194.2L91.7 201.4L84.3 201.4Z"/><path class="chart-line__marker" d="M142 170.6L145.7 177.8L138.3 177.8Z"/><path class="chart-line__marker" d="M196 163.9L199.7 171.1L192.3 171.1Z"/><path class="chart-line__marker" d="M250 107.8L253.7 115L246.3 115Z"/><path class="chart-line__marker" d="M304 133.5L307.7 140.7L300.3 140.7Z"/><path class="chart-line__marker" d="M358 103.1L361.7 110.3L354.3 110.3Z"/><path class="chart-line__marker" d="M412 123.4L415.7 130.6L408.3 130.6Z"/><path class="chart-line__marker" d="M466 180.8L469.7 188L462.3 188Z"/><path class="chart-line__marker" d="M520 180.8L523.7 188L516.3 188Z"/><path class="chart-line__marker" d="M574 204.4L577.7 211.6L570.3 211.6Z"/><path class="chart-line__marker" d="M628 256.4L631.7 263.6L624.3 263.6Z"/>
+  </g>
+  <g class="chart-line__plot">
+    <polyline class="chart-line__series chart-line__series--dotted" points="34,235.4 88,205 142,151 196,167.9 250,110.5 304,55.2 358,102.4 412,105.1 466,161.1 520,188.1 574,157.8 628,137.5"/>
+    <path class="chart-line__marker" d="M34 231.2L38.2 235.4L34 239.6L29.8 235.4Z"/><path class="chart-line__marker" d="M88 200.8L92.2 205L88 209.2L83.8 205Z"/><path class="chart-line__marker" d="M142 146.8L146.2 151L142 155.2L137.8 151Z"/><path class="chart-line__marker" d="M196 163.7L200.2 167.9L196 172.1L191.8 167.9Z"/><path class="chart-line__marker" d="M250 106.3L254.2 110.5L250 114.7L245.8 110.5Z"/><path class="chart-line__marker" d="M304 51L308.2 55.2L304 59.4L299.8 55.2Z"/><path class="chart-line__marker" d="M358 98.2L362.2 102.4L358 106.6L353.8 102.4Z"/><path class="chart-line__marker" d="M412 100.9L416.2 105.1L412 109.3L407.8 105.1Z"/><path class="chart-line__marker" d="M466 156.9L470.2 161.1L466 165.3L461.8 161.1Z"/><path class="chart-line__marker" d="M520 183.9L524.2 188.1L520 192.3L515.8 188.1Z"/><path class="chart-line__marker" d="M574 153.6L578.2 157.8L574 162L569.8 157.8Z"/><path class="chart-line__marker" d="M628 133.3L632.2 137.5L628 141.7L623.8 137.5Z"/>
+  </g>
+      </svg>
+      <ul class="chart-line__legend">
+        <li class="chart-line__legend-item">
+          <svg class="chart-line__legend-sample" viewBox="0 0 26 12"><line class="chart-line__series" x1="1" y1="6" x2="25" y2="6"/><circle class="chart-line__marker" cx="13" cy="6" r="3.5"/></svg>
+          2014 <span class="chart-line__legend-value">365</span>
+        </li>
+        <li class="chart-line__legend-item">
+          <svg class="chart-line__legend-sample" viewBox="0 0 26 12"><line class="chart-line__series" x1="1" y1="6" x2="25" y2="6"/><rect class="chart-line__marker" x="10" y="3" width="6" height="6"/></svg>
+          2015 <span class="chart-line__legend-value">184</span>
+        </li>
+        <li class="chart-line__legend-item">
+          <svg class="chart-line__legend-sample" viewBox="0 0 26 12"><line class="chart-line__series chart-line__series--dashed" x1="1" y1="6" x2="25" y2="6"/><path class="chart-line__marker" d="M13 2L16.7 9.2L9.3 9.2Z"/></svg>
+          2016 <span class="chart-line__legend-value">38</span>
+        </li>
+        <li class="chart-line__legend-item">
+          <svg class="chart-line__legend-sample" viewBox="0 0 26 12"><line class="chart-line__series chart-line__series--dotted" x1="1" y1="6" x2="25" y2="6"/><path class="chart-line__marker" d="M13 1.8L17.2 6L13 10.2L8.8 6Z"/></svg>
+          2017 <span class="chart-line__legend-value">220</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
