@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Governance Dashboard — Liferay CMS</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+</head>
+<body style="margin: 0;">
+
+<!-- ════════════════════════════════════════════════════════════════
+     CMS shell — Control Menu + CMS sidebar + content area
+     Copy to prototypes/<screen>.html and fill in the content area.
+
+     To customise the chrome:
+       • Change the <title> and .control-menu__title text
+       • Mark a different .vert-nav__item as is-active
+       • Add / remove sidebar groups and items as needed
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Menu (top bar) ──────────────────────────────────── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Liferay CMS</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- ─── App body: sidebar + content ─────────────────────────────── -->
+<div style="display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px);">
+
+  <!-- CMS Menu (left sidebar) -->
+  <aside class="cms-menu">
+    <ul class="cms-menu__groups">
+
+      <!-- Home / Dashboard -->
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#home"></use></svg></span>
+            Home
+          </li>
+          <li class="vert-nav__item is-active">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#analytics"></use></svg></span>
+            Dashboard
+          </li>
+        </ul>
+      </li>
+
+      <!-- ASSETS -->
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          ASSETS
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#sheets"></use></svg></span>
+            All
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#catalog"></use></svg></span>
+            Content
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#documents-and-media"></use></svg></span>
+            Files
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#users"></use></svg></span>
+            Shared with me
+          </li>
+        </ul>
+      </li>
+
+      <!-- ADMIN -->
+      <li>
+        <button class="vert-nav__group-header" aria-expanded="true">
+          ADMIN
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#edit-layout"></use></svg></span>
+            Content Structures
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#vocabulary"></use></svg></span>
+            Categorization
+          </li>
+        </ul>
+      </li>
+
+      <!-- SPACE — header with add button, coloured space stickers -->
+      <li>
+        <div class="vert-nav__group-header">
+          SPACE
+          <span class="vert-nav__group-actions">
+            <button class="btn btn--secondary btn--xs btn--icon" type="button" aria-label="Add space">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#plus"></use></svg>
+            </button>
+            <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+          </span>
+        </div>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background: var(--purple-l5); color: var(--purple); border-color: var(--purple);">M</span></span>
+            Marketing
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background: var(--yellow-l5); color: var(--yellow-d2); border-color: var(--yellow-d2);">H</span></span>
+            HR
+          </li>
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><span class="sticker sticker--outline" style="background: var(--green-l5); color: var(--green); border-color: var(--green);">C</span></span>
+            Campaigns
+          </li>
+        </ul>
+      </li>
+
+      <!-- Recycle bin -->
+      <li>
+        <ul class="vert-nav__list">
+          <li class="vert-nav__item">
+            <span class="vert-nav__icon-cell"><svg class="lexicon-icon vert-nav__icon"><use href="#trash"></use></svg></span>
+            Recycle bin
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="display: flex; flex-direction: column; align-items: center; min-width: 0; background: var(--color-white); margin-bottom: calc(var(--spacing-9) * 2);">
+    <div style="padding: var(--spacing-7); display: flex; flex-direction: column; gap: var(--spacing-8); max-width: 1200px; width: 100%;">
+
+      <!-- ── Title + tabs ─────────────────────────────────────────── -->
+      <div>
+        <h1 style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-5);">Dashboard</h1>
+        <nav class="navbar">
+          <ul class="navbar__list">
+            <li><a href="#" class="navbar__item is-active" aria-current="page">Governance</a></li>
+            <li><a href="#" class="navbar__item">Inventory</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- ── Filters ──────────────────────────────────────────────── -->
+      <div style="display: flex; gap: var(--spacing-3); flex-wrap: wrap;">
+        <button class="btn btn--secondary btn--sm" type="button">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#sites"></use></svg>
+          All Spaces
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg>
+        </button>
+        <button class="btn btn--secondary btn--sm" type="button">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#calendar"></use></svg>
+          Last 7 days
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-bottom"></use></svg>
+        </button>
+      </div>
+
+      <!-- ── Governance Health banner ─────────────────────────────── -->
+      <section style="position: relative; overflow: hidden; background: var(--color-primary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-7); display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-7); flex-wrap: wrap;">
+        <svg aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;">
+          <g fill="var(--color-primary-l1)">
+            <ellipse cx="825" cy="250" rx="540" ry="195" opacity="0.13" transform="rotate(-18 825 250)"/>
+            <ellipse cx="1165" cy="205" rx="560" ry="185" opacity="0.13" transform="rotate(-18 1165 205)"/>
+          </g>
+        </svg>
+        <div style="position: relative; z-index: 1;">
+          <div style="display: flex; align-items: center; gap: var(--spacing-2); margin-bottom: var(--spacing-3);">
+            <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Governance Health</span>
+            <svg class="lexicon-icon lexicon-icon-sm" style="color: var(--color-secondary);"><use href="#question-circle"></use></svg>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: var(--spacing-4);">
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">82<span style="font-size: var(--font-size-lg); color: var(--color-secondary); font-weight: var(--font-weight-normal);">/100</span></span>
+            <span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);">
+              <svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg> 6%
+              <span style="color: var(--color-secondary); font-weight: var(--font-weight-normal); text-transform: uppercase; font-size: var(--font-size-xs); letter-spacing: 0.04em; margin-left: var(--spacing-1);">vs previous period</span>
+            </span>
+          </div>
+        </div>
+        <div style="position: relative; z-index: 1; display: flex; gap: var(--spacing-8); flex-wrap: wrap;">
+          <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">76</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Reliability</div></div>
+          <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">88</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Freshness</div></div>
+          <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">68</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Flow</div></div>
+          <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">85</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Originality</div></div>
+        </div>
+      </section>
+
+      <!-- ── ATTENTION REQUIRED ───────────────────────────────────── -->
+      <section>
+        <div style="display: flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-secondary); margin-bottom: var(--spacing-5);">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#reload"></use></svg> Attention Required
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-5);">
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-3);">
+              <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Broken Links</span>
+              <span class="sticker sticker--icon sticker--md" style="background: var(--color-danger-l2); color: var(--color-danger); flex-shrink: 0;"><svg class="lexicon-icon"><use href="#link"></use></svg></span>
+            </div>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">References to expired assets across the selected spaces.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">8</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-3);">
+              <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Expired Assets</span>
+              <span class="sticker sticker--icon sticker--md" style="background: var(--color-warning-l2); color: var(--color-warning); flex-shrink: 0;"><svg class="lexicon-icon"><use href="#warning-full"></use></svg></span>
+            </div>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Number of expired assets across the selected spaces.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">6</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-3);">
+              <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Overdue Reviews</span>
+              <span class="sticker sticker--icon sticker--md" style="background: var(--color-light); color: var(--color-secondary); flex-shrink: 0;"><svg class="lexicon-icon"><use href="#calendar"></use></svg></span>
+            </div>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets with overdue reviews across the selected spaces.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">3</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-3);">
+              <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Pending Workflows</span>
+              <span class="sticker sticker--icon sticker--md" style="background: var(--color-primary-l3); color: var(--color-primary); flex-shrink: 0;"><svg class="lexicon-icon"><use href="#workflow"></use></svg></span>
+            </div>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets with pending workflows across the selected spaces.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">4</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── NEEDS REVIEW ─────────────────────────────────────────── -->
+      <section>
+        <div style="display: flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-secondary); margin-bottom: var(--spacing-5);">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#time"></use></svg> Needs Review
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--spacing-5);">
+
+          <!-- Upcoming Reviews -->
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); background: var(--color-white); overflow: hidden;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: var(--spacing-6) var(--spacing-6) var(--spacing-4); gap: var(--spacing-3);">
+              <div>
+                <h3 style="margin: 0; font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Upcoming Reviews</h3>
+                <p style="margin: var(--spacing-1) 0 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Assets approaching their review date.</p>
+              </div>
+              <a href="#" class="btn btn--link btn--sm" style="flex-shrink: 0;">View All</a>
+            </div>
+            <ul class="list list--flush list--zebra">
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-info);"><use href="#web-content"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Marketing Guidelines</a>
+                  <span class="list__subtitle">Jan 22, 2026</span>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-info);"><use href="#web-content"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Campaign Launch</a>
+                  <span class="list__subtitle">Jan 23, 2026</span>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-danger);"><use href="#video"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Promo Video</a>
+                  <span class="list__subtitle">Jan 25, 2026</span>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Expiring Soon -->
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); background: var(--color-white); overflow: hidden;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: var(--spacing-6) var(--spacing-6) var(--spacing-4); gap: var(--spacing-3);">
+              <div>
+                <h3 style="margin: 0; font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Expiring Soon</h3>
+                <p style="margin: var(--spacing-1) 0 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Assets approaching their expiration date.</p>
+              </div>
+              <a href="#" class="btn btn--link btn--sm" style="flex-shrink: 0;">View All</a>
+            </div>
+            <ul class="list list--flush list--zebra">
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-info);"><use href="#web-content"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Marketing Guidelines</a>
+                  <div class="list__labels">
+                    <span class="label label--sm label--bold label--success">Approved</span>
+                    <span class="label label--sm label--warning">Expiring Soon</span>
+                  </div>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-info);"><use href="#web-content"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Campaign Launch</a>
+                  <div class="list__labels">
+                    <span class="label label--sm label--bold label--success">Approved</span>
+                    <span class="label label--sm label--warning">Expiring Soon</span>
+                  </div>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+              <li class="list__row">
+                <span class="list__sticker"><svg class="lexicon-icon" style="color: var(--color-danger);"><use href="#video"></use></svg></span>
+                <div class="list__content">
+                  <a href="#" class="list__title">Promo Video</a>
+                  <div class="list__labels">
+                    <span class="label label--sm label--bold label--success">Approved</span>
+                    <span class="label label--sm label--warning">Expiring Soon</span>
+                  </div>
+                </div>
+                <div class="list__actions">
+                  <button class="btn btn--borderless btn--sm btn--icon" aria-label="More"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── WORKFLOW AND CONTENT PROGRESS ────────────────────────── -->
+      <section>
+        <div style="display: flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-secondary); margin-bottom: var(--spacing-5);">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#workflow"></use></svg> Workflow and Content Progress
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--spacing-5);">
+
+          <!-- Content Progress (inline stacked chart) -->
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-6);">
+            <div>
+              <h3 style="margin: 0; font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Content Progress</h3>
+              <p style="margin: var(--spacing-1) 0 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Progress of content creation and completion across the selected spaces.</p>
+            </div>
+            <div class="chart-stacked">
+              <div class="chart-stacked__segment" style="flex: 12; --c: var(--color-secondary-l1);"></div>
+              <div class="chart-stacked__segment chart-c3" style="flex: 14;"></div>
+              <div class="chart-stacked__segment chart-c9" style="flex: 40;"></div>
+              <div class="chart-stacked__segment chart-c2" style="flex: 24;"></div>
+              <div class="chart-stacked__segment chart-c1" style="flex: 10;"></div>
+            </div>
+            <ul class="chart-legend">
+              <li class="chart-legend__item" style="--c: var(--color-secondary-l1);"><span class="chart-legend__swatch"></span>Draft</li>
+              <li class="chart-legend__item chart-c3"><span class="chart-legend__swatch"></span>Pending</li>
+              <li class="chart-legend__item chart-c9"><span class="chart-legend__swatch"></span>Approved</li>
+              <li class="chart-legend__item chart-c2"><span class="chart-legend__swatch"></span>Scheduled</li>
+              <li class="chart-legend__item chart-c1"><span class="chart-legend__swatch"></span>Others</li>
+            </ul>
+          </div>
+
+          <!-- Workflow -->
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-6);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-3);">
+              <div>
+                <h3 style="margin: 0; font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Workflow</h3>
+                <p style="margin: var(--spacing-1) 0 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Workflow health and bottlenecks across the selected spaces.</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--spacing-2); flex-shrink: 0;">
+                <button class="btn btn--borderless btn--sm" type="button">All Workflows <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></button>
+                <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Open workflows"><svg class="lexicon-icon"><use href="#shortcut"></use></svg></button>
+              </div>
+            </div>
+            <div style="display: flex; gap: var(--spacing-8); flex-wrap: wrap;">
+              <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">6</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Overdue Items</div></div>
+              <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">3.2</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Average approval days</div></div>
+              <div><div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-dark);">Pending</div><div style="font-size: var(--font-size-sm); color: var(--color-secondary);">Top Bottleneck Stage</div></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── DUPLICATION AND SIMILARITY ───────────────────────────── -->
+      <section>
+        <div style="display: flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-secondary); margin-bottom: var(--spacing-5);">
+          <svg class="lexicon-icon lexicon-icon-sm"><use href="#copy"></use></svg> Duplication and Similarity
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-5);">
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Duplicate Topics</span>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets covering the same topic based on similar or identical titles.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">9</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Text Similarity</span>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets with significant overlap in main text fields.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">23</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Same Metadata</span>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets with identical or highly similar metadata.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">14</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+          <div style="border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-3);">
+            <span style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark);">Similar Links</span>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.6;">Assets with shared or frequently reused links across items.</p>
+            <span style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); line-height: 1;">18</span>
+            <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--spacing-2); font-size: var(--font-size-sm);"><span style="display: inline-flex; align-items: center; gap: var(--spacing-1); color: var(--color-success); font-weight: var(--font-weight-bold); white-space: nowrap;"><svg class="lexicon-icon lexicon-icon-sm"><use href="#caret-top"></use></svg>22.5%</span> <span style="color: var(--color-secondary); white-space: nowrap;">vs. previous period</span></span>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- Collapsible CMS menu groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.vert-nav__group-header').forEach(function (header) {
+      if (!header.hasAttribute('aria-expanded')) header.setAttribute('aria-expanded', 'true');
+
+      if (header.tagName === 'DIV') {
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+      }
+
+      var icons = header.querySelectorAll('svg.lexicon-icon');
+      var chevron = icons[icons.length - 1] || null;
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      function toggle() {
+        var isExpanded = header.getAttribute('aria-expanded') !== 'false';
+        var next = !isExpanded;
+        header.setAttribute('aria-expanded', String(next));
+        var li = header.parentElement;
+        var list = li && li.querySelector(':scope > .vert-nav__list');
+        if (list) list.style.display = next ? '' : 'none';
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      }
+
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('.vert-nav__group-actions button')) return;
+        toggle();
+      });
+
+      header.addEventListener('keydown', function (e) {
+        if (header.tagName === 'DIV' && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
