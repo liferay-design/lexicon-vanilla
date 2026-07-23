@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consent — Liferay DXP</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    html, body { height: 100%; }
+
+    /* ── Control Panel collapse ─────────────────────────────────
+       The Control Menu toggle (and the panel's own close button)
+       collapse the left grid column from 320px to 0. The base
+       grid-template lives here (not inline) so this override wins. */
+    body { grid-template-columns: 320px 1fr; transition: grid-template-columns 200ms ease; }
+    body.cp-collapsed { grid-template-columns: 0 1fr; }
+    .control-panel { transition: width 200ms ease; }
+    body.cp-collapsed .control-panel {
+      width: 0;
+      overflow: hidden;
+      border-right-width: 0;
+    }
+
+    /* ── Header action buttons ──────────────────────────────────
+       Theme switch + Sites + Close, pinned to the right of the title. */
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+
+    /* Close button: behaves like Bootstrap's visually-hidden-focusable.
+       While it lacks keyboard focus it is pulled out of flow (position:
+       absolute → no longer a flex item), so it reserves no space and no
+       gap. On keyboard focus it snaps back into the row at full size.
+       It is first in the DOM (first Tab stop) but `order` renders it last. */
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* The panel receives focus (tabindex=-1) when opened by keyboard; it is
+       a deliberate jump, so suppress the container outline. */
+    .control-panel:focus { outline: none; }
+
+    /* ── Hover / focus tooltip ──────────────────────────────────
+       Reuses the .tooltip component visual; the wrapper anchors it
+       below the button and reveals it on hover or keyboard focus. */
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:focus-within .cp-tip__bubble { opacity: 1; }
+
+    /* Consent banners: on very small screens hide the icon instead of letting the row wrap */
+    @media (max-width: 600px) {
+      #banner-selfhosted .sticker--lg,
+      #banner-saas .sticker--lg { display: none; }
+    }
+  </style>
+</head>
+<!-- Grid: Control Panel (320px, full height) | right column (Control Menu + content) -->
+<body style="margin:0; display:grid; height:100vh; overflow:hidden;">
+
+<!-- ════════════════════════════════════════════════════════════════
+     DXP Admin shell — Control Panel (left) + Control Menu + content (right)
+     Layout difference from cms.html: the Control Panel spans the full viewport
+     height on the left; the Control Menu sits only in the right column.
+
+     To customise:
+       • Change <title> and .control-menu__title
+       • Mark a different .control-panel__item as is-active
+       • Add / remove sidebar groups as needed
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Panel (left column, full height) ────────────────── -->
+<aside class="control-panel" id="control-panel" tabindex="-1" style="height:100vh;">
+
+  <div class="control-panel__header">
+    <span class="control-panel__sticker" style="background: var(--color-primary); color: var(--color-white);">
+      <svg class="lexicon-icon"><use href="#globe"></use></svg>
+    </span>
+    <span class="control-panel__title">Liferay DXP</span>
+
+    <div class="control-panel__actions">
+      <!-- Close — first in the DOM so it is the first Tab stop inside the panel;
+           CSS `order` keeps it visually last of the three. Appears only on focus. -->
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+
+      <!-- Sites -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Sites">
+          <svg class="lexicon-icon"><use href="#sites"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" role="tooltip">Sites</span>
+      </span>
+    </div>
+  </div>
+
+
+  <div class="control-panel__body">
+    <ul class="control-panel__groups">
+
+      <li class="control-panel__group">
+        <button class="control-panel__item is-active" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#home"></use></svg></span>Home</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#pages-tree"></use></svg></span>Page Tree</button>
+      </li>
+
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Design
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#effects"></use></svg></span>Style Books</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#edit-layout"></use></svg></span>Page Templates</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Site Builder
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#edit-layout"></use></svg></span>Pages</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#pages-tree"></use></svg></span>Navigation Menus</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Content &amp; Data
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#catalog"></use></svg></span>Web Content</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#documents-and-media"></use></svg></span>Documents and Media</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Categorization
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#categories"></use></svg></span>Categories</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#vocabulary"></use></svg></span>Vocabularies</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Recycle Bin
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#trash"></use></svg></span>Recycle Bin</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          People
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>Users</button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>Roles</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Configuration
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>Instance Settings</button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Publishing
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button"><span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#upload-multiple"></use></svg></span>Publications</button>
+      </li>
+
+    </ul>
+  </div><!-- /control-panel__body -->
+
+</aside>
+
+<!-- ─── Right column: Control Menu + content ─────────────────────── -->
+<div style="display:flex; flex-direction:column; min-height:100vh; overflow:hidden;">
+
+  <!-- Control Menu -->
+  <div class="control-menu">
+    <div class="control-menu__left">
+      <div class="control-menu__btns">
+        <button class="control-menu__btn" id="cp-toggle" type="button" aria-label="Toggle product menu" aria-expanded="true" aria-controls="control-panel">
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-open"></use></svg>
+        </button>
+      </div>
+      <span class="control-menu__title">Home</span>
+    </div>
+    <div class="control-menu__right">
+      <button class="control-menu__btn" type="button" aria-label="Global navigation">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+      </button>
+      <div class="control-menu__avatar">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ↓  YOUR CONTENT STARTS HERE  ↓
+       ════════════════════════════════════════════════════════════ -->
+  <main style="flex:1; overflow-y:auto; display:flex; flex-direction:column; min-width:0;">
+    <div style="padding: var(--spacing-6) var(--spacing-7); display: flex; align-items: center; gap: var(--spacing-7); flex-wrap: wrap; border-bottom: 1px solid var(--color-secondary-l3); flex-shrink: 0;">
+      <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+        <span id="deploy-label-self" style="font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-dark);">Self-hosted</span>
+        <label class="toggle toggle--sm" aria-label="Deployment model">
+          <input type="checkbox" class="toggle__input" id="deployment-toggle">
+          <span class="toggle__track"><span class="toggle__dot"></span></span>
+        </label>
+        <span id="deploy-label-saas" style="font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.55;">SaaS / PaaS</span>
+      </div>
+      <label class="toggle toggle--sm">
+        <input type="checkbox" class="toggle__input" id="copy-toggle" checked>
+        <span class="toggle__track"><span class="toggle__dot"></span></span>
+        <span class="toggle__label">Positive copy proposal</span>
+      </label>
+    </div>
+  </main>
+  <!-- ════════════════════════════════════════════════════════════
+       ↑  YOUR CONTENT ENDS HERE  ↑
+       ════════════════════════════════════════════════════════════ -->
+
+</div>
+
+<!-- Collapsible Control Panel groups -->
+<script>
+  (function () {
+    document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+      var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+      if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+      var group = btn.parentElement;
+      var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+      // Sync initial collapsed state
+      if (btn.getAttribute('aria-expanded') === 'false') {
+        items.forEach(function (el) { el.style.display = 'none'; });
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+      }
+
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') !== 'false';
+        var next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+        if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+      });
+    });
+  })();
+</script>
+
+<!-- Control Panel open/close — driven by the Control Menu toggle and the panel's close button -->
+<script>
+  (function () {
+    var toggle = document.getElementById('cp-toggle');
+    var toggleIcon = document.getElementById('cp-toggle-icon');
+    var close = document.getElementById('cp-close');
+    var panel = document.getElementById('control-panel');
+
+    function setOpen(open) {
+      document.body.classList.toggle('cp-collapsed', !open);
+      if (toggle) toggle.setAttribute('aria-expanded', String(open));
+      if (toggleIcon) {
+        var use = toggleIcon.querySelector('use');
+        if (use) use.setAttribute('href', open ? '#product-menu-open' : '#product-menu-closed');
+      }
+    }
+
+    if (toggle) toggle.addEventListener('click', function (e) {
+      var willOpen = document.body.classList.contains('cp-collapsed');
+      setOpen(willOpen);
+      // Keyboard activation (Enter/Space) reports detail === 0. When opened that
+      // way, move focus into the panel so the next Tab lands on the Close button.
+      if (willOpen && e.detail === 0 && panel) panel.focus();
+    });
+
+    // Closing from inside the panel returns focus to the menu toggle.
+    if (close) close.addEventListener('click', function (e) {
+      setOpen(false);
+      if (e.detail === 0 && toggle) toggle.focus();
+    });
+  })();
+</script>
+
+<!-- Dark / Light switch -->
+<script>
+  (function () {
+    var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+    var btn = document.getElementById('cp-theme-toggle');
+    var icon = document.getElementById('cp-theme-icon');
+    var tip = document.getElementById('cp-theme-tip');
+    if (!btn) return;
+
+    function current() {
+      try { return localStorage.getItem('vanilla-skin') || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function render() {
+      var isDark = current().indexOf('dark') === 0;
+      // Moon → "switch to dark" (light now); Sun → "switch to light" (dark now)
+      var use = icon.querySelector('use');
+      if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+      var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', String(isDark));
+      if (tip) tip.textContent = label;
+    }
+
+    btn.addEventListener('click', function () {
+      var next = current().indexOf('dark') === 0 ? 'light' : 'dark';
+      var r = document.documentElement;
+      SKINS.forEach(function (c) { r.classList.remove(c); });
+      r.classList.add(next);
+      try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+      render();
+    });
+
+    render();
+  })();
+</script>
+
+
+<!-- Self-hosted consent banner (Platform Consent Preferences) -->
+<div id="banner-selfhosted" style="position: fixed; left: var(--spacing-6); right: var(--spacing-6); bottom: var(--spacing-6); z-index: 900; max-width: 1080px; margin-inline: auto; pointer-events: none;">
+  <div style="pointer-events: auto; background: var(--color-white); border: 1px solid var(--color-secondary-l2); border-radius: var(--rounded-xl); box-shadow: var(--shadow-lg); padding: var(--spacing-6) var(--spacing-7); display: flex; align-items: flex-start; gap: var(--spacing-6); flex-wrap: wrap;">
+    <span class="sticker sticker--icon sticker--lg" style="background: var(--color-primary-l3); color: var(--color-primary); flex-shrink: 0; margin-top: var(--spacing-1);">
+      <svg class="lexicon-icon"><use href="#cookie"></use></svg>
+    </span>
+    <div style="flex: 1 1 400px; min-width: 0;">
+      <h2 id="sh-title" style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Let's tailor your Liferay experience</h2>
+      <p id="sh-text" style="font-size: var(--font-size-base); color: var(--color-dark); opacity: 0.7; line-height: var(--line-height-base); margin: 0;">We use cookies to personalize what you see, keep the platform secure, and learn how to make Liferay better for you. You're always in control. Accept everything for the full experience, or fine-tune your preferences anytime. <a href="#" style="color: var(--color-primary);">Privacy Policy</a></p>
+    </div>
+    <div style="display: flex; gap: var(--spacing-3); flex-shrink: 0; flex-wrap: wrap; align-items: center; padding-top: var(--spacing-8);">
+      <button class="btn btn--borderless btn--sm" id="cookie-customize" type="button">Customize</button>
+      <button class="btn btn--secondary btn--sm" type="button">Decline All</button>
+      <button class="btn btn--secondary btn--sm" type="button">Accept All</button>
+    </div>
+  </div>
+</div>
+
+<!-- SaaS / PaaS consent banner (third-party tools, no Customize) -->
+<div id="banner-saas" style="display: none; position: fixed; left: var(--spacing-6); right: var(--spacing-6); bottom: var(--spacing-6); z-index: 900; max-width: 1080px; margin-inline: auto; pointer-events: none;">
+  <div style="pointer-events: auto; background: var(--color-white); border: 1px solid var(--color-secondary-l2); border-radius: var(--rounded-xl); box-shadow: var(--shadow-lg); padding: var(--spacing-6) var(--spacing-7); display: flex; align-items: flex-start; gap: var(--spacing-6); flex-wrap: wrap;">
+    <span class="sticker sticker--icon sticker--lg" style="background: var(--color-primary-l3); color: var(--color-primary); flex-shrink: 0; margin-top: var(--spacing-1);">
+      <svg class="lexicon-icon"><use href="#cookie"></use></svg>
+    </span>
+    <div style="flex: 1 1 400px; min-width: 0;">
+      <h2 id="saas-title" style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-3);">Let's tailor your Liferay experience</h2>
+      <p id="saas-text" style="font-size: var(--font-size-base); color: var(--color-dark); opacity: 0.7; line-height: var(--line-height-base); margin: 0 0 var(--spacing-3);">Liferay and selected third-party providers use cookies and similar technologies to keep this site secure, help it run smoothly, and understand how it is used so we can improve it. You can accept them all or keep only what is essential. See our <a href="#" style="color: var(--color-primary);">Privacy Policy</a>.</p>
+      <div id="pendo-more">
+        <p id="saas-more1" style="font-size: var(--font-size-base); color: var(--color-dark); opacity: 0.7; line-height: var(--line-height-base); margin: 0 0 var(--spacing-3);">Choosing "Accept All" lets us and these third parties place all cookies and similar tools and process the related data, including usage, device, and approximate location data, for personalization, analytics, and performance, as described in our Privacy Policy.</p>
+        <p id="saas-more2" style="font-size: var(--font-size-base); color: var(--color-dark); opacity: 0.7; line-height: var(--line-height-base); margin: 0 0 var(--spacing-3);">Choosing "Decline All" keeps only the cookies strictly needed to run and secure the site. Some data, such as your IP address, may still be processed by those essential tools, but not for analytics or personalization.</p>
+      </div>
+      <button id="pendo-toggle" type="button" style="display: inline-flex; align-items: center; gap: var(--spacing-1); background: none; border: 0; padding: 0; cursor: pointer; color: var(--color-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); font-family: var(--font-family-base);">
+        <span id="pendo-toggle-text">SHOW LESS</span>
+        <svg class="lexicon-icon lexicon-icon-sm" id="pendo-toggle-icon"><use href="#angle-up-small"></use></svg>
+      </button>
+    </div>
+    <div style="display: flex; gap: var(--spacing-3); flex-shrink: 0; flex-wrap: wrap; align-items: center; padding-top: var(--spacing-8);">
+      <button class="btn btn--secondary btn--sm" type="button">Decline All</button>
+      <button class="btn btn--secondary btn--sm" type="button">Accept All</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customize → consent preferences modal (opens from the banner) -->
+<div class="modal-overlay" id="consent-modal" style="display: none;">
+  <div class="modal" style="max-width: 720px; width: 100%;">
+    <header class="modal__header">
+      <h2 class="modal__title">Liferay Platform Consent Preferences</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" id="consent-modal-close" type="button" aria-label="Close"><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+    </header>
+    <div class="modal__body" style="max-height: 62vh; overflow-y: auto;">
+      <p id="ct-modal-intro" style="margin: 0 0 var(--spacing-2); color: var(--color-dark); opacity: 0.75; font-size: var(--font-size-sm); line-height: var(--line-height-base);">These settings cover cookies and similar technologies used in the platform's administrative areas (managing, configuring, and editing your sites); they do not affect cookies on your end-user-facing sites. Liferay and selected third-party providers may store or read information on your device, such as identifiers, preferences, or session details. Strictly necessary technologies are always on; every other category stays off until you turn it on, and you can change or withdraw your choice at any time from these settings. For the full list of cookies, the third parties involved, and data retention periods, see our <a href="#" style="color: var(--color-primary);">Cookie Policy</a> and <a href="#" style="color: var(--color-primary);">Privacy Policy</a></p>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-5) 0; border-top: 1px solid var(--color-secondary-l3);">
+          <div>
+            <h3 style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Strictly Necessary</h3>
+            <p id="ct-modal-necessary" style="font-size: var(--font-size-sm); color: var(--color-secondary); margin: 0;">Required for core functions such as signing you in, keeping your session secure, balancing server load, and remembering your consent choices. The platform cannot run without them, so they cannot be turned off. They are not used to track you across other sites or for advertising.</p>
+          </div>
+          <span style="flex-shrink: 0; margin-top: var(--spacing-1); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-primary);">Always Active</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-5) 0; border-top: 1px solid var(--color-secondary-l3);">
+          <div>
+            <h3 style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Functional</h3>
+            <p id="ct-modal-functional" style="font-size: var(--font-size-sm); color: var(--color-secondary); margin: 0;">Remember the choices you make, such as language, region, theme, and layout, so the platform behaves the way you set it. First-party only. If turned off, some preferences may reset between visits.</p>
+          </div>
+          <label class="toggle" style="flex-shrink: 0; margin-top: var(--spacing-1);" aria-label="Functional"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        </div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-5) 0; border-top: 1px solid var(--color-secondary-l3);">
+          <div>
+            <h3 style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Performance</h3>
+            <p id="ct-modal-performance" style="font-size: var(--font-size-sm); color: var(--color-secondary); margin: 0;">Collect aggregated, and where possible anonymized, data on how the platform performs, such as page load times, errors, and most-used areas, so we can detect and fix problems. May rely on analytics providers such as Liferay Analytics Cloud. If turned off, issues are detected more slowly.</p>
+          </div>
+          <label class="toggle" style="flex-shrink: 0; margin-top: var(--spacing-1);" aria-label="Performance"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        </div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-5) 0; border-top: 1px solid var(--color-secondary-l3);">
+          <div>
+            <h3 style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Personalization</h3>
+            <p id="ct-modal-personalization" style="font-size: var(--font-size-sm); color: var(--color-secondary); margin: 0;">Use your activity in the platform to tailor content, suggestions, and layouts to what is relevant to you. If turned off, you will see more generic, non-personalized content.</p>
+          </div>
+          <label class="toggle" style="flex-shrink: 0; margin-top: var(--spacing-1);" aria-label="Personalization"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        </div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-5) 0; border-top: 1px solid var(--color-secondary-l3);">
+          <div>
+            <h3 style="font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-2);">Product Analytics</h3>
+            <p id="ct-modal-analytics" style="font-size: var(--font-size-sm); color: var(--color-secondary); margin: 0;">Measure which features are used and how they perform, to guide product decisions and improvements. Uses third-party product-analytics tools such as Pendo, tied to a pseudonymous identifier, and not used for advertising. If turned off, your usage is not included in product analytics.</p>
+          </div>
+          <label class="toggle" style="flex-shrink: 0; margin-top: var(--spacing-1);" aria-label="Product Analytics"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__dot"></span></span></label>
+        </div>
+    </div>
+    <footer class="modal__footer">
+      <button class="btn btn--secondary btn--sm" type="button">Use Necessary Cookies Only</button>
+      <button class="btn btn--secondary btn--sm" type="button">Accept Selected</button>
+      <button class="btn btn--secondary btn--sm" type="button">Accept All</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var modal = document.getElementById('consent-modal');
+  var openBtn = document.getElementById('cookie-customize');
+  var closeBtn = document.getElementById('consent-modal-close');
+  function show(){ if(modal) modal.style.display = 'flex'; }
+  function hide(){ if(modal) modal.style.display = 'none'; }
+  if(openBtn) openBtn.addEventListener('click', show);
+  if(closeBtn) closeBtn.addEventListener('click', hide);
+  if(modal){
+    modal.addEventListener('click', function(e){ if(e.target === modal) hide(); });
+    modal.querySelectorAll('.modal__footer .btn').forEach(function(b){ b.addEventListener('click', hide); });
+  }
+})();
+</script>
+
+<!-- Deployment model switch: Self-hosted (Platform Consent Preferences) <-> SaaS/PaaS (third-party tools) -->
+<script>
+(function(){
+  var dep = document.getElementById('deployment-toggle'); if(!dep) return;
+  var sh = document.getElementById('banner-selfhosted');
+  var saas = document.getElementById('banner-saas');
+  var lblSelf = document.getElementById('deploy-label-self');
+  var lblSaas = document.getElementById('deploy-label-saas');
+  function apply(){
+    var isSaas = dep.checked;
+    if(sh) sh.style.display = isSaas ? 'none' : '';
+    if(saas) saas.style.display = isSaas ? '' : 'none';
+    if(lblSelf){ lblSelf.style.opacity = isSaas ? '0.55' : '1'; lblSelf.style.fontWeight = isSaas ? '' : 'var(--font-weight-bold)'; }
+    if(lblSaas){ lblSaas.style.opacity = isSaas ? '1' : '0.55'; lblSaas.style.fontWeight = isSaas ? 'var(--font-weight-bold)' : ''; }
+  }
+  dep.addEventListener('change', apply); apply();
+})();
+</script>
+
+<!-- SaaS/PaaS banner: SHOW MORE / SHOW LESS -->
+<script>
+(function(){
+  var btn = document.getElementById('pendo-toggle');
+  var more = document.getElementById('pendo-more');
+  var text = document.getElementById('pendo-toggle-text');
+  var icon = document.getElementById('pendo-toggle-icon');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    var open = more.style.display !== 'none';
+    more.style.display = open ? 'none' : '';
+    text.textContent = open ? 'SHOW MORE' : 'SHOW LESS';
+    var use = icon.querySelector('use');
+    if(use) use.setAttribute('href', open ? '#angle-down-small' : '#angle-up-small');
+  });
+})();
+</script>
+
+<!-- Positive copy proposal: swaps old/new copy in both banners -->
+<script>
+(function(){
+  var toggle = document.getElementById('copy-toggle'); if(!toggle) return;
+  var shT=document.getElementById('sh-title'), shP=document.getElementById('sh-text');
+  var saT=document.getElementById('saas-title'), saP=document.getElementById('saas-text'), saM1=document.getElementById('saas-more1'), saM2=document.getElementById('saas-more2');
+  var mI=document.getElementById('ct-modal-intro'), mNe=document.getElementById('ct-modal-necessary'), mFu=document.getElementById('ct-modal-functional'), mPe=document.getElementById('ct-modal-performance'), mPz=document.getElementById('ct-modal-personalization'), mAn=document.getElementById('ct-modal-analytics');
+  var MODAL_NEW={intro:'These settings cover cookies and similar technologies used in the platform\'s administrative areas (managing, configuring, and editing your sites); they do not affect cookies on your end-user-facing sites. Liferay and selected third-party providers may store or read information on your device, such as identifiers, preferences, or session details. Strictly necessary technologies are always on; every other category stays off until you turn it on, and you can change or withdraw your choice at any time from these settings. For the full list of cookies, the third parties involved, and data retention periods, see our <a href="#" style="color: var(--color-primary);">Cookie Policy</a> and <a href="#" style="color: var(--color-primary);">Privacy Policy</a>', necessary:'Required for core functions such as signing you in, keeping your session secure, balancing server load, and remembering your consent choices. The platform cannot run without them, so they cannot be turned off. They are not used to track you across other sites or for advertising.', functional:'Remember the choices you make, such as language, region, theme, and layout, so the platform behaves the way you set it. First-party only. If turned off, some preferences may reset between visits.', performance:'Collect aggregated, and where possible anonymized, data on how the platform performs, such as page load times, errors, and most-used areas, so we can detect and fix problems. May rely on analytics providers such as Liferay Analytics Cloud. If turned off, issues are detected more slowly.', personalization:'Use your activity in the platform to tailor content, suggestions, and layouts to what is relevant to you. If turned off, you will see more generic, non-personalized content.', analytics:'Measure which features are used and how they perform, to guide product decisions and improvements. Uses third-party product-analytics tools such as Pendo, tied to a pseudonymous identifier, and not used for advertising. If turned off, your usage is not included in product analytics.'};
+  var MODAL_OLD={intro:'These settings apply to cookies and similar technologies used within administrative sections of your sites, such as areas for managing, configuring, or editing your site. They do not affect cookies used on your end-user-facing sites. These technologies may store or access information in your browser, such as details about your device, preferences, or session. You can manage these technologies using the settings below, but disabling some may affect how the portal and our services work for you. <a href="#" style="color: var(--color-primary);">Visit our Privacy Policy</a>', necessary:'Enable core platform functionality and security features.', functional:'Remember your settings and preferences, such as language selections.', performance:'Enable Liferay Analytics Cloud tracking and site monitoring.', personalization:'Enable Liferay Analytics Cloud tracking and site monitoring.', analytics:'Help us understand how you use our product to improve features.'};
+  var SH_NEW={title:'Let\'s tailor your Liferay experience', text:'We use cookies to personalize what you see, keep the platform secure, and learn how to make Liferay better for you. You\'re always in control. Accept everything for the full experience, or fine-tune your preferences anytime. <a href="#" style="color: var(--color-primary);">Privacy Policy</a>'};
+  var SH_OLD={title:'Before You Continue With Liferay', text:'We use cookies and similar technologies to enhance your experience on our platform, deliver personalized content, analyze trends, administer the site, and collect demographic information about our user base. This includes the collection of both general site activity and administrator activity data. Accept all cookies and similar technologies for the best possible experience on our website and platform or manage your preferences. Visit our Privacy Policy <a href="#" style="color: var(--color-primary);">Visit our Privacy Policy</a>'};
+  var SA_NEW={title:'Let\'s tailor your Liferay experience', text:'Liferay and selected third-party providers use cookies and similar technologies to keep this site secure, help it run smoothly, and understand how it is used so we can improve it. You can accept them all or keep only what is essential. See our <a href="#" style="color: var(--color-primary);">Privacy Policy</a>.', m1:'Choosing "Accept All" lets us and these third parties place all cookies and similar tools and process the related data, including usage, device, and approximate location data, for personalization, analytics, and performance, as described in our Privacy Policy.', m2:'Choosing "Decline All" keeps only the cookies strictly needed to run and secure the site. Some data, such as your IP address, may still be processed by those essential tools, but not for analytics or personalization.'};
+  var SA_OLD={title:'Before You Continue with Liferay', text:'This website uses cookies and similar tools, some of which are provided by third parties (together "tools"). These tools enable us and the third parties to access and record certain user-related and activity data and to track your interactions with this website. These tools and the information collected are used to operate and secure this website, enhance performance, enable certain website features and functionality, analyze and improve website performance, and personalize user experience. For further detail <a href="#" style="color: var(--color-primary);">Visit our Privacy Policy</a>.', m1:'If you click "Accept All", you allow the deployment of all these tools and collection of the information by us and the third parties for all these purposes.', m2:'If you click "Decline All" your IP address and other information may still be collected but only by tools (including third party tools) that are necessary to operate, secure and enable default website features and functionalities.'};
+  function apply(){
+    var s=toggle.checked?SH_NEW:SH_OLD;
+    if(shT)shT.textContent=s.title; if(shP)shP.innerHTML=s.text;
+    var a=toggle.checked?SA_NEW:SA_OLD;
+    if(saT)saT.textContent=a.title; if(saP)saP.innerHTML=a.text; if(saM1)saM1.innerHTML=a.m1; if(saM2)saM2.innerHTML=a.m2;
+    var m=toggle.checked?MODAL_NEW:MODAL_OLD;
+    if(mI)mI.innerHTML=m.intro; if(mNe)mNe.textContent=m.necessary; if(mFu)mFu.textContent=m.functional; if(mPe)mPe.textContent=m.performance; if(mPz)mPz.textContent=m.personalization; if(mAn)mAn.textContent=m.analytics;
+  }
+  toggle.addEventListener('change', apply); apply();
+})();
+</script>
+
+</body>
+</html>
