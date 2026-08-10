@@ -39,6 +39,7 @@
     :root {
       --sidebar-width: 280px;       /* docked left nav (Control Panel)  */
       --browse-width: 264px;        /* Browse by Space contextual panel */
+      --info-width: 320px;          /* right info panel — Lexicon fixed default / min recommended (CMS real = 472px) */
       --cp-chrome-h: calc(var(--spacing-8) + 2 * (var(--spacing-2) + var(--spacing-2-5))); /* 52px chrome band */
     }
 
@@ -211,6 +212,7 @@
       display: flex;
       min-height: 0;
       overflow: hidden;
+      position: relative;              /* anchor for the info panel overlay */
       transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     body.sb-pinned main { margin-left: var(--sidebar-width); }
@@ -278,6 +280,124 @@
     .pim-row-nav:hover { background: var(--color-light); }
 
     .pim-pagination { border-top: 1px solid var(--color-secondary-l3); padding: var(--spacing-3) var(--spacing-6); }
+
+    /* ── Management toolbar contextualisation ────────────────────
+       The default and active (selection) clusters are display:contents
+       wrappers so their children participate directly in the bar's flex
+       row (and share its 16px gap). Only one is shown at a time; the
+       leading select-all checkbox and the trailing (i) toggle sit outside
+       both, so they persist across modes — exactly like the CMS. */
+    #mt-default, #mt-active { display: contents; }
+    #mt-default.is-off, #mt-active.is-off { display: none; }
+
+    /* Info toggle marked while the panel is open (borderless pressed fill). */
+    #info-toggle.is-active { background: var(--color-light-d1); }
+
+    /* ── Browse-close experiment (A / B / C harness) ─────────────
+       Three homes for the control that closes/toggles the Browse panel
+       once a selection hides the default toolbar cluster. Switched live
+       by the floating lab at the bottom of the page. */
+    #bp-toggle-persist.is-active,
+    #bp-toggle-crumb.is-active { background: var(--color-light-d1); }
+    /* A — persistent toolbar toggle: only surfaces while a selection is
+       active (in the default state the #mt-default toggle already serves). */
+    .bp-toggle-persist { display: none; }
+    body.opt-a .management-toolbar--active .bp-toggle-persist { display: inline-flex; }
+    /* B — toggle lives in the breadcrumb spine and replaces the toolbar one. */
+    .bp-toggle-crumb { display: none; }
+    body.opt-b .bp-toggle-crumb { display: inline-flex; }
+    body.opt-b #bp-toggle { display: none; }
+    /* C — collapse button inside the Browse panel header. */
+    .browse-panel__close { display: none; margin-left: auto; }
+    body.opt-c .browse-panel__close { display: inline-flex; }
+
+    /* Floating A/B/C lab — prototype-only control, bottom centre. */
+    .bp-lab {
+      position: fixed;
+      left: 50%; bottom: var(--spacing-5);
+      transform: translateX(-50%);
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-3) var(--spacing-4);
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .bp-lab__label {
+      color: var(--color-secondary);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semi);
+    }
+    .bp-lab__hint {
+      color: var(--color-dark);
+      font-size: var(--font-size-sm);
+      max-width: 46ch;
+      opacity: 0.75;
+      text-align: center;
+    }
+
+    /* ── Info panel (right slideout) ─────────────────────────────
+       Mirrors Clay's c-slideout in DXP/CMS: the panel is anchored to
+       main's right edge and floats OVER the content by default (overlay);
+       only at the wide breakpoint (≥1200px) does it reserve space so the
+       table isn't covered (push). It is opened by the toolbar (i) toggle —
+       never by the row checkboxes (checkbox selection only contextualises
+       the Management Toolbar). Its content follows the selection:
+       1 item → metadata, 2+ → a selection summary. The Browse panel is
+       never auto-collapsed; the transitory info panel adapts instead. */
+    .pim-info {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: var(--info-width);
+      z-index: 40;
+      border-left: 1px solid var(--color-secondary-l2);
+      transform: translateX(100%);
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    body.info-open .pim-info { transform: translateX(0); }
+    body:not(.info-open) .pim-info { pointer-events: none; }
+
+    .pim-info__heading { align-items: center; display: flex; gap: var(--spacing-3); min-width: 0; }
+    .pim-info__heading .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+    .pim-info__tabs { flex-shrink: 0; padding: 0 var(--spacing-5); }
+    body.info-multi .pim-info__tabs { display: none; }
+
+    /* Metadata list (Details tab) */
+    .pim-meta__label {
+      color: var(--color-secondary); font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semi); letter-spacing: 0.04em;
+      margin: 0 0 var(--spacing-5); text-transform: uppercase;
+    }
+    .pim-meta { margin: 0; }
+    .pim-meta__item + .pim-meta__item { margin-top: var(--spacing-5); }
+    .pim-meta__term {
+      color: var(--color-dark); font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-1);
+    }
+    .pim-meta__desc {
+      align-items: center; color: var(--color-dark); display: flex;
+      flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-3); margin: 0;
+    }
+    .pim-meta__desc .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+
+    /* Push vs overlay is decided by the width actually left for the table —
+       NOT by a viewport breakpoint. With the left nav and Browse panel both
+       open, even a wide screen may not have room to push without crushing the
+       table, so JS measures the available width and toggles body.info-push
+       only when the table keeps a comfortable minimum. Docked (push) → the
+       panel reserves its own space and drops the shadow; floating (overlay)
+       → the shadow reads. The 1px seam stays in both modes. */
+    .pim-content { transition: padding-right 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.info-push .pim-content { padding-right: var(--info-width); }
+    body.info-push .pim-info { box-shadow: none; }
+    /* Full-width overlay on small screens (matches c-slideout sm-down). */
+    @media (max-width: 767px) {
+      .pim-info { width: 100%; }
+    }
 
     /* ── Space home ─────────────────────────────────────────────
        Shown when a SPACES item is opened (body.is-home). The data-set
@@ -389,7 +509,7 @@
     }
   </style>
 </head>
-<body class="sb-pinned">
+<body class="sb-pinned opt-a">
 
 <!-- ════════════════════════════════════════════════════════════════
      PIM screen — docked Control Panel (left nav) + Browse by Space
@@ -550,6 +670,10 @@
   <aside class="browse-panel" id="browse-panel" aria-label="Browse by Space">
     <div class="browse-panel__header">
       <h2 class="browse-panel__title">Browse by Space</h2>
+      <!-- Option C: collapse button inside the panel -->
+      <button class="btn btn--borderless btn--sm btn--icon browse-panel__close" id="bp-close" type="button" aria-label="Close Browse by Space">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
     </div>
     <div class="browse-panel__body">
       <ul class="tree" role="tree" id="browse-tree">
@@ -623,6 +747,10 @@
          the breadcrumb lives in the top bar). Interacting with a space crumb
          here navigates the side menu to that space. Rebuilt by JS. -->
     <div class="pim-crumbbar">
+      <!-- Option B: Browse toggle in the navigation spine (breadcrumb) -->
+      <button class="btn btn--borderless btn--sm btn--icon bp-toggle-crumb" id="bp-toggle-crumb" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+        <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
+      </button>
       <span class="sticker sticker--outline sticker--space" id="ds-crumb-sticker" aria-hidden="true">M</span>
       <ol class="breadcrumb" id="ds-crumb-ol"></ol>
       <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
@@ -630,11 +758,16 @@
       </button>
     </div>
 
-    <!-- Management toolbar -->
+    <!-- Management toolbar — contextualises on selection (checkbox / multi-
+         select). The default cluster (tree toggle · Filter · search · view ·
+         New) is swapped for the active cluster (count · Clear · bulk actions)
+         while one or more rows are selected; the leading select-all checkbox
+         and the trailing (i) toggle persist across both modes. The (i) toggle
+         opens the info panel INDEPENDENTLY of the selection. -->
     <div class="management-toolbar">
       <div class="management-toolbar__bar">
 
-        <label class="checkbox" aria-label="Select all">
+        <label class="checkbox" id="mt-selectall" aria-label="Select all">
           <input type="checkbox" class="checkbox__input">
           <span class="checkbox__box">
             <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
@@ -642,40 +775,75 @@
           </span>
         </label>
 
-        <!-- Tree-view toggle → controls the Browse by Space panel -->
-        <button class="btn btn--borderless btn--sm btn--icon is-active" id="bp-toggle" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+        <!-- Option A: persistent Browse toggle — survives selection mode -->
+        <button class="btn btn--borderless btn--sm btn--icon bp-toggle-persist" id="bp-toggle-persist" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
           <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
         </button>
 
-        <button class="btn btn--borderless btn--sm" type="button">
-          <svg class="lexicon-icon"><use href="#filter"></use></svg>
-          Filter
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </button>
+        <!-- Default cluster -->
+        <div id="mt-default">
+          <!-- Tree-view toggle → controls the Browse by Space panel -->
+          <button class="btn btn--borderless btn--sm btn--icon is-active" id="bp-toggle" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+            <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
+          </button>
 
-        <div class="management-toolbar__search">
-          <div class="search">
-            <input class="input__field search__field" type="search" placeholder="Search">
-            <button class="search__clear" aria-label="Clear" hidden type="button">
-              <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
-            </button>
-            <button class="search__submit" aria-label="Search" type="button">
-              <svg class="lexicon-icon"><use href="#search"></use></svg>
-            </button>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#filter"></use></svg>
+            Filter
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+
+          <div class="management-toolbar__search">
+            <div class="search">
+              <input class="input__field search__field" type="search" placeholder="Search">
+              <button class="search__clear" aria-label="Clear" hidden type="button">
+                <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+              </button>
+              <button class="search__submit" aria-label="Search" type="button">
+                <svg class="lexicon-icon"><use href="#search"></use></svg>
+              </button>
+            </div>
           </div>
+
+          <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
+            <svg class="lexicon-icon"><use href="#list"></use></svg>
+            <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
+          </button>
+
+          <button class="btn btn--primary btn--sm" type="button">
+            New
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
         </div>
 
-        <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
-          <svg class="lexicon-icon"><use href="#list"></use></svg>
-          <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
-        </button>
+        <!-- Active cluster (shown while a selection exists) -->
+        <div id="mt-active" class="is-off">
+          <span class="management-toolbar__count" id="mt-count">1 of 1 item selected</span>
+          <button class="btn btn--borderless btn--sm" id="mt-clear" type="button">Clear</button>
+          <div class="management-toolbar__spacer"></div>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#move-folder"></use></svg>
+            Move To
+          </button>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#copy"></use></svg>
+            Copy To
+          </button>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#time"></use></svg>
+            Expire
+          </button>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#export"></use></svg>
+            Export for Translation
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
+            <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          </button>
+        </div>
 
-        <button class="btn btn--primary btn--sm" type="button">
-          New
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </button>
-
-        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
+        <!-- Info toggle — opens the info panel (independent of selection) -->
+        <button class="btn btn--borderless btn--sm btn--icon" id="info-toggle" type="button" aria-label="Info" aria-pressed="false" aria-controls="pim-info">
           <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
         </button>
 
@@ -778,7 +946,38 @@
     </section>
 
   </div><!-- /pim-content -->
+
+  <!-- Info panel (right slideout) — a .side-panel anchored to main's right
+       edge. Opened by the toolbar (i) toggle; its body follows the selection
+       (1 item → metadata · 2+ → summary · none → prompt). Rendered by JS. -->
+  <aside class="side-panel pim-info" id="pim-info" aria-label="Information" aria-hidden="true">
+    <div class="side-panel__header">
+      <span class="pim-info__heading">
+        <svg class="lexicon-icon" id="pim-info-icon"><use href="#info-circle-open"></use></svg>
+        <span class="side-panel__title" id="pim-info-title">Details</span>
+      </span>
+      <button class="btn btn--borderless btn--sm btn--icon side-panel__close" id="pim-info-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+    <nav class="tabs pim-info__tabs" id="pim-info-tabs" role="tablist" aria-label="Information views">
+      <button class="tabs__tab is-active" role="tab" aria-selected="true" type="button">Details</button>
+      <button class="tabs__tab" role="tab" aria-selected="false" type="button">Categorization</button>
+    </nav>
+    <div class="side-panel__body" id="pim-info-body"></div>
+  </aside>
 </main>
+
+<!-- ─── A/B/C lab (prototype-only) — how to close Browse during selection ─ -->
+<div class="bp-lab" role="group" aria-label="Browse close pattern">
+  <span class="bp-lab__label">Cerrar Browse durante selección</span>
+  <div class="btn-group" id="bp-lab-group">
+    <button class="btn btn--secondary btn--sm is-active" type="button" data-opt="a">A · Toolbar</button>
+    <button class="btn btn--secondary btn--sm" type="button" data-opt="b">B · Breadcrumb</button>
+    <button class="btn btn--secondary btn--sm" type="button" data-opt="c">C · Panel close</button>
+  </div>
+  <span class="bp-lab__hint" id="bp-lab-hint"></span>
+</div>
 
 <!-- ─── Scripts ─────────────────────────────────────────────────────── -->
 
@@ -857,18 +1056,50 @@
   })();
 </script>
 
-<!-- Browse by Space: toolbar tree-view icon toggles panel visibility -->
+<!-- Browse by Space: unified controller for every toggle/close control
+     (toolbar · persistent · breadcrumb · in-panel) + the A/B/C lab switch. -->
 <script>
   (function () {
     var body = document.body;
-    var btn = document.getElementById('bp-toggle');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      var collapsed = body.classList.toggle('bp-collapsed');
-      var open = !collapsed;
-      btn.classList.toggle('is-active', open);
-      btn.setAttribute('aria-pressed', String(open));
+    var toggles = ['bp-toggle', 'bp-toggle-persist', 'bp-toggle-crumb']
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+    function syncToggles() {
+      var open = !body.classList.contains('bp-collapsed');
+      toggles.forEach(function (t) {
+        t.classList.toggle('is-active', open);
+        t.setAttribute('aria-pressed', String(open));
+      });
+    }
+    function setBrowse(collapsed) { body.classList.toggle('bp-collapsed', collapsed); syncToggles(); }
+    toggles.forEach(function (t) {
+      t.addEventListener('click', function () { setBrowse(!body.classList.contains('bp-collapsed')); });
     });
+    var closeBtn = document.getElementById('bp-close');
+    if (closeBtn) closeBtn.addEventListener('click', function () { setBrowse(true); });
+
+    // A/B/C lab — switches where the close/toggle control lives.
+    var group = document.getElementById('bp-lab-group');
+    var hint = document.getElementById('bp-lab-hint');
+    var HINTS = {
+      a: 'A · el toggle persiste en la toolbar aunque haya selección. Abre y cierra siempre.',
+      b: 'B · el toggle vive en el breadcrumb (spine de navegación), siempre visible.',
+      c: 'C · close dentro del panel. Ojo: durante selección no hay forma de reabrirlo.'
+    };
+    function setOpt(opt) {
+      ['opt-a', 'opt-b', 'opt-c'].forEach(function (c) { body.classList.remove(c); });
+      body.classList.add('opt-' + opt);
+      Array.prototype.forEach.call(group.querySelectorAll('.btn'), function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-opt') === opt);
+      });
+      if (hint) hint.textContent = HINTS[opt];
+    }
+    if (group) group.addEventListener('click', function (e) {
+      var b = e.target.closest('.btn[data-opt]');
+      if (b) setOpt(b.getAttribute('data-opt'));
+    });
+    setOpt('a');
+    syncToggles();
   })();
 </script>
 
@@ -1454,6 +1685,192 @@
     function update() { panel.classList.toggle('is-clipped-top', body.scrollTop > 1); }
     body.addEventListener('scroll', update, { passive: true });
     update();
+  })();
+</script>
+
+<!-- Selection → Management-toolbar contextualisation + info panel.
+     • Checkboxes (row / select-all) drive the toolbar's active cluster
+       (count · Clear · bulk actions) — never the panel's open state.
+     • The (i) toggle opens the info panel independently; its body then
+       follows the selection (1 → metadata · 2+ → summary · 0 → prompt). -->
+<script>
+  (function () {
+    var body = document.body;
+    var mt = document.querySelector('.management-toolbar');
+    var table = document.getElementById('pim-table');
+    if (!mt || !table) return;
+    var barBox = document.querySelector('#mt-selectall .checkbox__input');
+    var mtDefault = document.getElementById('mt-default');
+    var mtActive = document.getElementById('mt-active');
+    var countEl = document.getElementById('mt-count');
+    var clearBtn = document.getElementById('mt-clear');
+    var tableWrap = document.querySelector('.pim-table-wrap');
+    var infoBtn = document.getElementById('info-toggle');
+    var panel = document.getElementById('pim-info');
+    var panelClose = document.getElementById('pim-info-close');
+    var panelTitle = document.getElementById('pim-info-title');
+    var panelIcon = document.getElementById('pim-info-icon').querySelector('use');
+    var panelBody = document.getElementById('pim-info-body');
+    var tabs = document.getElementById('pim-info-tabs');
+
+    function rowBoxes() { return Array.prototype.slice.call(table.querySelectorAll('tbody .checkbox__input')); }
+    function headBox() { return table.querySelector('thead .checkbox__input'); }
+    function checked() { return rowBoxes().filter(function (b) { return b.checked; }); }
+    function icon(id) { panelIcon.setAttribute('href', id); }
+
+    // ── Single-row metadata, read from the row's own cells so it works for
+    //    Products, Content and Files alike. Dates / language echo the CMS
+    //    Details tab with representative sample values. ──
+    function txt(el) { return el ? el.textContent.trim().replace(/\s+/g, ' ') : ''; }
+    function metaItem(term, descHtml) {
+      return '<div class="pim-meta__item"><p class="pim-meta__term">' + term
+        + '</p><p class="pim-meta__desc">' + descHtml + '</p></div>';
+    }
+    function renderDetails(tr) {
+      resetTabs();
+      var name = txt(tr.querySelector('.table__title')) || 'Untitled';
+      var space = txt(tr.querySelector('.pim-space-name'));
+      var author = txt(tr.querySelector('.pim-author'));
+      var labels = tr.querySelectorAll('.label');
+      var status = labels.length ? labels[labels.length - 1].outerHTML : '';
+      var html = '<p class="pim-meta__label">Metadata</p><div class="pim-meta">';
+      html += metaItem('Location', '<svg class="lexicon-icon"><use href="#folder"></use></svg> ' + (space || 'Products'));
+      if (author) html += metaItem('Author', author);
+      html += metaItem('Created', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Modified', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Display Date', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Expiration Date', 'Never Expire');
+      if (status) html += metaItem('Status', status);
+      html += metaItem('Languages Translated Into', 'en-US');
+      html += '</div>';
+      panelBody.innerHTML = html;
+      icon('#documents-and-media');
+      panelTitle.textContent = name;
+    }
+    function stateBlock(iconId, title, text) {
+      return '<div class="empty-state empty-state--sm">'
+        + '<span class="empty-state__media"><svg class="lexicon-icon"><use href="' + iconId + '"></use></svg></span>'
+        + '<h3 class="empty-state__title">' + title + '</h3>'
+        + '<p class="empty-state__text">' + text + '</p></div>';
+    }
+    function renderSummary(n) {
+      body.classList.add('info-multi');
+      icon('#list');
+      panelTitle.textContent = n + ' Assets Selected';
+      panelBody.innerHTML = stateBlock('#list', n + ' assets selected',
+        'Select a single item to see its details, or apply an action from the toolbar.');
+    }
+    function renderEmpty() {
+      body.classList.remove('info-multi');
+      resetTabs();
+      icon('#info-circle-open');
+      panelTitle.textContent = 'Details';
+      panelBody.innerHTML = stateBlock('#documents-and-media', 'No item selected',
+        'Select an item in the list to see its details here.');
+    }
+    function updatePanel(n) {
+      if (!body.classList.contains('info-open')) return;
+      if (n >= 2) renderSummary(n);
+      else if (n === 1) { body.classList.remove('info-multi'); renderDetails(checked()[0].closest('tr')); }
+      else renderEmpty();
+    }
+    function resetTabs() {
+      if (!tabs) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('.tabs__tab'), function (t, i) {
+        t.classList.toggle('is-active', i === 0);
+        t.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      });
+    }
+
+    function updateMT(n, total) {
+      var active = n > 0;
+      mt.classList.toggle('management-toolbar--active', active);
+      mtDefault.classList.toggle('is-off', active);
+      mtActive.classList.toggle('is-off', !active);
+      if (active) countEl.textContent = n + ' of ' + total + (total === 1 ? ' item selected' : ' items selected');
+    }
+    function syncMasters(n, total) {
+      [barBox, headBox()].forEach(function (m) {
+        if (!m) return;
+        var indet = n > 0 && n < total;
+        m.checked = n > 0 && n === total;
+        m.indeterminate = indet;
+        var wrap = m.closest('.checkbox');
+        if (wrap) wrap.classList.toggle('is-indeterminate', indet);
+      });
+    }
+    function refresh() {
+      var boxes = rowBoxes(), total = boxes.length;
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+      syncMasters(n, total);
+      updateMT(n, total);
+      updatePanel(n);
+    }
+    function setAll(on) { rowBoxes().forEach(function (b) { b.checked = on; }); refresh(); }
+
+    barBox.addEventListener('change', function () { setAll(barBox.checked); });
+    clearBtn.addEventListener('click', function () { setAll(false); });
+    tableWrap.addEventListener('change', function (e) {
+      var inp = e.target.closest('.checkbox__input');
+      if (!inp) return;
+      if (inp.closest('thead')) setAll(inp.checked);
+      else refresh();
+    });
+    // A view change re-renders the table → selection resets to none.
+    new MutationObserver(refresh).observe(table, { childList: true });
+
+    // Push vs overlay — decided by the width left for the table, not by a
+    // viewport breakpoint. Push only if, after reserving the panel, the table
+    // keeps a comfortable minimum. Recomputed whenever any width variable
+    // changes (window, nav pin, Browse open/collapsed) via a ResizeObserver.
+    var mainEl = document.querySelector('main');
+    var browseEl = document.getElementById('browse-panel');
+    var MIN_TABLE = 640; // px the table needs before the panel is allowed to push
+    function infoWidthPx() {
+      var v = getComputedStyle(document.documentElement).getPropertyValue('--info-width').trim();
+      return parseInt(v, 10) || 360;
+    }
+    function updateMode() {
+      var push = false;
+      if (body.classList.contains('info-open') && window.innerWidth >= 768) {
+        var browseW = browseEl ? browseEl.getBoundingClientRect().width : 0;
+        var avail = mainEl.clientWidth - browseW;
+        push = (avail - infoWidthPx()) >= MIN_TABLE;
+      }
+      body.classList.toggle('info-push', push);
+    }
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(updateMode);
+      ro.observe(mainEl);
+      if (browseEl) ro.observe(browseEl);
+    }
+    window.addEventListener('resize', updateMode);
+
+    // Info panel open / close (independent of the selection state).
+    function setInfo(open) {
+      body.classList.toggle('info-open', open);
+      infoBtn.classList.toggle('is-active', open);
+      infoBtn.setAttribute('aria-pressed', String(open));
+      panel.setAttribute('aria-hidden', String(!open));
+      updateMode();
+      if (open) updatePanel(checked().length);
+    }
+    infoBtn.addEventListener('click', function () { setInfo(!body.classList.contains('info-open')); });
+    panelClose.addEventListener('click', function () { setInfo(false); });
+
+    // Info-panel tabs — Details is live; the others are inert in this proto.
+    tabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('.tabs__tab');
+      if (!tab) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('.tabs__tab'), function (t) {
+        t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true');
+      if (tab.textContent.trim() === 'Details') updatePanel(checked().length);
+      else panelBody.innerHTML = stateBlock('#info-circle-open', tab.textContent.trim(), 'Not part of this prototype.');
+    });
+
+    refresh();
   })();
 </script>
 
