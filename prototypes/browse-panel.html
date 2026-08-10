@@ -905,19 +905,54 @@
       },
       'Air Jordan': {
         space: 'classic', title: 'Air Jordan', type: 'Shoes', author: 'Chris',
-        modified: '1 Hour Ago', thumb: { img: 'img/air-jordan.jpg' },
+        modified: '1 Hour Ago', thumb: { img: 'img/air-jordan.webp' },
         skus: ['AirJordanBredToe42', 'AirJordanBredToe43', 'AirJordanBredToe44']
+      },
+      // Simple products — a single SKU with NO Parent Product above it. They
+      // sit in the very same lists as the grouped products, but read as SKUs:
+      // a real product photo (no parent-product corner badge), no "N SKUs"
+      // count and no drill-down (they are leaves). `standalone:true` + a single
+      // `sku` code. Photos live in img/ like the other product thumbnails.
+      'Druna Yoga Mat': {
+        space: 'minium', title: 'Druna Yoga Mat', type: 'Equipment', author: 'Amanda',
+        modified: '8 Minutes Ago', thumb: { img: 'img/yoga-mat.webp' },
+        standalone: true, sku: 'YOGA-MAT-TEAL'
+      },
+      'FitnessTech Hex Dumbbells': {
+        space: 'classic', title: 'FitnessTech Hex Dumbbells', type: 'Equipment', author: 'Chris',
+        modified: '2 Hours Ago', thumb: { img: 'img/dumbbell-rack.webp' },
+        standalone: true, sku: 'DBL-RACK-HEX'
+      },
+      'Vertex Sport Bottle': {
+        space: 'speedwell', title: 'Vertex Sport Bottle 750ml', type: 'Accessories', author: 'Marco',
+        modified: 'Yesterday', thumb: { img: 'img/sport-bottle.webp' },
+        standalone: true, sku: 'SPD-BTL-750'
+      },
+      'Off-Court Hoodie': {
+        space: 'speedwell', title: 'Off-Court Hoodie', type: 'Hoodies', author: 'Marco',
+        modified: '20 Minutes Ago', thumb: { img: 'img/off-court-hoodie.webp' },
+        standalone: true, sku: 'OFC-HOOD-TEAL'
+      },
+      'Under Armour Essential Hoodie': {
+        space: 'classic', title: 'Under Armour Essential Hoodie', type: 'Hoodies', author: 'Chris',
+        modified: '4 Hours Ago', thumb: { img: 'img/essential-hoodie.webp' },
+        standalone: true, sku: 'ESS-HOOD-OLIVE'
       }
     };
     // Each Browse node → which products it lists + how its breadcrumb reads.
     var VIEWS = {
-      'All Products':      { products: ['Lebron Shorts', 'Air Jordan', 'Track Pro'], space: null,        leaf: null },
-      'Minium Apparel':    { products: ['Lebron Shorts'],                            space: 'minium',    leaf: null },
-      'Classic Apparel':   { products: ['Air Jordan'],                              space: 'classic',   leaf: null },
-      'Speedwell Apparel': { products: ['Track Pro'],                                space: 'speedwell', leaf: null },
+      'All Products':      { products: ['Lebron Shorts', 'Druna Yoga Mat', 'Air Jordan', 'FitnessTech Hex Dumbbells', 'Under Armour Essential Hoodie', 'Track Pro', 'Vertex Sport Bottle', 'Off-Court Hoodie'], space: null, leaf: null },
+      'Minium Apparel':    { products: ['Lebron Shorts', 'Druna Yoga Mat'],          space: 'minium',    leaf: null },
+      'Classic Apparel':   { products: ['Air Jordan', 'FitnessTech Hex Dumbbells', 'Under Armour Essential Hoodie'], space: 'classic', leaf: null },
+      'Speedwell Apparel': { products: ['Track Pro', 'Vertex Sport Bottle', 'Off-Court Hoodie'], space: 'speedwell', leaf: null },
       'Lebron Shorts':     { products: ['Lebron Shorts'],                            space: 'minium',    leaf: 'Lebron Shorts' },
       'Air Jordan':        { products: ['Air Jordan'],                              space: 'classic',   leaf: 'Air Jordan' },
       'Track Pro':         { products: ['Track Pro'],                                space: 'speedwell', leaf: 'Track Pro' }
+      // NOTE: the simple products (Druna Yoga Mat / FitnessTech Hex Dumbbells /
+      // Vertex Sport Bottle / Off-Court Hoodie / Under Armour Essential Hoodie)
+      // intentionally have NO VIEWS entry of their own — they only appear as
+      // flat rows inside the aggregated / per-space lists, and are never
+      // selectable nodes (they don't show in the Browse tree, and don't drill).
     };
 
     var CHECKBOX = '<label class="checkbox" aria-label="Select row"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label>';
@@ -973,9 +1008,12 @@
       var thumb = p.thumb.img
         ? '<span class="sticker sticker--md"><img src="' + p.thumb.img + '" alt=""></span>'
         : '<span class="sticker sticker--md sticker--icon"><svg class="lexicon-icon"><use href="' + p.thumb.icon + '"></use></svg></span>';
+      // Simple product → "Simple product"; grouped → SKU count. Both show the
+      // readable product name (brand + product), never the raw SKU code.
+      var meta = p.standalone ? ('Simple product · ' + p.type) : (p.skus.length + ' SKUs · ' + p.type);
       return '<li class="home-list__row">' + thumb
         + '<span class="home-list__body"><a href="#" class="home-list__name">' + name + '</a>'
-        + '<span class="home-list__meta">' + p.skus.length + ' SKUs · ' + p.type + '</span></span>' + KEBAB + '</li>';
+        + '<span class="home-list__meta">' + meta + '</span></span>' + KEBAB + '</li>';
     }
     function homeContentRow(r) {
       var meta = (r.icon === '#folder') ? '0 articles · 0 folders' : 'Modified ' + r.modified.toLowerCase() + ' by ' + r.author;
@@ -1037,6 +1075,16 @@
           + '<span class="label label--sm label--secondary pim-badge">' + p.skus.length + ' SKUs</span></span></td>'
         + metaCells(p) + '</tr>';
     }
+    // A simple-product row: the SKU shown flat in the list, with NO Parent
+    // Product above it. Plain photo thumb (no product-icon corner badge), the
+    // SKU code as the label, and no "N SKUs" badge — the absence of the parent
+    // affordances IS the signal. Not a nav row: simple products are leaves.
+    function standaloneRow(name, p) {
+      return '<tr><td class="table__cell--gutter">' + CHECKBOX + '</td>'
+        + '<td><span class="pim-sku">' + thumbCell(p)
+          + '<a href="#" class="table__title">' + name + '</a></span></td>'
+        + metaCells(p) + '</tr>';
+    }
     // Build a space-rooted breadcrumb into the given <ol>/sticker (used by both
     // the data-set header and the top bar). The space name and "Products" both
     // navigate to that space's product list; the leaf (a product) is current.
@@ -1083,19 +1131,38 @@
           + '<li aria-current="page">' + v.leaf + '</li>';
       }
     }
+    // Finder/Explorer-style ordering: Product Parents (containers, like folders)
+    // always sort ahead of simple products (leaves, like files); within each
+    // group, alphabetical by name. Returns a sorted copy — never mutates VIEWS.
+    function sortProducts(keys) {
+      return keys.slice().sort(function (a, b) {
+        var wa = PRODUCTS[a].standalone ? 1 : 0, wb = PRODUCTS[b].standalone ? 1 : 0;
+        return (wa - wb) || a.localeCompare(b, undefined, { sensitivity: 'base' });
+      });
+    }
     function renderView(label) {
       var v = VIEWS[label];
       if (!v) return;
       var rows = '', total = 0, firstCol;
       if (v.leaf) {
-        // Inside a Parent Product → list its SKUs (variants).
         firstCol = 'SKU';
         var p = PRODUCTS[v.leaf];
-        p.skus.forEach(function (sku, i) { rows += skuRow(sku, p, i === 0); total++; });
+        if (p.standalone) {
+          // A simple product has no variants → it IS the single SKU row.
+          rows += standaloneRow(v.leaf, p); total++;
+        } else {
+          // Inside a Parent Product → list its SKUs (variants).
+          p.skus.forEach(function (sku, i) { rows += skuRow(sku, p, i === 0); total++; });
+        }
       } else {
-        // All Products or a space → list Parent Products as grouped items.
+        // All Products or a space → grouped Parent Products AND flat simple
+        // products (single SKUs with no parent) share the same list.
         firstCol = 'Name';
-        v.products.forEach(function (pk) { rows += parentRow(pk, PRODUCTS[pk]); total++; });
+        sortProducts(v.products).forEach(function (pk) {
+          var pr = PRODUCTS[pk];
+          rows += pr.standalone ? standaloneRow(pk, pr) : parentRow(pk, pr);
+          total++;
+        });
       }
       var cols = [{ label: firstCol, sort: true }, { label: 'Title', sort: true }, { label: 'Type', sort: true },
                   { label: 'Space' }, { label: 'Author' }, { label: 'Modified', sort: true }, { label: 'Status' }];
@@ -1226,7 +1293,7 @@
       var content = CONTENT_ROWS.filter(function (r) { return r.space === spaceKey; });
       var files = FILES_ROWS.filter(function (r) { return r.space === spaceKey; });
       var owner = prods.length ? PRODUCTS[prods[0]].author : '';
-      document.getElementById('home-products').innerHTML = prods.map(homeProductRow).join('');
+      document.getElementById('home-products').innerHTML = sortProducts(prods).map(homeProductRow).join('');
       document.getElementById('home-content').innerHTML = content.map(homeContentRow).join('');
       document.getElementById('home-files-list').innerHTML = files.map(homeFileCard).join('');
       document.getElementById('home-members').innerHTML = homeMemberRow(owner);
