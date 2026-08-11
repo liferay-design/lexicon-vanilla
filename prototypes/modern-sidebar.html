@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Pin the canvas + browser-chrome colour so Chromium-based browsers that
+       tint their own UI (Dia, Arc) don't flicker white→dark while the external
+       stylesheets load. Not the scrim: the scrim stays opacity:0 at rest. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#FFFFFF">
   <title>Modern Sidebar — Lexicon Vanilla</title>
 
   <script>(function(){
@@ -55,10 +60,12 @@
       --sidebar-width: 280px;
       /* Match the control-menu's *content band* so the panel-header contents
          (title, theme/close) share the toggle's vertical centre. The bar is the
-         32px toggle (spacing-8) + 2×10px vertical padding (spacing-2 +
-         spacing-2-5) = 52px; its 1px bottom border sits below the centred
+         32px toggle (spacing-8) + 2×12px vertical padding (spacing-4) = 56px —
+         the canonical DXP chrome height (the kit's 36px avatar produces the same
+         56px; this prototype moved the avatar to the footer, so we pin the band
+         via padding instead). Its 1px bottom border sits below the centred
          content, so it doesn't shift the centre. */
-      --cp-chrome-h: calc(var(--spacing-8) + 2 * (var(--spacing-2) + var(--spacing-2-5))); /* 52px */
+      --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-4)); /* 56px */
     }
 
     /* Bigger, display-face titles: Site Builder (Control Menu) and
@@ -110,6 +117,28 @@
     }
     /* Peek overlays the content → elevated; pinned sits in the layout → flat. */
     body.sb-peek:not(.sb-pinned) .control-panel--floating { box-shadow: var(--shadow-lg); }
+
+    /* Mobile scrim: dims the content behind a pinned panel and closes it on
+       tap. z-index sits above the content but below the panel (50) and the
+       toggle (60), so both stay live. Hidden by default here; the compact
+       @media below reveals it only while pinned (desktop pins push the layout,
+       so no scrim is needed there). */
+    .cp-scrim {
+      position: fixed;
+      inset: 0;
+      background: var(--color-scrim);
+      z-index: 45;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 140ms ease-out, visibility 0s linear 140ms;
+    }
+
+    /* Top-bar padding: 12px on all four sides. Vertical 12 gives the 56px
+       chrome band (32px toggle + 2×12); the 12px left inset drops the toggle's
+       icon centre to 28px, matching the panel items' icon centres below (item
+       content sits at 16px + a 24px icon box → 28px centre). Overrides the
+       kit's 10px/16px base. */
+    .control-menu { padding: var(--spacing-4); }
 
     /* The menu toggle never moves: it stays in the Control Menu flow but
        paints above the floating panel (z-index), becoming part of its header
@@ -181,14 +210,20 @@
 
     /* Header row geometry: height comes from --cp-chrome-h (56 normal, 48
        compact) so it stays locked to the control-menu bar. Left padding
-       clears the 32px menu toggle overlaying this corner and leaves an 8px
-       button→title gap; the compact @media below tightens it to match the
-       control-menu's own narrower horizontal padding at that width. */
+       clears the menu toggle overlaying this corner and leaves an 8px
+       button→title gap: toggle box now starts at 12px (bar padding) and is
+       32px wide → title at 12 + 32 + 8 = 52px (spacing-10 + spacing-2). The
+       compact @media below tightens it to match the control-menu's own
+       narrower horizontal padding at that width. */
     .control-panel--floating .control-panel__header {
       height: var(--cp-chrome-h);
-      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-3));
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
     }
-    .control-panel--floating .control-panel__search { padding-top: var(--spacing-4); }
+    .control-panel--floating .control-panel__search {
+      padding-top: var(--spacing-4);
+      padding-left: var(--spacing-6);   /* 20px inset from the panel edges (base is 16px) */
+      padding-right: var(--spacing-6);
+    }
 
     /* Compact 32px search across both breakpoints — the kit default input
        field is 40px, but the panel reads better with a slimmer field. The
@@ -202,6 +237,10 @@
 
     /* Tighter rhythm between section groups (base is --spacing-5). */
     .control-panel--floating .control-panel__groups { gap: var(--spacing-3); }
+
+    /* Section-header chevron sits 20px from the panel's right edge (base is
+       --spacing-5 / 16px). */
+    .control-panel--floating .control-panel__group-header { padding-right: var(--spacing-6); }
 
     /* ── Modern scrollbar ───────────────────────────────────────
        Thin floating pill, no track. The 2px transparent border +
@@ -352,15 +391,15 @@
        panel BODY (items, indent, gaps, icons, typography) stays
        identical at both sizes. */
     @media (max-width: 767px) {
-      /* Compact control-menu padding drops to 6px (spacing-2-5), so the band
-         is 32 + 2×6 = 44px — keep the header locked to it. */
-      :root { --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-2-5)); } /* 44px */
+      /* Compact chrome: 8px padding all round, so the band is 32 + 2×8 = 48px —
+         keep the header locked to it. */
+      :root { --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-3)); } /* 48px */
 
-      /* Tighter side padding on the top bar than the kit default (12 → 8)
-         so the toggle sits closer to the viewport edge on narrow screens. */
+      /* 8px padding all round: vertical 8 → 48px band; the 8px side inset (vs
+         the kit's 12) keeps the toggle closer to the viewport edge on narrow
+         screens. */
       .control-menu {
-        padding-left: var(--spacing-3);
-        padding-right: var(--spacing-3);
+        padding: var(--spacing-3);
       }
 
       .control-panel--floating .control-panel__header {
@@ -387,6 +426,13 @@
       /* Overlay-only pinned: no push, no title shift. */
       body.sb-pinned main { margin-left: 0; }
       body.sb-pinned .control-menu__title { margin-left: 0; }
+
+      /* Scrim visible only while the panel is pinned at this width. */
+      body.sb-pinned .cp-scrim {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 140ms ease-out, visibility 0s;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -506,6 +552,10 @@
     </button>
   </div>
 </div>
+
+<!-- Mobile scrim: only visible below the mobile breakpoint while the panel is
+     pinned. Tapping it closes the panel. Purely presentational → aria-hidden. -->
+<div class="cp-scrim" id="cp-scrim" aria-hidden="true"></div>
 
 <!-- ─── Floating Control Panel ────────────────────────────────────── -->
 <aside class="control-panel control-panel--floating" id="control-panel" tabindex="-1">
@@ -849,6 +899,9 @@
     var close = document.getElementById('cp-close');
     var toggleTip = document.getElementById('cp-toggle-tip');
     var hideTimer = null;
+    // Below this width the panel is a tap-driven drawer: no hover peek, and
+    // selecting a nav item closes it.
+    var mqMobile = window.matchMedia('(max-width: 767px)');
 
     function pinned() { return body.classList.contains('sb-pinned'); }
 
@@ -871,6 +924,8 @@
 
     function peek(on) {
       if (pinned()) return;
+      // Mobile has no hover peek — only tap-to-pin opens the drawer.
+      if (on && mqMobile.matches) return;
       body.classList.toggle('sb-peek', on);
       // Retracting an unpinned (hover) panel resets any transient state inside
       // it — e.g. an open user menu — so the next peek starts from default.
@@ -893,8 +948,8 @@
       if (pinned()) {
         setPinned(false);
         // Pointer is still over the trigger/panel → degrade to overlay
-        // instead of vanishing under the cursor.
-        if (toggle.matches(':hover') || panel.matches(':hover')) body.classList.add('sb-peek');
+        // instead of vanishing under the cursor. Never on mobile (no peek).
+        if (!mqMobile.matches && (toggle.matches(':hover') || panel.matches(':hover'))) body.classList.add('sb-peek');
       } else {
         setPinned(true);
         // Keyboard activation (Enter/Space) reports detail === 0. When opened
@@ -908,6 +963,27 @@
       setPinned(false);
       body.classList.remove('sb-peek');
       if (e.detail === 0) toggle.focus();
+    });
+
+    // Tapping the mobile scrim closes the panel (visible/interactive only
+    // below the breakpoint while pinned — a no-op elsewhere).
+    var scrim = document.getElementById('cp-scrim');
+    if (scrim) scrim.addEventListener('click', function () {
+      setPinned(false);
+      body.classList.remove('sb-peek');
+    });
+
+    // Selecting a nav item updates the Control Menu title + active highlight
+    // (all sizes); on mobile it also closes the drawer (scrim retracts with it).
+    var menuTitle = document.querySelector('.control-menu__title');
+    document.querySelectorAll('.control-panel__item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        if (menuTitle) menuTitle.textContent = item.textContent.trim();
+        var current = document.querySelector('.control-panel__item.is-active');
+        if (current) current.classList.remove('is-active');
+        item.classList.add('is-active');
+        if (mqMobile.matches) { setPinned(false); body.classList.remove('sb-peek'); }
+      });
     });
 
     // Keyboard parity with hover: focus inside the panel keeps it revealed.
