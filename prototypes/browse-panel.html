@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Pin the canvas + browser-chrome colour so Chromium-based browsers that
+       tint their own UI (Dia, Arc) don't flicker white→dark while the external
+       stylesheets load. Not the scrim: the scrim stays opacity:0 at rest. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#FFFFFF">
   <title>PIM Navigation Patterns — Lexicon Vanilla</title>
 
   <!-- Skin + CMS-style bootstrap (verbatim from starter.html) -->
@@ -39,13 +44,23 @@
     :root {
       --sidebar-width: 280px;       /* docked left nav (Control Panel)  */
       --browse-width: 264px;        /* Browse by Space contextual panel */
-      --cp-chrome-h: calc(var(--spacing-8) + 2 * (var(--spacing-2) + var(--spacing-2-5))); /* 52px chrome band */
+      --info-width: 320px;          /* right info panel — fixed width, never goes full-bleed (Clay SidePanel min is 280px; we use 320px) */
+      /* Chrome band: 32px toggle (spacing-8) + 2×12px vertical padding
+         (spacing-4) = 56px, the canonical DXP chrome height. The top bar
+         (.control-menu below) is pinned to the same 56px via its own 12px
+         padding, so both share the toggle's vertical centre. */
+      --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-4)); /* 56px chrome band */
     }
 
     html, body { height: 100%; }
     body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
     /* ── Top-bar chrome tweaks ───────────────────────────────── */
+    /* 12px padding on all four sides. Vertical 12 gives the 56px chrome band
+       (32px toggle + 2×12); the 12px left inset drops the toggle's icon centre
+       to 28px, matching the panel items' icon centres below. Overrides the
+       kit's 10px/16px base. */
+    .control-menu { padding: var(--spacing-4); }
     .control-menu__left { gap: var(--spacing-3); }
     .control-menu__btn { border-radius: var(--rounded-lg); }
     /* The menu toggle stays in the Control Menu flow but paints above the
@@ -115,11 +130,29 @@
     }
     body.sb-peek:not(.sb-pinned) .control-panel--floating { box-shadow: var(--shadow-lg); }
 
+    /* Mobile scrim: dims the content behind a pinned panel and closes it on
+       tap. z-index sits above the content but below the panel (50) and the
+       toggle (60), so both stay live. Hidden by default here; the compact
+       @media below reveals it only while pinned (desktop pins push the layout,
+       so no scrim is needed there). */
+    .cp-scrim {
+      position: fixed;
+      inset: 0;
+      background: var(--color-scrim);
+      z-index: 45;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 140ms ease-out, visibility 0s linear 140ms;
+    }
+
     /* Header row: brand + theme/close, locked to the top-bar band.
        Left padding clears the 32px overlay toggle + 8px gap. */
+    /* Left padding clears the menu toggle overlaying this corner and leaves an
+       8px button→title gap: toggle box starts at 12px (bar padding) and is 32px
+       wide → title at 12 + 32 + 8 = 52px (spacing-10 + spacing-2). */
     .control-panel--floating .control-panel__header {
       height: var(--cp-chrome-h);
-      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-3));
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
     }
     .control-panel--floating .control-panel__title {
       font-size: var(--font-size-lg);
@@ -140,6 +173,9 @@
     }
     .control-panel:focus { outline: none; }
     .control-panel--floating .control-panel__groups { gap: var(--spacing-3); }
+    /* Section-header chevron sits 20px from the panel's right edge (base is
+       --spacing-5 / 16px). */
+    .control-panel--floating .control-panel__group-header { padding-right: var(--spacing-6); }
 
     /* Space avatars — the Lexicon outline sticker (.sticker sticker--outline,
        24×24) recoloured with the space's brand hue, passed as user data via
@@ -197,12 +233,20 @@
       padding: 0 var(--spacing-3) var(--spacing-5);
     }
     .tree__row.is-active .tree__label { font-weight: var(--font-weight-semi); }
-    /* A touch more breathing room between Browse tree rows: +4px vertical
-       overall (spacing-2 → spacing-2-5, i.e. 4px → 6px top & bottom). Scoped
-       to the Browse panel so the kit's other trees keep the default rhythm. */
+    /* Long product names (e.g. "Under Armour Leopard Shorts") truncate to a
+       single line with an ellipsis rather than wrapping in the narrow panel. */
+    .browse-panel .tree__label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* Browse tree rows use 4px top & bottom padding (spacing-2) → 4+4 of
+       vertical air between nodes. Scoped to the Browse panel. */
     .browse-panel .tree__row {
-      padding-top: var(--spacing-2-5);
-      padding-bottom: var(--spacing-2-5);
+      padding-top: var(--spacing-2);
+      padding-bottom: var(--spacing-2);
     }
 
     /* ── Main + content column ───────────────────────────────── */
@@ -211,6 +255,7 @@
       display: flex;
       min-height: 0;
       overflow: hidden;
+      position: relative;              /* anchor for the info panel overlay */
       transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     body.sb-pinned main { margin-left: var(--sidebar-width); }
@@ -232,7 +277,9 @@
       gap: var(--spacing-4);
       padding: var(--spacing-4) var(--spacing-6);
     }
-    .pim-crumbbar .breadcrumb { flex: 1; min-width: 0; font-size: var(--font-size-lg); }
+    /* Breadcrumb hugs its content so the trailing ⋮ (more actions) sits right
+       after the last crumb (one crumbbar gap away), not pushed to the far edge. */
+    .pim-crumbbar .breadcrumb { min-width: 0; font-size: var(--font-size-lg); }
     body.in-space .pim-crumbbar { display: none; }
 
     /* Toolbar tree-view toggle marked while the Browse panel is open. Uses the
@@ -240,7 +287,11 @@
     #bp-toggle.is-active { background: var(--color-light-d1); }
 
     /* Table scroll region + cell helpers. */
-    .pim-table-wrap { flex: 1; overflow: auto; padding: 0 var(--spacing-6); }
+    /* Data set runs full-bleed ("a sangre") — no horizontal margin between the
+       content column's edges and the table / management toolbar, on either
+       side (matching the real DXP implementation). The inset for the cells and
+       controls comes from their own gutters, not a container margin. */
+    .pim-table-wrap { flex: 1; overflow: auto; padding: 0; }
     .pim-sku { align-items: center; display: flex; gap: var(--spacing-3); }
     /* Product icon used for the Parent-Product leaves in the Browse tree
        (a brand asset, referenced as an <img> like the product photos). */
@@ -278,6 +329,126 @@
     .pim-row-nav:hover { background: var(--color-light); }
 
     .pim-pagination { border-top: 1px solid var(--color-secondary-l3); padding: var(--spacing-3) var(--spacing-6); }
+
+    /* ── Management toolbar contextualisation ────────────────────
+       The default and active (selection) clusters are display:contents
+       wrappers so their children participate directly in the bar's flex
+       row (and share its 16px gap). Only one is shown at a time; the
+       leading select-all checkbox and the trailing (i) toggle sit outside
+       both, so they persist across modes — exactly like the CMS. */
+    #mt-default, #mt-active { display: contents; }
+    #mt-default.is-off, #mt-active.is-off { display: none; }
+    /* Full-bleed: drop the toolbar bar's own horizontal padding so the bar
+       background reaches the content column's edges — no side margin, matching
+       the table above. Vertical padding is untouched. */
+    .management-toolbar__bar { padding-left: 0; padding-right: 0; }
+    /* …but the leading select-all and the trailing (i) toggle are NOT flush to
+       the edge. The select-all joins the shared leading rail at +20 (aligned to
+       #cp-toggle, see the crumbbar note below); the (i) toggle keeps the table's
+       trailing-gutter inset (a 32px icon centred in the 48px gutter → 8px). */
+    #mt-selectall { margin-left: var(--spacing-6); }   /* 20px → shared leading rail */
+    #info-toggle  { margin-right: var(--spacing-3); }  /* 8px  → row-actions rail */
+    /* Data set: nudge the leading gutter's checkbox onto that same +20 rail.
+       The 48px gutter keeps its width (only the inset grows 16→20, balanced by a
+       12px right pad), so the first data column doesn't move. Covers the header
+       select-all and every row checkbox. */
+    #pim-table .table__cell--gutter:first-child {
+      padding-left: var(--spacing-6);
+      padding-right: var(--spacing-4);
+    }
+
+    /* Info toggle marked while the panel is open (borderless pressed fill). */
+    #info-toggle.is-active { background: var(--color-light-d1); }
+
+    /* ── Browse-close: CHOSEN = option B (breadcrumb spine) ──────
+       We evaluated three homes for the Browse toggle and settled on B: the
+       toggle lives in the breadcrumb spine (#bp-toggle-crumb). The floating
+       A/B/C lab has been removed. Options A (persistent toolbar toggle) and C
+       (in-panel close) are kept here DORMANT for reference — their controls and
+       rules stay in place but only activate if `opt-a` / `opt-c` is set on
+       <body> again (today it's hardcoded to `opt-b`). */
+    #bp-toggle-persist.is-active,
+    #bp-toggle-crumb.is-active { background: var(--color-light-d1); }
+    /* A — persistent toolbar toggle: only surfaces while a selection is
+       active (in the default state the #mt-default toggle already serves). */
+    .bp-toggle-persist { display: none; }
+    body.opt-a .management-toolbar--active .bp-toggle-persist { display: inline-flex; }
+    /* B — toggle lives in the breadcrumb spine and replaces the toolbar one. */
+    .bp-toggle-crumb { display: none; }
+    body.opt-b .bp-toggle-crumb { display: inline-flex; }
+    body.opt-b #bp-toggle { display: none; }
+    /* B — the Browse toggle is the leading element of the breadcrumb bar and
+       shares ONE leading icon rail with the MT select-all and the row checkboxes
+       below. That rail is aligned to the side-panel toggle (#cp-toggle), whose
+       icon sits 20px in from its container edge (12px control-menu padding + 8px
+       btn-icon inset). So the 32px toggle is padded 12px (spacing-4) from the
+       content edge → its 16px icon lands at +20, the same inset as #cp-toggle,
+       the MT checkbox and the row checkboxes. Consistent in every state — the
+       breadcrumb bar always starts at the content edge, so the rail holds
+       pinned/unpinned and with the Browse panel open or collapsed. */
+    body.opt-b .pim-crumbbar { padding-left: var(--spacing-4); }
+    /* C — collapse button inside the Browse panel header (dormant, opt-c). */
+    .browse-panel__close { display: none; margin-left: auto; }
+    body.opt-c .browse-panel__close { display: inline-flex; }
+
+    /* ── Info panel (right slideout) ─────────────────────────────
+       Mirrors Clay's c-slideout in DXP/CMS: the panel is anchored to
+       main's right edge and floats OVER the content by default (overlay);
+       only at the wide breakpoint (≥1200px) does it reserve space so the
+       table isn't covered (push). It is opened by the toolbar (i) toggle —
+       never by the row checkboxes (checkbox selection only contextualises
+       the Management Toolbar). Its content follows the selection:
+       1 item → metadata, 2+ → a selection summary. The Browse panel is
+       never auto-collapsed; the transitory info panel adapts instead. */
+    .pim-info {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: var(--info-width);
+      z-index: 40;
+      border-left: 1px solid var(--color-secondary-l2);
+      transform: translateX(100%);
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    body.info-open .pim-info { transform: translateX(0); }
+    body:not(.info-open) .pim-info { pointer-events: none; }
+
+    .pim-info__heading { align-items: center; display: flex; gap: var(--spacing-3); min-width: 0; }
+    .pim-info__heading .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+    .pim-info__tabs { flex-shrink: 0; padding: 0 var(--spacing-5); }
+    body.info-multi .pim-info__tabs { display: none; }
+
+    /* Metadata list (Details tab) */
+    .pim-meta__label {
+      color: var(--color-secondary); font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semi); letter-spacing: 0.04em;
+      margin: 0 0 var(--spacing-5); text-transform: uppercase;
+    }
+    .pim-meta { margin: 0; }
+    .pim-meta__item + .pim-meta__item { margin-top: var(--spacing-5); }
+    .pim-meta__term {
+      color: var(--color-dark); font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-1);
+    }
+    .pim-meta__desc {
+      align-items: center; color: var(--color-dark); display: flex;
+      flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-3); margin: 0;
+    }
+    .pim-meta__desc .lexicon-icon { color: var(--color-secondary); flex-shrink: 0; }
+
+    /* Push vs overlay is decided by the width actually left for the table —
+       NOT by a viewport breakpoint. With the left nav and Browse panel both
+       open, even a wide screen may not have room to push without crushing the
+       table, so JS measures the available width and toggles body.info-push
+       only when the table keeps a comfortable minimum. Docked (push) → the
+       panel reserves its own space and drops the shadow; floating (overlay)
+       → the shadow reads. The 1px seam stays in both modes. */
+    .pim-content { transition: padding-right 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.info-push .pim-content { padding-right: var(--info-width); }
+    body.info-push .pim-info { box-shadow: none; }
+    /* The info panel keeps its fixed 280px at every width — it never expands to
+       full-bleed on small screens (it stays an overlay that covers part of the
+       content, matching Clay's fixed-minimum SidePanel rather than a mobile
+       full-screen sheet). */
 
     /* ── Space home ─────────────────────────────────────────────
        Shown when a SPACES item is opened (body.is-home). The data-set
@@ -338,7 +509,9 @@
       justify-content: center;
       margin-bottom: var(--spacing-1);
     }
+    .home-file__thumb { overflow: hidden; }
     .home-file__thumb .lexicon-icon { color: var(--color-secondary); height: var(--spacing-8); width: var(--spacing-8); }
+    .home-file__thumb img { width: 100%; height: 100%; object-fit: cover; }
     .home-file__name { color: var(--color-dark); font-size: var(--font-size-sm); font-weight: var(--font-weight-semi); overflow: hidden; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
     .home-file__date { color: var(--color-secondary); font-size: var(--font-size-sm); }
     .home-file .label { align-self: flex-start; }
@@ -370,18 +543,52 @@
     .control-panel__header { position: relative; z-index: 1; transition: box-shadow 150ms ease; }
     #control-panel.is-clipped-top .control-panel__header { box-shadow: var(--shadow-scroll-top); }
 
-    /* ── Compact chrome (≤767px) ─────────────────────────────────
-       Only the chrome band compacts on narrow widths. The docked layout
-       is kept at every width (the sidebar always reserves its space) so
-       the Browse panel is never overlaid or hidden — content just narrows
-       and the table scrolls. Collapse Browse with the toolbar tree-view
-       toggle when space is tight. (An earlier version dropped the pinned
-       margin and absolutely-positioned the panel, which made it vanish
-       behind the sidebar in a narrow/docked pane — "va en blanco".) */
+    /* ── Compact chrome + mobile drawer (≤767px) ─────────────────
+       At this width the Control Panel becomes a tap-driven overlay drawer
+       (matching modern-sidebar): pinning no longer pushes the layout — the
+       panel floats over the content and a scrim dims + closes it on tap. The
+       Browse panel stays in the flow (it's inside main, which now spans full
+       width), so it is never overlaid or hidden; collapse it with the toolbar
+       tree-view toggle when space is tight. (The panel is a fixed overlay, not
+       an absolutely-positioned column, so the old "va en blanco" regression —
+       an in-flow panel vanishing in a narrow docked pane — does not recur.) */
     @media (max-width: 767px) {
-      :root { --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-2-5)); }
-      .control-menu { padding-left: var(--spacing-3); padding-right: var(--spacing-3); }
+      /* Compact chrome: 8px padding all round → 32 + 2×8 = 48px band. */
+      :root { --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-3)); }
+      .control-menu { padding: var(--spacing-3); }
       .control-panel--floating .control-panel__header { padding: 0 var(--spacing-3) 0 var(--spacing-10); }
+
+      /* Overlay-only pinned: no push, no breadcrumb shift. */
+      body.sb-pinned main { margin-left: 0; }
+      body.sb-pinned .cm-crumb { margin-left: 0; }
+
+      /* Scrim visible only while the panel is pinned at this width. */
+      body.sb-pinned .cp-scrim {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 140ms ease-out, visibility 0s;
+      }
+
+      /* At this breakpoint (where the Control Panel becomes a scrim-backed
+         drawer) there isn't room for the Browse panel alongside the data set,
+         so the Browse panel AND its toggle drop out entirely — the data set
+         takes the full content width. Navigation falls back to the drawer. */
+      .browse-panel { display: none; }
+      #bp-toggle, #bp-toggle-persist, #bp-toggle-crumb { display: none; }
+
+      /* Selection toolbar on mobile: the bulk actions collapse into the (⋮)
+         more-actions button so the row stays readable — only the selection
+         count and Clear stay in the bar, with (⋮) pinned to the far end. */
+      #mt-active .mt-bulk { display: none; }
+      /* Keep the count hugging its text (the kit stretches it with flex:1 on
+         mobile) so Clear sits right after it instead of being pushed away by the
+         growing label; the spacer after Clear still pushes (⋮) to the far end.
+         A little left margin lifts the count off the select-all checkbox. */
+      #mt-active .management-toolbar__count {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        margin-left: var(--spacing-3);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -389,7 +596,7 @@
     }
   </style>
 </head>
-<body class="sb-pinned">
+<body class="sb-pinned opt-b">
 
 <!-- ════════════════════════════════════════════════════════════════
      PIM screen — docked Control Panel (left nav) + Browse by Space
@@ -428,6 +635,10 @@
     </button>
   </div>
 </div>
+
+<!-- Mobile scrim: only visible below the mobile breakpoint while the panel is
+     pinned. Tapping it closes the panel. Purely presentational → aria-hidden. -->
+<div class="cp-scrim" id="cp-scrim" aria-hidden="true"></div>
 
 <!-- ─── Docked Control Panel (left nav) ────────────────────────────── -->
 <aside class="control-panel control-panel--floating" id="control-panel" tabindex="-1">
@@ -550,6 +761,10 @@
   <aside class="browse-panel" id="browse-panel" aria-label="Browse by Space">
     <div class="browse-panel__header">
       <h2 class="browse-panel__title">Browse by Space</h2>
+      <!-- Option C: collapse button inside the panel -->
+      <button class="btn btn--borderless btn--sm btn--icon browse-panel__close" id="bp-close" type="button" aria-label="Close Browse by Space">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
     </div>
     <div class="browse-panel__body">
       <ul class="tree" role="tree" id="browse-tree">
@@ -564,7 +779,7 @@
         <li role="treeitem" aria-expanded="true">
           <div class="tree__row" data-crumb="Minium Apparel">
             <button class="tree__toggle" aria-label="Collapse"><svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></button>
-            <span class="sticker sticker--outline sticker--space" style="--sc:#E1308F" aria-hidden="true">M</span>
+            <span class="sticker sticker--sm sticker--outline sticker--space" style="--sc:#E1308F" aria-hidden="true">M</span>
             <span class="tree__label">Minium Apparel</span>
           </div>
           <ul role="group">
@@ -575,13 +790,27 @@
                 <span class="tree__label">Lebron Shorts</span>
               </div>
             </li>
+            <li role="treeitem">
+              <div class="tree__row" data-crumb="Jordan Diamond Shorts">
+                <button class="tree__toggle tree__toggle--placeholder" aria-hidden="true"></button>
+                <img class="tree__icon" src="img/icon-product.svg" alt="" width="16" height="16">
+                <span class="tree__label">Jordan Diamond Shorts</span>
+              </div>
+            </li>
+            <li role="treeitem">
+              <div class="tree__row" data-crumb="Under Armour Leopard Shorts">
+                <button class="tree__toggle tree__toggle--placeholder" aria-hidden="true"></button>
+                <img class="tree__icon" src="img/icon-product.svg" alt="" width="16" height="16">
+                <span class="tree__label">Under Armour Leopard Shorts</span>
+              </div>
+            </li>
           </ul>
         </li>
 
         <li role="treeitem" aria-expanded="false">
           <div class="tree__row" data-crumb="Classic Apparel">
             <button class="tree__toggle" aria-label="Expand"><svg class="lexicon-icon"><use href="#caret-right"></use></svg></button>
-            <span class="sticker sticker--outline sticker--space" style="--sc:#E0A128" aria-hidden="true">C</span>
+            <span class="sticker sticker--sm sticker--outline sticker--space" style="--sc:#E0A128" aria-hidden="true">C</span>
             <span class="tree__label">Classic Apparel</span>
           </div>
           <ul role="group" hidden>
@@ -598,7 +827,7 @@
         <li role="treeitem" aria-expanded="false">
           <div class="tree__row" data-crumb="Speedwell Apparel">
             <button class="tree__toggle" aria-label="Expand"><svg class="lexicon-icon"><use href="#caret-right"></use></svg></button>
-            <span class="sticker sticker--outline sticker--space" style="--sc:#3FA455" aria-hidden="true">S</span>
+            <span class="sticker sticker--sm sticker--outline sticker--space" style="--sc:#3FA455" aria-hidden="true">S</span>
             <span class="tree__label">Speedwell Apparel</span>
           </div>
           <ul role="group" hidden>
@@ -623,6 +852,10 @@
          the breadcrumb lives in the top bar). Interacting with a space crumb
          here navigates the side menu to that space. Rebuilt by JS. -->
     <div class="pim-crumbbar">
+      <!-- Option B: Browse toggle in the navigation spine (breadcrumb) -->
+      <button class="btn btn--borderless btn--sm btn--icon bp-toggle-crumb" id="bp-toggle-crumb" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+        <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
+      </button>
       <span class="sticker sticker--outline sticker--space" id="ds-crumb-sticker" aria-hidden="true">M</span>
       <ol class="breadcrumb" id="ds-crumb-ol"></ol>
       <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
@@ -630,11 +863,16 @@
       </button>
     </div>
 
-    <!-- Management toolbar -->
+    <!-- Management toolbar — contextualises on selection (checkbox / multi-
+         select). The default cluster (tree toggle · Filter · search · view ·
+         New) is swapped for the active cluster (count · Clear · bulk actions)
+         while one or more rows are selected; the leading select-all checkbox
+         and the trailing (i) toggle persist across both modes. The (i) toggle
+         opens the info panel INDEPENDENTLY of the selection. -->
     <div class="management-toolbar">
       <div class="management-toolbar__bar">
 
-        <label class="checkbox" aria-label="Select all">
+        <label class="checkbox" id="mt-selectall" aria-label="Select all">
           <input type="checkbox" class="checkbox__input">
           <span class="checkbox__box">
             <svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>
@@ -642,40 +880,75 @@
           </span>
         </label>
 
-        <!-- Tree-view toggle → controls the Browse by Space panel -->
-        <button class="btn btn--borderless btn--sm btn--icon is-active" id="bp-toggle" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+        <!-- Option A: persistent Browse toggle — survives selection mode -->
+        <button class="btn btn--borderless btn--sm btn--icon bp-toggle-persist" id="bp-toggle-persist" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
           <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
         </button>
 
-        <button class="btn btn--borderless btn--sm" type="button">
-          <svg class="lexicon-icon"><use href="#filter"></use></svg>
-          Filter
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </button>
+        <!-- Default cluster -->
+        <div id="mt-default">
+          <!-- Tree-view toggle → controls the Browse by Space panel -->
+          <button class="btn btn--borderless btn--sm btn--icon is-active" id="bp-toggle" type="button" aria-label="Toggle Browse by Space" aria-pressed="true" aria-controls="browse-panel">
+            <svg class="lexicon-icon"><use href="#hierarchy"></use></svg>
+          </button>
 
-        <div class="management-toolbar__search">
-          <div class="search">
-            <input class="input__field search__field" type="search" placeholder="Search">
-            <button class="search__clear" aria-label="Clear" hidden type="button">
-              <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
-            </button>
-            <button class="search__submit" aria-label="Search" type="button">
-              <svg class="lexicon-icon"><use href="#search"></use></svg>
-            </button>
+          <button class="btn btn--borderless btn--sm" type="button">
+            <svg class="lexicon-icon"><use href="#filter"></use></svg>
+            Filter
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
+
+          <div class="management-toolbar__search">
+            <div class="search">
+              <input class="input__field search__field" type="search" placeholder="Search">
+              <button class="search__clear" aria-label="Clear" hidden type="button">
+                <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+              </button>
+              <button class="search__submit" aria-label="Search" type="button">
+                <svg class="lexicon-icon"><use href="#search"></use></svg>
+              </button>
+            </div>
           </div>
+
+          <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
+            <svg class="lexicon-icon"><use href="#list"></use></svg>
+            <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
+          </button>
+
+          <button class="btn btn--primary btn--sm" type="button">
+            New
+            <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
+          </button>
         </div>
 
-        <button class="btn btn--borderless btn--sm" type="button" aria-label="Switch view">
-          <svg class="lexicon-icon"><use href="#list"></use></svg>
-          <svg class="lexicon-icon"><use href="#caret-double"></use></svg>
-        </button>
+        <!-- Active cluster (shown while a selection exists) -->
+        <div id="mt-active" class="is-off">
+          <span class="management-toolbar__count" id="mt-count">1 of 1 item selected</span>
+          <button class="btn btn--borderless btn--sm" id="mt-clear" type="button">Clear</button>
+          <div class="management-toolbar__spacer"></div>
+          <button class="btn btn--borderless btn--sm mt-bulk" type="button">
+            <svg class="lexicon-icon"><use href="#move-folder"></use></svg>
+            Move To
+          </button>
+          <button class="btn btn--borderless btn--sm mt-bulk" type="button">
+            <svg class="lexicon-icon"><use href="#copy"></use></svg>
+            Copy To
+          </button>
+          <button class="btn btn--borderless btn--sm mt-bulk" type="button">
+            <svg class="lexicon-icon"><use href="#time"></use></svg>
+            Expire
+          </button>
+          <button class="btn btn--borderless btn--sm mt-bulk" type="button">
+            <svg class="lexicon-icon"><use href="#export"></use></svg>
+            Export for Translation
+          </button>
+          <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="More actions">
+            <svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg>
+          </button>
+        </div>
 
-        <button class="btn btn--primary btn--sm" type="button">
-          New
-          <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg>
-        </button>
-
-        <button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Info">
+        <!-- Info toggle — opens the info panel (independent of selection) -->
+        <button class="btn btn--borderless btn--sm btn--icon" id="info-toggle" type="button" aria-label="Info" aria-pressed="false" aria-controls="pim-info">
           <svg class="lexicon-icon"><use href="#info-circle-open"></use></svg>
         </button>
 
@@ -778,6 +1051,26 @@
     </section>
 
   </div><!-- /pim-content -->
+
+  <!-- Info panel (right slideout) — a .side-panel anchored to main's right
+       edge. Opened by the toolbar (i) toggle; its body follows the selection
+       (1 item → metadata · 2+ → summary · none → prompt). Rendered by JS. -->
+  <aside class="side-panel pim-info" id="pim-info" aria-label="Information" aria-hidden="true">
+    <div class="side-panel__header">
+      <span class="pim-info__heading">
+        <svg class="lexicon-icon" id="pim-info-icon"><use href="#info-circle-open"></use></svg>
+        <span class="side-panel__title" id="pim-info-title">Details</span>
+      </span>
+      <button class="btn btn--borderless btn--sm btn--icon side-panel__close" id="pim-info-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+    <nav class="tabs pim-info__tabs" id="pim-info-tabs" role="tablist" aria-label="Information views">
+      <button class="tabs__tab is-active" role="tab" aria-selected="true" type="button">Details</button>
+      <button class="tabs__tab" role="tab" aria-selected="false" type="button">Categorization</button>
+    </nav>
+    <div class="side-panel__body" id="pim-info-body"></div>
+  </aside>
 </main>
 
 <!-- ─── Scripts ─────────────────────────────────────────────────────── -->
@@ -812,7 +1105,11 @@
     var toggleIcon = document.getElementById('cp-toggle-icon');
     var panel = document.getElementById('control-panel');
     var close = document.getElementById('cp-close');
+    var scrim = document.getElementById('cp-scrim');
     var hideTimer = null;
+    // Below this width the panel is a tap-driven drawer: no hover peek, and
+    // selecting a nav item closes it.
+    var mqMobile = window.matchMedia('(max-width: 767px)');
 
     function pinned() { return body.classList.contains('sb-pinned'); }
     function setIcon() {
@@ -827,7 +1124,11 @@
       toggle.setAttribute('aria-expanded', String(on));
       setIcon();
     }
-    function peek(on) { if (!pinned()) body.classList.toggle('sb-peek', on); }
+    function peek(on) {
+      if (pinned()) return;
+      if (on && mqMobile.matches) return;   // mobile has no hover peek — tap-to-pin only
+      body.classList.toggle('sb-peek', on);
+    }
     function scheduleHide() { clearTimeout(hideTimer); hideTimer = setTimeout(function () { peek(false); }, 250); }
     function cancelHide() { clearTimeout(hideTimer); }
 
@@ -838,7 +1139,9 @@
     toggle.addEventListener('click', function (e) {
       if (pinned()) {
         setPinned(false);
-        if (toggle.matches(':hover') || panel.matches(':hover')) body.classList.add('sb-peek');
+        // Degrade to overlay instead of vanishing under the cursor — never on
+        // mobile (no peek there).
+        if (!mqMobile.matches && (toggle.matches(':hover') || panel.matches(':hover'))) body.classList.add('sb-peek');
       } else {
         setPinned(true);
         if (e.detail === 0) panel.focus();
@@ -847,6 +1150,18 @@
     close.addEventListener('click', function (e) {
       setPinned(false); body.classList.remove('sb-peek');
       if (e.detail === 0) toggle.focus();
+    });
+    // Tapping the mobile scrim closes the panel (interactive only below the
+    // breakpoint while pinned — a no-op elsewhere).
+    if (scrim) scrim.addEventListener('click', function () {
+      setPinned(false); body.classList.remove('sb-peek');
+    });
+    // On mobile, selecting a nav item closes the drawer (the scrim retracts
+    // with it). Group headers only expand/collapse, so they don't close it.
+    document.querySelectorAll('.control-panel__item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        if (mqMobile.matches) { setPinned(false); body.classList.remove('sb-peek'); }
+      });
     });
     panel.addEventListener('focusin', function () { cancelHide(); peek(true); });
     panel.addEventListener('focusout', function (e) { if (!panel.contains(e.relatedTarget)) scheduleHide(); });
@@ -857,18 +1172,31 @@
   })();
 </script>
 
-<!-- Browse by Space: toolbar tree-view icon toggles panel visibility -->
+<!-- Browse by Space: unified controller for every toggle/close control.
+     Option B is the chosen pattern (toggle in the breadcrumb spine,
+     #bp-toggle-crumb); the persistent (A) and in-panel (C) controls stay wired
+     here so they still work if `opt-a` / `opt-c` is re-enabled on <body>. -->
 <script>
   (function () {
     var body = document.body;
-    var btn = document.getElementById('bp-toggle');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      var collapsed = body.classList.toggle('bp-collapsed');
-      var open = !collapsed;
-      btn.classList.toggle('is-active', open);
-      btn.setAttribute('aria-pressed', String(open));
+    var toggles = ['bp-toggle', 'bp-toggle-persist', 'bp-toggle-crumb']
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+    function syncToggles() {
+      var open = !body.classList.contains('bp-collapsed');
+      toggles.forEach(function (t) {
+        t.classList.toggle('is-active', open);
+        t.setAttribute('aria-pressed', String(open));
+      });
+    }
+    function setBrowse(collapsed) { body.classList.toggle('bp-collapsed', collapsed); syncToggles(); }
+    toggles.forEach(function (t) {
+      t.addEventListener('click', function () { setBrowse(!body.classList.contains('bp-collapsed')); });
     });
+    var closeBtn = document.getElementById('bp-close');
+    if (closeBtn) closeBtn.addEventListener('click', function () { setBrowse(true); });
+
+    syncToggles();
   })();
 </script>
 
@@ -897,6 +1225,16 @@
         space: 'minium', title: 'Lebron Short', type: 'Shorts', author: 'Amanda',
         modified: '3 Minutes Ago', thumb: { img: 'img/lebron-short-red.png' },
         skus: ['LebronShortRedXS', 'LebronShortRedS', 'LebronShortRedM', 'LebronShortRedL', 'LebronShortRedXL']
+      },
+      'Jordan Diamond Shorts': {
+        space: 'minium', title: 'Jordan Diamond Shorts', type: 'Shorts', author: 'Amanda',
+        modified: '5 Minutes Ago', thumb: { img: 'img/jordan-diamond-short.png' },
+        skus: ['JordanDiamondBlackS', 'JordanDiamondBlackM', 'JordanDiamondBlackL', 'JordanDiamondBlackXL']
+      },
+      'Under Armour Leopard Shorts': {
+        space: 'minium', title: 'Under Armour Leopard Shorts', type: 'Shorts', author: 'Amanda',
+        modified: '15 Minutes Ago', thumb: { img: 'img/ua-leopard-short.png' },
+        skus: ['UALeopardBlackGoldS', 'UALeopardBlackGoldM', 'UALeopardBlackGoldL']
       },
       'Track Pro': {
         space: 'speedwell', title: 'Track Pro', type: 'Watch', author: 'Marco',
@@ -941,11 +1279,13 @@
     };
     // Each Browse node → which products it lists + how its breadcrumb reads.
     var VIEWS = {
-      'All Products':      { products: ['Lebron Shorts', 'Druna Yoga Mat', 'Air Jordan', 'FitnessTech Hex Dumbbells', 'Under Armour Essential Hoodie', 'Track Pro', 'Vertex Sport Bottle', 'Off-Court Hoodie'], space: null, leaf: null },
-      'Minium Apparel':    { products: ['Lebron Shorts', 'Druna Yoga Mat'],          space: 'minium',    leaf: null },
+      'All Products':      { products: ['Lebron Shorts', 'Jordan Diamond Shorts', 'Under Armour Leopard Shorts', 'Druna Yoga Mat', 'Air Jordan', 'FitnessTech Hex Dumbbells', 'Under Armour Essential Hoodie', 'Track Pro', 'Vertex Sport Bottle', 'Off-Court Hoodie'], space: null, leaf: null },
+      'Minium Apparel':    { products: ['Lebron Shorts', 'Jordan Diamond Shorts', 'Under Armour Leopard Shorts', 'Druna Yoga Mat'], space: 'minium', leaf: null },
       'Classic Apparel':   { products: ['Air Jordan', 'FitnessTech Hex Dumbbells', 'Under Armour Essential Hoodie'], space: 'classic', leaf: null },
       'Speedwell Apparel': { products: ['Track Pro', 'Vertex Sport Bottle', 'Off-Court Hoodie'], space: 'speedwell', leaf: null },
       'Lebron Shorts':     { products: ['Lebron Shorts'],                            space: 'minium',    leaf: 'Lebron Shorts' },
+      'Jordan Diamond Shorts':       { products: ['Jordan Diamond Shorts'],          space: 'minium',    leaf: 'Jordan Diamond Shorts' },
+      'Under Armour Leopard Shorts': { products: ['Under Armour Leopard Shorts'],    space: 'minium',    leaf: 'Under Armour Leopard Shorts' },
       'Air Jordan':        { products: ['Air Jordan'],                              space: 'classic',   leaf: 'Air Jordan' },
       'Track Pro':         { products: ['Track Pro'],                                space: 'speedwell', leaf: 'Track Pro' }
       // NOTE: the simple products (Druna Yoga Mat / FitnessTech Hex Dumbbells /
@@ -971,6 +1311,10 @@
       { icon: '#folder',      name: 'Athlete Bios',         type: 'Folder',            space: 'speedwell', author: 'Marco',  modified: 'Aug 2, 2026',   revised: '—', status: null }
     ];
     var FILES_ROWS = [
+      // Real image files — the same photos used as the products' images, so the
+      // space visibly "stores" the product imagery (products ↔ files coherence).
+      { icon: '#document', thumb: 'img/jordan-diamond-short.png', name: 'jordan-diamond-short.png', type: 'Basic Document', space: 'minium', author: 'Amanda', modified: '5 Minutes Ago',  revised: '—', status: { label: 'Approved', tone: 'success' } },
+      { icon: '#document', thumb: 'img/ua-leopard-short.png',     name: 'ua-leopard-short.png',     type: 'Basic Document', space: 'minium', author: 'Amanda', modified: '15 Minutes Ago', revised: '—', status: { label: 'Approved', tone: 'success' } },
       { icon: '#document', name: 'air-jordan-hero.png',  type: 'Basic Document', space: 'classic',   author: 'Chris',  modified: '13:24', revised: '—', status: { label: 'Approved', tone: 'success' } },
       { icon: '#document', name: 'minium-logo.svg',      type: 'Basic Document', space: 'minium',    author: 'Amanda', modified: '13:24', revised: '—', status: { label: 'Approved', tone: 'success' } },
       { icon: '#document', name: 'size-guide.pdf',       type: 'Basic Document', space: 'minium',    author: 'Amanda', modified: '13:23', revised: '—', status: { label: 'Draft', tone: 'secondary' } },
@@ -990,8 +1334,11 @@
     }
     // A Content/Files row (icon + name, then the shared asset columns).
     function assetRow(r) {
+      var media = r.thumb
+        ? '<span class="sticker sticker--md"><img src="' + r.thumb + '" alt=""></span>'
+        : '<span class="sticker sticker--md sticker--icon"><svg class="lexicon-icon"><use href="' + r.icon + '"></use></svg></span>';
       return '<tr><td class="table__cell--gutter">' + CHECKBOX + '</td>'
-        + '<td><span class="pim-sku"><span class="sticker sticker--md sticker--icon"><svg class="lexicon-icon"><use href="' + r.icon + '"></use></svg></span><a href="#" class="table__title">' + r.name + '</a></span></td>'
+        + '<td><span class="pim-sku">' + media + '<a href="#" class="table__title">' + r.name + '</a></span></td>'
         + '<td>' + r.type + '</td>'
         + '<td>' + spaceCell(r.space) + '</td>'
         + '<td><span class="pim-author"><svg class="lexicon-icon"><use href="#user"></use></svg> ' + r.author + '</span></td>'
@@ -1023,7 +1370,10 @@
     }
     function homeFileCard(r) {
       var isImg = /\.(png|jpe?g|svg|webp)$/i.test(r.name);
-      return '<li class="home-file"><span class="home-file__thumb"><svg class="lexicon-icon"><use href="' + (isImg ? '#picture' : '#document') + '"></use></svg></span>'
+      var thumbInner = r.thumb
+        ? '<img src="' + r.thumb + '" alt="">'
+        : '<svg class="lexicon-icon"><use href="' + (isImg ? '#picture' : '#document') + '"></use></svg>';
+      return '<li class="home-file"><span class="home-file__thumb">' + thumbInner + '</span>'
         + '<a href="#" class="home-file__name">' + r.name + '</a><span class="home-file__date">Aug 7, 2026</span>'
         + (r.status ? '<span class="label label--sm label--' + r.status.tone + '">' + r.status.label + '</span>' : '') + '</li>';
     }
@@ -1454,6 +1804,208 @@
     function update() { panel.classList.toggle('is-clipped-top', body.scrollTop > 1); }
     body.addEventListener('scroll', update, { passive: true });
     update();
+  })();
+</script>
+
+<!-- Selection → Management-toolbar contextualisation + info panel.
+     • Checkboxes (row / select-all) drive the toolbar's active cluster
+       (count · Clear · bulk actions) — never the panel's open state.
+     • The (i) toggle opens the info panel independently; its body then
+       follows the selection (1 → metadata · 2+ → summary · 0 → prompt). -->
+<script>
+  (function () {
+    var body = document.body;
+    var mt = document.querySelector('.management-toolbar');
+    var table = document.getElementById('pim-table');
+    if (!mt || !table) return;
+    var barBox = document.querySelector('#mt-selectall .checkbox__input');
+    var mtDefault = document.getElementById('mt-default');
+    var mtActive = document.getElementById('mt-active');
+    var countEl = document.getElementById('mt-count');
+    var clearBtn = document.getElementById('mt-clear');
+    var tableWrap = document.querySelector('.pim-table-wrap');
+    var infoBtn = document.getElementById('info-toggle');
+    var panel = document.getElementById('pim-info');
+    var panelClose = document.getElementById('pim-info-close');
+    var panelTitle = document.getElementById('pim-info-title');
+    var panelIcon = document.getElementById('pim-info-icon').querySelector('use');
+    var panelBody = document.getElementById('pim-info-body');
+    var tabs = document.getElementById('pim-info-tabs');
+
+    function rowBoxes() { return Array.prototype.slice.call(table.querySelectorAll('tbody .checkbox__input')); }
+    function headBox() { return table.querySelector('thead .checkbox__input'); }
+    function checked() { return rowBoxes().filter(function (b) { return b.checked; }); }
+    function icon(id) { panelIcon.setAttribute('href', id); }
+
+    // ── Single-row metadata, read from the row's own cells so it works for
+    //    Products, Content and Files alike. Dates / language echo the CMS
+    //    Details tab with representative sample values. ──
+    function txt(el) { return el ? el.textContent.trim().replace(/\s+/g, ' ') : ''; }
+    function metaItem(term, descHtml) {
+      return '<div class="pim-meta__item"><p class="pim-meta__term">' + term
+        + '</p><p class="pim-meta__desc">' + descHtml + '</p></div>';
+    }
+    function renderDetails(tr) {
+      resetTabs();
+      var name = txt(tr.querySelector('.table__title')) || 'Untitled';
+      var space = txt(tr.querySelector('.pim-space-name'));
+      var author = txt(tr.querySelector('.pim-author'));
+      var labels = tr.querySelectorAll('.label');
+      var status = labels.length ? labels[labels.length - 1].outerHTML : '';
+      var html = '<p class="pim-meta__label">Metadata</p><div class="pim-meta">';
+      html += metaItem('Location', '<svg class="lexicon-icon"><use href="#folder"></use></svg> ' + (space || 'Products'));
+      if (author) html += metaItem('Author', author);
+      html += metaItem('Created', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Modified', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Display Date', 'Aug 10, 2026, 08:06 AM');
+      html += metaItem('Expiration Date', 'Never Expire');
+      if (status) html += metaItem('Status', status);
+      html += metaItem('Languages Translated Into', 'en-US');
+      html += '</div>';
+      panelBody.innerHTML = html;
+      icon('#documents-and-media');
+      panelTitle.textContent = name;
+    }
+    function stateBlock(iconId, title, text) {
+      return '<div class="empty-state empty-state--sm">'
+        + '<span class="empty-state__media"><svg class="lexicon-icon"><use href="' + iconId + '"></use></svg></span>'
+        + '<h3 class="empty-state__title">' + title + '</h3>'
+        + '<p class="empty-state__text">' + text + '</p></div>';
+    }
+    function renderSummary(n) {
+      body.classList.add('info-multi');
+      icon('#list');
+      panelTitle.textContent = n + ' Assets Selected';
+      panelBody.innerHTML = stateBlock('#list', n + ' assets selected',
+        'Select a single item to see its details, or apply an action from the toolbar.');
+    }
+    function renderEmpty() {
+      body.classList.remove('info-multi');
+      resetTabs();
+      icon('#info-circle-open');
+      panelTitle.textContent = 'Details';
+      panelBody.innerHTML = stateBlock('#documents-and-media', 'No item selected',
+        'Select an item in the list to see its details here.');
+    }
+    function updatePanel(n) {
+      if (!body.classList.contains('info-open')) return;
+      if (n >= 2) renderSummary(n);
+      else if (n === 1) { body.classList.remove('info-multi'); renderDetails(checked()[0].closest('tr')); }
+      else renderEmpty();
+    }
+    function resetTabs() {
+      if (!tabs) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('.tabs__tab'), function (t, i) {
+        t.classList.toggle('is-active', i === 0);
+        t.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      });
+    }
+
+    function updateMT(n, total) {
+      var active = n > 0;
+      mt.classList.toggle('management-toolbar--active', active);
+      mtDefault.classList.toggle('is-off', active);
+      mtActive.classList.toggle('is-off', !active);
+      if (active) countEl.textContent = n + ' of ' + total + (total === 1 ? ' item selected' : ' items selected');
+    }
+    function syncMasters(n, total) {
+      [barBox, headBox()].forEach(function (m) {
+        if (!m) return;
+        var indet = n > 0 && n < total;
+        m.checked = n > 0 && n === total;
+        m.indeterminate = indet;
+        var wrap = m.closest('.checkbox');
+        if (wrap) wrap.classList.toggle('is-indeterminate', indet);
+      });
+    }
+    function refresh() {
+      var boxes = rowBoxes(), total = boxes.length;
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+      syncMasters(n, total);
+      updateMT(n, total);
+      updatePanel(n);
+    }
+    function setAll(on) { rowBoxes().forEach(function (b) { b.checked = on; }); refresh(); }
+
+    barBox.addEventListener('change', function () { setAll(barBox.checked); });
+    clearBtn.addEventListener('click', function () { setAll(false); });
+    tableWrap.addEventListener('change', function (e) {
+      var inp = e.target.closest('.checkbox__input');
+      if (!inp) return;
+      if (inp.closest('thead')) setAll(inp.checked);
+      else refresh();
+    });
+    // A view change re-renders the table → selection resets to none.
+    new MutationObserver(refresh).observe(table, { childList: true });
+
+    // Push vs overlay — decided by the width left for the table, not by a
+    // viewport breakpoint. Push only if, after reserving the panel, the table
+    // keeps a comfortable minimum. Recomputed whenever any width variable
+    // changes (window, nav pin, Browse open/collapsed) via a ResizeObserver.
+    var mainEl = document.querySelector('main');
+    var browseEl = document.getElementById('browse-panel');
+    var MIN_TABLE = 640; // px the table needs before the panel is allowed to push
+    function infoWidthPx() {
+      var v = getComputedStyle(document.documentElement).getPropertyValue('--info-width').trim();
+      return parseInt(v, 10) || 360;
+    }
+    function updateMode() {
+      var push = false;
+      if (body.classList.contains('info-open') && window.innerWidth >= 768) {
+        var browseW = browseEl ? browseEl.getBoundingClientRect().width : 0;
+        var avail = mainEl.clientWidth - browseW;
+        push = (avail - infoWidthPx()) >= MIN_TABLE;
+      }
+      body.classList.toggle('info-push', push);
+    }
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(updateMode);
+      ro.observe(mainEl);
+      if (browseEl) ro.observe(browseEl);
+    }
+    window.addEventListener('resize', updateMode);
+
+    // Info panel open / close (independent of the selection state).
+    function setInfo(open) {
+      body.classList.toggle('info-open', open);
+      infoBtn.classList.toggle('is-active', open);
+      infoBtn.setAttribute('aria-pressed', String(open));
+      panel.setAttribute('aria-hidden', String(!open));
+      updateMode();
+      if (open) updatePanel(checked().length);
+    }
+    infoBtn.addEventListener('click', function () { setInfo(!body.classList.contains('info-open')); });
+    panelClose.addEventListener('click', function () { setInfo(false); });
+
+    // On mobile the pinned Control Panel raises a scrim (z-index 45) that sits
+    // ABOVE the info panel (z-index 40). Never leave the info panel open beneath
+    // it: close it whenever that scrim would cover it (mobile width + pinned).
+    function closeInfoUnderScrim() {
+      if (window.innerWidth <= 767
+          && body.classList.contains('sb-pinned')
+          && body.classList.contains('info-open')) {
+        setInfo(false);
+      }
+    }
+    window.addEventListener('resize', closeInfoUnderScrim);   // viewport shrinks into mobile
+    // The pin/peek controller's cp-toggle handler runs first (it toggles
+    // sb-pinned), so by the time this fires the pinned state is already settled.
+    var cpToggleBtn = document.getElementById('cp-toggle');
+    if (cpToggleBtn) cpToggleBtn.addEventListener('click', closeInfoUnderScrim);
+
+    // Info-panel tabs — Details is live; the others are inert in this proto.
+    tabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('.tabs__tab');
+      if (!tab) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('.tabs__tab'), function (t) {
+        t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true');
+      if (tab.textContent.trim() === 'Details') updatePanel(checked().length);
+      else panelBody.innerHTML = stateBlock('#info-circle-open', tab.textContent.trim(), 'Not part of this prototype.');
+    });
+
+    refresh();
   })();
 </script>
 
