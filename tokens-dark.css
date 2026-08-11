@@ -525,3 +525,17 @@
     --skeleton-shimmer-alpha: 0.35;
   }
 }
+
+/* ── Scrim — dark counterpart ───────────────────────────────
+   The light scrim (#393A4A tint) reads too soft over dark surfaces, so dim
+   with black instead. */
+.dark, [data-theme="dark"],
+.dark-hc, [data-theme="dark-hc"] {
+  --color-scrim: rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]):not(.light-hc):not([data-theme="light-hc"]):not(.dark):not([data-theme="dark"]):not(.dark-hc):not([data-theme="dark-hc"]) {
+    --color-scrim: rgba(0, 0, 0, 0.6);
+  }
+}

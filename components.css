@@ -1171,7 +1171,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-lg);
   overflow: hidden;
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-bold);
@@ -1191,7 +1191,9 @@
 }
 
 /* — Sizes — */
-.sticker--sm { width: 16px; height: 16px; font-size: 8px; }
+/* 16px sticker keeps a tighter 4px radius — at this size the base 8px reads as
+   an almost-circular shape. */
+.sticker--sm { width: 16px; height: 16px; font-size: 10px; border-radius: var(--rounded-md); }
 .sticker--md { width: 32px; height: 32px; font-size: 14px; }
 .sticker--lg { width: 40px; height: 40px; font-size: 18px; }
 
