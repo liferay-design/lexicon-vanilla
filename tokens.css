@@ -34,6 +34,11 @@
   --color-light-l1: #F7F8F9;
   --color-white:    #FFFFFF;
 
+  /* Scrim — dim layer behind overlays (mobile drawer, dialogs). Kept as a
+     stable dark tint in every skin (dark counterpart in tokens-dark.css), so
+     it never inverts the way --color-dark does. */
+  --color-scrim: rgba(57, 58, 74, 0.5);
+
   /* ── Color: Success ── */
   --color-success-d2: #1C5629;
   --color-success-d1: #226A33;
