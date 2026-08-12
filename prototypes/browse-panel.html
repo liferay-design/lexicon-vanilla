@@ -206,8 +206,8 @@
        The toolbar tree-view toggle is hidden too (nothing to toggle). */
     body.in-space .browse-panel,
     body.no-browse .browse-panel { display: none; }
-    body.in-space #bp-toggle,
-    body.no-browse #bp-toggle { display: none; }
+    body.in-space #bp-toggle, body.in-space #bp-toggle-persist,
+    body.no-browse #bp-toggle, body.no-browse #bp-toggle-persist { display: none; }
     /* Content / Files aggregated views: no Browse panel, no data-set breadcrumb
        (only the top-bar title). The `no-browse` class marks those sections. */
     body.no-browse .pim-crumbbar { display: none; }
@@ -360,19 +360,24 @@
     /* Info toggle marked while the panel is open (borderless pressed fill). */
     #info-toggle.is-active { background: var(--color-light-d1); }
 
-    /* ── Browse-close: CHOSEN = option B (breadcrumb spine) ──────
-       We evaluated three homes for the Browse toggle and settled on B: the
-       toggle lives in the breadcrumb spine (#bp-toggle-crumb). The floating
-       A/B/C lab has been removed. Options A (persistent toolbar toggle) and C
-       (in-panel close) are kept here DORMANT for reference — their controls and
-       rules stay in place but only activate if `opt-a` / `opt-c` is set on
-       <body> again (today it's hardcoded to `opt-b`). */
+    /* ── Browse-toggle placement: A/B switcher (prototype lab) ───
+       Two homes for the Browse toggle are offered side by side and flipped
+       live from the floating .bp-lab control (bottom of the screen); the choice
+       persists under localStorage 'bp-toggle-placement':
+         • opt-b (default) — toggle in the breadcrumb spine (#bp-toggle-crumb)
+         • opt-a           — a FIXED button leading the Management Toolbar
+                             (#bp-toggle-persist), present in BOTH the default and
+                             the selection states.
+       Option C (in-panel close) stays DORMANT for reference — its rule is kept
+       but only activates if `opt-c` is set on <body>. */
     #bp-toggle-persist.is-active,
     #bp-toggle-crumb.is-active { background: var(--color-light-d1); }
-    /* A — persistent toolbar toggle: only surfaces while a selection is
-       active (in the default state the #mt-default toggle already serves). */
+    /* A — fixed Management-Toolbar button. It sits OUTSIDE the default/active
+       clusters (right after the select-all), so it persists across both selection
+       states; the default cluster's own #bp-toggle is hidden to avoid a duplicate. */
     .bp-toggle-persist { display: none; }
-    body.opt-a .management-toolbar--active .bp-toggle-persist { display: inline-flex; }
+    body.opt-a .bp-toggle-persist { display: inline-flex; }
+    body.opt-a #bp-toggle { display: none; }
     /* B — toggle lives in the breadcrumb spine and replaces the toolbar one. */
     .bp-toggle-crumb { display: none; }
     body.opt-b .bp-toggle-crumb { display: inline-flex; }
@@ -591,12 +596,55 @@
       }
     }
 
+    /* ── Prototype A/B lab: Browse-toggle placement ─────────────
+       NOT part of the DXP UI — a prototype-only control pinned to the
+       bottom of the screen to compare the two homes for the Browse toggle
+       (breadcrumb spine vs a fixed Management-Toolbar button). It flips
+       opt-a / opt-b on <body> and persists the choice. */
+    .bp-lab {
+      position: fixed;
+      bottom: var(--spacing-6);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+      padding: var(--spacing-3) var(--spacing-5) var(--spacing-3) var(--spacing-6);
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--rounded-full);
+      box-shadow: var(--shadow-lg);
+    }
+    .bp-lab__label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semi);
+      color: var(--color-dark);
+      white-space: nowrap;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .control-panel--floating, main, .cm-crumb, .browse-panel { transition: none; }
     }
-  </style>
+</style>
 </head>
 <body class="sb-pinned opt-b">
+<script>
+  /* Restore the Browse-toggle placement (prototype A/B lab) before paint so the
+     toggle never flashes in the wrong home on reload. */
+  (function () {
+    try {
+      var opt = localStorage.getItem('bp-toggle-placement');
+      if (opt === 'opt-a' || opt === 'opt-b') {
+        document.body.classList.remove('opt-a', 'opt-b');
+        document.body.classList.add(opt);
+      }
+    } catch (e) {}
+  })();
+</script>
 
 <!-- ════════════════════════════════════════════════════════════════
      PIM screen — docked Control Panel (left nav) + Browse by Space
@@ -1173,9 +1221,10 @@
 </script>
 
 <!-- Browse by Space: unified controller for every toggle/close control.
-     Option B is the chosen pattern (toggle in the breadcrumb spine,
-     #bp-toggle-crumb); the persistent (A) and in-panel (C) controls stay wired
-     here so they still work if `opt-a` / `opt-c` is re-enabled on <body>. -->
+     Both placements are wired at once so the .bp-lab switcher can flip between
+     them live: option B (toggle in the breadcrumb spine, #bp-toggle-crumb, the
+     default) and option A (fixed Management-Toolbar button, #bp-toggle-persist).
+     The in-panel close (C) stays wired too for `opt-c`. -->
 <script>
   (function () {
     var body = document.body;
@@ -2006,6 +2055,46 @@
     });
 
     refresh();
+  })();
+</script>
+
+<!-- ─── Prototype A/B lab: Browse-toggle placement ────────────────────
+     Prototype-only control (NOT part of the DXP UI). Flips the Browse toggle
+     between its two homes — the breadcrumb spine (opt-b, the current default)
+     and a fixed Management-Toolbar button (opt-a) — and persists the choice
+     under localStorage 'bp-toggle-placement'. -->
+<div class="bp-lab" role="group" aria-label="Browse toggle placement (prototype)">
+  <span class="bp-lab__label">Browse toggle</span>
+  <div class="btn-group">
+    <button class="btn btn--secondary btn--sm is-active" type="button" data-opt="opt-b" aria-pressed="true">Breadcrumb</button>
+    <button class="btn btn--secondary btn--sm" type="button" data-opt="opt-a" aria-pressed="false">Toolbar</button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var lab = document.querySelector('.bp-lab');
+    if (!lab) return;
+    var body = document.body;
+    var btns = Array.prototype.slice.call(lab.querySelectorAll('[data-opt]'));
+    function sync() {
+      var cur = body.classList.contains('opt-a') ? 'opt-a' : 'opt-b';
+      btns.forEach(function (b) {
+        var on = b.getAttribute('data-opt') === cur;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var opt = b.getAttribute('data-opt');
+        body.classList.remove('opt-a', 'opt-b');
+        body.classList.add(opt);
+        try { localStorage.setItem('bp-toggle-placement', opt); } catch (e) {}
+        sync();
+      });
+    });
+    sync();
   })();
 </script>
 
