@@ -128,6 +128,14 @@
 .btn--secondary.btn--danger  { color: var(--color-danger);  border-color: var(--color-danger);  }
 .btn--secondary.btn--danger:hover  { background: var(--color-danger-l2);  }
 
+/* Alert action buttons — solid fill on hover, scoped to typed alert containers.
+   Matches the $alert-{tone}-btn pattern in Clay SCSS: hover fills with the alert
+   surface colour so the action reads as the primary response for that alert type. */
+.alert--info    .btn--secondary:hover { background: var(--color-info);    border-color: var(--color-info);    color: var(--color-white); }
+.alert--success .btn--secondary:hover { background: var(--color-success); border-color: var(--color-success); color: var(--color-white); }
+.alert--warning .btn--secondary:hover { background: var(--color-warning); border-color: var(--color-warning); color: var(--color-dark); }
+.alert--danger  .btn--secondary:hover { background: var(--color-danger);  border-color: var(--color-danger);  color: var(--color-white); }
+
 .btn--borderless.btn--info    { color: var(--color-info);    }
 .btn--borderless.btn--info:hover    { background: var(--color-info-l2);    }
 .btn--borderless.btn--success { color: var(--color-success); }
