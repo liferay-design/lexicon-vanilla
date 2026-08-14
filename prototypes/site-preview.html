@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Preview — Launches Prototype</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    body { display: flex; flex-direction: column; background: #fff; font-size: var(--font-size-sm); }
+
+    /* ── Stage ── */
+    .stage { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Preview bar — blue, full width ── */
+    .preview-bar {
+      flex: none;
+      background: #0053FF;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+      padding: 0 var(--spacing-5);
+      position: relative;
+      font-size: var(--font-size-base);
+      height: 56px;
+    }
+    .preview-bar[hidden] { display: none !important; }
+
+    /* Text fragments on blue bg */
+    .preview-bar__text {
+      color: rgba(255,255,255,.75);
+      white-space: nowrap;
+    }
+    .preview-bar__text strong { color: #fff; font-weight: 600; }
+
+    /* Separator */
+    .preview-bar__sep { width: 1px; height: 18px; background: rgba(255,255,255,.3); flex: none; }
+
+    /* Version label — use kit .label, override for blue bg */
+    .preview-bar .label:not(.label--info) {
+      background: transparent;
+      border-color: rgba(255,255,255,.5);
+      color: #fff;
+      font-size: var(--font-size-xs);
+    }
+    .preview-bar .label--info {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      border-radius: var(--rounded-md);
+    }
+    .label { border-radius: var(--rounded-md); }
+
+    /* Launch trigger — kit .btn.btn--sm, overridden for blue bg */
+    .preview-bar .btn--secondary {
+      background: transparent;
+      border-color: var(--color-white);
+      color: rgba(255,255,255,.75);
+      height: 32px;
+    }
+    .preview-bar .btn--secondary:hover { background: rgba(255,255,255,.12); border-color: var(--color-white); color: var(--color-white); }
+
+
+    /* Borderless btns on blue */
+    .preview-bar .btn--borderless {
+      color: rgba(255,255,255,.75);
+      height: 32px;
+    }
+    .preview-bar .btn--borderless.btn--icon {
+      width: 32px;
+      padding: 0;
+    }
+    .preview-bar .btn--borderless:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+    /* Launch dropdown — uses kit .dropdown, no override needed (white popup) */
+    .preview-bar__launch-wrap { position: relative; flex: none; }
+    .preview-bar__launch-wrap .dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 200;
+    }
+
+
+    /* ── Site frame ── */
+    .site-frame-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+    .site-frame {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: #fff;
+      font-family: var(--f-serif);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Toast ── */
+    @keyframes barOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-100%); }
+    }
+.toast-container {
+      position: fixed;
+      bottom: var(--spacing-5);
+      left: var(--spacing-5);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+      pointer-events: none;
+    }
+    .toast-container .alert {
+      pointer-events: all;
+      white-space: nowrap;
+      width: max-content;
+      flex-wrap: nowrap;
+      animation: slideUp .25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); }
+      to   { transform: translateY(0); }
+    }
+
+    /* ════════════════════════════════════
+       BOOTCAMP SITE STYLES
+       (no kit here — free to style freely)
+       ════════════════════════════════════ */
+    .site-frame * { box-sizing: border-box; }
+
+    /* Font shorthands */
+    .site-frame { --f-sans: 'Montserrat', Arial, sans-serif; --f-serif: 'Crimson Text', Georgia, serif; }
+
+    /* NAV */
+    .s-nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      height: 80px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      gap: 32px;
+    }
+    .s-nav__logo {
+      display: flex; align-items: center;
+      flex: none; text-decoration: none; line-height: 0;
+    }
+    .s-nav__logo svg { height: 20px; width: auto; }
+    .s-nav__links { display: flex; gap: 24px; margin-left: auto; }
+    .s-nav__link { font-size: 13px; font-weight: 500; color: #2E303D; text-decoration: none; font-family: var(--f-sans); cursor: pointer; }
+    .s-nav__link:hover { color: #1a1b22; text-decoration: underline; }
+    .s-nav__link--highlight { color: #d4860a; font-weight: 700; }
+    .s-nav__avatar { cursor: pointer; flex: none; }
+    .s-nav__avatar:hover { background: transparent; }
+
+    /* RIBBON */
+    .s-ribbon {
+      background: #f5c940; color: #1a1b22;
+      text-align: center; padding: 9px 24px;
+      font-size: 13px; font-family: var(--f-sans); font-weight: 600;
+    }
+    .s-ribbon[hidden] { display: none !important; }
+
+    /* HERO */
+    .s-hero { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+    .s-hero__photo { height: 640px; margin-top: 80px; background: #c0b09a center/cover no-repeat; }
+    .s-hero__copy {
+      background: #f5c940;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 100px 48px 64px 20%;
+    }
+    .s-hero__eyebrow {
+      font-size: 13px; font-family: var(--f-sans);
+      color: var(--color-dark); letter-spacing: .1em;
+      text-transform: uppercase; margin: 0 0 20px;
+    }
+    .s-hero__h1 {
+      font-size: 52px; font-weight: 700; line-height: 1.05;
+      color: var(--color-dark); margin: 0 0 20px;
+      font-family: var(--f-serif);
+    }
+    .s-hero__p {
+      font-size: 26px; font-family: var(--f-serif);
+      color: rgba(39,40,51,.65); margin: 0 0 36px;
+      line-height: 1.4; max-width: 475px;
+    }
+    .s-hero__btn {
+      display: inline-flex; align-items: center; gap: 16px;
+      height: 52px; padding: 0 28px;
+      background: var(--color-dark); color: #fff;
+      border: none; border-radius: 2px;
+      font-size: 10px; font-family: var(--f-sans);
+      font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      cursor: pointer; align-self: flex-start;
+    }
+    .s-hero__btn svg { width: 36px; height: 2px; stroke: #fff; stroke-width: 1.5; flex-shrink: 0; }
+
+    /* SECTION */
+    .s-section { padding: 60px 40px; }
+    .s-label {
+      font-size: 13px; font-family: var(--f-sans);
+      color: #1a1b22; margin: 0 0 28px; display: flex; align-items: baseline; gap: 5px;
+    }
+    .s-label em { font-style: italic; font-family: var(--f-serif); font-weight: 400; font-size: 15px; }
+    .s-label strong { font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-family: var(--f-sans); font-size: 12px; }
+
+    /* COURSES */
+    .s-courses {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 0;
+    }
+    .s-course {
+      padding: 32px 32px 32px 0;
+      border-right: 1px solid #D3D3DA;
+      display: flex; flex-direction: column;
+    }
+    .s-course:first-child { padding-left: 0; }
+    .s-course:last-child { border-right: none; padding-right: 0; padding-left: 32px; }
+    .s-course:nth-child(2) { padding-left: 32px; }
+    .s-course__tag { font-size: 10px; font-family: var(--f-sans); color: var(--color-dark); text-transform: uppercase; letter-spacing: .1em; margin: 0 0 12px; }
+    .s-course__title { font-size: 24px; font-weight: 600; font-family: var(--f-serif); color: #1a1b22; margin: 0 0 12px; line-height: 1.2; }
+    .s-course__p { font-size: 16px; font-family: var(--f-serif); color: #4a4a5a; margin: 0 0 20px; line-height: 1.6; }
+    .s-course__link {
+      margin-top: auto;
+      font-size: 11px; font-family: var(--f-sans);
+      color: #1a1b22; font-weight: 700; text-decoration: none; cursor: pointer;
+      letter-spacing: .08em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .s-course__link::after { content: '———'; letter-spacing: -2px; opacity: .4; }
+    .s-course__link:hover { text-decoration: underline; }
+
+    /* OUTCOMES */
+    .s-outcomes { display: grid; grid-template-columns: 2fr 1fr; }
+    .s-outcomes__left { display: flex; flex-direction: column; }
+    .s-outcomes__copy {
+      background: #d4ddf0; padding: 60px 48px; flex: 1;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .s-outcomes__quote {
+      font-size: 32px; font-weight: 700; line-height: 1.2;
+      color: #1a1b22; margin: 0 0 32px;
+    }
+    .s-outcomes__link {
+      font-size: 11px; font-family: var(--f-sans);
+      font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      color: #1a1b22; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .s-outcomes__link::after { content: '———'; letter-spacing: -2px; opacity: .4; }
+    .s-outcomes__photo { background: #b0a090 center/cover no-repeat; }
+
+    /* STATS */
+    .s-stats { display: grid; grid-template-columns: 1fr 1fr; }
+    .s-stat { padding: 52px 48px; }
+    .s-stat--dark { background: var(--color-dark); }
+    .s-stat--yellow { background: #f5c940; }
+    .s-stat__label { font-size: 11px; font-family: var(--f-sans); letter-spacing: .08em; text-transform: uppercase; margin: 0 0 8px; }
+    .s-stat--dark .s-stat__label { color: rgba(255,255,255,.4); }
+    .s-stat--yellow .s-stat__label { color: rgba(26,27,34,.4); }
+    .s-stat__num { font-size: 64px; font-weight: 700; line-height: 1; margin: 0 0 14px; font-family: var(--f-serif); }
+    .s-stat--dark .s-stat__num { color: #fff; }
+    .s-stat--yellow .s-stat__num { color: #1a1b22; }
+    .s-stat__p { font-size: 12px; font-family: var(--f-sans); line-height: 1.5; max-width: 240px; }
+    .s-stat--dark .s-stat__p { color: rgba(255,255,255,.45); }
+    .s-stat--yellow .s-stat__p { color: rgba(26,27,34,.5); }
+
+    /* METHODOLOGY */
+    .s-method { display: grid; grid-template-columns: 1fr 1fr; min-height: 360px; }
+    .s-method--reverse { direction: rtl; }
+    .s-method--reverse > * { direction: ltr; }
+    .s-method__photo { background: #b0a090 center/cover no-repeat; min-height: 360px; }
+    .s-method__copy { padding: 60px 48px; display: flex; flex-direction: column; justify-content: center; }
+    .s-method__num { font-size: 13px; font-family: var(--f-sans); color: var(--color-dark); margin: 0 0 20px; letter-spacing: .04em; }
+    .s-method__title { font-size: 28px; font-weight: 700; font-family: var(--f-serif); color: #1a1b22; margin: 0 0 14px; line-height: 1.2; }
+    .s-method__p { font-size: 17px; font-family: var(--f-serif); color: #4a4a5a; line-height: 1.6; margin: 0 0 24px; }
+    .s-method__link {
+      font-size: 11px; font-family: var(--f-sans); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: #1a1b22; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .s-method__link::after { content: '———'; letter-spacing: -2px; opacity: .4; }
+    .s-method--reverse .s-method__copy { padding-left: 0; }
+
+    /* NEWS */
+    .s-news-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0; }
+    .s-news-header__link { font-size: 11px; font-family: var(--f-sans); color: #4a4a5a; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .s-news-header__link::after { content: '———'; letter-spacing: -2px; opacity: .4; }
+    .s-news { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-top: 32px; }
+    .s-news-card__img { height: 200px; background: #c0b09a center/cover no-repeat; border-radius: 3px; margin-bottom: 16px; }
+    .s-news-card__tag { font-size: 10px; font-family: var(--f-sans); color: rgba(26,27,34,.4); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
+    .s-news-card__title { font-size: 16px; font-weight: 700; font-family: var(--f-serif); color: #1a1b22; margin: 0 0 12px; line-height: 1.3; }
+    .s-news-card__link {
+      font-size: 10px; font-family: var(--f-sans); color: #1a1b22;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .s-news-card__link::after { content: '———'; letter-spacing: -2px; opacity: .4; }
+
+    /* CTA */
+    .s-cta { display: grid; grid-template-columns: 1fr 1fr; min-height: 320px; margin: 0 40px 40px; border-radius: 8px; overflow: hidden; }
+    .s-cta__photo { background: #a0b0c0 center/cover no-repeat; }
+    .s-cta__copy { background: #f5c940; padding: 52px 48px; display: flex; flex-direction: column; justify-content: center; }
+    .s-cta__label { font-size: 11px; font-family: var(--f-sans); color: rgba(26,27,34,.4); letter-spacing: .08em; text-transform: uppercase; margin: 0 0 12px; }
+    .s-cta__h2 { font-size: 30px; font-weight: 700; font-family: var(--f-serif); color: #1a1b22; margin: 0 0 24px; line-height: 1.2; }
+    .s-cta__form { display: flex; gap: 8px; }
+    .s-cta__input {
+      flex: 1; height: 44px; border: 1px solid rgba(26,27,34,.2);
+      border-radius: 4px; padding: 0 14px;
+      font-size: 13px; font-family: var(--f-sans);
+      background: rgba(255,255,255,.65);
+    }
+    .s-cta__input::placeholder { color: rgba(26,27,34,.4); }
+    .s-cta__submit {
+      height: 44px; padding: 0 20px;
+      background: var(--color-dark); color: #fff; border: none; border-radius: 4px;
+      font-size: 11px; font-family: var(--f-sans);
+      font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      cursor: pointer; white-space: nowrap;
+    }
+
+    /* FOOTER */
+    .s-footer { background: #f8f8f6; border-top: 1px solid #e4e4e4; padding: 48px 40px 24px; }
+    .s-footer__top { display: grid; grid-template-columns: 1.6fr repeat(4,1fr); gap: 24px; margin-bottom: 40px; }
+    .s-footer__brand { display: flex; align-items: center; margin-bottom: 16px; line-height: 0; }
+    .s-footer__brand svg { height: 18px; width: auto; }
+    .s-footer__tagline { font-size: 12px; font-family: var(--f-sans); color: #999; }
+    .s-footer__col-title { font-size: 11px; font-family: var(--f-sans); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #1a1b22; margin: 0 0 14px; }
+    .s-footer__link { display: block; font-size: 12px; font-family: var(--f-sans); color: #666; text-decoration: none; margin-bottom: 8px; }
+    .s-footer__link:hover { color: #1a1b22; }
+    .s-footer__bottom { border-top: 1px solid #e4e4e4; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .s-footer__copy { font-size: 11px; font-family: var(--f-sans); color: #bbb; display: flex; gap: 16px; }
+    .s-footer__socials { display: flex; gap: 10px; }
+    .s-footer__social {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #1a1b22; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .s-footer__social svg { width: 14px; height: 14px; fill: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ STAGE ══════════ -->
+<div class="stage" id="stage">
+
+  <!-- ── PREVIEW BAR — kit components on blue bg ── -->
+  <div class="preview-bar" id="previewBar">
+
+    <!-- "Previewing [Entity]" -->
+    <span class="preview-bar__text">
+      Previewing <strong id="entityLabel">Holiday Gift Guide</strong>
+    </span>
+
+    <!-- Version — kit .label -->
+    <span class="label label--info" id="versionPill">Version 1</span>
+
+    <div class="preview-bar__sep"></div>
+
+    <!-- Site name -->
+    <span class="preview-bar__text">
+      Site: <strong>Bootcamp</strong>
+    </span>
+
+    <div class="preview-bar__sep"></div>
+
+    <!-- Refresh + Exit -->
+    <div style="display:flex;align-items:center;gap:var(--spacing-4);">
+      <button class="btn btn--borderless btn--icon btn--sm" aria-label="Refresh preview" onclick="applyContent()">
+        <svg class="lexicon-icon"><use href="#reload"></use></svg>
+      </button>
+      <button class="btn btn--secondary btn--sm" onclick="exitPreview()">Exit Preview</button>
+    </div>
+
+  </div>
+
+  <!-- ── SITE FRAME ── -->
+  <div class="site-frame-wrap">
+  <div class="site-frame" id="siteFrame">
+
+    <!-- NAV -->
+    <nav class="s-nav">
+      <a class="s-nav__logo">
+        <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 160.048 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M58.5813 13.168C59.4062 13.4382 60.0604 13.8933 60.544 14.5333C61.0276 15.1591 61.2693 15.9413 61.2693 16.88C61.2693 18.1742 60.7716 19.1769 59.776 19.888C58.7804 20.5849 57.3298 20.9333 55.424 20.9333H48V6H54.9973C56.7609 6 58.1191 6.34844 59.072 7.04533C60.0249 7.728 60.5013 8.67378 60.5013 9.88267C60.5013 10.6222 60.3307 11.2764 59.9893 11.8453C59.648 12.4142 59.1787 12.8551 58.5813 13.168ZM50.7733 8.176V12.2933H54.6987C55.6658 12.2933 56.4053 12.1227 56.9173 11.7813C57.4436 11.4258 57.7067 10.9138 57.7067 10.2453C57.7067 9.56267 57.4436 9.05067 56.9173 8.70933C56.4053 8.35378 55.6658 8.176 54.6987 8.176H50.7733ZM55.2533 18.7573C57.4009 18.7573 58.4747 18.0391 58.4747 16.6027C58.4747 15.1662 57.4009 14.448 55.2533 14.448H50.7733V18.7573H55.2533Z" fill="#2E303D"/>
+          <path d="M69.0932 21.0827C67.9412 21.0827 66.9029 20.8338 65.9785 20.336C65.0541 19.8382 64.3287 19.1484 63.8025 18.2667C63.2905 17.3707 63.0345 16.3609 63.0345 15.2373C63.0345 14.1138 63.2905 13.1111 63.8025 12.2293C64.3287 11.3476 65.0541 10.6578 65.9785 10.16C66.9029 9.66222 67.9412 9.41333 69.0932 9.41333C70.2594 9.41333 71.3047 9.66222 72.2292 10.16C73.1536 10.6578 73.8718 11.3476 74.3838 12.2293C74.9101 13.1111 75.1732 14.1138 75.1732 15.2373C75.1732 16.3609 74.9101 17.3707 74.3838 18.2667C73.8718 19.1484 73.1536 19.8382 72.2292 20.336C71.3047 20.8338 70.2594 21.0827 69.0932 21.0827ZM69.0932 18.8C70.0745 18.8 70.8852 18.4729 71.5252 17.8187C72.1652 17.1644 72.4852 16.304 72.4852 15.2373C72.4852 14.1707 72.1652 13.3102 71.5252 12.656C70.8852 12.0018 70.0745 11.6747 69.0932 11.6747C68.1118 11.6747 67.3012 12.0018 66.6612 12.656C66.0354 13.3102 65.7225 14.1707 65.7225 15.2373C65.7225 16.304 66.0354 17.1644 66.6612 17.8187C67.3012 18.4729 68.1118 18.8 69.0932 18.8Z" fill="#2E303D"/>
+          <path d="M82.8432 21.0827C81.6912 21.0827 80.6529 20.8338 79.7285 20.336C78.8041 19.8382 78.0787 19.1484 77.5525 18.2667C77.0405 17.3707 76.7845 16.3609 76.7845 15.2373C76.7845 14.1138 77.0405 13.1111 77.5525 12.2293C78.0787 11.3476 78.8041 10.6578 79.7285 10.16C80.6529 9.66222 81.6912 9.41333 82.8432 9.41333C84.0094 9.41333 85.0547 9.66222 85.9792 10.16C86.9036 10.6578 87.6218 11.3476 88.1338 12.2293C88.6601 13.1111 88.9232 14.1138 88.9232 15.2373C88.9232 16.3609 88.6601 17.3707 88.1338 18.2667C87.6218 19.1484 86.9036 19.8382 85.9792 20.336C85.0547 20.8338 84.0094 21.0827 82.8432 21.0827ZM82.8432 18.8C83.8245 18.8 84.6352 18.4729 85.2752 17.8187C85.9152 17.1644 86.2352 16.304 86.2352 15.2373C86.2352 14.1707 85.9152 13.3102 85.2752 12.656C84.6352 12.0018 83.8245 11.6747 82.8432 11.6747C81.8618 11.6747 81.0512 12.0018 80.4112 12.656C79.7854 13.3102 79.4725 14.1707 79.4725 15.2373C79.4725 16.304 79.7854 17.1644 80.4112 17.8187C81.0512 18.4729 81.8618 18.8 82.8432 18.8Z" fill="#2E303D"/>
+          <path d="M98.3212 20.3147C98.0083 20.5707 97.6243 20.7627 97.1692 20.8907C96.7283 21.0187 96.2589 21.0827 95.7612 21.0827C94.5096 21.0827 93.5425 20.7556 92.8598 20.1013C92.1772 19.4471 91.8358 18.4942 91.8358 17.2427V11.76H89.9585V9.62667H91.8358V7.024H94.5025V9.62667H97.5532V11.76H94.5025V17.1787C94.5025 17.7333 94.6376 18.16 94.9078 18.4587C95.1781 18.7431 95.5692 18.8853 96.0812 18.8853C96.6785 18.8853 97.1763 18.7289 97.5745 18.416L98.3212 20.3147Z" fill="#2E303D"/>
+          <path d="M105.367 21.0827C104.186 21.0827 103.126 20.8338 102.188 20.336C101.249 19.8382 100.517 19.1484 99.9905 18.2667C99.4643 17.3707 99.2012 16.3609 99.2012 15.2373C99.2012 14.1138 99.4643 13.1111 99.9905 12.2293C100.517 11.3476 101.242 10.6578 102.166 10.16C103.105 9.66222 104.172 9.41333 105.367 9.41333C106.49 9.41333 107.471 9.64089 108.31 10.096C109.164 10.5511 109.804 11.2053 110.231 12.0587L108.183 13.2533C107.855 12.7271 107.443 12.336 106.945 12.08C106.462 11.8098 105.928 11.6747 105.345 11.6747C104.35 11.6747 103.525 12.0018 102.87 12.656C102.216 13.296 101.889 14.1564 101.889 15.2373C101.889 16.3182 102.209 17.1858 102.849 17.84C103.503 18.48 104.335 18.8 105.345 18.8C105.928 18.8 106.462 18.672 106.945 18.416C107.443 18.1458 107.855 17.7476 108.183 17.2213L110.231 18.416C109.79 19.2693 109.143 19.9307 108.289 20.4C107.45 20.8551 106.476 21.0827 105.367 21.0827Z" fill="#2E303D"/>
+          <path d="M116.888 9.41333C118.566 9.41333 119.846 9.81867 120.728 10.6293C121.624 11.4258 122.072 12.6347 122.072 14.256V20.9333H119.554V19.5467C119.227 20.0444 118.758 20.4284 118.146 20.6987C117.549 20.9547 116.824 21.0827 115.97 21.0827C115.117 21.0827 114.37 20.9404 113.73 20.656C113.09 20.3573 112.593 19.952 112.237 19.44C111.896 18.9138 111.725 18.3236 111.725 17.6693C111.725 16.6453 112.102 15.8276 112.856 15.216C113.624 14.5902 114.825 14.2773 116.461 14.2773H119.405V14.1067C119.405 13.3102 119.163 12.6987 118.68 12.272C118.21 11.8453 117.506 11.632 116.568 11.632C115.928 11.632 115.295 11.7316 114.669 11.9307C114.057 12.1298 113.538 12.4071 113.112 12.7627L112.066 10.8213C112.664 10.3662 113.382 10.0178 114.221 9.776C115.06 9.53422 115.949 9.41333 116.888 9.41333ZM116.525 19.1413C117.193 19.1413 117.784 18.992 118.296 18.6933C118.822 18.3804 119.192 17.9396 119.405 17.3707V16.048H116.653C115.117 16.048 114.349 16.5529 114.349 17.5627C114.349 18.0462 114.541 18.4302 114.925 18.7147C115.309 18.9991 115.842 19.1413 116.525 19.1413Z" fill="#2E303D"/>
+          <path d="M139.873 9.41333C141.309 9.41333 142.447 9.83289 143.286 10.672C144.125 11.4969 144.545 12.7413 144.545 14.4053V20.9333H141.878V14.7467C141.878 13.7511 141.658 13.0044 141.217 12.5067C140.776 11.9947 140.143 11.7387 139.318 11.7387C138.422 11.7387 137.704 12.0373 137.163 12.6347C136.623 13.2178 136.353 14.0569 136.353 15.152V20.9333H133.686V14.7467C133.686 13.7511 133.466 13.0044 133.025 12.5067C132.584 11.9947 131.951 11.7387 131.126 11.7387C130.216 11.7387 129.49 12.0302 128.95 12.6133C128.424 13.1964 128.161 14.0427 128.161 15.152V20.9333H125.494V9.54133H128.033V10.992C128.459 10.48 128.993 10.0889 129.633 9.81867C130.273 9.54845 130.984 9.41333 131.766 9.41333C132.619 9.41333 133.373 9.57689 134.027 9.904C134.696 10.2169 135.222 10.6862 135.606 11.312C136.075 10.7147 136.68 10.2524 137.419 9.92533C138.159 9.584 138.977 9.41333 139.873 9.41333Z" fill="#2E303D"/>
+          <path d="M154.267 9.41333C155.376 9.41333 156.365 9.65511 157.232 10.1387C158.114 10.6222 158.804 11.3049 159.302 12.1867C159.799 13.0684 160.048 14.0853 160.048 15.2373C160.048 16.3893 159.799 17.4133 159.302 18.3093C158.804 19.1911 158.114 19.8738 157.232 20.3573C156.365 20.8409 155.376 21.0827 154.267 21.0827C152.731 21.0827 151.515 20.5707 150.619 19.5467V25.072H147.952V9.54133H150.491V11.0347C150.932 10.4942 151.472 10.0889 152.112 9.81867C152.767 9.54845 153.485 9.41333 154.267 9.41333ZM153.968 18.8C154.95 18.8 155.753 18.4729 156.379 17.8187C157.019 17.1644 157.339 16.304 157.339 15.2373C157.339 14.1707 157.019 13.3102 156.379 12.656C155.753 12.0018 154.95 11.6747 153.968 11.6747C153.328 11.6747 152.752 11.824 152.24 12.1227C151.728 12.4071 151.323 12.8196 151.024 13.36C150.726 13.9004 150.576 14.5262 150.576 15.2373C150.576 15.9484 150.726 16.5742 151.024 17.1147C151.323 17.6551 151.728 18.0747 152.24 18.3733C152.752 18.6578 153.328 18.8 153.968 18.8Z" fill="#2E303D"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M1.48149 4C1.48149 3.34544 2.01212 2.81481 2.66668 2.81481H10.6667C12.3955 2.81481 14.0535 3.50158 15.276 4.72404C16.4984 5.9465 17.1852 7.60451 17.1852 9.33333V28C17.1852 28.6546 16.6546 29.1852 16 29.1852C15.3454 29.1852 14.8148 28.6546 14.8148 28C14.8148 27.2535 14.5183 26.5375 13.9904 26.0096C13.4625 25.4817 12.7465 25.1852 12 25.1852H2.66668C2.01212 25.1852 1.48149 24.6546 1.48149 24V4ZM14.8148 23.6453V9.33333C14.8148 8.23318 14.3778 7.17808 13.5999 6.40015C12.8219 5.62222 11.7668 5.18518 10.6667 5.18518H3.85186V22.8148H12C13.0063 22.8148 13.9825 23.1074 14.8148 23.6453Z" fill="#2E303D"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M16.724 4.72404C17.9465 3.50158 19.6045 2.81481 21.3333 2.81481H29.3333C29.9879 2.81481 30.5185 3.34544 30.5185 4V24C30.5185 24.6546 29.9879 25.1852 29.3333 25.1852H20C19.2535 25.1852 18.5375 25.4817 18.0096 26.0096C17.4817 26.5375 17.1852 27.2535 17.1852 28C17.1852 28.6546 16.6545 29.1852 16 29.1852C15.3454 29.1852 14.8148 28.6546 14.8148 28V9.33333C14.8148 7.60451 15.5016 5.9465 16.724 4.72404ZM17.1852 23.6453C18.0175 23.1074 18.9937 22.8148 20 22.8148H28.1481V5.18518H21.3333C20.2332 5.18518 19.1781 5.62222 18.4001 6.40015C17.6222 7.17808 17.1852 8.23318 17.1852 9.33333V23.6453Z" fill="#2E303D"/>
+        </svg>
+      </a>
+      <div class="s-nav__links">
+        <a class="s-nav__link">Courses</a>
+        <a class="s-nav__link">School</a>
+        <a class="s-nav__link">Blog</a>
+        <a class="s-nav__link">Contact</a>
+        <a class="s-nav__link s-nav__link--highlight" id="navLaunchLink" hidden></a>
+      </div>
+      <button class="s-nav__avatar btn btn--borderless btn--icon" aria-label="User menu">
+        <span class="sticker sticker--md sticker--circle">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="Lukas Kyle">
+        </span>
+      </button>
+    </nav>
+
+    <!-- RIBBON -->
+    <div class="s-ribbon" id="siteRibbon" hidden></div>
+
+    <!-- HERO -->
+    <div class="s-hero">
+      <div class="s-hero__photo" style="background-image:url('images/hero-photo.jpeg')"></div>
+      <div class="s-hero__copy">
+        <p class="s-hero__eyebrow">Welcome to Bootcamp</p>
+        <h1 class="s-hero__h1" id="heroH1">The new way<br>of learning</h1>
+        <p class="s-hero__p" id="heroP">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat.</p>
+        <button class="s-hero__btn">
+          VIEW MORE
+          <svg viewBox="0 0 48 2" fill="none"><line x1="0" y1="1" x2="48" y2="1" stroke="white" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- COURSES -->
+    <div class="s-section">
+      <p class="s-label"><em>The</em> <strong>Courses</strong></p>
+      <div class="s-courses">
+        <div class="s-course">
+          <p class="s-course__tag">Marketing</p>
+          <h3 class="s-course__title">Digital Marketing Certificate</h3>
+          <p class="s-course__p">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat.</p>
+          <a class="s-course__link">View More</a>
+        </div>
+        <div class="s-course">
+          <p class="s-course__tag">Design</p>
+          <h3 class="s-course__title">Product Design Bootcamp</h3>
+          <p class="s-course__p">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat.</p>
+          <a class="s-course__link">View More</a>
+        </div>
+        <div class="s-course" id="courseExtra">
+          <p class="s-course__tag" id="courseExtraTag">Management</p>
+          <h3 class="s-course__title" id="courseExtraTitle">Technical Project Management</h3>
+          <p class="s-course__p" id="courseExtraP">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat.</p>
+          <a class="s-course__link">View More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTCOMES + STATS -->
+    <div class="s-outcomes">
+      <div class="s-outcomes__left">
+        <div class="s-outcomes__copy">
+          <div>
+            <p class="s-label"><em>The</em> <strong>Outcomes</strong></p>
+            <p class="s-outcomes__quote" id="outcomesQuote">"The new and better way of learning"</p>
+          </div>
+          <a class="s-outcomes__link">View All</a>
+        </div>
+        <div class="s-stats">
+          <div class="s-stat s-stat--dark">
+            <p class="s-stat__label">Students to clients</p>
+            <p class="s-stat__num" id="statNum1">85%</p>
+            <p class="s-stat__p">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet.</p>
+          </div>
+          <div class="s-stat s-stat--yellow">
+            <p class="s-stat__label">Students in school</p>
+            <p class="s-stat__num" id="statNum2">+710</p>
+            <p class="s-stat__p">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet.</p>
+          </div>
+        </div>
+      </div>
+      <div class="s-outcomes__photo" style="background-image:url('images/outcomes-photo.jpg')"></div>
+    </div>
+
+    <!-- METHODOLOGY -->
+    <div class="s-section" style="padding-bottom:0">
+      <p class="s-label"><em>The</em> <strong>Methodology</strong></p>
+    </div>
+    <div class="s-method">
+      <div class="s-method__photo" style="background-image:url('images/method-1.jpeg')"></div>
+      <div class="s-method__copy">
+        <p class="s-method__num">01.</p>
+        <h3 class="s-method__title">Individual mentorship and full guidance.</h3>
+        <p class="s-method__p">Amet minim mollit non deserunt ullamco sit aliqua dolor do amet sint Velit officia.</p>
+        <a class="s-method__link">View More</a>
+      </div>
+    </div>
+    <div class="s-method s-method--reverse">
+      <div class="s-method__photo" style="background-image:url('images/method-2.jpeg')"></div>
+      <div class="s-method__copy">
+        <p class="s-method__num">02.</p>
+        <h3 class="s-method__title">Study schedules that fit with your life.</h3>
+        <p class="s-method__p">Amet minim mollit non deserunt ullamco sit aliqua dolor do amet sint Velit officia.</p>
+        <a class="s-method__link">View More</a>
+      </div>
+    </div>
+
+    <!-- LATEST NEWS -->
+    <div class="s-section">
+      <div class="s-news-header">
+        <p class="s-label" style="margin:0"><em>The</em> <strong>Latest News</strong></p>
+        <a class="s-news-header__link">View All</a>
+      </div>
+      <div class="s-news">
+        <div>
+          <div class="s-news-card__img" style="background-image:url('images/news-1.jpeg')"></div>
+          <p class="s-news-card__tag">Design</p>
+          <h4 class="s-news-card__title">Build your media and public presence</h4>
+          <a class="s-news-card__link">View More</a>
+        </div>
+        <div>
+          <div class="s-news-card__img" style="background-image:url('images/news-2.jpeg')"></div>
+          <p class="s-news-card__tag">Development</p>
+          <h4 class="s-news-card__title">Build your media and public presence</h4>
+          <a class="s-news-card__link">View More</a>
+        </div>
+        <div>
+          <div class="s-news-card__img" style="background-image:url('images/news-3.jpeg')"></div>
+          <p class="s-news-card__tag">Management</p>
+          <h4 class="s-news-card__title">Build your media and public presence</h4>
+          <a class="s-news-card__link">View More</a>
+        </div>
+        <div>
+          <div class="s-news-card__img" style="background-image:url('images/news-1.jpeg')"></div>
+          <p class="s-news-card__tag">Design</p>
+          <h4 class="s-news-card__title">Build your media and public presence</h4>
+          <a class="s-news-card__link">View More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="s-cta">
+      <div class="s-cta__photo" style="background-image:url('images/cta-photo.jpeg')"></div>
+      <div class="s-cta__copy">
+        <p class="s-cta__label">Stay in touch</p>
+        <h2 class="s-cta__h2" id="ctaH2">Join us now and start learning for free.</h2>
+        <p style="font-size:12px;font-family:Arial,sans-serif;color:rgba(26,27,34,.5);margin:0 0 16px;line-height:1.5;">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet velit amet minim.</p>
+        <div class="s-cta__form">
+          <input class="s-cta__input" placeholder="Enter your email">
+          <button class="s-cta__submit">Subscribe</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="s-footer">
+      <div class="s-footer__top">
+        <div>
+          <div class="s-footer__brand">
+            <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 160.048 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M58.5813 13.168C59.4062 13.4382 60.0604 13.8933 60.544 14.5333C61.0276 15.1591 61.2693 15.9413 61.2693 16.88C61.2693 18.1742 60.7716 19.1769 59.776 19.888C58.7804 20.5849 57.3298 20.9333 55.424 20.9333H48V6H54.9973C56.7609 6 58.1191 6.34844 59.072 7.04533C60.0249 7.728 60.5013 8.67378 60.5013 9.88267C60.5013 10.6222 60.3307 11.2764 59.9893 11.8453C59.648 12.4142 59.1787 12.8551 58.5813 13.168ZM50.7733 8.176V12.2933H54.6987C55.6658 12.2933 56.4053 12.1227 56.9173 11.7813C57.4436 11.4258 57.7067 10.9138 57.7067 10.2453C57.7067 9.56267 57.4436 9.05067 56.9173 8.70933C56.4053 8.35378 55.6658 8.176 54.6987 8.176H50.7733ZM55.2533 18.7573C57.4009 18.7573 58.4747 18.0391 58.4747 16.6027C58.4747 15.1662 57.4009 14.448 55.2533 14.448H50.7733V18.7573H55.2533Z" fill="#2E303D"/>
+              <path d="M69.0932 21.0827C67.9412 21.0827 66.9029 20.8338 65.9785 20.336C65.0541 19.8382 64.3287 19.1484 63.8025 18.2667C63.2905 17.3707 63.0345 16.3609 63.0345 15.2373C63.0345 14.1138 63.2905 13.1111 63.8025 12.2293C64.3287 11.3476 65.0541 10.6578 65.9785 10.16C66.9029 9.66222 67.9412 9.41333 69.0932 9.41333C70.2594 9.41333 71.3047 9.66222 72.2292 10.16C73.1536 10.6578 73.8718 11.3476 74.3838 12.2293C74.9101 13.1111 75.1732 14.1138 75.1732 15.2373C75.1732 16.3609 74.9101 17.3707 74.3838 18.2667C73.8718 19.1484 73.1536 19.8382 72.2292 20.336C71.3047 20.8338 70.2594 21.0827 69.0932 21.0827ZM69.0932 18.8C70.0745 18.8 70.8852 18.4729 71.5252 17.8187C72.1652 17.1644 72.4852 16.304 72.4852 15.2373C72.4852 14.1707 72.1652 13.3102 71.5252 12.656C70.8852 12.0018 70.0745 11.6747 69.0932 11.6747C68.1118 11.6747 67.3012 12.0018 66.6612 12.656C66.0354 13.3102 65.7225 14.1707 65.7225 15.2373C65.7225 16.304 66.0354 17.1644 66.6612 17.8187C67.3012 18.4729 68.1118 18.8 69.0932 18.8Z" fill="#2E303D"/>
+              <path d="M82.8432 21.0827C81.6912 21.0827 80.6529 20.8338 79.7285 20.336C78.8041 19.8382 78.0787 19.1484 77.5525 18.2667C77.0405 17.3707 76.7845 16.3609 76.7845 15.2373C76.7845 14.1138 77.0405 13.1111 77.5525 12.2293C78.0787 11.3476 78.8041 10.6578 79.7285 10.16C80.6529 9.66222 81.6912 9.41333 82.8432 9.41333C84.0094 9.41333 85.0547 9.66222 85.9792 10.16C86.9036 10.6578 87.6218 11.3476 88.1338 12.2293C88.6601 13.1111 88.9232 14.1138 88.9232 15.2373C88.9232 16.3609 88.6601 17.3707 88.1338 18.2667C87.6218 19.1484 86.9036 19.8382 85.9792 20.336C85.0547 20.8338 84.0094 21.0827 82.8432 21.0827ZM82.8432 18.8C83.8245 18.8 84.6352 18.4729 85.2752 17.8187C85.9152 17.1644 86.2352 16.304 86.2352 15.2373C86.2352 14.1707 85.9152 13.3102 85.2752 12.656C84.6352 12.0018 83.8245 11.6747 82.8432 11.6747C81.8618 11.6747 81.0512 12.0018 80.4112 12.656C79.7854 13.3102 79.4725 14.1707 79.4725 15.2373C79.4725 16.304 79.7854 17.1644 80.4112 17.8187C81.0512 18.4729 81.8618 18.8 82.8432 18.8Z" fill="#2E303D"/>
+              <path d="M98.3212 20.3147C98.0083 20.5707 97.6243 20.7627 97.1692 20.8907C96.7283 21.0187 96.2589 21.0827 95.7612 21.0827C94.5096 21.0827 93.5425 20.7556 92.8598 20.1013C92.1772 19.4471 91.8358 18.4942 91.8358 17.2427V11.76H89.9585V9.62667H91.8358V7.024H94.5025V9.62667H97.5532V11.76H94.5025V17.1787C94.5025 17.7333 94.6376 18.16 94.9078 18.4587C95.1781 18.7431 95.5692 18.8853 96.0812 18.8853C96.6785 18.8853 97.1763 18.7289 97.5745 18.416L98.3212 20.3147Z" fill="#2E303D"/>
+              <path d="M105.367 21.0827C104.186 21.0827 103.126 20.8338 102.188 20.336C101.249 19.8382 100.517 19.1484 99.9905 18.2667C99.4643 17.3707 99.2012 16.3609 99.2012 15.2373C99.2012 14.1138 99.4643 13.1111 99.9905 12.2293C100.517 11.3476 101.242 10.6578 102.166 10.16C103.105 9.66222 104.172 9.41333 105.367 9.41333C106.49 9.41333 107.471 9.64089 108.31 10.096C109.164 10.5511 109.804 11.2053 110.231 12.0587L108.183 13.2533C107.855 12.7271 107.443 12.336 106.945 12.08C106.462 11.8098 105.928 11.6747 105.345 11.6747C104.35 11.6747 103.525 12.0018 102.87 12.656C102.216 13.296 101.889 14.1564 101.889 15.2373C101.889 16.3182 102.209 17.1858 102.849 17.84C103.503 18.48 104.335 18.8 105.345 18.8C105.928 18.8 106.462 18.672 106.945 18.416C107.443 18.1458 107.855 17.7476 108.183 17.2213L110.231 18.416C109.79 19.2693 109.143 19.9307 108.289 20.4C107.45 20.8551 106.476 21.0827 105.367 21.0827Z" fill="#2E303D"/>
+              <path d="M116.888 9.41333C118.566 9.41333 119.846 9.81867 120.728 10.6293C121.624 11.4258 122.072 12.6347 122.072 14.256V20.9333H119.554V19.5467C119.227 20.0444 118.758 20.4284 118.146 20.6987C117.549 20.9547 116.824 21.0827 115.97 21.0827C115.117 21.0827 114.37 20.9404 113.73 20.656C113.09 20.3573 112.593 19.952 112.237 19.44C111.896 18.9138 111.725 18.3236 111.725 17.6693C111.725 16.6453 112.102 15.8276 112.856 15.216C113.624 14.5902 114.825 14.2773 116.461 14.2773H119.405V14.1067C119.405 13.3102 119.163 12.6987 118.68 12.272C118.21 11.8453 117.506 11.632 116.568 11.632C115.928 11.632 115.295 11.7316 114.669 11.9307C114.057 12.1298 113.538 12.4071 113.112 12.7627L112.066 10.8213C112.664 10.3662 113.382 10.0178 114.221 9.776C115.06 9.53422 115.949 9.41333 116.888 9.41333ZM116.525 19.1413C117.193 19.1413 117.784 18.992 118.296 18.6933C118.822 18.3804 119.192 17.9396 119.405 17.3707V16.048H116.653C115.117 16.048 114.349 16.5529 114.349 17.5627C114.349 18.0462 114.541 18.4302 114.925 18.7147C115.309 18.9991 115.842 19.1413 116.525 19.1413Z" fill="#2E303D"/>
+              <path d="M139.873 9.41333C141.309 9.41333 142.447 9.83289 143.286 10.672C144.125 11.4969 144.545 12.7413 144.545 14.4053V20.9333H141.878V14.7467C141.878 13.7511 141.658 13.0044 141.217 12.5067C140.776 11.9947 140.143 11.7387 139.318 11.7387C138.422 11.7387 137.704 12.0373 137.163 12.6347C136.623 13.2178 136.353 14.0569 136.353 15.152V20.9333H133.686V14.7467C133.686 13.7511 133.466 13.0044 133.025 12.5067C132.584 11.9947 131.951 11.7387 131.126 11.7387C130.216 11.7387 129.49 12.0302 128.95 12.6133C128.424 13.1964 128.161 14.0427 128.161 15.152V20.9333H125.494V9.54133H128.033V10.992C128.459 10.48 128.993 10.0889 129.633 9.81867C130.273 9.54845 130.984 9.41333 131.766 9.41333C132.619 9.41333 133.373 9.57689 134.027 9.904C134.696 10.2169 135.222 10.6862 135.606 11.312C136.075 10.7147 136.68 10.2524 137.419 9.92533C138.159 9.584 138.977 9.41333 139.873 9.41333Z" fill="#2E303D"/>
+              <path d="M154.267 9.41333C155.376 9.41333 156.365 9.65511 157.232 10.1387C158.114 10.6222 158.804 11.3049 159.302 12.1867C159.799 13.0684 160.048 14.0853 160.048 15.2373C160.048 16.3893 159.799 17.4133 159.302 18.3093C158.804 19.1911 158.114 19.8738 157.232 20.3573C156.365 20.8409 155.376 21.0827 154.267 21.0827C152.731 21.0827 151.515 20.5707 150.619 19.5467V25.072H147.952V9.54133H150.491V11.0347C150.932 10.4942 151.472 10.0889 152.112 9.81867C152.767 9.54845 153.485 9.41333 154.267 9.41333ZM153.968 18.8C154.95 18.8 155.753 18.4729 156.379 17.8187C157.019 17.1644 157.339 16.304 157.339 15.2373C157.339 14.1707 157.019 13.3102 156.379 12.656C155.753 12.0018 154.95 11.6747 153.968 11.6747C153.328 11.6747 152.752 11.824 152.24 12.1227C151.728 12.4071 151.323 12.8196 151.024 13.36C150.726 13.9004 150.576 14.5262 150.576 15.2373C150.576 15.9484 150.726 16.5742 151.024 17.1147C151.323 17.6551 151.728 18.0747 152.24 18.3733C152.752 18.6578 153.328 18.8 153.968 18.8Z" fill="#2E303D"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.48149 4C1.48149 3.34544 2.01212 2.81481 2.66668 2.81481H10.6667C12.3955 2.81481 14.0535 3.50158 15.276 4.72404C16.4984 5.9465 17.1852 7.60451 17.1852 9.33333V28C17.1852 28.6546 16.6546 29.1852 16 29.1852C15.3454 29.1852 14.8148 28.6546 14.8148 28C14.8148 27.2535 14.5183 26.5375 13.9904 26.0096C13.4625 25.4817 12.7465 25.1852 12 25.1852H2.66668C2.01212 25.1852 1.48149 24.6546 1.48149 24V4ZM14.8148 23.6453V9.33333C14.8148 8.23318 14.3778 7.17808 13.5999 6.40015C12.8219 5.62222 11.7668 5.18518 10.6667 5.18518H3.85186V22.8148H12C13.0063 22.8148 13.9825 23.1074 14.8148 23.6453Z" fill="#2E303D"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M16.724 4.72404C17.9465 3.50158 19.6045 2.81481 21.3333 2.81481H29.3333C29.9879 2.81481 30.5185 3.34544 30.5185 4V24C30.5185 24.6546 29.9879 25.1852 29.3333 25.1852H20C19.2535 25.1852 18.5375 25.4817 18.0096 26.0096C17.4817 26.5375 17.1852 27.2535 17.1852 28C17.1852 28.6546 16.6545 29.1852 16 29.1852C15.3454 29.1852 14.8148 28.6546 14.8148 28V9.33333C14.8148 7.60451 15.5016 5.9465 16.724 4.72404ZM17.1852 23.6453C18.0175 23.1074 18.9937 22.8148 20 22.8148H28.1481V5.18518H21.3333C20.2332 5.18518 19.1781 5.62222 18.4001 6.40015C17.6222 7.17808 17.1852 8.23318 17.1852 9.33333V23.6453Z" fill="#2E303D"/>
+            </svg>
+          </div>
+          <p class="s-footer__tagline">The new way of learning.</p>
+        </div>
+        <div>
+          <p class="s-footer__col-title">Courses</p>
+          <a class="s-footer__link">Marketing</a>
+          <a class="s-footer__link">Design</a>
+          <a class="s-footer__link">Management</a>
+          <a class="s-footer__link">Development</a>
+        </div>
+        <div>
+          <p class="s-footer__col-title">School</p>
+          <a class="s-footer__link">About us</a>
+          <a class="s-footer__link">Faculty</a>
+          <a class="s-footer__link">Campus</a>
+        </div>
+        <div>
+          <p class="s-footer__col-title">Community</p>
+          <a class="s-footer__link">Blog</a>
+          <a class="s-footer__link">Alumni</a>
+          <a class="s-footer__link">Events</a>
+        </div>
+        <div>
+          <p class="s-footer__col-title">Contact</p>
+          <a class="s-footer__link">hello@bootcamp.co</a>
+          <a class="s-footer__link">FAQ</a>
+          <a class="s-footer__link">Support</a>
+        </div>
+      </div>
+      <div class="s-footer__bottom">
+        <div class="s-footer__copy">
+          <span>© 2026 Bootcamp</span>
+          <span>Privacy</span>
+          <span>Terms of Use</span>
+        </div>
+        <div class="s-footer__socials">
+          <button class="s-footer__social" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.2.1 4.7 1.7 4.8 4.8.1 1.3.1 1.6.1 4.9s0 3.6-.1 4.8c-.1 3.2-1.6 4.7-4.8 4.8-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1C3.9 21.5 2.4 20 2.3 16.8c-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1zm0 2.2c-3.2 0-3.5 0-4.8.1-2.2.1-3.2 1.1-3.3 3.3-.1 1.3-.1 1.6-.1 4.8s0 3.5.1 4.8c.1 2.2 1.1 3.2 3.3 3.3 1.3.1 1.6.1 4.8.1s3.5 0 4.8-.1c2.2-.1 3.2-1.1 3.3-3.3.1-1.3.1-1.6.1-4.8s0-3.5-.1-4.8c-.1-2.2-1.1-3.2-3.3-3.3-1.3-.1-1.6-.1-4.8-.1zm0 3.6a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2.2a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6zm4.2-3.9a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9z"/></svg>
+          </button>
+          <button class="s-footer__social" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.88v2.27h3.32l-.53 3.5h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+          </button>
+          <button class="s-footer__social" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.61 0 4.28 2.37 4.28 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </button>
+          <button class="s-footer__social" aria-label="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+          </button>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /.site-frame -->
+  </div><!-- /.site-frame-wrap -->
+
+</div><!-- /.stage -->
+
+<!-- ══════════ TOAST CONTAINER ══════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  var state = { tab: 'cms', launch: 'none' };
+
+  var ENTITIES = {
+    cms:      { label: 'Holiday Gift Guide', version: 'Version 1' },
+    page:     { label: 'Home',               version: 'Version 2' },
+    fragment: { label: 'Promo Ribbon',       version: 'Version 1' },
+    nav:      { label: 'Main Menu',          version: 'Version 3' }
+  };
+
+  var CONTENT = {
+    none: {
+      h: 'The new way<br>of learning',
+      hPreview: 'Learn faster.<br>Go further.',
+      pPreview: 'Structured programs built for ambitious people. In weeks, not years, you\'ll have the skills that open new doors.',
+      p: 'Expert mentors, flexible schedules, and a community that keeps you moving. Real skills, real results — at your pace.',
+      ribbon: null, launchLink: null,
+      courseTag: 'Management', courseTitle: 'Technical Project Management',
+      courseP: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat.',
+      quote: '"The new and better way of learning"',
+      stat1: '85%', stat2: '+710',
+      cta: 'Join us now and start learning for free.'
+    },
+    xmas: {
+      h: 'The gift of<br>new skills.',
+      p: 'Give someone you love the best gift — a new career. Holiday special pricing until December 31.',
+      ribbon: '🎄 Holiday Special — 30% off all courses until December 31', launchLink: 'Holiday Offer',
+      courseTag: 'Limited seats', courseTitle: '🎄 Holiday Intensive: UX Crash Course',
+      courseP: 'Limited seats for our special holiday edition. Apply before Dec 15 and save 30% on tuition.',
+      quote: '"Start the new year with new skills"',
+      stat1: '85%', stat2: '+830',
+      cta: 'Enroll now and get holiday pricing.'
+    },
+    ny: {
+      h: 'New year,<br>new skills.',
+      p: 'Start January strong. Our New Year cohort opens January 6 — early access for registered members.',
+      ribbon: '🎊 New Year cohort — Early registration open now', launchLink: 'New Year Cohort',
+      courseTag: 'January cohort', courseTitle: '🎊 Full Stack Design — New Year Edition',
+      courseP: 'An intensive 12-week program starting January 6. Spots are limited — reserve yours before Dec 28.',
+      quote: '"A new year, a new career"',
+      stat1: '89%', stat2: '+940',
+      cta: 'Reserve your spot for January.'
+    }
+  };
+
+  function setLaunch(launch) {
+    state.launch = launch;
+    var names = { none: 'None', xmas: 'Christmas Campaign', ny: "New Year's Kickoff" };
+    document.getElementById('launchTxt').textContent = names[launch];
+    ['none','xmas','ny'].forEach(function(k) {
+      document.getElementById('mi-' + k).classList.toggle('active', k === launch);
+    });
+    document.getElementById('launchMenu').hidden = true;
+    applyContent();
+  }
+
+  function toggleLaunchMenu(e) {
+    e.stopPropagation();
+    var m = document.getElementById('launchMenu');
+    m.hidden = !m.hidden;
+  }
+  document.addEventListener('click', function() {
+    document.getElementById('launchMenu').hidden = true;
+  });
+
+  function applyContent() {
+    var c = CONTENT[state.launch] || CONTENT['none'];
+    var inPreview = !document.getElementById('previewBar').hidden;
+    document.getElementById('heroH1').innerHTML = (inPreview && c.hPreview) ? c.hPreview : c.h;
+    document.getElementById('heroP').textContent = (inPreview && c.pPreview) ? c.pPreview : c.p;
+    var ribbon = document.getElementById('siteRibbon');
+    if (c.ribbon) { ribbon.textContent = c.ribbon; ribbon.hidden = false; }
+    else { ribbon.hidden = true; }
+    var ll = document.getElementById('navLaunchLink');
+    if (c.launchLink) { ll.textContent = c.launchLink; ll.hidden = false; }
+    else { ll.hidden = true; }
+    document.getElementById('courseExtraTag').textContent = c.courseTag;
+    document.getElementById('courseExtraTitle').textContent = c.courseTitle;
+    document.getElementById('courseExtraP').textContent = c.courseP;
+    document.getElementById('outcomesQuote').textContent = c.quote;
+    document.getElementById('statNum1').textContent = c.stat1;
+    document.getElementById('statNum2').textContent = c.stat2;
+    document.getElementById('ctaH2').textContent = c.cta;
+  }
+
+  function backToEditing() {
+    document.getElementById('previewBar').hidden = false;
+    applyContent();
+    showToast('info', 'Returned to editor. Your preview draft is still open.');
+  }
+
+  function exitPreview() {
+    var live = CONTENT['none'];
+    document.getElementById('heroH1').innerHTML = live.h;
+    document.getElementById('heroP').textContent = live.p;
+    document.getElementById('siteRibbon').hidden = true;
+    document.getElementById('navLaunchLink').hidden = true;
+    document.getElementById('courseExtraTag').textContent = live.courseTag;
+    document.getElementById('courseExtraTitle').textContent = live.courseTitle;
+    document.getElementById('courseExtraP').textContent = live.courseP;
+    document.getElementById('outcomesQuote').textContent = live.quote;
+    document.getElementById('statNum1').textContent = live.stat1;
+    document.getElementById('statNum2').textContent = live.stat2;
+    document.getElementById('ctaH2').textContent = live.cta;
+    var bar = document.getElementById('previewBar');
+    bar.style.animation = 'barOut .22s cubic-bezier(0.4, 0, 1, 1) both';
+    bar.addEventListener('animationend', function() { bar.hidden = true; bar.style.animation = ''; }, { once: true });
+    showToast('info',
+      'You exited preview. This tab shows the <strong>live</strong> site.',
+      'Back to Preview',
+      function() { document.getElementById('previewBar').hidden = false; applyContent(); }
+    );
+  }
+
+  function showToast(type, message, actionLabel, actionFn) {
+    var icons = { info: 'info-circle', warning: 'warning-full', success: 'check-circle-full' };
+    var el = document.createElement('div');
+    el.className = 'alert alert--toast alert--' + type;
+    var actHtml = actionLabel
+      ? '<div class="alert__actions"><button class="btn btn--secondary btn--' + type + ' btn--sm" id="toastAction">' + actionLabel + '</button></div>'
+      : '';
+    el.innerHTML =
+      '<div class="alert__content">' +
+        '<svg class="lexicon-icon"><use href="#' + icons[type] + '"></use></svg>' +
+        '<p class="alert__text"><strong>Info:</strong> ' + message + '</p>' +
+      '</div>' +
+      actHtml +
+      '<button class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">' +
+        '<svg class="lexicon-icon"><use href="#times"></use></svg>' +
+      '</button>';
+    document.getElementById('toastContainer').appendChild(el);
+    if (actionFn) {
+      el.querySelector('#toastAction').addEventListener('click', function() { el.remove(); actionFn(); });
+    }
+    el.querySelector('.alert__close').addEventListener('click', function() { el.remove(); });
+  }
+
+  applyContent();
+</script>
+</body>
+</html>

@@ -47,7 +47,7 @@
   gap: var(--spacing-3);
   height: 40px;
   padding: 0 var(--spacing-5);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-lg);
   border: 1px solid transparent;
   background: transparent;
   font-family: inherit;
@@ -128,6 +128,14 @@
 .btn--secondary.btn--danger  { color: var(--color-danger);  border-color: var(--color-danger);  }
 .btn--secondary.btn--danger:hover  { background: var(--color-danger-l2);  }
 
+/* Alert action buttons — solid fill on hover, scoped to typed alert containers.
+   Matches the $alert-{tone}-btn pattern in Clay SCSS: hover fills with the alert
+   surface colour so the action reads as the primary response for that alert type. */
+.alert--info    .btn--secondary:hover { background: var(--color-info);    border-color: var(--color-info);    color: var(--color-white); }
+.alert--success .btn--secondary:hover { background: var(--color-success); border-color: var(--color-success); color: var(--color-white); }
+.alert--warning .btn--secondary:hover { background: var(--color-warning); border-color: var(--color-warning); color: var(--color-dark); }
+.alert--danger  .btn--secondary:hover { background: var(--color-danger);  border-color: var(--color-danger);  color: var(--color-white); }
+
 .btn--borderless.btn--info    { color: var(--color-info);    }
 .btn--borderless.btn--info:hover    { background: var(--color-info-l2);    }
 .btn--borderless.btn--success { color: var(--color-success); }
@@ -140,7 +148,7 @@
 /* — Size — */
 
 .btn--xs { height: 24px; padding: 0 var(--spacing-3); font-size: var(--font-size-sm); gap: var(--spacing-2); }
-.btn--sm { height: 32px; padding: 0 var(--spacing-4); font-size: var(--font-size-sm); }
+.btn--sm { height: 32px; padding: 0 var(--spacing-4); font-size: var(--font-size-base); font-weight: 600; }
 .btn--lg { height: 48px; padding: 0 var(--spacing-6); font-size: var(--font-size-md); }
 
 /* — Shape — */
@@ -4904,4 +4912,87 @@
   width: 22px; height: 8px;
   border-radius: var(--rounded-sm);
   background: var(--c, var(--chart-seq-1));
+}
+
+
+/* =====================================================
+   Site Preview Bar  (LPD-97290)
+   Persistent indicator shown at the top of a previewed site, above the
+   site's own chrome. Filled --color-primary so it reads as system chrome
+   rather than site content. On-colour text uses --color-white; translucent
+   accents reuse the rgba-white technique from .btn--translucent.
+
+   Intended to be sticky (position: sticky; top: 0) on the outermost
+   container so it scrolls with the page but never leaves the viewport.
+   ===================================================== */
+.preview-bar {
+  align-items: center;
+  background: var(--color-primary);
+  color: var(--color-white);
+  display: flex;
+  gap: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-5);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Eye icon + "PREVIEW" word — always-visible signal */
+.preview-bar__signal {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  gap: var(--spacing-2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Thin translucent rule separating clusters */
+.preview-bar__divider {
+  background: rgba(255, 255, 255, 0.28);
+  flex-shrink: 0;
+  height: var(--spacing-6);
+  width: 1px;
+}
+
+/* "Previewing <entity> <version>" cluster */
+.preview-bar__info {
+  align-items: center;
+  display: flex;
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+.preview-bar__info-label {
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+.preview-bar__entity {
+  font-weight: var(--font-weight-bold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Compact version badge */
+.preview-bar__version {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: var(--rounded-sm);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-weight: var(--font-weight-bold);
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+/* Push actions to the right */
+.preview-bar__spacer { flex: 1; }
+
+/* At narrow widths drop the "Previewing" label; signal + entity + exit remain */
+@media (max-width: 767px) {
+  .preview-bar__info-label { display: none; }
 }
