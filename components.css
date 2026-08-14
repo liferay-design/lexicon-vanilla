@@ -47,7 +47,7 @@
   gap: var(--spacing-3);
   height: 40px;
   padding: 0 var(--spacing-5);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-lg);
   border: 1px solid transparent;
   background: transparent;
   font-family: inherit;
