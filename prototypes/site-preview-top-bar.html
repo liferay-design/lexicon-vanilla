@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Preview Top Bar — LPD-97290</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     EDIT BELOW.
+     Components: see ../components.html for live variants (all components, one page).
+     Icons: <svg class="lexicon-icon"><use href="#name"></use></svg>
+            (513 names — grep ../icons.svg for `<symbol id=`)
+     Tokens only: var(--color-…), var(--spacing-…), var(--font-size-…).
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ════════════════════════════════════════════════════════════════
+     LPD-97290 — Site Preview Top Bar
+     The previewed site opens in a NEW browser tab (framing below).
+     The primary bar is the deliverable: persistent, names the entity
+     + version, offers Exit. It is never rendered once you exit (live).
+     ════════════════════════════════════════════════════════════════ -->
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--color-light);">
+
+  <!-- New-tab framing (scene-setting, not a kit component) -->
+  <div style="display: flex; align-items: center; gap: var(--spacing-4); padding: var(--spacing-3) var(--spacing-5); background: var(--color-light-d1);">
+    <span style="display: inline-flex; gap: var(--spacing-2);">
+      <span style="width: 10px; height: 10px; border-radius: var(--rounded-full); background: var(--color-secondary-l2);"></span>
+      <span style="width: 10px; height: 10px; border-radius: var(--rounded-full); background: var(--color-secondary-l2);"></span>
+      <span style="width: 10px; height: 10px; border-radius: var(--rounded-full); background: var(--color-secondary-l2);"></span>
+    </span>
+    <div style="flex: 1; display: flex; align-items: center; gap: var(--spacing-3); height: 28px; padding: 0 var(--spacing-4); background: var(--color-white); border-radius: var(--rounded-full); font-size: var(--font-size-sm); color: var(--color-secondary);">
+      <svg class="lexicon-icon lexicon-icon-sm" style="color: var(--color-secondary);"><use href="#lock"></use></svg>
+      <span id="tabUrl">acme.com/w/holiday-gift-guide</span>
+      <span style="margin-left: auto; font-size: 10px; font-weight: var(--font-weight-bold); letter-spacing: 0.06em; color: var(--color-primary);">PREVIEW SESSION</span>
+    </div>
+  </div>
+
+  <!-- ▼▼▼ THE DELIVERABLE — Site Preview Bar ▼▼▼ -->
+  <div class="preview-bar" id="previewBar">
+    <span class="preview-bar__signal">
+      <svg class="lexicon-icon lexicon-icon-sm"><use href="#view"></use></svg>
+      Preview
+    </span>
+    <span class="preview-bar__divider"></span>
+    <span class="preview-bar__info">
+      <span class="preview-bar__info-label">Previewing</span>
+      <span class="preview-bar__entity">Holiday Gift Guide</span>
+      <span class="preview-bar__version">Draft · v1.4</span>
+    </span>
+    <span class="preview-bar__spacer"></span>
+    <button class="btn btn--translucent" type="button" onclick="exitPreview()">Exit preview</button>
+  </div>
+  <!-- ▲▲▲ END deliverable ▲▲▲ -->
+
+  <!-- The previewed site = the PUBLIC page as it will publish.
+       No admin/Control Menu here: the public never sees it, and the
+       preview bar is the only system chrome. -->
+  <div style="flex: 1;">
+    <header style="display: flex; align-items: center; gap: var(--spacing-7); padding: var(--spacing-5) var(--spacing-7); border-bottom: 1px solid var(--color-light-d2); background: var(--color-white);">
+      <span style="display: inline-flex; align-items: center; gap: var(--spacing-3); font-weight: var(--font-weight-bold); color: var(--color-dark);">
+        <span style="width: 28px; height: 28px; border-radius: var(--rounded-full); background: var(--color-primary);"></span>
+        Acme Market
+      </span>
+      <nav style="display: flex; gap: var(--spacing-6); font-size: var(--font-size-base);">
+        <a href="#" data-view="home" onclick="showView('home'); return false;" style="color: var(--color-secondary); text-decoration: none;">Home</a>
+        <a href="#" style="color: var(--color-secondary); text-decoration: none;">Shop</a>
+        <a href="#" data-view="detail" onclick="showView('detail'); return false;" style="color: var(--color-dark); font-weight: var(--font-weight-bold); text-decoration: none;">Gift Guide</a>
+        <a href="#" style="color: var(--color-secondary); text-decoration: none;">Stores</a>
+        <a href="#" style="color: var(--color-secondary); text-decoration: none;">Support</a>
+      </nav>
+      <span style="margin-left: auto; display: inline-flex; align-items: center; gap: var(--spacing-5);">
+        <svg class="lexicon-icon" style="color: var(--color-secondary);"><use href="#search"></use></svg>
+        <svg class="lexicon-icon" style="color: var(--color-secondary);"><use href="#shopping-cart"></use></svg>
+      </span>
+    </header>
+
+    <!-- Published-looking page body carrying the DRAFT content being previewed -->
+    <main id="view-detail" style="max-width: 1080px; margin: 0 auto; padding: var(--spacing-8) var(--spacing-7);">
+
+      <!-- Hero -->
+      <section style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-7); align-items: center; border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden; margin-bottom: var(--spacing-8);">
+        <div style="padding: var(--spacing-8);">
+          <span class="label label--sm label--info" style="margin-bottom: var(--spacing-4);">Seasonal</span>
+          <h1 style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: var(--spacing-4) 0 var(--spacing-4);">Holiday Gift Guide</h1>
+          <p style="font-size: var(--font-size-md); color: var(--color-secondary); margin: 0 0 var(--spacing-6); line-height: 1.5;">
+            Top picks under $50 — curated for Christmas. Free gift wrap on every order until Dec 24.
+          </p>
+          <button class="btn btn--primary">Shop the guide</button>
+        </div>
+        <div style="align-self: stretch; min-height: 280px; background: var(--color-primary-l3); display: flex; align-items: center; justify-content: center;">
+          <svg class="lexicon-icon lexicon-icon-2xl" style="color: var(--color-primary-l1);"><use href="#picture"></use></svg>
+        </div>
+      </section>
+
+      <!-- Section title -->
+      <h2 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-5);">Top picks under $50</h2>
+
+      <!-- Product cards -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-6);">
+        <article style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden;">
+          <div style="height: 140px; background: var(--color-info-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">Cozy Wool Scarf</b>
+            <p style="margin: 0 0 var(--spacing-4); font-size: var(--font-size-sm); color: var(--color-secondary);">Merino blend, seven colours.</p>
+            <span style="font-weight: var(--font-weight-bold); color: var(--color-dark);">$38</span>
+          </div>
+        </article>
+        <article style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden;">
+          <div style="height: 140px; background: var(--color-success-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">Ceramic Mug Set</b>
+            <p style="margin: 0 0 var(--spacing-4); font-size: var(--font-size-sm); color: var(--color-secondary);">Set of four, hand-glazed.</p>
+            <span style="font-weight: var(--font-weight-bold); color: var(--color-dark);">$45</span>
+          </div>
+        </article>
+        <article style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden;">
+          <div style="height: 140px; background: var(--color-warning-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">Scented Candle Trio</b>
+            <p style="margin: 0 0 var(--spacing-4); font-size: var(--font-size-sm); color: var(--color-secondary);">Pine, cinnamon, vanilla.</p>
+            <span style="font-weight: var(--font-weight-bold); color: var(--color-dark);">$29</span>
+          </div>
+        </article>
+      </div>
+
+      <p style="text-align: center; color: var(--color-secondary); font-size: var(--font-size-sm); margin: var(--spacing-8) 0 0;">
+        Try the <b>Home</b> link above — the preview bar stays on every page you visit. Scroll too: it's pinned.
+      </p>
+      <div style="height: 320px;"></div>
+    </main>
+
+    <!-- Second previewed page: the site Home. Reached from the nav while in
+         preview. The bar persists; the same entry still shows its draft data. -->
+    <main id="view-home" hidden style="max-width: 1080px; margin: 0 auto; padding: var(--spacing-8) var(--spacing-7);">
+
+      <section style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); background: var(--color-primary-l3); padding: var(--spacing-9) var(--spacing-8); margin-bottom: var(--spacing-8);">
+        <h1 style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-4);">Winter at Acme Market</h1>
+        <p style="font-size: var(--font-size-md); color: var(--color-secondary); margin: 0 0 var(--spacing-6); max-width: 520px; line-height: 1.5;">
+          Warm up the season with hand-picked gifts, cosy essentials and free wrapping.
+        </p>
+        <button class="btn btn--primary">Explore the season</button>
+      </section>
+
+      <h2 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-dark); margin: 0 0 var(--spacing-5);">Featured this week</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-6);">
+        <!-- This card surfaces the previewed entry → shows its DRAFT title/blurb -->
+        <a href="#" onclick="showView('detail'); return false;" style="text-decoration: none; border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden; display: block;">
+          <div style="height: 140px; background: var(--color-primary-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">Holiday Gift Guide</b>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Top picks under $50 — curated for Christmas.</p>
+          </div>
+        </a>
+        <article style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden;">
+          <div style="height: 140px; background: var(--color-info-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">New Arrivals</b>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Fresh in for the cold months.</p>
+          </div>
+        </article>
+        <article style="border: 1px solid var(--color-light-d2); border-radius: var(--rounded-lg); overflow: hidden;">
+          <div style="height: 140px; background: var(--color-success-l2);"></div>
+          <div style="padding: var(--spacing-5);">
+            <b style="display: block; color: var(--color-dark); margin-bottom: var(--spacing-2);">Store Locator</b>
+            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-secondary);">Find Acme Market near you.</p>
+          </div>
+        </article>
+      </div>
+
+      <p style="text-align: center; color: var(--color-secondary); font-size: var(--font-size-sm); margin: var(--spacing-8) 0 0;">
+        Only the <b>Holiday Gift Guide</b> card renders this entry's draft — the rest of the site stays live.
+      </p>
+      <div style="height: 320px;"></div>
+    </main>
+  </div>
+</div>
+
+<!-- Exit confirmation (shown only after Exit — the bar itself is gone, matching "never rendered outside preview") -->
+<div id="exitToast" hidden style="position: fixed; left: 50%; bottom: var(--spacing-7); transform: translateX(-50%); display: flex; align-items: center; gap: var(--spacing-5); padding: var(--spacing-4) var(--spacing-5); background: var(--color-dark); color: var(--color-white); border-radius: var(--rounded-md); box-shadow: var(--shadow-lg); z-index: 200;">
+  <svg class="lexicon-icon" style="color: var(--color-success-l1);"><use href="#check-circle"></use></svg>
+  <span style="font-size: var(--font-size-sm);">You exited preview. This tab now shows the <b>live</b> site.</span>
+  <button class="btn btn--translucent btn--sm" type="button" onclick="reenterPreview()">Re-enter preview</button>
+</div>
+
+<script>
+  // Navigate within the preview: the bar persists on every page.
+  function showView(view) {
+    document.getElementById('view-detail').hidden = (view !== 'detail');
+    document.getElementById('view-home').hidden = (view !== 'home');
+    document.getElementById('tabUrl').textContent =
+      (view === 'detail') ? 'acme.com/w/holiday-gift-guide' : 'acme.com/home';
+    document.querySelectorAll('[data-view]').forEach(function (a) {
+      var on = a.getAttribute('data-view') === view;
+      a.style.color = on ? 'var(--color-dark)' : 'var(--color-secondary)';
+      a.style.fontWeight = on ? 'var(--font-weight-bold)' : '';
+    });
+    window.scrollTo(0, 0);
+  }
+
+  // Exit = end the preview session (stop injecting draft) → tab shows live.
+  function exitPreview() {
+    document.getElementById('previewBar').hidden = true;
+    document.getElementById('exitToast').hidden = false;
+  }
+  function reenterPreview() {
+    document.getElementById('previewBar').hidden = false;
+    document.getElementById('exitToast').hidden = true;
+  }
+</script>
+
+</body>
+</html>
