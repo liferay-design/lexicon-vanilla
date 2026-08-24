@@ -32,12 +32,263 @@
 
   <style>
     /* ── Page-specific composition (tokens only) ─────────────────────────── */
-    body { margin: 0; background: var(--color-light-l1); min-height: 100vh; }
+    :root {
+      --sidebar-width: 280px;
+      /* Shared chrome height: 32px toggle + 2×12px bar padding = 56px.
+         Drops to 48px in the compact breakpoint below. */
+      --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-4));
+    }
+    html, body { height: 100%; }
+    body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    main { flex: 1; overflow-y: auto; min-width: 0; background: var(--color-light-l1); }
 
-    /* Product menu — .control-panel as a left overlay drawer */
-    .product-menu { position: fixed; top: 0; left: 0; bottom: 0; z-index: 1500;
-                    box-shadow: var(--shadow-lg); }
-    .product-menu[hidden] { display: none; }
+    /* ── Modern sidebar (from prototypes/modern-sidebar.html) ─────
+       The Control Panel sits flush to the screen edge, full height.
+       Three states: hidden (default) · sb-peek (hover the toggle) ·
+       sb-pinned (click the toggle; content shifts right). */
+    .control-panel--floating {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      z-index: 50;
+      border-right: 1px solid var(--color-secondary-l2);
+      transform: translateX(calc(-1 * var(--spacing-7)));
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 140ms ease-out, opacity 140ms ease-out,
+                  visibility 0s linear 140ms, box-shadow 140ms ease;
+    }
+    body.sb-pinned .control-panel--floating,
+    body.sb-peek .control-panel--floating {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+      transition: transform 140ms ease-out, opacity 140ms ease-out,
+                  visibility 0s, box-shadow 140ms ease;
+    }
+    body.sb-peek:not(.sb-pinned) .control-panel--floating { box-shadow: var(--shadow-lg); }
+
+    /* Mobile scrim: above the content, below the panel (50) and toggle (60). */
+    .cp-scrim {
+      position: fixed;
+      inset: 0;
+      background: var(--color-scrim);
+      z-index: 45;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 140ms ease-out, visibility 0s linear 140ms;
+    }
+
+    /* Top-bar geometry: 12px padding all round → 56px chrome band. */
+    .control-menu { padding: var(--spacing-4); }
+    .control-menu__btns { position: relative; z-index: 60; }
+    .control-menu__left { gap: var(--spacing-3); }
+    .control-menu__btn { border-radius: var(--rounded-lg); }
+
+    /* One static toggle, content swaps by state: closed → menu icon;
+       panel out (peek/pinned) → brand image at rest, menu icon on hover. */
+    .cp-toggle--branded {
+      width: var(--spacing-8);
+      height: var(--spacing-8);
+      padding: 0;
+    }
+    .cp-toggle__brand { background: transparent; }
+    .cp-toggle__brand > .cp-toggle__brand-img--dark { display: none; }
+    .dark .cp-toggle__brand > .cp-toggle__brand-img--dark,
+    .dark-hc .cp-toggle__brand > .cp-toggle__brand-img--dark { display: block; }
+    .dark .cp-toggle__brand > .cp-toggle__brand-img--light,
+    .dark-hc .cp-toggle__brand > .cp-toggle__brand-img--light { display: none; }
+    #cp-toggle .cp-toggle__brand { display: none; }
+    #cp-toggle #cp-toggle-icon { display: block; }
+    body.sb-pinned #cp-toggle,
+    body.sb-pinned #cp-toggle:hover {
+      background: color-mix(in srgb, var(--color-dark) 8%, transparent);
+    }
+    body.sb-peek:not(.sb-pinned) #cp-toggle .cp-toggle__brand { display: inline-flex; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle #cp-toggle-icon { display: none; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle:hover .cp-toggle__brand,
+    body.sb-peek:not(.sb-pinned) #cp-toggle:focus-visible .cp-toggle__brand { display: none; }
+    body.sb-peek:not(.sb-pinned) #cp-toggle:hover #cp-toggle-icon,
+    body.sb-peek:not(.sb-pinned) #cp-toggle:focus-visible #cp-toggle-icon { display: block; }
+
+    /* Panel header locked to the control-menu band; left padding clears the
+       stationary toggle (12 + 32 + 8 = 52px). */
+    .control-panel--floating .control-panel__header {
+      height: var(--cp-chrome-h);
+      padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
+    }
+    .control-panel--floating .control-panel__search {
+      padding-top: var(--spacing-4);
+      padding-left: var(--spacing-6);
+      padding-right: var(--spacing-6);
+    }
+    .control-panel--floating .control-panel__search .input__field {
+      height: var(--spacing-8);
+      padding-left: var(--spacing-4);
+    }
+    .control-panel--floating .control-panel__groups { gap: var(--spacing-3); }
+    .control-panel--floating .control-panel__group-header { padding-right: var(--spacing-6); }
+
+    /* Modern scrollbar: thin floating pill, no track. */
+    .control-panel__body,
+    main {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-secondary-l2) transparent;
+    }
+    .control-panel__body::-webkit-scrollbar,
+    main::-webkit-scrollbar { width: var(--spacing-3); }
+    .control-panel__body::-webkit-scrollbar-track,
+    main::-webkit-scrollbar-track { background: transparent; }
+    .control-panel__body::-webkit-scrollbar-thumb,
+    main::-webkit-scrollbar-thumb {
+      background: var(--color-secondary-l2);
+      background-clip: padding-box;
+      border: var(--spacing-1) solid transparent;
+      border-radius: var(--rounded-full);
+    }
+    .control-panel__body::-webkit-scrollbar-thumb:hover,
+    main::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-secondary-l0);
+      background-clip: padding-box;
+    }
+
+    /* Pinned: page content and Control Menu title make room. */
+    main { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.sb-pinned main { margin-left: var(--sidebar-width); }
+    .control-menu__title { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+    body.sb-pinned .control-menu__title {
+      margin-left: calc(var(--sidebar-width) - var(--spacing-8));
+    }
+
+    /* Pinned user footer + scroll shadows. */
+    .control-panel__footer {
+      flex-shrink: 0;
+      padding: var(--spacing-3);
+      position: relative;
+      z-index: 1;
+      transition: box-shadow 150ms ease;
+    }
+    .control-panel__search {
+      position: relative;
+      z-index: 1;
+      transition: box-shadow 150ms ease;
+    }
+    #control-panel.is-clipped-top .control-panel__search { box-shadow: var(--shadow-scroll-top); }
+    #control-panel.is-clipped-bottom .control-panel__footer { box-shadow: var(--shadow-scroll-bottom); }
+
+    .cp-user { position: relative; }
+    .cp-user__trigger {
+      align-items: center;
+      appearance: none;
+      background: none;
+      border: 0;
+      border-radius: var(--rounded-lg);
+      color: var(--color-dark);
+      cursor: pointer;
+      display: inline-flex;
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semi);
+      gap: var(--spacing-3);
+      padding: var(--spacing-3);
+      text-align: left;
+    }
+    .cp-user__trigger:hover { background: var(--color-light); }
+    .cp-user.is-open .cp-user__trigger {
+      background: color-mix(in srgb, var(--color-dark) 8%, transparent);
+    }
+    .cp-user__avatar {
+      border-radius: var(--rounded-full);
+      flex-shrink: 0;
+      height: var(--spacing-7);
+      overflow: hidden;
+      width: var(--spacing-7);
+    }
+    .cp-user__avatar > img {
+      display: block;
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
+    }
+    .cp-user__name { white-space: nowrap; }
+    .cp-user__caret {
+      color: var(--color-secondary-l0);
+      flex-shrink: 0;
+      transition: transform 150ms ease;
+    }
+    .cp-user__trigger[aria-expanded="true"] .cp-user__caret { transform: rotate(180deg); }
+    .cp-user__menu {
+      position: absolute;
+      bottom: calc(100% + var(--spacing-2));
+      left: 0;
+      right: 0;
+      max-height: 70vh;
+      overflow-y: auto;
+      border-radius: var(--rounded-lg);
+      z-index: 30;
+    }
+    .cp-user:not(.is-open) .cp-user__menu { display: none; }
+
+    /* Compact chrome breakpoint: 48px band, overlay-only pinning + scrim. */
+    @media (max-width: 767px) {
+      :root { --cp-chrome-h: calc(var(--spacing-8) + 2 * var(--spacing-3)); }
+      .control-menu { padding: var(--spacing-3); }
+      .control-panel--floating .control-panel__header {
+        padding: 0 var(--spacing-3) 0 var(--spacing-10);
+      }
+      .control-panel--floating .control-panel__search {
+        padding-left: var(--spacing-4);
+        padding-right: var(--spacing-4);
+      }
+      body.sb-pinned main { margin-left: 0; }
+      body.sb-pinned .control-menu__title { margin-left: 0; }
+      body.sb-pinned .cp-scrim {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 140ms ease-out, visibility 0s;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .control-panel--floating, main, .control-menu__title { transition: none; }
+    }
+
+    /* Header action buttons: theme switch + hidden-until-focus Close. */
+    .control-panel__actions {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      gap: var(--spacing-2);
+      margin-left: auto;
+    }
+    .control-panel__actions .btn { border-radius: var(--rounded-lg); }
+    .control-panel__close { order: 1; }
+    .control-panel__close:not(:focus-visible) {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .control-panel:focus { outline: none; }
+
+    /* Hover / keyboard-focus tooltip (reuses the .tooltip component). */
+    .cp-tip { position: relative; display: inline-flex; }
+    .cp-tip__bubble {
+      position: absolute;
+      top: calc(100% + var(--spacing-2));
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 20;
+    }
+    .cp-tip:hover .cp-tip__bubble,
+    .cp-tip:has(:focus-visible) .cp-tip__bubble { opacity: 1; }
+    #cp-toggle-tip { left: var(--spacing-2); transform: none; }
+    #cp-toggle-tip { opacity: 0; }
+    #cp-toggle-tip.is-visible { opacity: 1; }
 
     /* Rail items are kit <li> rows; give keyboard focus the kit ring */
     .selector-rail .vert-nav__item:focus-visible { outline: 0; box-shadow: var(--focus-ring); }
@@ -152,9 +403,16 @@
 <div class="control-menu">
   <div class="control-menu__left">
     <div class="control-menu__btns">
-      <button class="control-menu__btn" type="button" id="productMenuBtn" aria-label="Toggle product menu" aria-expanded="false">
-        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
-      </button>
+      <span class="cp-tip">
+        <button class="control-menu__btn cp-toggle--branded" id="cp-toggle" type="button" aria-label="Pin Menu" aria-expanded="false" aria-controls="control-panel">
+          <span class="sticker sticker--md cp-toggle__brand" aria-hidden="true">
+            <img class="cp-toggle__brand-img--light" src="img/control-panel-icon.png" alt="">
+            <img class="cp-toggle__brand-img--dark" src="img/control-panel-icon-dark.png" alt="">
+          </span>
+          <svg class="lexicon-icon" id="cp-toggle-icon"><use href="#product-menu-closed"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top tooltip--align-start cp-tip__bubble" id="cp-toggle-tip" role="tooltip">Pin Menu</span>
+      </span>
     </div>
     <span class="control-menu__title">Page Builder — Homepage (Edit mode)</span>
   </div>
@@ -163,69 +421,273 @@
     <button class="control-menu__btn" type="button" aria-label="Global navigation">
       <svg class="lexicon-icon"><use href="#grid"></use></svg>
     </button>
-    <div class="control-menu__avatar">
-      <span class="sticker sticker--circle sticker--outline sticker--primary" style="width: 100%; height: 100%;">MC</span>
-    </div>
   </div>
 </div>
 
-<!-- ── Product menu (control panel drawer) ── -->
-<aside class="control-panel product-menu" id="productMenu" aria-label="Product menu" hidden>
+<!-- Mobile scrim: visible below the breakpoint while the panel is pinned. -->
+<div class="cp-scrim" id="cp-scrim" aria-hidden="true"></div>
+
+<!-- ── Floating Control Panel (pattern from prototypes/modern-sidebar.html) ── -->
+<aside class="control-panel control-panel--floating" id="control-panel" tabindex="-1">
+
   <div class="control-panel__header">
-    <span class="control-panel__sticker">
-      <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
-    </span>
-    <span class="control-panel__title">Liferay DXP</span>
-    <button class="btn btn--borderless btn--sm btn--icon" type="button" id="productMenuClose" aria-label="Close product menu">
-      <svg class="lexicon-icon"><use href="#times"></use></svg>
-    </button>
+    <span class="control-panel__title">Control Panel</span>
+
+    <div class="control-panel__actions">
+      <!-- Close — first Tab stop inside the panel; CSS `order` renders it last.
+           Appears only on keyboard focus. -->
+      <button class="btn btn--borderless btn--sm btn--icon control-panel__close" id="cp-close" type="button" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+
+      <!-- Dark / Light switch — moon (→ dark) / sun (→ light), with tooltip -->
+      <span class="cp-tip">
+        <button class="btn btn--borderless btn--sm btn--icon" id="cp-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="lexicon-icon" id="cp-theme-icon"><use href="#moon"></use></svg>
+        </button>
+        <span class="tooltip tooltip--top cp-tip__bubble" id="cp-theme-tip" role="tooltip">Switch to dark mode</span>
+      </span>
+    </div>
   </div>
+
+  <div class="control-panel__search">
+    <div class="search">
+      <input class="input__field search__field" type="search" placeholder="Search">
+      <button class="search__clear" aria-label="Clear" hidden type="button">
+        <svg class="lexicon-icon"><use href="#times-circle-full"></use></svg>
+      </button>
+      <button class="search__submit" aria-label="Search" type="button">
+        <svg class="lexicon-icon"><use href="#search"></use></svg>
+      </button>
+    </div>
+  </div>
+
   <div class="control-panel__body">
     <ul class="control-panel__groups">
+
+      <!-- Home (active) -->
       <li class="control-panel__group">
-        <button class="control-panel__group-header" type="button" aria-expanded="true">
-          Appearance
-          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
-        </button>
-        <button class="control-panel__item" type="button" data-skin="light">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sun"></use></svg></span>
-          Light
-        </button>
-        <button class="control-panel__item" type="button" data-skin="light-hc">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#accessibility"></use></svg></span>
-          Light high contrast
-        </button>
-        <button class="control-panel__item" type="button" data-skin="dark">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#moon"></use></svg></span>
-          Dark
-        </button>
-        <button class="control-panel__item" type="button" data-skin="dark-hc">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#adjust"></use></svg></span>
-          Dark high contrast
-        </button>
-      </li>
-      <li class="control-panel__group">
-        <button class="control-panel__group-header" type="button" aria-expanded="true">
-          Site Builder
-          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
-        </button>
         <button class="control-panel__item is-active" type="button">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#page"></use></svg></span>
-          Pages
-        </button>
-        <button class="control-panel__item" type="button">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#web-content"></use></svg></span>
-          Web Content
-        </button>
-        <button class="control-panel__item" type="button">
-          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#documents-and-media"></use></svg></span>
-          Documents and Media
+          <span class="control-panel__item-icon">
+            <svg class="lexicon-icon"><use href="#home"></use></svg>
+          </span>
+          Home
         </button>
       </li>
+
+      <!-- Users — expanded by default -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Users
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>
+          Users and Organizations
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#community"></use></svg></span>
+          User Groups
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#organizations"></use></svg></span>
+          Roles
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Monitoring
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#suitcase"></use></svg></span>
+          Service Accounts
+        </button>
+      </li>
+
+      <!-- Sites — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Sites
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sites"></use></svg></span>
+          Sites
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#site-template"></use></svg></span>
+          Site Templates
+        </button>
+      </li>
+
+      <!-- Accounts — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Accounts
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#briefcase"></use></svg></span>
+          Accounts
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#user"></use></svg></span>
+          Accounts User
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#myspace"></use></svg></span>
+          Account Groups
+        </button>
+      </li>
+
+      <!-- Configuration — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Configuration
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#hdd"></use></svg></span>
+          System Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#cog"></use></svg></span>
+          Instance Settings
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Push Notifications
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#box-container"></use></svg></span>
+          Components
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+          Search
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#custom-field"></use></svg></span>
+          Custom Fields
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#automatic-translate"></use></svg></span>
+          Language Override
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#picture"></use></svg></span>
+          Adaptive Media
+        </button>
+      </li>
+
+      <!-- Notifications — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Notifications
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#bell-on"></use></svg></span>
+          Templates
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#order-list-down"></use></svg></span>
+          Queue
+        </button>
+      </li>
+
+      <!-- Security — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          Security
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#search-experiences"></use></svg></span>
+          Audit
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#shield-check"></use></svg></span>
+          OAuth Client Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#password-policies"></use></svg></span>
+          Password Policies
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#lock"></use></svg></span>
+          SAML Admin
+        </button>
+      </li>
+
+      <!-- System — collapsed -->
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="false">
+          System
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#database"></use></svg></span>
+          Server Administration
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#grid"></use></svg></span>
+          App Manager
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#display-content"></use></svg></span>
+          Virtual Instances
+        </button>
+      </li>
+
     </ul>
-  </div>
+  </div><!-- /control-panel__body -->
+
+  <!-- Pinned footer: user menu (opens upward) -->
+  <div class="control-panel__footer">
+    <div class="cp-user">
+      <button class="cp-user__trigger" id="cp-user-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="cp-user-menu">
+        <span class="cp-user__avatar">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="">
+        </span>
+        <span class="cp-user__name">Lukas Kyle</span>
+        <svg class="lexicon-icon lexicon-icon-sm cp-user__caret"><use href="#caret-bottom"></use></svg>
+      </button>
+
+      <ul class="dropdown cp-user__menu" id="cp-user-menu" role="menu" aria-labelledby="cp-user-trigger">
+        <li class="dropdown__group-title" role="presentation">Lukas Kyle</li>
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">My Sites</span>
+          <svg class="lexicon-icon dropdown__item-meta"><use href="#sites"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">My Profile</span>
+        </button></li>
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">My Dashboard</span>
+        </button></li>
+
+        <li class="dropdown__divider" role="separator"></li>
+
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">Notifications</span>
+          <svg class="lexicon-icon dropdown__item-meta" aria-label="Unread"><use href="#simple-circle"></use></svg>
+        </button></li>
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">Account Settings</span>
+        </button></li>
+
+        <li class="dropdown__divider" role="separator"></li>
+
+        <li><button class="dropdown__item" type="button" role="menuitem">
+          <span class="dropdown__item-text">Sign Out</span>
+        </button></li>
+      </ul>
+    </div>
+  </div><!-- /control-panel__footer -->
+
 </aside>
 
+<main>
 <div class="pb-canvas" aria-hidden="true">
   <div class="pb-panel skeleton" style="--skeleton-play: paused; display: flex; flex-direction: column; gap: var(--spacing-4); align-self: start;">
     <div class="sk" style="width: 70%; height: 10px;"></div>
@@ -252,6 +714,7 @@
     </div>
   </div>
 </div>
+</main>
 
 <!-- ── Reopen affordance (shown when the modal is closed) ── -->
 <div class="reopen-wrap" id="reopenWrap" hidden>
@@ -1021,49 +1484,242 @@ document.getElementById('selectBtn').addEventListener('click', function(){
   showToast('Selected “' + label + '”');
 });
 
-/* ============================ product menu (skin control lives here) ============================ */
-(function(){
-  var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
-  var menu = document.getElementById('productMenu');
-  var openBtn = document.getElementById('productMenuBtn');
-  var closeBtn = document.getElementById('productMenuClose');
+/* ============================ modern sidebar (from prototypes/modern-sidebar.html) ============================ */
 
-  function setMenuOpen(open){
-    menu.hidden = !open;
-    openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if(open) closeBtn.focus();
+/* Collapsible Control Panel groups */
+(function () {
+  document.querySelectorAll('.control-panel__group-header').forEach(function (btn) {
+    var chevron = btn.querySelector('svg.lexicon-icon:last-child');
+    if (chevron) chevron.style.transition = 'transform 150ms ease';
+
+    var group = btn.parentElement;
+    var items = group ? Array.from(group.querySelectorAll('.control-panel__item')) : [];
+
+    if (btn.getAttribute('aria-expanded') === 'false') {
+      items.forEach(function (el) { el.style.display = 'none'; });
+      if (chevron) chevron.style.transform = 'rotate(-90deg)';
+    }
+
+    btn.addEventListener('click', function () {
+      var expanded = btn.getAttribute('aria-expanded') !== 'false';
+      var next = !expanded;
+      btn.setAttribute('aria-expanded', String(next));
+      items.forEach(function (el) { el.style.display = next ? '' : 'none'; });
+      if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+    });
+  });
+})();
+
+/* Pin / peek behaviour — hover the menu toggle to peek, click to pin */
+(function () {
+  var body = document.body;
+  var toggle = document.getElementById('cp-toggle');
+  var toggleIcon = document.getElementById('cp-toggle-icon');
+  var panel = document.getElementById('control-panel');
+  var close = document.getElementById('cp-close');
+  var toggleTip = document.getElementById('cp-toggle-tip');
+  var hideTimer = null;
+  var mqMobile = window.matchMedia('(max-width: 767px)');
+
+  function pinned() { return body.classList.contains('sb-pinned'); }
+
+  function setIcon() {
+    var p = pinned();
+    var use = toggleIcon && toggleIcon.querySelector('use');
+    if (use) use.setAttribute('href', p ? '#product-menu-open' : '#product-menu-closed');
+    var label = p ? 'Close Menu' : 'Pin Menu';
+    if (toggleTip) toggleTip.textContent = label;
+    toggle.setAttribute('aria-label', label);
   }
-  openBtn.addEventListener('click', function(){ setMenuOpen(menu.hidden); });
-  closeBtn.addEventListener('click', function(){ setMenuOpen(false); });
-  document.addEventListener('click', function(e){
-    if(!menu.hidden && !e.target.closest('#productMenu') && !e.target.closest('#productMenuBtn')) setMenuOpen(false);
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && !menu.hidden) setMenuOpen(false);
+
+  function setPinned(on) {
+    body.classList.toggle('sb-pinned', on);
+    if (on) body.classList.remove('sb-peek');
+    toggle.setAttribute('aria-expanded', String(on));
+    setIcon();
+  }
+
+  function peek(on) {
+    if (pinned()) return;
+    if (on && mqMobile.matches) return;
+    body.classList.toggle('sb-peek', on);
+    if (!on) document.dispatchEvent(new CustomEvent('cp:panel-collapsed'));
+  }
+
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () { peek(false); }, 250);
+  }
+  function cancelHide() { clearTimeout(hideTimer); }
+
+  [toggle, panel].forEach(function (el) {
+    el.addEventListener('mouseenter', function () { cancelHide(); peek(true); });
+    el.addEventListener('mouseleave', scheduleHide);
   });
 
-  function currentSkin(){
+  toggle.addEventListener('click', function (e) {
+    if (pinned()) {
+      setPinned(false);
+      if (!mqMobile.matches && (toggle.matches(':hover') || panel.matches(':hover'))) body.classList.add('sb-peek');
+    } else {
+      setPinned(true);
+      if (e.detail === 0) panel.focus();
+    }
+  });
+
+  close.addEventListener('click', function (e) {
+    setPinned(false);
+    body.classList.remove('sb-peek');
+    if (e.detail === 0) toggle.focus();
+  });
+
+  var scrim = document.getElementById('cp-scrim');
+  if (scrim) scrim.addEventListener('click', function () {
+    setPinned(false);
+    body.classList.remove('sb-peek');
+  });
+
+  /* Selecting a nav item moves the active highlight; on mobile it also
+     closes the drawer. (The Control Menu title stays — it names the
+     Page Builder context behind the selector.) */
+  document.querySelectorAll('.control-panel__item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var current = document.querySelector('.control-panel__item.is-active');
+      if (current) current.classList.remove('is-active');
+      item.classList.add('is-active');
+      if (mqMobile.matches) { setPinned(false); body.classList.remove('sb-peek'); }
+    });
+  });
+
+  panel.addEventListener('focusin', function () { cancelHide(); peek(true); });
+  panel.addEventListener('focusout', function (e) {
+    if (!panel.contains(e.relatedTarget)) scheduleHide();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && body.classList.contains('sb-peek')) peek(false);
+  });
+
+  /* Tooltip timing: show after a short hover delay, self-dismiss, hide on
+     leave, reset on click so it can reappear with the new label. */
+  if (toggleTip) {
+    var TIP_SHOW = 400, TIP_AUTOHIDE = 3000;
+    var tipShowT = null, tipHideT = null, tipPointerFocus = false;
+    var showTip = function () {
+      toggleTip.classList.add('is-visible');
+      clearTimeout(tipHideT);
+      tipHideT = setTimeout(function () { toggleTip.classList.remove('is-visible'); }, TIP_AUTOHIDE);
+    };
+    var hideTip = function () {
+      clearTimeout(tipShowT); clearTimeout(tipHideT);
+      toggleTip.classList.remove('is-visible');
+    };
+    var deferTip = function () {
+      clearTimeout(tipShowT);
+      tipShowT = setTimeout(showTip, TIP_SHOW);
+    };
+    toggle.addEventListener('mouseenter', deferTip);
+    toggle.addEventListener('mouseleave', hideTip);
+    toggle.addEventListener('mousedown', function () { tipPointerFocus = true; });
+    toggle.addEventListener('focus', function () { if (!tipPointerFocus) showTip(); tipPointerFocus = false; });
+    toggle.addEventListener('blur', hideTip);
+    toggle.addEventListener('click', function () {
+      hideTip();
+      if (toggle.matches(':hover')) deferTip();
+    });
+  }
+
+  setIcon();
+})();
+
+/* Dark / Light switch (panel header) */
+(function () {
+  var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+  var btn = document.getElementById('cp-theme-toggle');
+  var themeIcon = document.getElementById('cp-theme-icon');
+  var tip = document.getElementById('cp-theme-tip');
+  if (!btn) return;
+
+  function current() {
     var r = document.documentElement;
-    for(var i = 0; i < SKINS.length; i++){ if(r.classList.contains(SKINS[i])) return SKINS[i]; }
+    for (var i = 0; i < SKINS.length; i++) { if (r.classList.contains(SKINS[i])) return SKINS[i]; }
     return 'light';
   }
-  function paintSkinItems(){
-    var active = currentSkin();
-    menu.querySelectorAll('[data-skin]').forEach(function(item){
-      item.classList.toggle('is-active', item.getAttribute('data-skin') === active);
-    });
+
+  function render() {
+    var isDark = current().indexOf('dark') === 0;
+    var use = themeIcon.querySelector('use');
+    if (use) use.setAttribute('href', isDark ? '#sun' : '#moon');
+    var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('aria-pressed', String(isDark));
+    if (tip) tip.textContent = label;
   }
-  menu.querySelectorAll('[data-skin]').forEach(function(item){
-    item.addEventListener('click', function(){
-      var skin = item.getAttribute('data-skin');
-      try{ localStorage.setItem('vanilla-skin', skin); }catch(e){}
-      var r = document.documentElement;
-      SKINS.forEach(function(c){ r.classList.remove(c); });
-      r.classList.add(skin);
-      paintSkinItems();
-    });
+
+  btn.addEventListener('click', function () {
+    var next = current().indexOf('dark') === 0 ? 'light' : 'dark';
+    var r = document.documentElement;
+    SKINS.forEach(function (c) { r.classList.remove(c); });
+    r.classList.add(next);
+    try { localStorage.setItem('vanilla-skin', next); } catch (e) {}
+    render();
   });
-  paintSkinItems();
+
+  render();
+})();
+
+/* User menu — open upward from the footer trigger */
+(function () {
+  var wrap = document.querySelector('.cp-user');
+  var trigger = document.getElementById('cp-user-trigger');
+  if (!wrap || !trigger) return;
+
+  function open() { return wrap.classList.contains('is-open'); }
+
+  function setOpen(on) {
+    wrap.classList.toggle('is-open', on);
+    trigger.setAttribute('aria-expanded', String(on));
+  }
+
+  trigger.addEventListener('click', function () { setOpen(!open()); });
+
+  document.addEventListener('click', function (e) {
+    if (open() && !wrap.contains(e.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && open()) { setOpen(false); trigger.focus(); }
+  });
+
+  wrap.querySelectorAll('.dropdown__item').forEach(function (item) {
+    item.addEventListener('click', function () { setOpen(false); });
+  });
+
+  document.addEventListener('cp:panel-collapsed', function () { setOpen(false); });
+})();
+
+/* Scroll shadows — only while the panel body is clipped past that edge */
+(function () {
+  var panel = document.getElementById('control-panel');
+  var body = panel && panel.querySelector('.control-panel__body');
+  if (!body) return;
+
+  function update() {
+    var clippedTop = body.scrollTop > 1;
+    var clippedBottom = body.scrollTop + body.clientHeight < body.scrollHeight - 1;
+    panel.classList.toggle('is-clipped-top', clippedTop);
+    panel.classList.toggle('is-clipped-bottom', clippedBottom);
+  }
+
+  body.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+
+  if (window.ResizeObserver) {
+    var groups = body.querySelector('.control-panel__groups');
+    if (groups) new ResizeObserver(update).observe(groups);
+  }
+
+  update();
 })();
 
 /* ============================ init ============================ */
