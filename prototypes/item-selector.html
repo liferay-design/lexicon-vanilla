@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Item Selector</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* ── Page-specific composition (tokens only) ─────────────────────────── */
+    body { margin: 0; background: var(--color-light-l1); min-height: 100vh; }
+
+    /* Product menu — .control-panel as a left overlay drawer */
+    .product-menu { position: fixed; top: 0; left: 0; bottom: 0; z-index: 1500;
+                    box-shadow: var(--shadow-lg); }
+    .product-menu[hidden] { display: none; }
+
+    /* Rail items are kit <li> rows; give keyboard focus the kit ring */
+    .selector-rail .vert-nav__item:focus-visible { outline: 0; box-shadow: var(--focus-ring); }
+
+    /* This prototype drops the kit's underlined titles inside the selector */
+    .selector-modal .card__title,
+    .selector-modal .list__title { text-decoration: none; }
+
+    /* Fake Page Builder backdrop */
+    .pb-canvas { display: grid; grid-template-columns: 220px 1fr; gap: var(--spacing-6);
+                 padding: var(--spacing-6); max-width: 1280px; margin: 0 auto; }
+    .pb-panel { background: var(--color-white); border: 1px solid var(--color-secondary-l3);
+                border-radius: var(--rounded-md); padding: var(--spacing-6); }
+    .pb-main { display: flex; flex-direction: column; gap: var(--spacing-5); min-width: 0; }
+    .pb-field-label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+                      text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-primary); }
+    .pb-field { display: flex; align-items: center; gap: var(--spacing-4);
+                margin-top: var(--spacing-3); padding: var(--spacing-4);
+                border: 1px dashed var(--color-primary); border-radius: var(--rounded-sm);
+                background: var(--color-primary-l3); }
+    .pb-field-value { font-size: var(--font-size-sm); font-weight: var(--font-weight-semi);
+                      color: var(--color-dark); min-width: 0; overflow-wrap: anywhere; }
+    .pb-field-value.is-empty { font-weight: var(--font-weight-normal); font-style: italic;
+                               color: var(--color-dark); opacity: 0.55; }
+
+    /* Modal sizing for the composite selector (base .modal caps at 600px) */
+    .modal-overlay[hidden] { display: none; }
+    .selector-modal { max-width: 1080px; height: calc(100vh - var(--spacing-10) * 2); max-height: 700px; }
+    .selector-modal .modal__body { padding: 0; display: flex; flex: 1 1 auto; min-height: 0; }
+
+    /* Left rail */
+    .selector-rail { width: 220px; flex-shrink: 0; background: var(--color-light-l1);
+                     padding: var(--spacing-4) 0; overflow-y: auto; }
+
+    /* Right panel */
+    .selector-panel { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+    .selector-panel__header { padding: var(--spacing-5) var(--spacing-6) var(--spacing-4);
+                              border-bottom: 1px solid var(--color-secondary-l3); flex-shrink: 0; }
+    .selector-panel__title { margin: 0; font-size: var(--font-size-lg);
+                             font-weight: var(--font-weight-bold); color: var(--color-dark); }
+    .selector-toolbar { flex-shrink: 0; }
+    .selector-crumbs { padding: var(--spacing-3) var(--spacing-6);
+                       border-bottom: 1px solid var(--color-secondary-l3); flex-shrink: 0; }
+    .selector-scroll { position: relative; flex: 1 1 auto; overflow-y: auto; min-height: 0;
+                       padding: var(--spacing-4) var(--spacing-6) var(--spacing-6); }
+    .selector-group-label { display: block; margin: var(--spacing-4) 0 var(--spacing-3);
+                            font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+                            text-transform: uppercase; letter-spacing: 0.06em;
+                            color: var(--color-secondary); }
+    .selector-pagination { padding: var(--spacing-3) var(--spacing-6);
+                           border-top: 1px solid var(--color-secondary-l3); flex-shrink: 0; }
+
+    /* Folder rows are click targets */
+    .folder-row { cursor: pointer; }
+    .folder-row .list__title { pointer-events: none; }
+
+    /* Asset cards grid */
+    .selector-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                     gap: var(--spacing-5); }
+    .asset-card { cursor: pointer; }
+    .asset-card .card__media { position: relative; }
+    .asset-card__author { position: absolute; left: var(--spacing-4); bottom: var(--spacing-4); }
+    .asset-card__check { position: absolute; right: var(--spacing-4); top: var(--spacing-4);
+                         background: var(--color-primary); color: var(--color-white); }
+
+    /* Pickers (trigger + kit dropdown) */
+    .js-picker { position: relative; }
+    .js-picker .dropdown { position: absolute; top: calc(100% + var(--spacing-2)); left: 0;
+                           z-index: 30; display: none; min-width: 220px; }
+    .js-picker.is-open .dropdown { display: block; }
+
+    /* Drag & drop overlay */
+    .selector-dropzone { position: absolute; inset: var(--spacing-3); z-index: 5;
+                         display: none; flex-direction: column; align-items: center;
+                         justify-content: center; gap: var(--spacing-4); text-align: center;
+                         border: 2px dashed var(--color-primary); border-radius: var(--rounded-md);
+                         background: var(--color-primary-l3); color: var(--color-primary);
+                         font-size: var(--font-size-sm); font-weight: var(--font-weight-semi);
+                         pointer-events: none; }
+    .selector-dropzone.is-active { display: flex; }
+
+    /* URL tab */
+    .selector-url-form { padding: var(--spacing-8); max-width: 480px;
+                         display: flex; flex-direction: column; gap: var(--spacing-6); }
+    .selector-preview { height: 240px; border: 1px solid var(--color-secondary-l3);
+                        border-radius: var(--rounded-md); background: var(--color-light-l1);
+                        display: flex; align-items: center; justify-content: center;
+                        overflow: hidden; }
+    .selector-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .selector-preview img[hidden] { display: none; }
+
+    /* Modal footer: selection info on the left */
+    .selector-footer-info { margin-right: auto; display: flex; align-items: center;
+                            gap: var(--spacing-3); min-width: 0; }
+    .selector-footer-hint { font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.55; }
+
+    /* Toast + reopen affordance */
+    .selector-toast { position: fixed; left: 50%; bottom: var(--spacing-8);
+                      transform: translateX(-50%); z-index: 2000; box-shadow: var(--shadow-lg); }
+    .selector-toast[hidden] { display: none; }
+    .reopen-wrap { position: fixed; inset: 0; z-index: 900; display: flex;
+                   align-items: center; justify-content: center; pointer-events: none; }
+    .reopen-wrap[hidden] { display: none; }
+    .reopen-wrap .btn { pointer-events: auto; box-shadow: var(--shadow-lg); }
+  </style>
+</head>
+<body>
+
+<!-- EDIT BELOW. Compose with classes from components.css only. -->
+
+<!-- ── Backdrop: Page Builder edit mode (context behind the modal) ── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" id="productMenuBtn" aria-label="Toggle product menu" aria-expanded="false">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Page Builder — Homepage (Edit mode)</span>
+  </div>
+  <div class="control-menu__right">
+    <span class="label label--info">Draft</span>
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <span class="sticker sticker--circle sticker--outline sticker--primary" style="width: 100%; height: 100%;">MC</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Product menu (control panel drawer) ── -->
+<aside class="control-panel product-menu" id="productMenu" aria-label="Product menu" hidden>
+  <div class="control-panel__header">
+    <span class="control-panel__sticker">
+      <svg class="lexicon-icon"><use href="#control-panel"></use></svg>
+    </span>
+    <span class="control-panel__title">Liferay DXP</span>
+    <button class="btn btn--borderless btn--sm btn--icon" type="button" id="productMenuClose" aria-label="Close product menu">
+      <svg class="lexicon-icon"><use href="#times"></use></svg>
+    </button>
+  </div>
+  <div class="control-panel__body">
+    <ul class="control-panel__groups">
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Appearance
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item" type="button" data-skin="light">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#sun"></use></svg></span>
+          Light
+        </button>
+        <button class="control-panel__item" type="button" data-skin="light-hc">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#accessibility"></use></svg></span>
+          Light high contrast
+        </button>
+        <button class="control-panel__item" type="button" data-skin="dark">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#moon"></use></svg></span>
+          Dark
+        </button>
+        <button class="control-panel__item" type="button" data-skin="dark-hc">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#adjust"></use></svg></span>
+          Dark high contrast
+        </button>
+      </li>
+      <li class="control-panel__group">
+        <button class="control-panel__group-header" type="button" aria-expanded="true">
+          Site Builder
+          <svg class="lexicon-icon"><use href="#angle-down-small"></use></svg>
+        </button>
+        <button class="control-panel__item is-active" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#page"></use></svg></span>
+          Pages
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#web-content"></use></svg></span>
+          Web Content
+        </button>
+        <button class="control-panel__item" type="button">
+          <span class="control-panel__item-icon"><svg class="lexicon-icon"><use href="#documents-and-media"></use></svg></span>
+          Documents and Media
+        </button>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<div class="pb-canvas" aria-hidden="true">
+  <div class="pb-panel skeleton" style="--skeleton-play: paused; display: flex; flex-direction: column; gap: var(--spacing-4); align-self: start;">
+    <div class="sk" style="width: 70%; height: 10px;"></div>
+    <div class="sk" style="width: 90%; height: 10px;"></div>
+    <div class="sk" style="width: 55%; height: 10px;"></div>
+    <div class="sk" style="width: 80%; height: 10px;"></div>
+  </div>
+  <div class="pb-main">
+    <div class="pb-panel skeleton" style="--skeleton-play: paused; display: flex; flex-direction: column; gap: var(--spacing-4); min-height: 140px; justify-content: center;">
+      <div class="sk" style="width: 45%; height: 18px;"></div>
+      <div class="sk" style="width: 65%; height: 10px;"></div>
+    </div>
+    <div class="pb-panel">
+      <span class="pb-field-label" style="color: var(--color-secondary);">Image widget</span>
+      <div class="pb-field">
+        <span class="pb-field-label">Featured Item</span>
+        <span class="pb-field-value is-empty" id="pbFieldValue">Nothing selected</span>
+      </div>
+    </div>
+    <div class="pb-panel skeleton" style="--skeleton-play: paused; display: flex; flex-direction: column; gap: var(--spacing-4);">
+      <div class="sk" style="width: 96%; height: 10px;"></div>
+      <div class="sk" style="width: 88%; height: 10px;"></div>
+      <div class="sk" style="width: 70%; height: 10px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Reopen affordance (shown when the modal is closed) ── -->
+<div class="reopen-wrap" id="reopenWrap" hidden>
+  <button class="btn btn--primary btn--lg" id="reopenBtn" type="button">
+    <svg class="lexicon-icon"><use href="#folder"></use></svg>
+    Reopen Item Selector
+  </button>
+</div>
+
+<!-- ── The Item Selector modal ── -->
+<div class="modal-overlay" id="dialogLayer">
+  <div class="modal selector-modal" role="dialog" aria-label="Select Asset">
+    <header class="modal__header">
+      <h2 class="modal__title">Select Asset</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" id="closeBtn" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+
+    <div class="modal__body">
+      <nav class="vert-nav selector-rail" aria-label="Asset sources">
+        <h3 class="vert-nav__section">Select from</h3>
+        <ul class="vert-nav__list" id="rail"></ul>
+      </nav>
+      <div class="selector-panel" id="panel"></div>
+    </div>
+
+    <footer class="modal__footer">
+      <div class="selector-footer-info" id="footerInfo"></div>
+      <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+      <button class="btn btn--primary" id="selectBtn" type="button" disabled>Select</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="selector-toast alert alert--toast alert--success" id="toast" role="status" hidden>
+  <div class="alert__content">
+    <svg class="lexicon-icon"><use href="#check-circle-full"></use></svg>
+    <p class="alert__text" id="toastText"></p>
+  </div>
+</div>
+
+<script>
+/* ============================ helpers ============================ */
+function icon(name, size){
+  return '<svg class="lexicon-icon' + (size ? ' lexicon-icon-' + size : '') + '"><use href="#' + name + '"></use></svg>';
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+/* File-type presentation: Lexicon document icons + base hue tokens */
+var TYPE_META = {
+  image: { iconId:'document-image',      label:'Image',         hue:'--orange' },
+  pdf:   { iconId:'document-pdf',        label:'PDF Document',  hue:'--red'    },
+  video: { iconId:'document-multimedia', label:'Video',         hue:'--purple' },
+  doc:   { iconId:'document-text',       label:'Word Document', hue:'--blue'   }
+};
+
+/* ============================ static data ============================ */
+function tree(id, name, children){ return { id:id, name:name, children:children||[] }; }
+
+var DATA = {
+  site: {
+    label:'Site', iconId:'sites',
+    contexts:['Liferay.com','Liferay Community','Partner Portal'],
+    typeOptions:['All types','Basic Web Content','Blog Post','Press Release','FAQ Entry','Landing Copy'],
+    trees:{
+      'Liferay.com': tree('site-root','Liferay.com',[
+        tree('site-mkt','Marketing',[ tree('site-mkt-camp','Campaigns'), tree('site-mkt-press','Press Releases') ]),
+        tree('site-prod','Product',[ tree('site-prod-rel','Release Notes') ]),
+        tree('site-supp','Support',[ tree('site-supp-faq','FAQs') ])
+      ]),
+      'Liferay Community': tree('site-root','Liferay Community',[ tree('site-events','Events') ]),
+      'Partner Portal': tree('site-root','Partner Portal',[ tree('site-cert','Certification') ])
+    },
+    items:{
+      'Liferay.com':[
+        {id:'s1',name:'Homepage Banner Copy',type:'Basic Web Content',folder:'site-root',modified:'2026-08-14',author:'R. Marques'},
+        {id:'s2',name:'Global Footer Legal Text',type:'Basic Web Content',folder:'site-root',modified:'2026-07-02',author:'D. Sanz'},
+        {id:'s3',name:'Q3 Campaign Overview',type:'Landing Copy',folder:'site-mkt',modified:'2026-08-10',author:'V. Galán'},
+        {id:'s4',name:'Summer Sale Banner',type:'Basic Web Content',folder:'site-mkt-camp',modified:'2026-06-21',author:'R. Marques'},
+        {id:'s5',name:'Back to School Promo',type:'Basic Web Content',folder:'site-mkt-camp',modified:'2026-08-01',author:'R. Marques'},
+        {id:'s6',name:'Liferay Announces DXP 2026 Release',type:'Press Release',folder:'site-mkt-press',modified:'2026-05-18',author:'M. Castro'},
+        {id:'s7',name:'Partnership with Acme Corp',type:'Press Release',folder:'site-mkt-press',modified:'2026-07-29',author:'M. Castro'},
+        {id:'s8',name:'Product Overview - DXP',type:'Basic Web Content',folder:'site-prod',modified:'2026-04-11',author:'D. Sanz'},
+        {id:'s9',name:'Release Notes - 2026.Q1',type:'Basic Web Content',folder:'site-prod-rel',modified:'2026-03-30',author:'G. Moreno'},
+        {id:'s10',name:'Release Notes - 2025.Q4',type:'Basic Web Content',folder:'site-prod-rel',modified:'2025-12-19',author:'G. Moreno'},
+        {id:'s11',name:'Support Home Intro',type:'Basic Web Content',folder:'site-supp',modified:'2026-02-08',author:'V. Galán'},
+        {id:'s12',name:'Shipping FAQ',type:'FAQ Entry',folder:'site-supp-faq',modified:'2026-08-05',author:'D. Sanz'},
+        {id:'s13',name:'Billing FAQ',type:'FAQ Entry',folder:'site-supp-faq',modified:'2026-08-05',author:'D. Sanz'},
+        {id:'s14',name:'Account FAQ',type:'FAQ Entry',folder:'site-supp-faq',modified:'2026-07-22',author:'D. Sanz'}
+      ],
+      'Liferay Community':[
+        {id:'c1',name:'Community Guidelines',type:'Basic Web Content',folder:'site-root',modified:'2026-01-15',author:'R. Marques'},
+        {id:'c2',name:'DevCon 2026 Recap',type:'Blog Post',folder:'site-events',modified:'2026-06-30',author:'M. Castro'},
+        {id:'c3',name:'Meetup Schedule',type:'Basic Web Content',folder:'site-events',modified:'2026-08-02',author:'M. Castro'}
+      ],
+      'Partner Portal':[
+        {id:'p1',name:'Partner Onboarding Guide',type:'Basic Web Content',folder:'site-root',modified:'2026-05-04',author:'V. Galán'},
+        {id:'p2',name:'Certification Requirements',type:'Basic Web Content',folder:'site-cert',modified:'2026-07-11',author:'V. Galán'}
+      ]
+    }
+  },
+  library:{
+    label:'Asset Library', iconId:'books',
+    contexts:['Marketing Assets','Corporate Assets','Product Photography'],
+    typeOptions:['All types','Image','PDF Document','Video','Word Document'],
+    trees:{
+      'Marketing Assets': tree('lib-root','Marketing Assets',[
+        tree('lib-img','Images',[ tree('lib-img-prod','Product Photos'), tree('lib-img-ban','Banners') ]),
+        tree('lib-doc','Documents',[ tree('lib-doc-wp','Whitepapers') ]),
+        tree('lib-vid','Videos')
+      ]),
+      'Corporate Assets': tree('lib-root','Corporate Assets',[ tree('lib-legal','Legal') ]),
+      'Product Photography': tree('lib-root','Product Photography',[ tree('lib-studio','Studio Shoots') ])
+    },
+    items:{
+      'Marketing Assets':[
+        {id:'a1',name:'Brand Guidelines.pdf',type:'pdf',folder:'lib-root',size:'2.4 MB',modified:'2026-03-12'},
+        {id:'a2',name:'Team Photo 2026.jpg',type:'image',folder:'lib-img',size:'5.1 MB',modified:'2026-07-01'},
+        {id:'a3',name:'Widget-Pro-Front.jpg',type:'image',folder:'lib-img-prod',size:'3.2 MB',modified:'2026-06-14'},
+        {id:'a4',name:'Widget-Pro-Side.jpg',type:'image',folder:'lib-img-prod',size:'3.0 MB',modified:'2026-06-14'},
+        {id:'a5',name:'Widget-Lite-Hero.png',type:'image',folder:'lib-img-prod',size:'4.4 MB',modified:'2026-07-19'},
+        {id:'a6',name:'Homepage-Hero-Desktop.png',type:'image',folder:'lib-img-ban',size:'2.8 MB',modified:'2026-08-11'},
+        {id:'a7',name:'Homepage-Hero-Mobile.png',type:'image',folder:'lib-img-ban',size:'1.1 MB',modified:'2026-08-11'},
+        {id:'a8',name:'Style Guide.docx',type:'doc',folder:'lib-doc',size:'640 KB',modified:'2026-02-27'},
+        {id:'a9',name:'State of DXP 2026.pdf',type:'pdf',folder:'lib-doc-wp',size:'6.7 MB',modified:'2026-05-06'},
+        {id:'a10',name:'Composable Commerce Guide.pdf',type:'pdf',folder:'lib-doc-wp',size:'5.3 MB',modified:'2026-04-22'},
+        {id:'a11',name:'Product Demo Reel.mp4',type:'video',folder:'lib-vid',size:'84 MB',modified:'2026-07-30'},
+        {id:'a12',name:'Customer Testimonial - Acme.mp4',type:'video',folder:'lib-vid',size:'112 MB',modified:'2026-08-09'}
+      ],
+      'Corporate Assets':[
+        {id:'b1',name:'Corporate Logo - Primary.png',type:'image',folder:'lib-root',size:'340 KB',modified:'2026-01-08'},
+        {id:'b2',name:'Terms of Service.pdf',type:'pdf',folder:'lib-legal',size:'410 KB',modified:'2026-06-01'},
+        {id:'b3',name:'Privacy Policy.pdf',type:'pdf',folder:'lib-legal',size:'395 KB',modified:'2026-06-01'}
+      ],
+      'Product Photography':[
+        {id:'d1',name:'Camera Shotlist.pdf',type:'pdf',folder:'lib-root',size:'120 KB',modified:'2026-05-15'},
+        {id:'d2',name:'Widget-X 360 Shot A.jpg',type:'image',folder:'lib-studio',size:'6.2 MB',modified:'2026-07-24'},
+        {id:'d3',name:'Widget-X 360 Shot B.jpg',type:'image',folder:'lib-studio',size:'6.0 MB',modified:'2026-07-24'}
+      ]
+    }
+  },
+  space:{
+    label:'Space', iconId:'box-container',
+    contexts:['Customer Success','Sales Enablement','Product Catalog'],
+    typeOptions:['All types','Case Study','Report','Template','Playbook'],
+    trees:{
+      'Customer Success': tree('sp-root','Customer Success',[
+        tree('sp-cases','Case Studies'), tree('sp-reports','Reports'), tree('sp-templates','Templates')
+      ]),
+      'Sales Enablement': tree('sp-root','Sales Enablement',[ tree('sp-decks','Decks') ]),
+      'Product Catalog': tree('sp-root','Product Catalog',[ tree('sp-pricing','Pricing') ])
+    },
+    items:{
+      'Customer Success':[
+        {id:'o1',name:'Customer Success Overview',type:'Report',folder:'sp-root',modified:'2026-08-03',status:'Published'},
+        {id:'o2',name:'Escalation Playbook',type:'Playbook',folder:'sp-root',modified:'2026-05-20',status:'Published'},
+        {id:'o3',name:'Acme Corp - 40% Efficiency Gain',type:'Case Study',folder:'sp-cases',modified:'2026-07-18',status:'Published'},
+        {id:'o4',name:'Globex Migration Success',type:'Case Study',folder:'sp-cases',modified:'2026-06-09',status:'Draft'},
+        {id:'o5',name:'Q2 2026 NPS Report',type:'Report',folder:'sp-reports',modified:'2026-07-01',status:'Published'},
+        {id:'o6',name:'Churn Analysis - H1 2026',type:'Report',folder:'sp-reports',modified:'2026-08-08',status:'Draft'},
+        {id:'o7',name:'QBR Deck Template',type:'Template',folder:'sp-templates',modified:'2026-04-14',status:'Published'},
+        {id:'o8',name:'Onboarding Checklist',type:'Template',folder:'sp-templates',modified:'2026-03-27',status:'Published'}
+      ],
+      'Sales Enablement':[
+        {id:'q1',name:'Battlecard - Competitor A',type:'Playbook',folder:'sp-root',modified:'2026-08-06',status:'Published'},
+        {id:'q2',name:'Enterprise Pitch Deck',type:'Template',folder:'sp-decks',modified:'2026-07-15',status:'Published'}
+      ],
+      'Product Catalog':[
+        {id:'r1',name:'Widget Pro - Spec Sheet',type:'Report',folder:'sp-root',modified:'2026-02-19',status:'Published'},
+        {id:'r2',name:'2026 Price List',type:'Report',folder:'sp-pricing',modified:'2026-08-01',status:'Published'}
+      ]
+    }
+  }
+};
+
+var SOURCE_LABEL = { site:'Site', library:'Asset Library', space:'Space' };
+
+/* ============================ state ============================ */
+var state = {
+  activeTab:'site',
+  context:{ site:'Liferay.com', library:'Marketing Assets', space:'Customer Success' },
+  folder:{ site:'site-root', library:'lib-root', space:'sp-root' },
+  search:{ site:'', library:'', space:'' },
+  typeFilter:{ site:'All types', library:'All types', space:'All types' },
+  sort:{ site:'name-asc', library:'name-asc', space:'name-asc' },
+  selection:null,
+  url:{ url:'' },
+  dialogOpen:true
+};
+var uploadedIds = new Set();
+var uploadCounter = 0;
+
+var SORT_OPTIONS = [
+  { value:'name-asc',      label:'Name (A-Z)' },
+  { value:'name-desc',     label:'Name (Z-A)' },
+  { value:'modified-desc', label:'Last modified' },
+  { value:'modified-asc',  label:'Oldest first' }
+];
+
+/* ============================ data helpers ============================ */
+function findNode(root, id){
+  if(root.id === id) return root;
+  for(var i=0; i<root.children.length; i++){
+    var f = findNode(root.children[i], id);
+    if(f) return f;
+  }
+  return null;
+}
+function pathTo(root, id, acc){
+  acc = acc || [];
+  if(root.id === id){ acc.push(root); return acc; }
+  for(var i=0; i<root.children.length; i++){
+    var res = pathTo(root.children[i], id, acc.concat([root]));
+    if(res) return res;
+  }
+  return null;
+}
+function fmtDate(d){
+  var dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function extToType(ext){
+  ext = (ext || '').toLowerCase();
+  if(['jpg','jpeg','png','gif','webp','svg','bmp'].indexOf(ext) !== -1) return 'image';
+  if(ext === 'pdf') return 'pdf';
+  if(['mp4','mov','avi','webm'].indexOf(ext) !== -1) return 'video';
+  return 'doc';
+}
+function formatBytes(bytes){
+  if(bytes < 1024) return bytes + ' B';
+  var kb = bytes / 1024;
+  if(kb < 1024) return kb.toFixed(0) + ' KB';
+  return (kb / 1024).toFixed(1) + ' MB';
+}
+function todayStr(){ return new Date().toISOString().slice(0, 10); }
+
+function currentItems(source){
+  var ctx = state.context[source];
+  var all = DATA[source].items[ctx] || [];
+  var folder = state.folder[source];
+  var q = state.search[source].trim().toLowerCase();
+  var tf = state.typeFilter[source];
+  var out = all.filter(function(it){
+    if(!q && it.folder !== folder) return false;
+    if(q && it.name.toLowerCase().indexOf(q) === -1) return false;
+    if(tf !== 'All types'){
+      var itType = (source === 'library' || it.isFile) && TYPE_META[it.type] ? TYPE_META[it.type].label : it.type;
+      if(itType !== tf) return false;
+    }
+    return true;
+  });
+  var sort = state.sort[source];
+  out.sort(function(a, b){
+    if(sort === 'name-asc') return a.name.localeCompare(b.name);
+    if(sort === 'name-desc') return b.name.localeCompare(a.name);
+    if(sort === 'modified-desc') return a.modified < b.modified ? 1 : -1;
+    if(sort === 'modified-asc') return a.modified > b.modified ? 1 : -1;
+    return 0;
+  });
+  return out;
+}
+function folderPathLabel(source, folderId){
+  var root = DATA[source].trees[state.context[source]];
+  var path = pathTo(root, folderId);
+  if(!path) return '';
+  return path.slice(1).map(function(n){ return n.name; }).join(' / ');
+}
+
+/* ============================ item presentation ============================ */
+function itemIcon(source, it){
+  if(it.isFile || source === 'library'){
+    var meta = TYPE_META[it.type];
+    return { iconId: meta.iconId, hue: meta.hue };
+  }
+  if(source === 'site') return { iconId:'web-content', hue:'--blue' };
+  return { iconId:'box-container', hue:'--teal' };
+}
+function itemMeta(source, it, showPath){
+  var base;
+  if(it.isFile) base = it.size + ' · ' + fmtDate(it.modified);
+  else if(source === 'site') base = it.type + ' · ' + it.author + ' · ' + fmtDate(it.modified);
+  else if(source === 'library') base = it.size + ' · ' + fmtDate(it.modified);
+  else base = it.type + ' · ' + it.status + ' · ' + fmtDate(it.modified);
+  if(showPath){
+    var loc = folderPathLabel(source, it.folder);
+    base += ' · ' + (loc ? loc : 'Home');
+  }
+  return base;
+}
+
+/* ============================ rendering ============================ */
+function renderRail(){
+  var tabs = [
+    { key:'site',    label:'Site',          iconId:'sites' },
+    { key:'library', label:'Asset Library', iconId:'books' },
+    { key:'space',   label:'Space',         iconId:'box-container' },
+    { key:'url',     label:'URL',           iconId:'link' }
+  ];
+  document.getElementById('rail').innerHTML = tabs.map(function(t){
+    var active = state.activeTab === t.key;
+    return '<li class="vert-nav__item' + (active ? ' is-active' : '') + '" data-tab="' + t.key + '"' +
+      ' role="button" tabindex="0" aria-pressed="' + (active ? 'true' : 'false') + '">' +
+      '<svg class="lexicon-icon vert-nav__icon"><use href="#' + t.iconId + '"></use></svg>' +
+      '<span>' + t.label + '</span></li>';
+  }).join('');
+  document.querySelectorAll('#rail .vert-nav__item').forEach(function(row){
+    function go(){ state.activeTab = row.getAttribute('data-tab'); renderAll(); }
+    row.addEventListener('click', go);
+    row.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); }
+    });
+  });
+}
+
+function pickerHtml(id, opts){
+  /* opts: { trigger:'secondary'|'borderless', iconId, text, showText, options:[{value,label}], current, ariaLabel } */
+  var triggerClasses = 'btn btn--sm picker__trigger ' +
+    (opts.trigger === 'secondary' ? 'btn--secondary' : 'btn--borderless');
+  var html = '<div class="picker js-picker" id="' + id + '">';
+  html += '<button type="button" class="' + triggerClasses + '" aria-haspopup="listbox" aria-expanded="false"' +
+          (opts.ariaLabel ? ' aria-label="' + escapeHtml(opts.ariaLabel) + '"' : '') + '>';
+  if(opts.iconId) html += icon(opts.iconId);
+  if(opts.text) html += '<span class="picker__trigger-text">' + escapeHtml(opts.text) + '</span>';
+  html += icon('caret-bottom');
+  html += '</button>';
+  html += '<ul class="dropdown" role="listbox">';
+  html += opts.options.map(function(o){
+    var active = o.value === opts.current;
+    return '<li><button type="button" class="dropdown__item' + (active ? ' is-active' : '') + '" role="option"' +
+      ' data-value="' + escapeHtml(o.value) + '" aria-selected="' + (active ? 'true' : 'false') + '">' +
+      '<svg class="lexicon-icon dropdown__item-icon"' + (active ? '' : ' style="visibility: hidden;"') + '><use href="#check"></use></svg>' +
+      '<span class="dropdown__item-text">' + escapeHtml(o.label) + '</span></button></li>';
+  }).join('');
+  html += '</ul></div>';
+  return html;
+}
+
+function renderBreadcrumb(source){
+  var q = state.search[source].trim();
+  if(q){
+    var n = currentItems(source).length;
+    return '<ol class="breadcrumb"><li aria-current="page">' +
+      n + ' result' + (n === 1 ? '' : 's') + ' for “' + escapeHtml(q) + '” in ' + escapeHtml(state.context[source]) +
+      '</li></ol>';
+  }
+  var root = DATA[source].trees[state.context[source]];
+  var path = pathTo(root, state.folder[source]) || [root];
+  return '<ol class="breadcrumb">' + path.map(function(n, i){
+    var isLast = i === path.length - 1;
+    if(isLast) return '<li aria-current="page">' + escapeHtml(n.name) + '</li>';
+    return '<li><a href="#" data-crumb="' + n.id + '">' + escapeHtml(n.name) + '</a>' +
+      '<svg class="lexicon-icon breadcrumb__sep"><use href="#angle-right"></use></svg></li>';
+  }).join('') + '</ol>';
+}
+
+function renderPagination(count){
+  var pageSize = 10;
+  var pages = Math.max(1, Math.ceil(count / pageSize));
+  var html = '<nav class="pagination" aria-label="Pagination">';
+  html += '<button class="pagination__size btn btn--borderless btn--sm" type="button">' +
+          pageSize + ' Entries ' + icon('caret-bottom') + '</button>';
+  html += '<span class="pagination__summary">Showing 1 to ' + Math.min(pageSize, count) + ' of ' + count + ' entries.</span>';
+  html += '<ul class="pagination__pages">';
+  html += '<li><button class="pagination__btn" type="button" aria-label="Previous" disabled>' + icon('angle-left') + '</button></li>';
+  for(var p=1; p<=Math.min(pages, 3); p++){
+    html += '<li><button class="pagination__btn' + (p === 1 ? ' is-active" aria-current="page' : '') + '" type="button">' + p + '</button></li>';
+  }
+  if(pages > 4) html += '<li><span class="pagination__ellipsis">…</span></li>';
+  if(pages > 3) html += '<li><button class="pagination__btn" type="button">' + pages + '</button></li>';
+  html += '<li><button class="pagination__btn" type="button" aria-label="Next"' + (pages === 1 ? ' disabled' : '') + '>' + icon('angle-right') + '</button></li>';
+  html += '</ul></nav>';
+  return html;
+}
+
+function renderContentTab(source){
+  var d = DATA[source];
+  var contextLabel = source === 'site' ? 'Site' : source === 'library' ? 'Library' : 'Space';
+
+  var html = '<div class="selector-panel__header"><h3 class="selector-panel__title">' + escapeHtml(state.context[source]) + '</h3></div>';
+
+  /* Toolbar */
+  html += '<div class="management-toolbar selector-toolbar"><div class="management-toolbar__bar">';
+  html += pickerHtml('ctxPicker', {
+    trigger:'secondary', iconId:d.iconId, text:state.context[source],
+    options:d.contexts.map(function(c){ return { value:c, label:c }; }),
+    current:state.context[source], ariaLabel:'Select ' + contextLabel
+  });
+  html += pickerHtml('typePicker', {
+    trigger:'borderless', iconId:'filter', text:'Filter',
+    options:d.typeOptions.map(function(t){ return { value:t, label:t }; }),
+    current:state.typeFilter[source], ariaLabel:'Filter by type'
+  });
+  html += pickerHtml('sortPicker', {
+    trigger:'borderless', iconId:'order-list-down', text:'Order',
+    options:SORT_OPTIONS, current:state.sort[source], ariaLabel:'Order'
+  });
+  html += '<div class="management-toolbar__search"><div class="search">' +
+    '<input class="input__field search__field" type="search" id="searchInput" placeholder="Search ' +
+    escapeHtml(SOURCE_LABEL[source].toLowerCase()) + '…" value="' + escapeHtml(state.search[source]) + '">' +
+    '<button class="search__clear" id="searchClear" aria-label="Clear search" type="button"' + (state.search[source] ? '' : ' hidden') + '>' + icon('times-circle-full') + '</button>' +
+    '<button class="search__submit" aria-label="Search" type="button">' + icon('search') + '</button>' +
+    '</div></div>';
+  if(source === 'library' || source === 'site'){
+    html += '<button class="btn btn--secondary btn--sm" id="uploadBtn" type="button">' + icon('upload') + 'Upload</button>';
+    html += '<input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.mp4,.mov,.avi,.webm" hidden>';
+  }
+  html += '<button class="btn btn--borderless btn--sm btn--icon" type="button" aria-label="Switch view">' + icon('cards2') + '</button>';
+  html += '</div></div>';
+
+  /* Breadcrumb */
+  html += '<div class="selector-crumbs">' + renderBreadcrumb(source) + '</div>';
+
+  /* Content */
+  var isSearching = !!state.search[source].trim();
+  var isFiltering = state.typeFilter[source] !== 'All types';
+  var root = DATA[source].trees[state.context[source]];
+  var currentNode = findNode(root, state.folder[source]);
+  var subfolders = (isSearching || isFiltering) ? [] : currentNode.children;
+  var allItemsInCtx = DATA[source].items[state.context[source]] || [];
+  var items = currentItems(source);
+
+  html += '<div class="selector-scroll" id="scrollArea">';
+
+  if(subfolders.length === 0 && items.length === 0){
+    html += '<div class="empty-state empty-state--sm" style="margin: var(--spacing-9) auto;">' +
+      '<div class="empty-state__media"><img src="../illustrations/illustration-telescope.svg" alt=""></div>' +
+      '<h3 class="empty-state__title">No folders or items found</h3>' +
+      '<p class="empty-state__text">Try a different folder, search term, or type filter.</p>' +
+      '</div>';
+  } else {
+    if(subfolders.length){
+      html += '<span class="selector-group-label">Folders</span>';
+      html += '<ul class="list list--flush">';
+      subfolders.forEach(function(node){
+        var count = allItemsInCtx.filter(function(it){ return it.folder === node.id; }).length;
+        html += '<li class="list__row folder-row" data-navigate="' + node.id + '">' +
+          '<span class="list__sticker">' + icon('folder') + '</span>' +
+          '<div class="list__content">' +
+            '<span class="list__title">' + escapeHtml(node.name) + '</span>' +
+            '<span class="list__subtitle">' + (count > 0 ? (count + ' item' + (count === 1 ? '' : 's')) : 'Folder') + '</span>' +
+          '</div>' +
+          '<div class="list__actions">' + icon('angle-right') + '</div>' +
+          '</li>';
+      });
+      html += '</ul>';
+    }
+    if(items.length){
+      html += '<span class="selector-group-label">' + escapeHtml(SOURCE_LABEL[source]) + (isSearching ? ' — results' : '') + '</span>';
+      html += '<div class="selector-grid">';
+      items.forEach(function(it){
+        var sel = state.selection && state.selection.source === source && state.selection.id === it.id;
+        var isNew = uploadedIds.has(it.id);
+        var ic = itemIcon(source, it);
+        html += '<article class="card asset-card' + (sel ? ' is-selected' : '') + '" data-id="' + it.id + '" tabindex="0" role="button" aria-pressed="' + (sel ? 'true' : 'false') + '">';
+        html += '<div class="card__media">' +
+          '<svg class="lexicon-icon" style="color: var(' + ic.hue + ');"><use href="#' + ic.iconId + '"></use></svg>' +
+          '<span class="sticker sticker--sm sticker--circle sticker--outline sticker--success asset-card__author">' +
+            '<svg class="lexicon-icon" style="width: 10px; height: 10px;"><use href="#user"></use></svg></span>' +
+          (sel ? '<span class="sticker sticker--sm sticker--circle asset-card__check">' +
+            '<svg class="lexicon-icon" style="width: 10px; height: 10px;"><use href="#check-small"></use></svg></span>' : '') +
+          '</div>';
+        html += '<div class="card__body">' +
+          '<h3 class="card__title">' + escapeHtml(it.name) + '</h3>' +
+          '<p class="card__subtitle">' + itemMeta(source, it, isSearching) + '</p>' +
+          (isNew ? '<span class="label label--sm label--success">New</span>' : '') +
+          '</div>';
+        html += '</article>';
+      });
+      html += '</div>';
+    }
+  }
+
+  if(source === 'library' || source === 'site'){
+    html += '<div class="selector-dropzone" id="dropOverlay">' + icon('upload', 'lg') +
+      '<span>Drop files to upload to<br><strong>' + escapeHtml(currentNode.name) + '</strong></span></div>';
+  }
+  html += '</div>';
+
+  /* Pagination */
+  html += '<div class="selector-pagination">' + renderPagination(items.length) + '</div>';
+  return html;
+}
+
+/* ── URL tab ── */
+function isValidUrl(u){ return /^https?:\/\/.+\..+/i.test(u.trim()); }
+function filenameFromUrl(u){
+  var path = u.split('?')[0].split('#')[0];
+  var last = path.substring(path.lastIndexOf('/') + 1);
+  return last || u;
+}
+function previewHtml(trimmed){
+  if(!trimmed || !isValidUrl(trimmed)){
+    return '<div class="empty-state empty-state--sm">' +
+      '<div class="empty-state__media">' + icon('picture', '2xl') + '</div>' +
+      '<p class="empty-state__text">' + (!trimmed ? 'Paste an image URL to preview it here.' : 'Waiting for a valid URL…') + '</p>' +
+      '</div>';
+  }
+  return '<img id="previewImg" alt="" hidden>' +
+    '<div class="empty-state empty-state--sm" id="previewFallback">' +
+    '<div class="empty-state__media">' + icon('document-image', '2xl') + '</div>' +
+    '<h3 class="empty-state__title" style="overflow-wrap: anywhere;">' + escapeHtml(filenameFromUrl(trimmed)) + '</h3>' +
+    '<p class="empty-state__text">Preview renders once this URL is reachable.</p>' +
+    '</div>';
+}
+function wirePreviewImg(){
+  var img = document.getElementById('previewImg');
+  if(!img) return;
+  img.addEventListener('load', function(){
+    img.hidden = false;
+    var fb = document.getElementById('previewFallback');
+    if(fb) fb.hidden = true;
+  });
+  img.src = state.url.url.trim();
+}
+function renderUrlTab(){
+  var trimmed = state.url.url.trim();
+  var invalid = trimmed && !isValidUrl(trimmed);
+  var html = '<div class="selector-panel__header"><h3 class="selector-panel__title">External URL</h3></div>';
+  html += '<div class="selector-scroll"><div class="selector-url-form">';
+  html += '<label class="input' + (invalid ? ' input--danger' : '') + '">' +
+    '<span class="input__label">External Image URL</span>' +
+    '<input type="url" class="input__field" id="urlInput" placeholder="https://example.com/photo.jpg" value="' + escapeHtml(state.url.url) + '">' +
+    (invalid ? '<span class="input__feedback">' + icon('times-circle-full') + 'Enter a full URL starting with http:// or https://</span>'
+             : '<span class="input__help">Direct link to a publicly reachable image.</span>') +
+    '</label>';
+  html += '<div class="selector-preview" id="imagePreview">' + previewHtml(trimmed) + '</div>';
+  html += '</div></div>';
+  return html;
+}
+
+function renderPanel(){
+  var panel = document.getElementById('panel');
+  panel.innerHTML = state.activeTab === 'url' ? renderUrlTab() : renderContentTab(state.activeTab);
+  attachPanelEvents();
+}
+
+function renderFooter(){
+  var info = document.getElementById('footerInfo');
+  var selectBtn = document.getElementById('selectBtn');
+  if(state.activeTab === 'url'){
+    var trimmedUrl = state.url.url.trim();
+    var validUrl = isValidUrl(trimmedUrl);
+    if(validUrl){
+      info.innerHTML = '<span class="label label--success">' + icon('picture', 'sm') + ' ' + escapeHtml(filenameFromUrl(trimmedUrl)) + '</span>';
+    } else {
+      info.innerHTML = '<span class="selector-footer-hint">Paste a full image URL to continue.</span>';
+    }
+    selectBtn.disabled = !validUrl;
+    return;
+  }
+  if(state.selection){
+    var s = state.selection;
+    info.innerHTML = '<span class="label label--success">' + icon(s.iconId, 'sm') + ' ' + escapeHtml(s.name) + '</span>' +
+      '<span class="selector-footer-hint">from ' + SOURCE_LABEL[s.source] + '</span>';
+    selectBtn.disabled = false;
+  } else {
+    info.innerHTML = '<span class="selector-footer-hint">Choose an item to continue.</span>';
+    selectBtn.disabled = true;
+  }
+}
+
+function renderAll(){
+  renderRail();
+  renderPanel();
+  renderFooter();
+}
+
+/* ============================ uploads ============================ */
+function handleFiles(source, fileList){
+  var ctx = state.context[source];
+  var folderId = state.folder[source];
+  var arr = DATA[source].items[ctx];
+  var added = [];
+  Array.prototype.forEach.call(fileList, function(f){
+    var ext = f.name.indexOf('.') !== -1 ? f.name.split('.').pop() : '';
+    var id = 'up' + (++uploadCounter);
+    var item = { id:id, name:f.name, type:extToType(ext), folder:folderId, size:formatBytes(f.size), modified:todayStr(), isFile:true };
+    arr.push(item);
+    uploadedIds.add(id);
+    added.push(item);
+  });
+  if(added.length){
+    var folderNode = findNode(DATA[source].trees[ctx], folderId);
+    showToast('Uploaded ' + added.length + ' file' + (added.length === 1 ? '' : 's') + ' to ' + (folderNode ? folderNode.name : 'this folder'));
+    renderAll();
+  }
+}
+
+/* ============================ events ============================ */
+function closeAllPickers(except){
+  document.querySelectorAll('.js-picker.is-open').forEach(function(p){
+    if(p !== except){
+      p.classList.remove('is-open');
+      var t = p.querySelector('.picker__trigger');
+      if(t) t.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+document.addEventListener('click', function(e){
+  var trigger = e.target.closest('.js-picker .picker__trigger');
+  if(trigger){
+    var picker = trigger.closest('.js-picker');
+    closeAllPickers(picker);
+    var open = picker.classList.toggle('is-open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    return;
+  }
+  if(!e.target.closest('.js-picker')) closeAllPickers();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeAllPickers();
+});
+
+function wirePicker(id, onPick){
+  var picker = document.getElementById(id);
+  if(!picker) return;
+  picker.querySelectorAll('.dropdown__item').forEach(function(item){
+    item.addEventListener('click', function(){
+      closeAllPickers();
+      onPick(item.getAttribute('data-value'));
+    });
+  });
+}
+function focusEnd(input){ var v = input.value; input.focus(); input.value = ''; input.value = v; }
+
+function attachPanelEvents(){
+  var source = state.activeTab;
+
+  if(source === 'site' || source === 'library' || source === 'space'){
+    wirePicker('ctxPicker', function(v){
+      state.context[source] = v;
+      state.folder[source] = DATA[source].trees[v].id;
+      state.search[source] = '';
+      renderAll();
+    });
+    wirePicker('typePicker', function(v){ state.typeFilter[source] = v; renderPanel(); });
+    wirePicker('sortPicker', function(v){ state.sort[source] = v; renderPanel(); });
+
+    var searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function(){
+      state.search[source] = searchInput.value;
+      renderPanel();
+      focusEnd(document.getElementById('searchInput'));
+    });
+    document.getElementById('searchClear').addEventListener('click', function(){
+      state.search[source] = '';
+      renderPanel();
+    });
+
+    if(source === 'library' || source === 'site'){
+      var uploadBtn = document.getElementById('uploadBtn');
+      var fileInput = document.getElementById('fileInput');
+      uploadBtn.addEventListener('click', function(){ fileInput.click(); });
+      fileInput.addEventListener('change', function(){
+        if(fileInput.files.length) handleFiles(source, fileInput.files);
+        fileInput.value = '';
+      });
+
+      var dropWrap = document.getElementById('scrollArea');
+      var overlay = document.getElementById('dropOverlay');
+      var dragCounter = 0;
+      dropWrap.addEventListener('dragenter', function(e){ e.preventDefault(); dragCounter++; overlay.classList.add('is-active'); });
+      dropWrap.addEventListener('dragover', function(e){ e.preventDefault(); });
+      dropWrap.addEventListener('dragleave', function(){ dragCounter = Math.max(0, dragCounter - 1); if(dragCounter === 0) overlay.classList.remove('is-active'); });
+      dropWrap.addEventListener('drop', function(e){
+        e.preventDefault();
+        dragCounter = 0;
+        overlay.classList.remove('is-active');
+        if(e.dataTransfer && e.dataTransfer.files.length) handleFiles(source, e.dataTransfer.files);
+      });
+    }
+
+    document.querySelectorAll('.selector-crumbs [data-crumb]').forEach(function(cr){
+      cr.addEventListener('click', function(e){
+        e.preventDefault();
+        state.folder[source] = cr.getAttribute('data-crumb');
+        state.search[source] = '';
+        renderAll();
+      });
+    });
+    document.querySelectorAll('.folder-row').forEach(function(row){
+      row.addEventListener('click', function(e){
+        e.preventDefault();
+        state.folder[source] = row.getAttribute('data-navigate');
+        state.search[source] = '';
+        renderAll();
+      });
+    });
+    document.querySelectorAll('.asset-card').forEach(function(card){
+      function pick(){
+        var id = card.getAttribute('data-id');
+        var it = (DATA[source].items[state.context[source]] || []).find(function(x){ return x.id === id; });
+        state.selection = { source:source, id:id, name:it.name, iconId:itemIcon(source, it).iconId };
+        renderPanel();
+        renderFooter();
+      }
+      card.addEventListener('click', pick);
+      card.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pick(); }
+      });
+    });
+  }
+
+  if(source === 'url'){
+    var urlInput = document.getElementById('urlInput');
+    wirePreviewImg();
+    var urlDebounceTimer = null;
+    urlInput.addEventListener('input', function(){
+      state.url.url = urlInput.value;
+      renderFooter();
+      clearTimeout(urlDebounceTimer);
+      urlDebounceTimer = setTimeout(function(){
+        if(state.activeTab !== 'url') return;
+        renderPanel();
+        var again = document.getElementById('urlInput');
+        if(again) focusEnd(again);
+      }, 400);
+    });
+  }
+}
+
+/* ============================ toast ============================ */
+var toastTimer = null;
+function showToast(text){
+  var t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = text;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.hidden = true; }, 2600);
+}
+
+/* ============================ dialog open/close ============================ */
+function setDialogOpen(open){
+  state.dialogOpen = open;
+  document.getElementById('dialogLayer').hidden = !open;
+  document.getElementById('reopenWrap').hidden = open;
+}
+document.getElementById('closeBtn').addEventListener('click', function(){
+  setDialogOpen(false);
+  showToast('Dialog closed');
+});
+document.getElementById('cancelBtn').addEventListener('click', function(){
+  setDialogOpen(false);
+  showToast('Selection discarded');
+});
+document.getElementById('reopenBtn').addEventListener('click', function(){ setDialogOpen(true); });
+
+document.getElementById('selectBtn').addEventListener('click', function(){
+  var label;
+  var field = document.getElementById('pbFieldValue');
+  if(state.activeTab === 'url'){
+    var trimmedUrl = state.url.url.trim();
+    label = filenameFromUrl(trimmedUrl);
+    field.textContent = label + ' (' + trimmedUrl + ')';
+  } else if(state.selection){
+    label = state.selection.name;
+    field.textContent = label;
+  } else return;
+  field.classList.remove('is-empty');
+  setDialogOpen(false);
+  showToast('Selected “' + label + '”');
+});
+
+/* ============================ product menu (skin control lives here) ============================ */
+(function(){
+  var SKINS = ['light', 'light-hc', 'dark', 'dark-hc'];
+  var menu = document.getElementById('productMenu');
+  var openBtn = document.getElementById('productMenuBtn');
+  var closeBtn = document.getElementById('productMenuClose');
+
+  function setMenuOpen(open){
+    menu.hidden = !open;
+    openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open) closeBtn.focus();
+  }
+  openBtn.addEventListener('click', function(){ setMenuOpen(menu.hidden); });
+  closeBtn.addEventListener('click', function(){ setMenuOpen(false); });
+  document.addEventListener('click', function(e){
+    if(!menu.hidden && !e.target.closest('#productMenu') && !e.target.closest('#productMenuBtn')) setMenuOpen(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !menu.hidden) setMenuOpen(false);
+  });
+
+  function currentSkin(){
+    var r = document.documentElement;
+    for(var i = 0; i < SKINS.length; i++){ if(r.classList.contains(SKINS[i])) return SKINS[i]; }
+    return 'light';
+  }
+  function paintSkinItems(){
+    var active = currentSkin();
+    menu.querySelectorAll('[data-skin]').forEach(function(item){
+      item.classList.toggle('is-active', item.getAttribute('data-skin') === active);
+    });
+  }
+  menu.querySelectorAll('[data-skin]').forEach(function(item){
+    item.addEventListener('click', function(){
+      var skin = item.getAttribute('data-skin');
+      try{ localStorage.setItem('vanilla-skin', skin); }catch(e){}
+      var r = document.documentElement;
+      SKINS.forEach(function(c){ r.classList.remove(c); });
+      r.classList.add(skin);
+      paintSkinItems();
+    });
+  });
+  paintSkinItems();
+})();
+
+/* ============================ init ============================ */
+renderAll();
+</script>
+</body>
+</html>
