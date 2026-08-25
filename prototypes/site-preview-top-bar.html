@@ -31,6 +31,13 @@
   <link rel="stylesheet" href="../tokens-dark.css">
   <link rel="stylesheet" href="../components.css">
   <script src="../icons.js"></script>
+  <style>
+    /* Page-scoped kit tweaks (moved out of components.css — the kit defaults
+       stay --rounded-md / 12px btn--sm; do not promote these back): 8px button
+       corners, 14px semibold small buttons. */
+    .btn { border-radius: var(--rounded-lg); }
+    .btn--sm { font-size: var(--font-size-base); font-weight: var(--font-weight-bold); }
+  </style>
 </head>
 <body>
 

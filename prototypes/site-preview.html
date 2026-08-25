@@ -24,6 +24,14 @@
   <link rel="stylesheet" href="../components.css">
   <script src="../icons.js"></script>
   <style>
+    /* Page-scoped kit tweaks (moved out of components.css — the kit defaults
+       stay --rounded-md / 12px btn--sm / 8px sticker--sm text; do not promote
+       these back): 8px button + sticker corners, 14px semibold small buttons. */
+    .btn { border-radius: var(--rounded-lg); }
+    .btn--sm { font-size: var(--font-size-base); font-weight: var(--font-weight-bold); }
+    .sticker { border-radius: var(--rounded-lg); }
+    .sticker--sm { font-size: 10px; border-radius: var(--rounded-md); }
+
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
     body { display: flex; flex-direction: column; background: #fff; font-size: var(--font-size-sm); }

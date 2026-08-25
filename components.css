@@ -47,7 +47,9 @@
   gap: var(--spacing-3);
   height: 40px;
   padding: 0 var(--spacing-5);
-  border-radius: var(--rounded-lg);
+  /* Kit-wide default is --rounded-md, always. Page-specific radii
+     (e.g. site-preview.html) belong in that page's own <style>. */
+  border-radius: var(--rounded-md);
   border: 1px solid transparent;
   background: transparent;
   font-family: inherit;
@@ -148,7 +150,7 @@
 /* — Size — */
 
 .btn--xs { height: 24px; padding: 0 var(--spacing-3); font-size: var(--font-size-sm); gap: var(--spacing-2); }
-.btn--sm { height: 32px; padding: 0 var(--spacing-4); font-size: var(--font-size-base); font-weight: 600; }
+.btn--sm { height: 32px; padding: 0 var(--spacing-4); font-size: var(--font-size-sm); }
 .btn--lg { height: 48px; padding: 0 var(--spacing-6); font-size: var(--font-size-md); }
 
 /* — Shape — */
@@ -1179,7 +1181,9 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: var(--rounded-lg);
+  /* Kit-wide default is --rounded-md. Page-specific radii (browse-panel,
+     modern-sidebar, site-preview) live in each page's own <style>. */
+  border-radius: var(--rounded-md);
   overflow: hidden;
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-bold);
@@ -1199,9 +1203,7 @@
 }
 
 /* — Sizes — */
-/* 16px sticker keeps a tighter 4px radius — at this size the base 8px reads as
-   an almost-circular shape. */
-.sticker--sm { width: 16px; height: 16px; font-size: 10px; border-radius: var(--rounded-md); }
+.sticker--sm { width: 16px; height: 16px; font-size: 8px; }
 .sticker--md { width: 32px; height: 32px; font-size: 14px; }
 .sticker--lg { width: 40px; height: 40px; font-size: 18px; }
 
@@ -1364,6 +1366,10 @@
 .search__field {
   padding-right: 64px;
 }
+/* Chromium/WebKit paint their own ✕ inside type="search"; the component
+   ships .search__clear, so the native one would duplicate it. */
+.search__field::-webkit-search-cancel-button,
+.search__field::-webkit-search-decoration { -webkit-appearance: none; }
 .search__field:where(:not(:placeholder-shown)) ~ .search__clear { display: inline-flex; }
 
 .search__clear,
@@ -2213,7 +2219,7 @@
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-5);
-  padding: var(--spacing-5);
+  padding: var(--spacing-3) var(--spacing-5);
   border-bottom: 1px solid var(--color-secondary-l3);
 }
 
@@ -2269,7 +2275,7 @@
 .list__subtitle,
 .list__detail {
   display: block;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   color: var(--color-secondary);
 }
 
