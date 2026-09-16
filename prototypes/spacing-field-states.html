@@ -183,6 +183,7 @@
     }
     .sf__input:focus { outline: none; }
     .sf.is-mixed .sf__input { font-style: italic; }
+    .sf.is-linked .sf__input { cursor: pointer; } /* read-only: click opens the spacer list */
     .sf__unit {
       flex: 0 0 auto;
       display: grid; place-items: center;
@@ -319,7 +320,7 @@
           <dl class="sfs-rules">
             <div class="sfs-rule"><dt>open</dt><dd>Click the field, or <kbd class="key key--sm key--fixed">&darr;</kbd> on it. <kbd class="key key--sm key--fixed">&uarr;</kbd><kbd class="key key--sm key--fixed">&darr;</kbd> move, <kbd class="key key--sm">Esc</kbd> closes.</dd></div>
             <div class="sfs-rule"><dt>link</dt><dd>Pick a spacer. The field shows the spacer name on white and drops the PX chip: the token owns value and unit.</dd></div>
-            <div class="sfs-rule"><dt>unlink</dt><dd>Type a number, or Detach Style. Both keep the resolved value.</dd></div>
+            <div class="sfs-rule"><dt>unlink</dt><dd>With a token applied there are two ways to a custom value: Detach Style, or drag the axis icon. Both start from the resolved value. Reset to Initial Value goes back to what the fragment loaded with.</dd></div>
             <div class="sfs-rule"><dt>unit</dt><dd>PX opens the unit list. Typing <kbd class="key key--sm">1.5rem</kbd> sets value and unit at once.</dd></div>
             <div class="sfs-rule"><dt>scrub</dt><dd>Hover the axis icon and the cursor turns into the resize arrow. Press and drag along that axis to nudge the value, <kbd class="key key--sm">Shift</kbd> for steps of 10. A linked field turns custom and starts counting from the token’s value (Spacer 1 = 4 px).</dd></div>
             <div class="sfs-rule"><dt>individual</dt><dd>The right button expands the row in place: left and right in the first column, top and bottom in the second. The lock is not offered while it is open.</dd></div>
@@ -377,16 +378,20 @@
     margin: {
       link: false,
       individual: false,
-      initial: { top: v(0, "px"), right: v(0, "px"), bottom: v(0, "px"), left: v(0, "px") },
       top: v(0, "px", "spacer-2"), right: v(2, "px"), bottom: v(0, "px", "spacer-2"), left: v(2, "px")
     },
     padding: {
       link: true,
       individual: false,
-      initial: { top: v(0, "px"), right: v(0, "px"), bottom: v(0, "px"), left: v(0, "px") },
       top: v(2, "px"), right: v(2, "px"), bottom: v(2, "px"), left: v(2, "px")
     }
   };
+  /* "Reset to Initial Value" goes back to what the fragment loaded with,
+     token included — not to zero. */
+  ["margin", "padding"].forEach(function (prop) {
+    state[prop].initial = {};
+    ["top", "right", "bottom", "left"].forEach(function (side) { state[prop].initial[side] = copy(state[prop][side]); });
+  });
 
   function spacer(id) {
     for (var i = 0; i < SPACERS.length; i++) if (SPACERS[i].id === id) return SPACERS[i];
@@ -495,6 +500,8 @@
     var unit = el.querySelector(".sf__unit");
     var axis = el.querySelector(".sf__axis");
     var horizontal = HORIZONTAL[opts.axis];
+    var dirty = false; /* true while the user is typing; update() leaves the text alone */
+    input.addEventListener("input", function () { dirty = true; });
     function cur() { return opts.get(); }
 
     /* Scrub: press on the axis icon and drag along its axis to nudge the
@@ -505,6 +512,7 @@
       if (e.button !== 0) return;
       e.preventDefault();
       close();
+      dirty = false;
       var c = cur();
       var s = c.token ? spacer(c.token) : null;
       var startNum = s ? s.px : c.num;
@@ -539,6 +547,7 @@
     function openSpacers() {
       var c = cur();
       var node = spacerMenu(c, function (pick) {
+        dirty = false;
         if (pick === "detach") {
           var s = spacer(c.token);
           opts.set(v(s ? s.px : c.num, "px"));
@@ -559,26 +568,25 @@
       setTimeout(openSpacers, 0);
     });
     input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" && !open) { e.preventDefault(); openSpacers(); return; }
+      if (cur().token) return; /* token applied: typing is off, use Detach or the axis */
       if (e.key === "Enter") {
         if (open && open.trigger === input) close();
+        dirty = false;
         var next = parse(input.value, cur());
         if (next) { opts.set(next); } else { render(); }
-        return;
-      }
-      if (e.key === "ArrowDown" && !open) { e.preventDefault(); openSpacers(); }
-      if (e.key === "Backspace" && cur().token && input.selectionStart === 0 && input.selectionEnd === input.value.length) {
-        e.preventDefault();
-        var s = spacer(cur().token);
-        opts.set(v(s.px, "px"));
       }
     });
     input.addEventListener("blur", function () {
+      dirty = false;
+      if (cur().token) { render(); return; }
       var next = parse(input.value, cur());
       if (next && !same(next, cur())) { opts.set(next); } else { render(); }
     });
     unit.addEventListener("click", function () {
       if (open && open.trigger === unit) { close(); return; }
       mount(el, unitMenu(cur(), function (u) {
+        dirty = false;
         var c = cur();
         opts.set(v(c.num, u));
         close();
@@ -592,7 +600,8 @@
       el.classList.toggle("is-linked", !mixed && !!c.token);
       el.classList.toggle("is-unlinked", mixed || !c.token);
       el.classList.toggle("is-mixed", mixed);
-      if (document.activeElement !== input) input.value = mixed ? "Mixed" : label(c);
+      input.readOnly = !mixed && !!c.token;
+      if (!dirty) input.value = mixed ? "Mixed" : label(c);
       unit.textContent = c.unit;
       input.title = c.token ? spacer(c.token).name + " = " + spacer(c.token).px + " px. Drag the axis icon to make it custom." : "Type a value with its unit, or pick a spacer";
     };
