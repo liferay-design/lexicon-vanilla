@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spacing Field States</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* ── Page-scoped composition (tokens only) ──────────────────────────
+       The spacing field (.sf) is a Page Editor primitive that the kit does
+       not ship yet, so it lives here, scoped to the page. Everything is a
+       token; the handful of Figma geometry values (LPD-68566 / node
+       157:5404) sit in page vars below so they are easy to audit. */
+    :root {
+      --sf-width: 98px;          /* field box, Figma */
+      --sf-radius: 6px;          /* field corner, Figma (between rounded-md and rounded-lg) */
+      --sf-menu-w: 168px;        /* spacer menu, linked */
+      --sf-menu-w-wide: 204px;   /* spacer menu, unlinked (longer footer label) */
+      --sf-unit-menu-w: 120px;   /* unit menu */
+      --sfs-page-w: 1120px;
+      --sfs-menu-space: 210px;   /* room for the open menus in the state sheet */
+    }
+
+    body {
+      margin: 0;
+      background: var(--color-light-l1);
+      color: var(--color-dark);
+      font-family: var(--font-family-base);
+    }
+    .sfs-page {
+      max-width: var(--sfs-page-w);
+      margin: 0 auto;
+      padding: var(--spacing-9) var(--spacing-6) var(--spacing-10);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-9);
+    }
+
+    /* Hero */
+    .sfs-hero { display: flex; flex-direction: column; gap: var(--spacing-4); align-items: flex-start; }
+    .sfs-hero h1 { margin: 0; font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); line-height: 1.15; color: var(--color-dark); }
+    .sfs-hero p { margin: 0; max-width: 64ch; font-size: var(--font-size-md); line-height: var(--line-height-base); color: var(--color-secondary); }
+
+    /* Blocks + cards */
+    .sfs-block { display: flex; flex-direction: column; gap: var(--spacing-5); }
+    .sfs-canvas {
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l3);
+      border-radius: var(--rounded-lg);
+      padding: var(--spacing-7);
+    }
+    .sfs-live { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--spacing-7); align-items: start; }
+    @media (max-width: 880px) { .sfs-live { grid-template-columns: minmax(0, 1fr); } }
+    .sfs-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-5); }
+    .sfs-cards--stack { grid-template-columns: minmax(0, 1fr); }
+    .sfs-card {
+      display: flex; flex-direction: column; gap: var(--spacing-4);
+      padding: var(--spacing-6);
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l3);
+      border-radius: var(--rounded-md);
+    }
+    .sfs-card .section { padding-top: 0; }
+    .sfs-prose { display: flex; flex-direction: column; gap: var(--spacing-3); }
+    .sfs-prose p { margin: 0; font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--color-dark); }
+    .sfs-prose b { font-weight: var(--font-weight-bold); }
+
+    /* Container Styles panel */
+    .sfs-panel { background: var(--color-white); border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-lg); }
+    .sfs-panel__bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--spacing-3) var(--spacing-5);
+      border-bottom: 1px solid var(--color-secondary-l3);
+    }
+    .sfs-panel__bar strong { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-dark); }
+    .sfs-panel__bar span { font-size: var(--font-size-sm); color: var(--color-secondary); }
+    .sfs-panel__body { display: flex; flex-direction: column; gap: var(--spacing-5); padding: var(--spacing-5); }
+    .sfs-prop { display: flex; flex-direction: column; gap: var(--spacing-3); }
+    .sfs-prop .input__label { font-size: var(--font-size-sm); }
+
+    /* Row: field · lock · field · individual — the grid never changes shape,
+       individual mode just fills the second row and leaves the lock column empty. */
+    .sfs-row {
+      display: grid;
+      grid-template-columns: var(--sf-width) var(--spacing-8) var(--sf-width) var(--spacing-8);
+      gap: var(--spacing-2-5);
+      align-items: center;
+    }
+    .cell-a     { grid-column: 1; grid-row: 1; }
+    .cell-lock  { grid-column: 2; grid-row: 1; }
+    .cell-b     { grid-column: 3; grid-row: 1; }
+    .cell-sides { grid-column: 4; grid-row: 1; }
+    .cell-c     { grid-column: 1; grid-row: 2; }
+    .cell-d     { grid-column: 3; grid-row: 2; }
+    .sfs-row .btn[aria-pressed="true"] { background: var(--color-light); }
+    .sfs-anchor { position: relative; }
+    .sfs-anchor .tooltip {
+      position: absolute;
+      bottom: calc(100% + var(--spacing-3));
+      right: 0;
+      padding: var(--spacing-2) var(--spacing-3);
+      font-size: var(--font-size-sm);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .1s ease-out;
+    }
+    .sfs-anchor:hover .tooltip,
+    .sfs-anchor:focus-within .tooltip { opacity: 1; }
+
+    /* Spacing field, 98 × 32 */
+    .sf {
+      position: relative;
+      box-sizing: border-box;
+      display: flex; align-items: center; gap: var(--spacing-3);
+      width: var(--sf-width);
+      height: var(--spacing-8);
+      padding: var(--spacing-2) var(--spacing-2-5);
+      background: var(--color-white);
+      border: 1px solid var(--color-secondary-l2);
+      border-radius: var(--sf-radius);
+      font-family: var(--font-family-base);
+      color: var(--color-secondary);
+    }
+    .sf.is-unlinked { background: var(--color-light); padding-right: var(--spacing-1); }
+    .sf:hover { border-color: var(--color-secondary); }
+    .sf:focus-within { box-shadow: var(--focus-ring); }
+    .sf__axis {
+      flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-secondary);
+      border-radius: var(--rounded-sm);
+      touch-action: none;
+    }
+    .sf__axis .lexicon-icon { display: block; }
+    /* Scrub handle: the cursor announces the axis, press + drag nudges the value */
+    .sf__axis--h { cursor: ew-resize; }
+    .sf__axis--v { cursor: ns-resize; }
+    .sf__axis--h:hover, .sf__axis--v:hover,
+    .sf.is-scrubbing .sf__axis { color: var(--color-dark); }
+    .sf.is-scrubbing { border-color: var(--color-secondary); user-select: none; }
+    .sf.is-scrubbing .sf__input { color: var(--color-dark); }
+    body.sfs-scrub-h, body.sfs-scrub-h * { cursor: ew-resize !important; }
+    body.sfs-scrub-v, body.sfs-scrub-v * { cursor: ns-resize !important; }
+    .sf__body { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-2); }
+    .sf__input {
+      flex: 1 1 auto; min-width: 0;
+      padding: 0; border: 0; background: transparent;
+      font-family: inherit;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semi);
+      line-height: var(--line-height-base);
+      min-width: 3ch;              /* three digits always fit; the field stays at 98 */
+      color: var(--color-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+    .sf__input:focus { outline: none; }
+    .sf.is-mixed .sf__input { font-style: italic; }
+    .sf__unit {
+      flex: 0 0 auto;
+      display: grid; place-items: center;
+      min-width: var(--spacing-7); height: var(--spacing-7);
+      padding: 0 var(--spacing-1);
+      border: 0; border-radius: var(--rounded-md); background: transparent;
+      font-family: inherit; font-size: var(--font-size-xs); font-weight: var(--font-weight-semi);
+      line-height: 1; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--color-secondary);
+      cursor: pointer;
+    }
+    .sf__unit:hover { background: var(--color-secondary-l3); }
+    .sf__unit:focus-visible { outline: 0; box-shadow: var(--focus-ring); }
+    .sf.is-linked .sf__unit { display: none; }
+
+    /* Menus: the kit dropdown, anchored 2px below and flush with the 1px border */
+    .sf .dropdown {
+      position: absolute;
+      z-index: 40;
+      top: calc(100% + var(--spacing-1));
+      left: -1px;
+      min-width: var(--sf-menu-w);
+      border-radius: var(--rounded-lg);
+    }
+    .sf .dropdown.is-wide { min-width: var(--sf-menu-w-wide); }
+    .sf .dropdown.is-unit { min-width: var(--sf-unit-menu-w); }
+    .sf .dropdown.to-right { left: auto; right: -1px; }
+    .sf .dropdown__item[aria-checked="true"] { color: var(--color-dark); font-weight: var(--font-weight-bold); }
+    .sf .dropdown__item[aria-checked="true"] .dropdown__item-meta { color: var(--color-dark); }
+    .sf .dropdown__item:focus-visible {
+      outline: var(--spacing-1) solid var(--color-primary-l0);
+      outline-offset: calc(-1 * var(--spacing-1));
+      background: var(--color-light-l1);
+    }
+    .sf .dropdown__item-meta { font-variant-numeric: tabular-nums; }
+    @media (prefers-reduced-motion: no-preference) {
+      .sf .dropdown:not(.is-static) { animation: sfs-pop .1s ease-out; }
+      @keyframes sfs-pop { from { opacity: 0; transform: translateY(calc(-1 * var(--spacing-1))); } }
+    }
+
+    /* State sheet */
+    .sfs-sheet-scroll { overflow-x: auto; }
+    .sfs-sheet {
+      display: flex; align-items: flex-end; gap: var(--spacing-4);
+      padding-bottom: var(--sfs-menu-space);
+      padding-right: calc(var(--sf-menu-w-wide) - var(--sf-width));
+    }
+    .sfs-spec { width: var(--sf-width); flex: 0 0 auto; display: flex; flex-direction: column; gap: var(--spacing-3); }
+    .sfs-spec.is-pad { margin-left: calc(var(--sf-menu-w) - var(--sf-width) + var(--spacing-4)); }
+    .sfs-spec > p { margin: 0; font-size: var(--font-size-sm); line-height: var(--line-height-base); color: var(--color-secondary); }
+    .sfs-spec .dropdown { pointer-events: none; }
+    .sfs-spec .sf__input { display: block; }
+
+    /* Behaviour rules */
+    .sfs-rules { margin: 0; }
+    .sfs-rule {
+      display: grid; grid-template-columns: calc(2 * var(--spacing-10)) minmax(0, 1fr);
+      gap: var(--spacing-4);
+      padding: var(--spacing-3) 0;
+      border-top: 1px solid var(--color-secondary-l3);
+      align-items: baseline;
+    }
+    .sfs-rule:first-child { border-top: 0; padding-top: 0; }
+    .sfs-rule dt { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); letter-spacing: .04em; text-transform: uppercase; color: var(--color-primary); }
+    .sfs-rule dd { margin: 0; font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--color-dark); }
+    .sfs-rule .key { vertical-align: middle; margin: 0 var(--spacing-1); }
+
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     EDIT BELOW.
+     Components: see ../components.html for live variants (all components, one page).
+     Icons: <svg class="lexicon-icon"><use href="#name"></use></svg>
+            (513 names — grep ../icons.svg for `<symbol id=`)
+     Tokens only: var(--color-…), var(--spacing-…), var(--font-size-…).
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- ── Page-only icon sprite ───────────────────────────────────────
+     Exception to the "Lexicon icons only" rule, requested for this screen:
+     these are the glyphs proposed in the LPD-68566 exploration (axis /
+     side markers, individual sides, chain, reset); lock / unlock stay Clay. They live inline
+     here and nowhere else — do not copy them into icons.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;" aria-hidden="true">
+  <!-- axis: 16 box, 2px border, r4, 2px bars on the two edges of the axis -->
+  <symbol id="sfs-axis-h" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="4" width="2" height="8" rx="1" fill="currentColor"/><rect x="10" y="4" width="2" height="8" rx="1" fill="currentColor"/></symbol>
+  <symbol id="sfs-axis-v" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="4" width="8" height="2" rx="1" fill="currentColor"/><rect x="4" y="10" width="8" height="2" rx="1" fill="currentColor"/></symbol>
+  <!-- sides: same box, one bar on the side being edited -->
+  <symbol id="sfs-side-left" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="4" width="2" height="8" rx="1" fill="currentColor"/></symbol>
+  <symbol id="sfs-side-right" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="2" height="8" rx="1" fill="currentColor"/></symbol>
+  <symbol id="sfs-side-top" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="4" width="8" height="2" rx="1" fill="currentColor"/></symbol>
+  <symbol id="sfs-side-bottom" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="10" width="8" height="2" rx="1" fill="currentColor"/></symbol>
+  <!-- individual sides toggle -->
+  <symbol id="sfs-sides" viewBox="0 0 16 16"><rect x="2.2" y="2.2" width="11.6" height="11.6" rx="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="5.9" y="5.9" width="4.2" height="4.2" rx="1.2" fill="currentColor"/></symbol>
+  <!-- detach style (broken chain) -->
+  <symbol id="sfs-chain" viewBox="0 0 16 16"><path d="M6.4 9.6 4.9 11.1a2.3 2.3 0 0 1-3.3-3.3l1.6-1.5M9.6 6.4l1.5-1.5a2.3 2.3 0 0 1 3.3 3.3l-1.6 1.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6.6 3.2V1.7M3.2 6.6H1.7M9.4 12.8v1.5M12.8 9.4h1.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+  <!-- reset to initial value (clock arrow) -->
+  <symbol id="sfs-reset" viewBox="0 0 16 16"><path d="M3.3 8a4.7 4.7 0 1 1 1.4 3.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3.3 4.8v3.1h3.1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.6V8l1.7 1" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<main class="sfs-page">
+
+  <header class="sfs-hero">
+    <span class="label label--sm label--secondary">LPD-68566 · Page Editor · Spacing</span>
+    <h1>Spacing field states</h1>
+    <p>Built from node 157:5404 with the kit's own tokens: 98 by 32, 6px radius, 1px secondary-l2 border, light fill on unlinked, the kit focus ring, and the Lexicon dropdown with the secondary-l3 divider. The panel is live and the sheet below renders the five states from the same CSS.</p>
+  </header>
+
+  <!-- ── Live ─────────────────────────────────────────────────────── -->
+  <section class="sfs-block" aria-labelledby="live-title">
+    <header class="section section--sm"><span class="section__title" id="live-title">Live</span></header>
+    <div class="sfs-live">
+
+      <div class="sfs-canvas" style="padding: var(--spacing-5);">
+        <div class="sfs-panel">
+          <div class="sfs-panel__bar"><strong>Container</strong><span>Styles</span></div>
+          <div class="sfs-panel__body">
+            <div class="sfs-prop">
+              <p class="input__label" id="label-margin">Margin</p>
+              <div class="sfs-row" data-prop="margin" role="group" aria-labelledby="label-margin"></div>
+            </div>
+            <div class="sfs-prop">
+              <p class="input__label" id="label-padding">Padding</p>
+              <div class="sfs-row" data-prop="padding" role="group" aria-labelledby="label-padding"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sfs-cards sfs-cards--stack">
+        <div class="sfs-card">
+          <header class="section section--sm"><span class="section__title">Behaviour</span></header>
+          <dl class="sfs-rules">
+            <div class="sfs-rule"><dt>open</dt><dd>Click the field, or <kbd class="key key--sm key--fixed">&darr;</kbd> on it. <kbd class="key key--sm key--fixed">&uarr;</kbd><kbd class="key key--sm key--fixed">&darr;</kbd> move, <kbd class="key key--sm">Esc</kbd> closes.</dd></div>
+            <div class="sfs-rule"><dt>link</dt><dd>Pick a spacer. The field shows the spacer name on white and drops the PX chip: the token owns value and unit.</dd></div>
+            <div class="sfs-rule"><dt>unlink</dt><dd>Type a number, or Detach Style. Both keep the resolved value.</dd></div>
+            <div class="sfs-rule"><dt>unit</dt><dd>PX opens the unit list. Typing <kbd class="key key--sm">1.5rem</kbd> sets value and unit at once.</dd></div>
+            <div class="sfs-rule"><dt>scrub</dt><dd>Hover the axis icon and the cursor turns into the resize arrow. Press and drag along that axis to nudge the value, <kbd class="key key--sm">Shift</kbd> for steps of 10. A linked field turns custom and starts counting from the token’s value (Spacer 1 = 4 px).</dd></div>
+            <div class="sfs-rule"><dt>individual</dt><dd>The right button expands the row in place: left and right in the first column, top and bottom in the second. The lock is not offered while it is open.</dd></div>
+          </dl>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── States ───────────────────────────────────────────────────── -->
+  <section class="sfs-block" aria-labelledby="states-title">
+    <header class="section section--sm"><span class="section__title" id="states-title">States</span></header>
+    <div class="sfs-canvas">
+      <div class="sfs-sheet-scroll">
+        <div class="sfs-sheet" id="sheet"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  function icon(name, cls) {
+    return '<svg class="lexicon-icon' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#' + name + '"></use></svg>';
+  }
+
+  /* "h" and "v" are the two axis icons; left, right, top and bottom are
+     the per-side icons used once the row is expanded. All from the
+     page-only sprite at the top of <body>. The wrapper is the scrub handle. */
+  var AXIS_ICON = { h: "sfs-axis-h", v: "sfs-axis-v", left: "sfs-side-left", right: "sfs-side-right", top: "sfs-side-top", bottom: "sfs-side-bottom" };
+  var HORIZONTAL = { h: true, left: true, right: true, v: false, top: false, bottom: false };
+  function fieldIcon(kind, live) {
+    var dir = live ? (HORIZONTAL[kind] ? " sf__axis--h" : " sf__axis--v") : "";
+    return '<span class="sf__axis' + dir + '">' + icon(AXIS_ICON[kind]) + "</span>";
+  }
+
+  var SPACERS = [
+    { id: "spacer-0", name: "Spacer 0", px: 0 },
+    { id: "spacer-1", name: "Spacer 1", px: 4 },
+    { id: "spacer-2", name: "Spacer 2", px: 8 },
+    { id: "spacer-3", name: "Spacer 3", px: 16 },
+    { id: "spacer-4", name: "Spacer 4", px: 24 },
+    { id: "spacer-5", name: "Spacer 5", px: 48 }
+  ];
+  var UNITS = ["px", "%", "em", "rem", "vw", "vh"];
+  var SIDES = { h: ["left", "right"], v: ["top", "bottom"] };
+
+  function v(n, u, tok) { return { num: n, unit: u, token: tok || null }; }
+  var state = {
+    margin: {
+      link: false,
+      individual: false,
+      initial: { top: v(0, "px"), right: v(0, "px"), bottom: v(0, "px"), left: v(0, "px") },
+      top: v(0, "px", "spacer-2"), right: v(2, "px"), bottom: v(0, "px", "spacer-2"), left: v(2, "px")
+    },
+    padding: {
+      link: true,
+      individual: false,
+      initial: { top: v(0, "px"), right: v(0, "px"), bottom: v(0, "px"), left: v(0, "px") },
+      top: v(2, "px"), right: v(2, "px"), bottom: v(2, "px"), left: v(2, "px")
+    }
+  };
+
+  function spacer(id) {
+    for (var i = 0; i < SPACERS.length; i++) if (SPACERS[i].id === id) return SPACERS[i];
+    return null;
+  }
+  function label(c) {
+    if (c.token) {
+      var s = spacer(c.token);
+      if (!s) return "";
+      return s.name;
+    }
+    return String(c.num);
+  }
+  function same(a, b) { return a.token === b.token && a.num === b.num && a.unit === b.unit; }
+  function copy(c) { return { num: c.num, unit: c.unit, token: c.token }; }
+  function parse(raw, prev) {
+    var s = String(raw).trim().toLowerCase().replace(/\s+/g, "");
+    if (!s) return null;
+    if (s === "auto") return v(0, "auto");
+    var m = s.match(/^(-?\d*\.?\d+)([a-z%]*)$/);
+    if (!m) return null;
+    var unit = m[2] || (prev.unit === "auto" ? "px" : prev.unit);
+    if (UNITS.indexOf(unit) === -1) return null;
+    return v(parseFloat(m[1]), unit);
+  }
+
+  /* ---------- one open menu at a time ---------- */
+  var open = null;
+  function close() {
+    if (!open) return;
+    if (open.trigger) open.trigger.setAttribute("aria-expanded", "false");
+    open.node.remove();
+    open = null;
+  }
+  document.addEventListener("mousedown", function (e) {
+    if (open && !open.node.contains(e.target) && !open.host.contains(e.target)) close();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && open) { var b = open.focusBack; close(); if (b) b.focus(); }
+  });
+  function mount(host, node, trigger, focusBack, right) {
+    close();
+    if (right) node.classList.add("to-right");
+    host.appendChild(node);
+    if (trigger) trigger.setAttribute("aria-expanded", "true");
+    open = { node: node, host: host, trigger: trigger, focusBack: focusBack };
+    node.addEventListener("keydown", function (e) {
+      var items = [].slice.call(node.querySelectorAll(".dropdown__item"));
+      if (!items.length) return;
+      var i = items.indexOf(document.activeElement);
+      if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1 + items.length) % items.length].focus(); }
+      if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    });
+  }
+
+  function menuItem(attrs, inner) {
+    return "<li><button type=\"button\" class=\"dropdown__item\" " + attrs + ">" + inner + "</button></li>";
+  }
+
+  function spacerMenu(cell, onPick) {
+    var node = document.createElement("ul");
+    node.className = "dropdown" + (cell.token ? "" : " is-wide");
+    node.setAttribute("role", "menu");
+    var html = "";
+    SPACERS.forEach(function (s) {
+      html += menuItem('role="menuitemradio" data-pick="' + s.id + '" aria-checked="' + (cell.token === s.id ? "true" : "false") + '"',
+        '<span class="dropdown__item-text">' + s.name + '</span><span class="dropdown__item-meta">' + s.px + "</span>");
+    });
+    html += '<li class="dropdown__divider" role="separator"></li>';
+    html += cell.token
+      ? menuItem('role="menuitem" data-pick="detach"', icon("sfs-chain", "dropdown__item-icon") + '<span class="dropdown__item-text">Detach Style</span>')
+      : menuItem('role="menuitem" data-pick="reset"', icon("sfs-reset", "dropdown__item-icon") + '<span class="dropdown__item-text">Reset to Initial Value</span>');
+    node.innerHTML = html;
+    node.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-pick]");
+      if (b) onPick(b.getAttribute("data-pick"));
+    });
+    return node;
+  }
+
+  function unitMenu(cell, onPick) {
+    var node = document.createElement("ul");
+    node.className = "dropdown is-unit";
+    node.setAttribute("role", "menu");
+    node.innerHTML = UNITS.map(function (u) {
+      return menuItem('role="menuitemradio" data-unit="' + u + '" aria-checked="' + (cell.unit === u ? "true" : "false") + '"',
+        '<span class="dropdown__item-text">' + u + "</span>");
+    }).join("");
+    node.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-unit]");
+      if (b) onPick(b.getAttribute("data-unit"));
+    });
+    return node;
+  }
+
+  /* ---------- the field ---------- */
+  function makeField(opts) {
+    var el = document.createElement("div");
+    el.className = "sf";
+    el.innerHTML = fieldIcon(opts.axis, true) +
+      '<span class="sf__body">' +
+      '<input class="sf__input" type="text" autocomplete="off" spellcheck="false" aria-label="' + opts.label + '" aria-haspopup="menu" aria-expanded="false">' +
+      '<button class="sf__unit" type="button" aria-haspopup="menu" aria-label="Unit for ' + opts.label + '">px</button>' +
+      "</span>";
+    var input = el.querySelector(".sf__input");
+    var unit = el.querySelector(".sf__unit");
+    var axis = el.querySelector(".sf__axis");
+    var horizontal = HORIZONTAL[opts.axis];
+    function cur() { return opts.get(); }
+
+    /* Scrub: press on the axis icon and drag along its axis to nudge the
+       value, Figma-style. 1 unit per pixel (0.1 for em/rem), Shift = x10.
+       A linked field turns custom on the first move, starting from the
+       token's resolved value. */
+    axis.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      close();
+      var c = cur();
+      var s = c.token ? spacer(c.token) : null;
+      var startNum = s ? s.px : c.num;
+      var unitName = s || c.unit === "auto" ? "px" : c.unit;
+      var fine = unitName === "em" || unitName === "rem";
+      var origin = horizontal ? e.clientX : e.clientY;
+      var last = startNum;
+      axis.setPointerCapture(e.pointerId);
+      el.classList.add("is-scrubbing");
+      document.body.classList.add(horizontal ? "sfs-scrub-h" : "sfs-scrub-v");
+
+      function onMove(ev) {
+        var d = horizontal ? ev.clientX - origin : origin - ev.clientY;
+        var step = (fine ? 0.1 : 1) * (ev.shiftKey ? 10 : 1);
+        var next = startNum + Math.round(d) * step;
+        next = fine ? Math.round(next * 10) / 10 : Math.round(next);
+        if (opts.min !== null && opts.min !== undefined) next = Math.max(opts.min, next);
+        if (next !== last) { last = next; opts.set(v(next, unitName)); }
+      }
+      function onUp() {
+        axis.removeEventListener("pointermove", onMove);
+        axis.removeEventListener("pointerup", onUp);
+        axis.removeEventListener("pointercancel", onUp);
+        el.classList.remove("is-scrubbing");
+        document.body.classList.remove("sfs-scrub-h", "sfs-scrub-v");
+      }
+      axis.addEventListener("pointermove", onMove);
+      axis.addEventListener("pointerup", onUp);
+      axis.addEventListener("pointercancel", onUp);
+    });
+
+    function openSpacers() {
+      var c = cur();
+      var node = spacerMenu(c, function (pick) {
+        if (pick === "detach") {
+          var s = spacer(c.token);
+          opts.set(v(s ? s.px : c.num, "px"));
+        } else if (pick === "reset") {
+          opts.reset();
+        } else {
+          var sp = spacer(pick);
+          opts.set(v(0, "px", pick));
+        }
+        close();
+        input.focus();
+      });
+      mount(el, node, input, input, opts.right);
+    }
+
+    input.addEventListener("mousedown", function () {
+      if (open && open.trigger === input) return;
+      setTimeout(openSpacers, 0);
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        if (open && open.trigger === input) close();
+        var next = parse(input.value, cur());
+        if (next) { opts.set(next); } else { render(); }
+        return;
+      }
+      if (e.key === "ArrowDown" && !open) { e.preventDefault(); openSpacers(); }
+      if (e.key === "Backspace" && cur().token && input.selectionStart === 0 && input.selectionEnd === input.value.length) {
+        e.preventDefault();
+        var s = spacer(cur().token);
+        opts.set(v(s.px, "px"));
+      }
+    });
+    input.addEventListener("blur", function () {
+      var next = parse(input.value, cur());
+      if (next && !same(next, cur())) { opts.set(next); } else { render(); }
+    });
+    unit.addEventListener("click", function () {
+      if (open && open.trigger === unit) { close(); return; }
+      mount(el, unitMenu(cur(), function (u) {
+        var c = cur();
+        opts.set(v(c.num, u));
+        close();
+        unit.focus();
+      }), unit, unit, true);
+    });
+
+    el.update = function () {
+      var c = cur();
+      var mixed = opts.mixed ? opts.mixed() : false;
+      el.classList.toggle("is-linked", !mixed && !!c.token);
+      el.classList.toggle("is-unlinked", mixed || !c.token);
+      el.classList.toggle("is-mixed", mixed);
+      if (document.activeElement !== input) input.value = mixed ? "Mixed" : label(c);
+      unit.textContent = c.unit;
+      input.title = c.token ? spacer(c.token).name + " = " + spacer(c.token).px + " px. Drag the axis icon to make it custom." : "Type a value with its unit, or pick a spacer";
+    };
+    return el;
+  }
+
+  var rows = {};
+  function axisOpts(prop, axis) {
+    return {
+      axis: axis,
+      right: axis === "v",
+      label: prop + " " + (axis === "h" ? "left and right" : "top and bottom"),
+      min: prop === "padding" ? 0 : null,
+      get: function () { return state[prop][SIDES[axis][0]]; },
+      mixed: function () { return !same(state[prop][SIDES[axis][0]], state[prop][SIDES[axis][1]]); },
+      set: function (val) {
+        (state[prop].link ? ["top", "right", "bottom", "left"] : SIDES[axis]).forEach(function (s) { state[prop][s] = copy(val); });
+        render();
+      },
+      reset: function () {
+        (state[prop].link ? ["top", "right", "bottom", "left"] : SIDES[axis]).forEach(function (s) { state[prop][s] = copy(state[prop].initial[s]); });
+        render();
+      }
+    };
+  }
+
+  function sideOpts(prop, side) {
+    return {
+      axis: side,
+      right: side === "top" || side === "bottom",
+      label: prop + " " + side,
+      min: prop === "padding" ? 0 : null,
+      get: function () { return state[prop][side]; },
+      set: function (val) { state[prop][side] = copy(val); render(); },
+      reset: function () { state[prop][side] = copy(state[prop].initial[side]); render(); }
+    };
+  }
+
+  function makeLock(prop) {
+    var lock = document.createElement("button");
+    lock.className = "btn btn--borderless btn--sm btn--icon";
+    lock.type = "button";
+    lock.innerHTML = icon(state[prop].link ? "lock" : "unlock");
+    lock.setAttribute("aria-pressed", state[prop].link ? "true" : "false");
+    lock.setAttribute("aria-label", "Link horizontal and vertical " + prop);
+    lock.title = state[prop].link ? "Horizontal and vertical linked" : "Horizontal and vertical independent";
+    lock.addEventListener("click", function () {
+      state[prop].link = !state[prop].link;
+      buildRow(prop);
+    });
+    return lock;
+  }
+
+  /* The individual toggle expands the row in place into a 2 by 2 grid:
+     left and right in the first column, top and bottom in the second.
+     The lock is not offered while the four sides are open. */
+  function makeSides(prop) {
+    var anchor = document.createElement("div");
+    anchor.className = "sfs-anchor cell-sides";
+
+    var button = document.createElement("button");
+    button.className = "btn btn--borderless btn--sm btn--icon";
+    button.type = "button";
+    button.innerHTML = icon("sfs-sides");
+    button.setAttribute("aria-pressed", state[prop].individual ? "true" : "false");
+    button.setAttribute("aria-label", "Individual " + prop);
+    button.addEventListener("click", function () {
+      state[prop].individual = !state[prop].individual;
+      buildRow(prop);
+    });
+
+    var tip = document.createElement("span");
+    tip.className = "tooltip tooltip--align-end";
+    tip.setAttribute("role", "tooltip");
+    tip.textContent = "Individual " + prop.charAt(0).toUpperCase() + prop.slice(1);
+
+    anchor.appendChild(button);
+    anchor.appendChild(tip);
+    return anchor;
+  }
+
+  function buildRow(prop) {
+    var row = rows[prop];
+    close();
+    row.innerHTML = "";
+    row.fields = [];
+
+    function put(cell, el) {
+      el.classList.add(cell);
+      row.appendChild(el);
+      if (el.update) row.fields.push(el);
+    }
+
+    if (state[prop].individual) {
+      put("cell-a", makeField(sideOpts(prop, "left")));
+      put("cell-b", makeField(sideOpts(prop, "top")));
+      put("cell-c", makeField(sideOpts(prop, "right")));
+      put("cell-d", makeField(sideOpts(prop, "bottom")));
+    } else {
+      put("cell-a", makeField(axisOpts(prop, "h")));
+      put("cell-lock", makeLock(prop));
+      put("cell-b", makeField(axisOpts(prop, "v")));
+    }
+
+    row.appendChild(makeSides(prop));
+    row.fields.forEach(function (f) { f.update(); });
+  }
+
+  ["margin", "padding"].forEach(function (prop) {
+    rows[prop] = document.querySelector('.sfs-row[data-prop="' + prop + '"]');
+    buildRow(prop);
+  });
+
+  function render() {
+    ["margin", "padding"].forEach(function (prop) {
+      (rows[prop].fields || []).forEach(function (f) { f.update(); });
+    });
+  }
+
+  /* ---------- static state sheet, mirroring 157:5404 ----------
+     Hover is live (hover the second field). The "Active" frames render the
+     open menu, which is the state; the kit focus ring appears on real
+     keyboard focus, so it is not painted statically. */
+  var SPECS = [
+    { title: "linked Default", cls: "is-linked", menu: null },
+    { title: "linked Hover", cls: "is-linked", menu: null },
+    { title: "linked Active", cls: "is-linked", menu: "detach" },
+    { title: "Unlinked default", cls: "is-unlinked", menu: null, pad: true },
+    { title: "Unlinked active", cls: "is-unlinked", menu: "reset" }
+  ];
+
+  function staticField(cls, linked) {
+    var text = linked ? "Spacer 1" : "2";
+    return '<div class="sf ' + cls + '">' + fieldIcon("h") +
+      '<span class="sf__body"><span class="sf__input">' + text + "</span>" +
+      (linked ? "" : '<span class="sf__unit">px</span>') + "</span></div>";
+  }
+  function staticMenu(kind) {
+    var html = '<ul class="dropdown is-static' + (kind === "reset" ? " is-wide" : "") + '" aria-hidden="true">';
+    SPACERS.slice(0, 4).forEach(function (s) {
+      html += '<li><span class="dropdown__item"><span class="dropdown__item-text">' + s.name + '</span><span class="dropdown__item-meta">' + s.px + "</span></span></li>";
+    });
+    html += '<li class="dropdown__divider"></li>';
+    html += '<li><span class="dropdown__item">' +
+      (kind === "detach"
+        ? icon("sfs-chain", "dropdown__item-icon") + '<span class="dropdown__item-text">Detach Style</span>'
+        : icon("sfs-reset", "dropdown__item-icon") + '<span class="dropdown__item-text">Reset to Initial Value</span>') +
+      "</span></li></ul>";
+    return html;
+  }
+  function buildSheet() {
+    document.getElementById("sheet").innerHTML = SPECS.map(function (s) {
+      var linked = s.cls === "is-linked";
+      var field = staticField(s.cls, linked);
+      if (s.menu) field = field.replace(/<\/div>$/, staticMenu(s.menu) + "</div>");
+      return '<div class="sfs-spec' + (s.pad ? " is-pad" : "") + '"><p>' + s.title + "</p>" + field + "</div>";
+    }).join("");
+  }
+
+  render();
+  buildSheet();
+})();
+</script>
+
+</body>
+</html>
