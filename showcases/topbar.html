@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Bar — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+  <script src="../navigation.js"></script>
+
+  <style>
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase p.note { color: var(--color-secondary); font-size: var(--font-size-sm); margin: var(--spacing-3) 0 0; }
+    .showcase__section { margin-bottom: var(--spacing-9); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); display: block; }
+    .showcase__frame { border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: visible; }
+    .showcase__row { display: flex; flex-wrap: wrap; gap: var(--spacing-7); align-items: flex-start; }
+    .showcase code { font-size: var(--font-size-sm); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Top Bar</h1>
+  <p class="lead">
+    App bar for the unified navigation: 56px (48px below 768px). <code>.top-bar__start</code> holds the Side Menu toggle
+    and the title; <code>.top-bar__end</code> holds actions and the Global Menu trigger (it stays above the mobile overlay).
+    Buttons are <code>.top-bar__btn</code> (32px, 8px radius). The toggle and the title react to the Side Menu state
+    (<code>navigation.js</code>): the toggle swaps icon / brand and tooltip, the title shifts when the menu is pinned.
+    See it live in <a href="../prototypes/unified-navigation.html">prototypes/unified-navigation.html</a>.
+  </p>
+
+  <div class="showcase__section">
+    <span class="showcase__label">Default — toggle · title · Global Menu trigger</span>
+    <div class="showcase__frame">
+      <header class="top-bar">
+        <div class="top-bar__start">
+          <span class="nav-tip top-bar__toggle-wrap">
+            <button class="top-bar__btn top-bar__toggle" type="button" aria-label="Pin Menu" aria-expanded="false">
+              <span class="sticker sticker--md top-bar__brand top-bar__brand--contain" aria-hidden="true"><img src="../product-icons/control-panel-20.svg" alt=""></span>
+              <svg class="lexicon-icon top-bar__toggle-icon"><use href="#product-menu-closed"></use></svg>
+            </button>
+            <span class="tooltip tooltip--top tooltip--align-start nav-tip__bubble top-bar__toggle-tip" role="tooltip">Pin Menu</span>
+          </span>
+          <span class="top-bar__title">Home</span>
+        </div>
+        <div class="top-bar__end">
+          <div class="global-menu-anchor">
+      <button class="top-bar__btn global-menu-trigger" type="button" aria-label="Global Menu" aria-haspopup="true" aria-expanded="false" aria-controls="gm-topbar">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+      </button>
+            <nav class="global-menu" id="gm-topbar" aria-label="Global Menu">
+        <ul class="global-menu__products">
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/cms-20.svg" alt=""></span>
+          <span>Content Management</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/commerce-20.svg" alt=""></span>
+          <span>Commerce</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/ai-hub-20.svg" alt=""></span>
+          <span>AI Hub</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/data-platform-20.svg" alt=""></span>
+          <span>Data Platform</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/digital-sales-room-20.svg" alt=""></span>
+          <span>Digital Sales Room</span>
+        </button></li>
+        <li class="global-menu__divider" role="separator"></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/applications-20.svg" alt=""></span>
+          <span>Applications</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product is-active" aria-current="page">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/control-panel-20.svg" alt=""></span>
+          <span>Control Panel</span>
+        </button></li>
+        </ul>
+        <div class="global-menu__sites">
+          <span class="global-menu__section">Sites</span>
+          <ul>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--logo" aria-hidden="true"><img src="../prototypes/img/site-liferay-dxp.svg" alt=""></span>
+              <span>Liferay DXP Site</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--global" aria-hidden="true"><svg class="lexicon-icon lexicon-icon-sm"><use href="#globe-lines"></use></svg></span>
+              <span>Global</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site global-menu__item--all">View All Sites</button></li>
+          </ul>
+        </div>
+            </nav>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div class="global-menu-scrim" aria-hidden="true"></div>
+    <p class="note">Toggle brand (shown while the menu peeks): <code>.top-bar__brand--contain</code> for a 20px product icon or
+      vector logo, a plain <code>.top-bar__brand</code> for a site photo, <code>.top-bar__brand--global</code> for the Global glyph.
+      Add <code>data-follow-side-menu</code> to <code>.top-bar__title</code> to make it follow the chosen Side Menu item.</p>
+  </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Side Menu — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+  <script src="../navigation.js"></script>
+
+  <style>
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase p.note { color: var(--color-secondary); font-size: var(--font-size-sm); margin: var(--spacing-3) 0 0; }
+    .showcase__section { margin-bottom: var(--spacing-9); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); display: block; }
+    .showcase__frame { border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: visible; }
+    .showcase__row { display: flex; flex-wrap: wrap; gap: var(--spacing-7); align-items: flex-start; }
+    .showcase code { font-size: var(--font-size-sm); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Side Menu</h1>
+  <p class="lead">
+    Per-product navigation panel, 280px, flush to the left edge. Hidden by default; hovering the Top Bar toggle
+    <strong>peeks</strong> it as an elevated overlay, clicking <strong>pins</strong> it (content with
+    <code>.side-menu-offset</code> shifts; below 768px it stays an overlay with a scrim). Header locked to the Top Bar
+    height · 32px search · collapsible groups · optional <code>.side-menu__divider</code> before secondary navigation ·
+    pinned user footer with an upward menu. Behaviour from <code>navigation.js</code>; group collapsing is pure CSS
+    (<code>aria-expanded</code>). Live pin / peek: <a href="../prototypes/unified-navigation.html">prototypes/unified-navigation.html</a>.
+  </p>
+
+  <div class="showcase__section">
+    <span class="showcase__label">Static — .side-menu--static (groups collapse, items select, user menu opens)</span>
+    <div style="height: calc(15 * var(--spacing-9));">
+      <aside class="side-menu side-menu--static" style="height: 100%;">
+        <div class="side-menu__header">
+          <span class="side-menu__title">Content Management</span>
+        </div>
+        <div class="side-menu__search">
+          <div class="search">
+            <input class="input__field search__field" type="search" placeholder="Search">
+            <button class="search__submit" aria-label="Search" type="button"><svg class="lexicon-icon"><use href="#search"></use></svg></button>
+          </div>
+        </div>
+        <div class="side-menu__body">
+          <ul class="side-menu__groups">
+            <li class="side-menu__group">
+          <button class="side-menu__item is-active" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#home"></use></svg></span>Home</button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#analytics"></use></svg></span>Dashboard</button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#users"></use></svg></span>Shared with Me</button>
+            </li>
+            <li class="side-menu__group">
+              <button class="side-menu__group-header" type="button" aria-expanded="true">Assets<svg class="lexicon-icon"><use href="#angle-down-small"></use></svg></button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#sheets"></use></svg></span>All</button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#catalog"></use></svg></span>Contents</button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#documents-and-media"></use></svg></span>Files</button>
+            </li>
+            <li class="side-menu__group">
+              <button class="side-menu__group-header" type="button" aria-expanded="false">Admin<svg class="lexicon-icon"><use href="#angle-down-small"></use></svg></button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#edit-layout"></use></svg></span>Content Structures</button>
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#vocabulary"></use></svg></span>Categorization</button>
+            </li>
+            <li class="side-menu__divider" role="separator"></li>
+            <li class="side-menu__group">
+          <button class="side-menu__item" type="button"><span class="side-menu__item-icon"><svg class="lexicon-icon"><use href="#trash"></use></svg></span>Recycle Bin</button>
+            </li>
+          </ul>
+        </div>
+        <div class="side-menu__footer">
+          <div class="side-menu__user">
+            <button class="side-menu__user-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="sm-user-menu">
+              <span class="side-menu__user-avatar"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt=""></span>
+              <span class="side-menu__user-name">Lukas Kyle</span>
+              <svg class="lexicon-icon lexicon-icon-sm side-menu__user-caret"><use href="#caret-bottom"></use></svg>
+            </button>
+            <ul class="dropdown side-menu__user-menu" id="sm-user-menu" role="menu">
+              <li><button class="dropdown__item" type="button" role="menuitem"><span class="dropdown__item-text">My Profile</span></button></li>
+              <li><button class="dropdown__item" type="button" role="menuitem"><span class="dropdown__item-text">Account Settings</span></button></li>
+              <li class="dropdown__divider" role="separator"></li>
+              <li><button class="dropdown__item" type="button" role="menuitem"><span class="dropdown__item-text">Sign Out</span></button></li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <p class="note">In a real page the menu is a fixed <code>&lt;aside class="side-menu" id="side-menu" tabindex="-1"&gt;</code>
+      next to a <code>.top-bar</code> with a <code>.top-bar__toggle</code>; add <code>.side-menu__close</code> (keyboard-only close)
+      inside <code>.side-menu__actions</code> and a <code>.side-menu-scrim</code> for mobile. Selecting an item fires
+      <code>side-menu:select</code>.</p>
+  </div>
+</main>
+
+</body>
+</html>

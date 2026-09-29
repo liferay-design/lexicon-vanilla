@@ -5002,3 +5002,509 @@
 @media (max-width: 767px) {
   .preview-bar__info-label { display: none; }
 }
+
+
+/* ============================================================
+   NAVIGATION SATELLITES — Top Bar · Side Menu · Global Menu
+   Source: Unified Navigation exploration (prototypes/unified-navigation.html);
+   Global Menu per Figma Lexicon Satellites 4928:9068 (at 240px / 8px radius).
+   Independent from .control-menu / .control-panel (those stay as they are).
+
+   Behaviour (peek/pin, user menu, scroll shadows, Global Menu open/close)
+   lives in navigation.js — opt-in: include it only on pages that use these
+   satellites. State classes it sets on <body>: .side-menu-pinned,
+   .side-menu-peek, .global-menu-open.
+
+   Stacking (no stacking context on .top-bar, so these compare globally):
+     side-menu-scrim 45 · side-menu 50 · top-bar toggle 60 ·
+     global-menu-scrim 65 · top-bar__end 66 · global-menu 70
+   ============================================================ */
+
+@media (max-width: 767px) {
+  :root { --top-bar-height: calc(var(--spacing-8) + 2 * var(--spacing-3)); } /* 48px */
+}
+
+/* Shared hover / keyboard-focus tooltip anchor (reuses .tooltip visuals). */
+.nav-tip { position: relative; display: inline-flex; }
+.nav-tip__bubble {
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + var(--spacing-2));
+  transform: translateX(-50%);
+  transition: opacity 120ms ease;
+  white-space: nowrap;
+  z-index: 20;
+}
+/* Hover or keyboard focus only — :focus-within would pin it after a click. */
+.nav-tip:hover .nav-tip__bubble,
+.nav-tip:has(:focus-visible) .nav-tip__bubble { opacity: 1; }
+
+
+/* ─── Top Bar ───────────────────────────────────────────────────
+   56px (48px mobile) app bar: start zone (Side Menu toggle + title) and
+   end zone (actions, Global Menu trigger). 12px padding drops the toggle's
+   icon centre on the Side Menu item icons (28px). */
+.top-bar {
+  align-items: center;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-light-d2);
+  display: flex;
+  gap: var(--spacing-5);
+  padding: var(--spacing-4);
+  width: 100%;
+}
+.top-bar__start {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+.top-bar__end {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-3);
+  position: relative;   /* stays above the Global Menu mobile overlay */
+  z-index: 66;
+}
+.top-bar__btn {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--rounded-lg);
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: var(--spacing-8);
+  justify-content: center;
+  padding: 0;
+  width: var(--spacing-8);
+}
+.top-bar__btn:hover { background: var(--color-light); }
+.top-bar__btn:focus-visible { box-shadow: var(--focus-ring); outline: 0; }
+.top-bar__title {
+  color: var(--color-dark);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+}
+/* Pinned Side Menu: the title clears the panel (resting x = 12 + 32 + 8). */
+.side-menu-pinned .top-bar__title {
+  margin-left: calc(var(--side-menu-width) - var(--spacing-8));
+}
+
+/* Side Menu toggle — never moves: paints above the Side Menu so the panel
+   dissolves beneath a stationary button. Closed → menu icon; peeked →
+   brand at rest, menu icon on hover/focus; pinned → menu icon + active fill. */
+.top-bar__toggle-wrap { position: relative; z-index: 60; }
+.top-bar__brand { background: transparent; border-radius: var(--rounded-lg); display: none; }
+/* Product icons / vector logos: 20px artwork centred (site photos fill). */
+.top-bar__brand--contain > img { height: var(--spacing-6); object-fit: contain; width: var(--spacing-6); }
+.top-bar__brand--global { background: var(--blue-l5); color: var(--color-primary); }
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle .top-bar__brand { display: inline-flex; }
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle .top-bar__toggle-icon { display: none; }
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle:hover .top-bar__brand,
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle:focus-visible .top-bar__brand { display: none; }
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle:hover .top-bar__toggle-icon,
+.side-menu-peek:not(.side-menu-pinned) .top-bar__toggle:focus-visible .top-bar__toggle-icon { display: block; }
+/* 8% dark over the bar — flips per skin. */
+.side-menu-pinned .top-bar__toggle,
+.side-menu-pinned .top-bar__toggle:hover {
+  background: color-mix(in srgb, var(--color-dark) 8%, transparent);
+}
+/* Toggle tooltip: left-aligned (screen edge), timing driven by navigation.js. */
+.top-bar__toggle-tip { left: var(--spacing-2); transform: none; }
+.nav-tip .top-bar__toggle-tip { opacity: 0; }
+.nav-tip .top-bar__toggle-tip.is-visible { opacity: 1; }
+
+
+/* ─── Side Menu ─────────────────────────────────────────────────
+   280px panel flush to the left edge, full height. States (body):
+     hidden (default) · .side-menu-peek (overlay, elevated) ·
+     .side-menu-pinned (in the layout; .side-menu-offset content shifts).
+   Header locks to the Top Bar height; body scrolls between a search and
+   a pinned user footer. Add .side-menu--static to show it in flow
+   (documentation / catalogue). */
+.side-menu {
+  background: var(--color-light-l1);
+  border-right: 1px solid var(--color-secondary-l2);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  transform: translateX(calc(-1 * var(--spacing-7)));
+  transition: transform 140ms ease-out, opacity 140ms ease-out,
+              visibility 0s linear 140ms, box-shadow 140ms ease;
+  visibility: hidden;
+  width: var(--side-menu-width);
+  z-index: 50;
+}
+.side-menu-pinned .side-menu,
+.side-menu-peek .side-menu,
+.side-menu--static {
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform 140ms ease-out, opacity 140ms ease-out,
+              visibility 0s, box-shadow 140ms ease;
+  visibility: visible;
+}
+.side-menu-peek:not(.side-menu-pinned) .side-menu { box-shadow: var(--shadow-lg); }
+.side-menu--static { position: relative; z-index: auto; }
+.side-menu:focus { outline: none; }   /* focused on keyboard open — deliberate jump */
+
+/* Header: clears the overlaying toggle (12 + 32 + 8 = 52px). */
+.side-menu__header {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-3);
+  height: var(--top-bar-height);
+  padding: 0 var(--spacing-4) 0 calc(var(--spacing-10) + var(--spacing-2));
+}
+.side-menu--static .side-menu__header { padding-left: var(--spacing-5); }
+.side-menu__title {
+  color: var(--color-dark);
+  flex: 1;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.side-menu__actions {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--spacing-2);
+  margin-left: auto;
+}
+.side-menu__actions .btn { border-radius: var(--rounded-lg); }
+/* Close: visually-hidden-focusable — first Tab stop, shown only on keyboard focus. */
+.side-menu__close { order: 1; }
+.side-menu__close:not(:focus-visible) { opacity: 0; pointer-events: none; position: absolute; }
+
+/* Search: 32px field, 20px side inset. Sits above the body so the top
+   scroll shadow paints over the list. */
+.side-menu__search {
+  flex-shrink: 0;
+  padding: var(--spacing-4) var(--spacing-6) var(--spacing-7);
+  position: relative;
+  transition: box-shadow 150ms ease;
+  z-index: 1;
+}
+.side-menu__search .input__field { height: var(--spacing-8); padding-left: var(--spacing-4); }
+
+.side-menu__body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: var(--spacing-7);
+  scrollbar-color: var(--color-secondary-l2) transparent;
+  scrollbar-width: thin;
+}
+.side-menu__body::-webkit-scrollbar { width: var(--spacing-3); }
+.side-menu__body::-webkit-scrollbar-track { background: transparent; }
+.side-menu__body::-webkit-scrollbar-thumb {
+  background: var(--color-secondary-l2);
+  background-clip: padding-box;
+  border: var(--spacing-1) solid transparent;
+  border-radius: var(--rounded-full);
+}
+.side-menu__body::-webkit-scrollbar-thumb:hover { background-color: var(--color-secondary-l0); }
+
+.side-menu__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.side-menu__group { display: flex; flex-direction: column; gap: var(--spacing-2); }
+
+/* Section header: 12px uppercase + chevron. Collapsing is pure CSS — the
+   items after a header with aria-expanded="false" are hidden. */
+.side-menu__group-header {
+  align-items: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  height: var(--spacing-9);
+  justify-content: space-between;
+  letter-spacing: 0.06em;
+  padding: var(--spacing-3) var(--spacing-6) var(--spacing-3) var(--spacing-5);
+  text-transform: uppercase;
+  width: 100%;
+}
+.side-menu__group-header .lexicon-icon { transition: transform 150ms ease; }
+.side-menu__group-header[aria-expanded="false"] .lexicon-icon { transform: rotate(-90deg); }
+.side-menu__group-header[aria-expanded="false"] ~ .side-menu__item { display: none; }
+
+/* Item: 40px row, 24px icon box, 6px rail (border + padding = 16px inset). */
+.side-menu__item {
+  align-items: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  border-left: var(--spacing-2-5) solid transparent;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  gap: var(--spacing-3);
+  height: var(--spacing-9);
+  padding: var(--spacing-3) var(--spacing-5) var(--spacing-3) calc(var(--spacing-5) - var(--spacing-2-5));
+  text-align: left;
+  text-decoration: none;
+  width: 100%;
+}
+.side-menu__item:hover { background: var(--color-light); }
+.side-menu__item.is-active {
+  background: var(--color-primary-l3);
+  border-left-color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+.side-menu__item-icon {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  height: var(--spacing-7);
+  justify-content: center;
+  width: var(--spacing-7);
+}
+/* Separator before secondary navigation (e.g. Recycle Bin). */
+.side-menu__divider { border-top: 1px solid var(--color-secondary-l3); margin: 0 var(--spacing-5); }
+
+/* Pinned user footer + upward menu. */
+.side-menu__footer {
+  flex-shrink: 0;
+  padding: var(--spacing-3);
+  position: relative;
+  transition: box-shadow 150ms ease;
+  z-index: 1;
+}
+.side-menu.is-clipped-top .side-menu__search { box-shadow: var(--shadow-scroll-top); }
+.side-menu.is-clipped-bottom .side-menu__footer { box-shadow: var(--shadow-scroll-bottom); }
+
+.side-menu__user { position: relative; }
+/* 8px footer pad + 8px trigger pad = 16px → avatar on the item icon box,
+   name on the item label column. */
+.side-menu__user-trigger {
+  align-items: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: var(--rounded-lg);
+  color: var(--color-dark);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semi);
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  text-align: left;
+}
+.side-menu__user-trigger:hover { background: var(--color-light); }
+.side-menu__user.is-open .side-menu__user-trigger { background: color-mix(in srgb, var(--color-dark) 8%, transparent); }
+.side-menu__user-avatar {
+  border-radius: var(--rounded-full);
+  flex-shrink: 0;
+  height: var(--spacing-7);
+  overflow: hidden;
+  width: var(--spacing-7);
+}
+.side-menu__user-avatar > img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.side-menu__user-name { white-space: nowrap; }
+.side-menu__user-caret { color: var(--color-dark); flex-shrink: 0; opacity: 0.55; transition: transform 150ms ease; }
+.side-menu__user-trigger[aria-expanded="true"] .side-menu__user-caret { transform: rotate(180deg); }
+.side-menu__user-menu {
+  border-radius: var(--rounded-lg);
+  bottom: calc(100% + var(--spacing-2));
+  left: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  z-index: 30;
+}
+.side-menu__user:not(.is-open) .side-menu__user-menu { display: none; }
+
+/* Content that makes room for a pinned menu (put it on <main>). */
+.side-menu-offset { transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+.side-menu-pinned .side-menu-offset { margin-left: var(--side-menu-width); }
+
+/* Mobile scrim behind a pinned (overlay) menu; tap closes it. */
+.side-menu-scrim {
+  background: var(--color-scrim);
+  inset: 0;
+  opacity: 0;
+  position: fixed;
+  transition: opacity 140ms ease-out, visibility 0s linear 140ms;
+  visibility: hidden;
+  z-index: 45;
+}
+
+
+/* ─── Global Menu ───────────────────────────────────────────────
+   Dropdown hub: products · divider · admin · sites. Opened by the
+   secondary borderless `grid` trigger (.global-menu-trigger, a .top-bar__btn)
+   inside a .global-menu-anchor. Add .global-menu--static to show it open
+   in flow (documentation / catalogue). */
+.global-menu-anchor { position: relative; }
+/* Solid active fill (8% dark over white): on mobile the trigger sits above
+   the overlay but the bar behind it doesn't, so a see-through tint would
+   look dimmed. */
+.global-menu-trigger[aria-expanded="true"],
+.global-menu-trigger[aria-expanded="true"]:hover {
+  background: color-mix(in srgb, var(--color-dark) 8%, var(--color-white));
+  color: var(--color-dark);
+}
+
+.global-menu {
+  background: var(--color-white);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-dropdown);
+  font-family: var(--font-family-base);
+  max-height: calc(100vh - var(--top-bar-height));
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--spacing-2));
+  width: var(--global-menu-width);
+  z-index: 70;
+}
+.global-menu-anchor:not(.is-open) .global-menu { display: none; }
+.global-menu--static { position: relative; right: auto; top: auto; z-index: auto; }
+.global-menu ul { list-style: none; margin: 0; padding: 0; }
+
+/* Products + admin: 16px top, 8px between items / around the divider. */
+.global-menu .global-menu__products {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) 0 var(--spacing-3);
+}
+.global-menu__divider { border-top: 1px solid var(--color-secondary-l3); }
+
+/* Item: 32px, 16px sides. Kit weight tokens sit one step below Figma, so
+   Figma Regular 400 → --semi and Semibold 600 → --bold. */
+.global-menu__item {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-weight: var(--font-weight-semi);
+  gap: var(--spacing-3);
+  line-height: 1.5;
+  min-height: var(--spacing-8);
+  padding: var(--spacing-2) var(--spacing-5);
+  text-align: left;
+  width: 100%;
+}
+.global-menu__item:hover { background: var(--color-primary-l3); }
+.global-menu__item.is-active {
+  background: var(--color-primary-l3);
+  box-shadow: inset var(--spacing-2) 0 0 var(--color-primary-l0);
+  font-weight: var(--font-weight-bold);
+}
+.global-menu__item:focus-visible {
+  background: var(--color-primary-l3);
+  outline: 2px solid var(--color-primary-l0);
+  outline-offset: -2px;
+}
+/* Product item: 16px $dark · 20px product icon (product-icons/*-20.svg)
+   in a 24px sticker. */
+.global-menu__item--product { font-size: var(--font-size-md); }
+.global-menu__sticker { background: transparent; padding: var(--spacing-1); }
+.global-menu__sticker > img { object-fit: contain; }
+
+/* Sites: light surface, uppercase label, items flush, long names wrap. */
+.global-menu__sites {
+  background: var(--color-light-l1);
+  border-top: 1px solid var(--color-secondary-l3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) 0;
+}
+.global-menu__section {
+  color: var(--color-secondary);
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  padding: 0 var(--spacing-5);
+  text-transform: uppercase;
+}
+.global-menu__item--site { color: var(--color-primary); font-size: var(--font-size-base); }
+.global-menu__item--site .sticker {
+  align-self: flex-start;
+  background: var(--color-white);
+  border-radius: var(--rounded-lg);
+  flex-shrink: 0;
+}
+/* Global site: blue-l5 tile + 12px globe-lines. */
+.global-menu__item--site .global-menu__sticker--global { background: var(--blue-l5); color: var(--color-primary); }
+/* Site vector logo: 16px inside the 24px sticker. */
+.global-menu__sticker--logo { padding: var(--spacing-2); }
+.global-menu__sticker--logo > img { object-fit: contain; }
+.global-menu__item--all { color: var(--color-primary-d1); }
+
+/* Mobile-only overlay (spec: $dark-l2 at 80%); the Top Bar end zone stays above it. */
+.global-menu-scrim {
+  background: color-mix(in srgb, var(--color-dark-l2) 80%, transparent);
+  inset: 0;
+  opacity: 0;
+  position: fixed;
+  transition: opacity 140ms ease-out, visibility 0s linear 140ms;
+  visibility: hidden;
+  z-index: 65;
+}
+
+
+/* ─── Navigation: compact breakpoint ─── */
+@media (max-width: 767px) {
+  .top-bar { padding: var(--spacing-3); }
+  .top-bar__title,
+  .side-menu__title { font-size: var(--font-size-md); }
+  .side-menu__header { padding: 0 var(--spacing-3) 0 var(--spacing-10); }
+  .side-menu__search { padding-left: var(--spacing-4); padding-right: var(--spacing-4); }
+  /* Pinned becomes an overlay: no push, no title shift, scrim instead. */
+  .side-menu-pinned .side-menu-offset,
+  .side-menu-pinned .top-bar__title { margin-left: 0; }
+  .side-menu-pinned .side-menu-scrim,
+  .global-menu-open .global-menu-scrim {
+    opacity: 1;
+    transition: opacity 140ms ease-out, visibility 0s;
+    visibility: visible;
+  }
+  .global-menu { max-width: calc(100vw - 2 * var(--spacing-2)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-menu, .side-menu-offset, .top-bar__title { transition: none; }
+}

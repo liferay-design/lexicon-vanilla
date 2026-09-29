@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Menu — Vanilla Lexicon</title>
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+      if(localStorage.getItem('vanilla-cms-style')==='1'){
+        r.style.setProperty('--rounded-sm','4px');
+        r.style.setProperty('--rounded-md','8px');
+        r.style.setProperty('--rounded-lg','16px');
+      }else{
+        r.style.removeProperty('--rounded-sm');
+        r.style.removeProperty('--rounded-md');
+        r.style.removeProperty('--rounded-lg');
+      }
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+  <script src="../navigation.js"></script>
+
+  <style>
+    .showcase { max-width: 960px; margin: 0 auto; padding: var(--spacing-9) var(--spacing-7); }
+    .showcase h1 { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); margin: 0 0 var(--spacing-3); }
+    .showcase p.lead { color: var(--color-secondary); font-size: var(--font-size-sm); margin: 0 0 var(--spacing-8); }
+    .showcase p.note { color: var(--color-secondary); font-size: var(--font-size-sm); margin: var(--spacing-3) 0 0; }
+    .showcase__section { margin-bottom: var(--spacing-9); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-secondary); margin-bottom: var(--spacing-3); display: block; }
+    .showcase__frame { border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); overflow: visible; }
+    .showcase__row { display: flex; flex-wrap: wrap; gap: var(--spacing-7); align-items: flex-start; }
+    .showcase code { font-size: var(--font-size-sm); }
+  </style>
+</head>
+<body>
+
+<main class="showcase">
+  <h1>Global Menu</h1>
+  <p class="lead">
+    Source: <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=4928-9068">Figma — Lexicon Satellites › Global Menu</a> (kit width 240px, 8px radius) ·
+    spec: Confluence PEDS "Global Menu". Hub to jump between products (product icons from <code>product-icons/*-20.svg</code>),
+    admin tools and sites. Behaviour from <code>navigation.js</code> (opt-in): opens from the <code>.global-menu-trigger</code>,
+    closes on Esc (focus returns to the trigger) or outside click, arrow keys move through items, and a
+    <code>global-menu:select</code> event tells the page what was chosen. Mobile (&lt;768px) adds the
+    <code>.global-menu-scrim</code> overlay.
+  </p>
+
+  <div class="showcase__section">
+    <span class="showcase__label">Live — in a Top Bar (click the grid button)</span>
+    <div class="showcase__frame">
+      <header class="top-bar">
+        <div class="top-bar__start"><span class="top-bar__title">Control Panel</span></div>
+        <div class="top-bar__end">
+          <div class="global-menu-anchor">
+      <button class="top-bar__btn global-menu-trigger" type="button" aria-label="Global Menu" aria-haspopup="true" aria-expanded="false" aria-controls="gm-live">
+        <svg class="lexicon-icon"><use href="#grid"></use></svg>
+      </button>
+            <nav class="global-menu" id="gm-live" aria-label="Global Menu">
+        <ul class="global-menu__products">
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/cms-20.svg" alt=""></span>
+          <span>Content Management</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/commerce-20.svg" alt=""></span>
+          <span>Commerce</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/ai-hub-20.svg" alt=""></span>
+          <span>AI Hub</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/data-platform-20.svg" alt=""></span>
+          <span>Data Platform</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/digital-sales-room-20.svg" alt=""></span>
+          <span>Digital Sales Room</span>
+        </button></li>
+        <li class="global-menu__divider" role="separator"></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/applications-20.svg" alt=""></span>
+          <span>Applications</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product is-active" aria-current="page">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/control-panel-20.svg" alt=""></span>
+          <span>Control Panel</span>
+        </button></li>
+        </ul>
+        <div class="global-menu__sites">
+          <span class="global-menu__section">Sites</span>
+          <ul>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--logo" aria-hidden="true"><img src="../prototypes/img/site-liferay-dxp.svg" alt=""></span>
+              <span>Liferay DXP Site</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--global" aria-hidden="true"><svg class="lexicon-icon lexicon-icon-sm"><use href="#globe-lines"></use></svg></span>
+              <span>Global</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site global-menu__item--all">View All Sites</button></li>
+          </ul>
+        </div>
+            </nav>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div class="global-menu-scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="showcase__section">
+    <span class="showcase__label">Static — .global-menu--static (Control Panel active)</span>
+    <nav class="global-menu global-menu--static" aria-label="Global Menu example">
+        <ul class="global-menu__products">
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/cms-20.svg" alt=""></span>
+          <span>Content Management</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/commerce-20.svg" alt=""></span>
+          <span>Commerce</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/ai-hub-20.svg" alt=""></span>
+          <span>AI Hub</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/data-platform-20.svg" alt=""></span>
+          <span>Data Platform</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/digital-sales-room-20.svg" alt=""></span>
+          <span>Digital Sales Room</span>
+        </button></li>
+        <li class="global-menu__divider" role="separator"></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/applications-20.svg" alt=""></span>
+          <span>Applications</span>
+        </button></li>
+        <li><button type="button" class="global-menu__item global-menu__item--product is-active" aria-current="page">
+          <span class="sticker global-menu__sticker" aria-hidden="true"><img src="../product-icons/control-panel-20.svg" alt=""></span>
+          <span>Control Panel</span>
+        </button></li>
+        </ul>
+        <div class="global-menu__sites">
+          <span class="global-menu__section">Sites</span>
+          <ul>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--logo" aria-hidden="true"><img src="../prototypes/img/site-liferay-dxp.svg" alt=""></span>
+              <span>Liferay DXP Site</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site">
+              <span class="sticker global-menu__sticker--global" aria-hidden="true"><svg class="lexicon-icon lexicon-icon-sm"><use href="#globe-lines"></use></svg></span>
+              <span>Global</span>
+            </button></li>
+            <li><button type="button" class="global-menu__item global-menu__item--site global-menu__item--all">View All Sites</button></li>
+          </ul>
+        </div>
+    </nav>
+    <p class="note">Items: <code>.global-menu__item--product</code> (20px icon in a 24px <code>.global-menu__sticker</code>) ·
+      <code>.global-menu__divider</code> before admin tools · <code>.global-menu__item--site</code> with a photo, a
+      <code>.global-menu__sticker--logo</code> (16px vector) or the <code>.global-menu__sticker--global</code> tile ·
+      <code>.global-menu__item--all</code> for View All Sites. Active: <code>.is-active</code> + <code>aria-current="page"</code>.</p>
+  </div>
+</main>
+
+</body>
+</html>
