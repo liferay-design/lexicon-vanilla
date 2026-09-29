@@ -25,6 +25,7 @@ The goal is the same as the parent project (`../prototypes/`): give designers a 
    <svg class="lexicon-icon"><use href="#plus"></use></svg>
    ```
    Sizes: `lexicon-icon-sm` (12), `lexicon-icon` (16, default), `lexicon-icon-lg` (24), `lexicon-icon-xl` (32), `lexicon-icon-2xl` (48). The full list of 513 names is `grep '<symbol id=' icons.svg`.
+   - **Exception — product icons.** The full-colour product artwork in `product-icons/` (CMS, Commerce, Control Panel…) is not part of the Clay sprite and is referenced as an image: `<img src="product-icons/cms-20.svg" alt="">`. Use only those files, at their two frame sizes (`-20`, `-40`); never redraw them inline.
 
 4. **Tokens only, no raw values.** Every color / size / radius / font-size in CSS or inline `style` must reference a `var(--…)` from `tokens.css`. No `#0B5FFF`, no `16px` literals (except inside `tokens.css` itself).
 
@@ -55,6 +56,7 @@ vanilla/
 ├── starter.html                ← scaffold for new prototypes (copy → edit)
 ├── showcases/                  ← one live showcase per component (button.html, alert.html, …)
 ├── illustrations/              ← decorative SVGs (satellite, spaceship, telescope)
+├── product-icons/              ← full-colour product artwork, 20 + 40px frames (<img>, not the sprite)
 └── prototypes/                 ← designer outputs (created on demand)
 ```
 
@@ -139,6 +141,7 @@ For text/icons that must stay legible in every skin, use `var(--color-dark)` wit
 | Management Toolbar *(satellite)* | [`397:297`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297) | `.management-toolbar` wrapper. Default: checkbox + filter/order + search + view picker + actions. Active: `.management-toolbar--active` (primary underline, selection count, bulk actions). Optional `__results` bar. Desktop + mobile responsive. |
 | Control Menu *(satellite)* | [`3310:13193`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193) | `.control-menu` app top bar. Left: `.control-menu__btns` (product-menu toggle + optional back) + `.control-menu__title`. Right: global-nav icon + `.control-menu__avatar` (36px circle). Mobile uses tighter padding via `@media (max-width: 767px)`. |
 | CMS Menu *(satellite)* | [`2545:4896`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=2545-4896) | `.cms-menu` 280px sidebar panel (light-l1 bg + secondary-l0 right border). Groups in `.cms-menu__groups` (16px gap). Reuses `.vert-nav__item` rows and `.vert-nav__group-header` section labels. Section headers with an add action use `.vert-nav__group-actions` to wrap button + caret. Space items use `.sticker` in the icon cell (colour via inline style — user data). |
+| Product Icons *(satellite)* | [`3981:3`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3981-3) | Full-colour product artwork in `product-icons/` — **not** in the Clay sprite, so use `<img src="product-icons/<name>-20.svg" alt="">`. Nine products (`cms`, `cmp`, `applications`, `ai-hub`, `seo-studio`, `control-panel`, `commerce`, `data-platform`, `digital-sales-room`) × two frames: `-20` (menus, stickers, toggles — e.g. Global Menu items in a 24px sticker with 2px padding) and `-40` (large use; renders crisply at 2×). Fixed brand colours, identical in every skin. Showcase: `producticons.html`. |
 | Charts *(source: [Lexicon Charts ↗](https://marcoscv-work.github.io/lexicon-vanilla-charts/))* | four static, no-JS families | **Bar** — `.chart-bars` (inline multiple; value pinned to the fill tip) and `.chart-stacked` (one 100% segmented bar). **Line** — `.chart-line` SVG; one hue, series told apart by marker shape + line style (`--dashed`/`--dotted`). **Pie** — `.chart-donut` SVG `stroke-dasharray` segments + centre total; wrap with `.chart-legend--rows` in `.chart-pie` for a responsive legend (right by default, drops below when narrow). **Map** — `.map-chart` dots over a simplified world map inlined as a plain `<svg>` (no script). Colour with `.chart-c1..10` (categorical, ordered for accessibility) / `.chart-seq1..3` (they set `--c`). Tokens: `--chart-1..10` (alias the base hues), `--chart-seq-1..3`, `--chart-track/grid/halo/axis/land`. Showcases: `barchart.html` · `linechart.html` · `piechart.html` · `mapchart.html`. |
 
 For new Figma components, get the Playground node-id, fetch the node JSON + PNG via the REST API, map fills to tokens, write the CSS + showcase HTML, and append a row here.
