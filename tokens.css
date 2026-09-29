@@ -117,6 +117,13 @@
   /* ── Focus ring ── */
   --focus-ring: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-primary-l0);
 
+  /* ── Navigation chrome (Top Bar / Side Menu / Global Menu satellites) ──
+     --top-bar-height is the 32px toggle + 2×12px padding; components.css
+     drops it to 48px (2×8px) below 768px. */
+  --top-bar-height:    calc(var(--spacing-8) + 2 * var(--spacing-4));
+  --side-menu-width:   280px;
+  --global-menu-width: 240px;
+
   /* ── Chart colors ── */
   --blue-d4: #004799;
   --blue-d3: #0053B3;

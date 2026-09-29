@@ -19,6 +19,7 @@ The goal is the same as the parent project (`../prototypes/`): give designers a 
    <link rel="stylesheet" href="components.css">
    <script src="icons.js"></script>
    ```
+   Pages that use the Top Bar / Side Menu / Global Menu satellites add a fourth line, `<script src="navigation.js"></script>` (opt-in; nothing else needs it).
 
 3. **Lexicon icons only, at Lexicon sizes.** No hand-drawn SVG paths, no Heroicons, no emoji, no font-awesome. Reference icons by id from `icons.svg`:
    ```html
@@ -51,6 +52,7 @@ vanilla/
 ├── components.css              ← all components: .btn, .alert, .picker, .table, …
 ├── icons.svg                   ← canonical sprite (513 Clay icons, source of truth)
 ├── icons.js                    ← runtime loader: inlines icons.svg into <body> on load
+├── navigation.js               ← opt-in behaviour for the Top Bar / Side Menu / Global Menu satellites
 ├── index.html                  ← single-page catalogue with sidebar skin selector
 ├── colors.html                 ← full color token palette (142 tokens)
 ├── starter.html                ← scaffold for new prototypes (copy → edit)
@@ -141,6 +143,9 @@ For text/icons that must stay legible in every skin, use `var(--color-dark)` wit
 | Management Toolbar *(satellite)* | [`397:297`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=397-297) | `.management-toolbar` wrapper. Default: checkbox + filter/order + search + view picker + actions. Active: `.management-toolbar--active` (primary underline, selection count, bulk actions). Optional `__results` bar. Desktop + mobile responsive. |
 | Control Menu *(satellite)* | [`3310:13193`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3310-13193) | `.control-menu` app top bar. Left: `.control-menu__btns` (product-menu toggle + optional back) + `.control-menu__title`. Right: global-nav icon + `.control-menu__avatar` (36px circle). Mobile uses tighter padding via `@media (max-width: 767px)`. |
 | CMS Menu *(satellite)* | [`2545:4896`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=2545-4896) | `.cms-menu` 280px sidebar panel (light-l1 bg + secondary-l0 right border). Groups in `.cms-menu__groups` (16px gap). Reuses `.vert-nav__item` rows and `.vert-nav__group-header` section labels. Section headers with an add action use `.vert-nav__group-actions` to wrap button + caret. Space items use `.sticker` in the icon cell (colour via inline style — user data). |
+| Top Bar *(satellite)* | [Unified Navigation](prototypes/unified-navigation.html) *(exploration)* | `<header class="top-bar">` 56px (48px mobile) app bar. `.top-bar__start` (Side Menu toggle `.top-bar__toggle` in a `.nav-tip.top-bar__toggle-wrap` + `.top-bar__title`) · `.top-bar__end` (actions + Global Menu trigger; stays above the mobile overlay). Buttons `.top-bar__btn` (32px, 8px radius). Toggle brand: `.top-bar__brand--contain` (20px product icon / logo) · plain (site photo) · `--global`. `data-follow-side-menu` on the title makes it follow the chosen item. Behaviour: `navigation.js`. Showcase: `topbar.html`. |
+| Side Menu *(satellite)* | [Unified Navigation](prototypes/unified-navigation.html) *(exploration)* | `<aside class="side-menu" id="side-menu" tabindex="-1">` 280px (`--side-menu-width`) panel flush left. States on `<body>` (set by `navigation.js`): hidden · `.side-menu-peek` (hover the toggle, elevated overlay) · `.side-menu-pinned` (click; `.side-menu-offset` content shifts; overlay + `.side-menu-scrim` below 768px). `__header` (locked to `--top-bar-height`, `__title`, `__actions`, keyboard-only `__close`) · `__search` (32px field) · `__body` → `__groups` → `__group` (`__group-header[aria-expanded]` collapses its `__item`s in pure CSS) · `__item` (+ `__item-icon`, `.is-active`) · `__divider` · `__footer` → `__user` (upward `__user-menu`). `.side-menu--static` shows it in flow. Event: `side-menu:select`. Showcase: `sidemenu.html`. |
+| Global Menu *(satellite)* | [`4928:9068`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=4928-9068) | `.global-menu-anchor` > `.top-bar__btn.global-menu-trigger` (`#grid`) + `<nav class="global-menu">` 240px (`--global-menu-width`, Figma says 280), 8px radius. `.global-menu__products` (`__item--product`: 20px `product-icons/*-20.svg` in a 24px `.global-menu__sticker`) · `__divider` before admin tools · `__sites` (`__section` label, `__item--site` with photo / `__sticker--logo` / `__sticker--global`, `__item--all`). Active: `.is-active` + `aria-current`. `navigation.js`: open/close, Esc returns focus, arrows, outside click, `.global-menu-scrim` on mobile, `global-menu:select` event. `.global-menu--static` shows it open. Showcase: `globalmenu.html`. |
 | Product Icons *(satellite)* | [`3981:3`](https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3981-3) | Full-colour product artwork in `product-icons/` — **not** in the Clay sprite, so use `<img src="product-icons/<name>-20.svg" alt="">`. Nine products (`cms`, `cmp`, `applications`, `ai-hub`, `seo-studio`, `control-panel`, `commerce`, `data-platform`, `digital-sales-room`) × two frames: `-20` (menus, stickers, toggles — e.g. Global Menu items in a 24px sticker with 2px padding) and `-40` (large use; renders crisply at 2×). Fixed brand colours, identical in every skin. Showcase: `producticons.html`. |
 | Charts *(source: [Lexicon Charts ↗](https://marcoscv-work.github.io/lexicon-vanilla-charts/))* | four static, no-JS families | **Bar** — `.chart-bars` (inline multiple; value pinned to the fill tip) and `.chart-stacked` (one 100% segmented bar). **Line** — `.chart-line` SVG; one hue, series told apart by marker shape + line style (`--dashed`/`--dotted`). **Pie** — `.chart-donut` SVG `stroke-dasharray` segments + centre total; wrap with `.chart-legend--rows` in `.chart-pie` for a responsive legend (right by default, drops below when narrow). **Map** — `.map-chart` dots over a simplified world map inlined as a plain `<svg>` (no script). Colour with `.chart-c1..10` (categorical, ordered for accessibility) / `.chart-seq1..3` (they set `--c`). Tokens: `--chart-1..10` (alias the base hues), `--chart-seq-1..3`, `--chart-track/grid/halo/axis/land`. Showcases: `barchart.html` · `linechart.html` · `piechart.html` · `mapchart.html`. |
 
@@ -216,6 +221,41 @@ For new Figma components, get the Playground node-id, fetch the node JSON + PNG 
 
 - **Size:** default (14/21) · `section--sm` (12/18)
 - **Type:** default (header) · `section--link` (render as `<a>`, add `#angle-right`)
+
+### Navigation satellites (Top Bar · Side Menu · Global Menu)
+
+Opt-in: these need `navigation.js` for behaviour. Pages that don't include it are unaffected.
+
+```html
+<script src="navigation.js"></script>   <!-- 4th include, only on pages using these satellites -->
+
+<header class="top-bar">
+  <div class="top-bar__start">
+    <span class="nav-tip top-bar__toggle-wrap">
+      <button class="top-bar__btn top-bar__toggle" type="button" aria-label="Pin Menu" aria-expanded="false" aria-controls="side-menu">
+        <span class="sticker sticker--md top-bar__brand top-bar__brand--contain" aria-hidden="true"><img src="product-icons/cms-20.svg" alt=""></span>
+        <svg class="lexicon-icon top-bar__toggle-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+      <span class="tooltip tooltip--top tooltip--align-start nav-tip__bubble top-bar__toggle-tip" role="tooltip">Pin Menu</span>
+    </span>
+    <span class="top-bar__title" data-follow-side-menu>Home</span>
+  </div>
+  <div class="top-bar__end">
+    <div class="global-menu-anchor">
+      <button class="top-bar__btn global-menu-trigger" type="button" aria-label="Global Menu" aria-haspopup="true" aria-expanded="false" aria-controls="gm"><svg class="lexicon-icon"><use href="#grid"></use></svg></button>
+      <nav class="global-menu" id="gm" aria-label="Global Menu"><!-- see showcases/globalmenu.html --></nav>
+    </div>
+  </div>
+</header>
+<div class="global-menu-scrim" aria-hidden="true"></div>
+<div class="side-menu-scrim" aria-hidden="true"></div>
+<aside class="side-menu" id="side-menu" tabindex="-1"><!-- see showcases/sidemenu.html --></aside>
+<main class="side-menu-offset">…</main>
+```
+
+- **Events** (listen on `document`): `side-menu:select` `{ item, label }` · `global-menu:select` `{ item }`. The kit only sets active states and closes menus; what a selection does is up to the page.
+- **API:** `LexiconNav.setPinned(bool)` · `LexiconNav.isPinned()` · `LexiconNav.refresh()` (after re-rendering Side Menu content).
+- Full working example: `prototypes/unified-navigation.html` (an *exploration* — reference the satellites, not the page).
 
 ---
 
