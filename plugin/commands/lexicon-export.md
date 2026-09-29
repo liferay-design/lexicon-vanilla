@@ -11,7 +11,7 @@ OUT="export"
 rm -rf "$OUT"; mkdir -p "$OUT/prototypes"
 
 # 1. Minimal runtime dependencies a prototype needs over file://
-for f in tokens.css tokens-high-contrast.css tokens-dark.css components.css icons.js; do
+for f in tokens.css tokens-high-contrast.css tokens-dark.css components.css icons.js navigation.js; do
   [ -f "$f" ] && cp "$f" "$OUT/"
 done
 

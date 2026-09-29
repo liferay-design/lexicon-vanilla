@@ -31,10 +31,10 @@ curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
       "$DIR/prototypes" \
       "$DIR/kit-manifest.json"
 
-# Product icons (kit-owned artwork referenced via <img>). Separate, tolerant
-# extraction: versions tagged before product-icons/ existed simply skip it.
+# Product icons + navigation.js (opt-in satellite behaviour). Separate, tolerant
+# extraction: versions tagged before they existed simply skip them.
 curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
-  | tar xz --strip-components=1 -C "$TMP" "$DIR/product-icons" 2>/dev/null || true
+  | tar xz --strip-components=1 -C "$TMP" "$DIR/product-icons" "$DIR/navigation.js" 2>/dev/null || true
 
 # Safety gate: touch the working copy ONLY if the download is complete
 if [ ! -f "$TMP/components.css" ] || [ ! -d "$TMP/shells" ] || [ ! -d "$TMP/showcases" ]; then
@@ -48,6 +48,7 @@ cp "$TMP"/tokens*.css "$TMP"/components.css "$TMP"/icons.svg "$TMP"/icons.js "$T
 rm -rf shells showcases
 cp -R "$TMP/shells" "$TMP/showcases" ./
 if [ -d "$TMP/product-icons" ]; then rm -rf product-icons; cp -R "$TMP/product-icons" ./; fi
+[ -f "$TMP/navigation.js" ] && cp "$TMP/navigation.js" ./
 
 # Prototypes: overwrite ONLY the canonical examples listed in kit-manifest.json.
 # Your own prototypes are never touched or deleted.
