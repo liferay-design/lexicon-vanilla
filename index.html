@@ -274,6 +274,7 @@
       <li><a href="#comp-cms-breadcrumb">CMS Breadcrumb</a></li>
       <li><a href="#comp-cms-dropdown">CMS Dropdown</a></li>
       <li><a href="#comp-controlpanel">Control Panel</a></li>
+      <li><a href="#comp-producticons">Product Icons</a></li>
     </ul>
 
     <h2>Prototypes / References</h2>
@@ -2934,6 +2935,92 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ───────────────────────  PRODUCT ICONS (Satellite)  ─────────────────── -->
+    <section id="comp-producticons" class="ref__component">
+      <div class="ref__component-header">
+        <h2>Product Icons</h2>
+        <span class="ref__component-meta">
+          <a href="https://www.figma.com/design/BaksMumOL8uRzeZLAfd4Ku/Lexicon-Satellites?node-id=3981-3">Figma ↗</a>
+          ·
+          <a href="showcases/producticons.html">Playground</a>
+        </span>
+      </div>
+      <p class="lead">Full-colour product artwork, <strong>not</strong> part of the Clay sprite — reference the file with <code>&lt;img&gt;</code>: <code>&lt;img src="product-icons/cms-20.svg" alt=""&gt;</code>. Two frame sizes: <code>-20</code> (menus, stickers, toggles — e.g. Global Menu items) and <code>-40</code> (large use, e.g. a product home at 2×). Fixed brand colours, identical in every skin.</p>
+
+      <style>
+        .product-icon-grid__item { width: calc(3 * var(--spacing-9)); }
+        /* File names break at hyphens, never mid-word (the base grid uses break-all). */
+        .product-icon-grid__item .icon-grid__name { word-break: normal; }
+        .product-icon-grid__pair { display: flex; align-items: center; gap: var(--spacing-4); min-height: var(--spacing-9); }
+      </style>
+
+      <ul class="icon-grid" style="list-style:none;padding:0;margin:0">
+        <li class="icon-grid__item product-icon-grid__item" title="CMS">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/cms-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/cms-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">cms</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="CMP">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/cmp-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/cmp-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">cmp</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="Applications">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/applications-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/applications-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">applications</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="AI Hub">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/ai-hub-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/ai-hub-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">ai-hub</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="SEO Studio">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/seo-studio-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/seo-studio-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">seo-studio</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="Control Panel">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/control-panel-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/control-panel-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">control-panel</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="Commerce">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/commerce-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/commerce-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">commerce</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="Data Platform">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/data-platform-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/data-platform-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">data-platform</span>
+        </li>
+        <li class="icon-grid__item product-icon-grid__item" title="Digital Sales Room">
+          <span class="product-icon-grid__pair">
+            <img src="product-icons/digital-sales-room-20.svg" alt="" width="20" height="20">
+            <img src="product-icons/digital-sales-room-40.svg" alt="" width="40" height="40">
+          </span>
+          <span class="icon-grid__name">digital-sales-room</span>
+        </li>
+      </ul>
     </section>
 
     <!-- ─────────────────────────────  ICONS  ──────────────────────────────── -->
