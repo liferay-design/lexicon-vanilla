@@ -36,6 +36,7 @@ done
 
 # 4. Copy local assets only if the exported pages reference them
 grep -rql "illustrations/" "$OUT/prototypes" 2>/dev/null && [ -d illustrations ] && cp -R illustrations "$OUT/"
+grep -rql "product-icons/" "$OUT/prototypes" 2>/dev/null && [ -d product-icons ] && cp -R product-icons "$OUT/"
 grep -rql "/img/" "$OUT/prototypes" 2>/dev/null && [ -d prototypes/img ] && cp -R prototypes/img "$OUT/prototypes/"
 
 # 5. Contact sheet linking the exported pages

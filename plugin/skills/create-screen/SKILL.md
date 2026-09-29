@@ -34,6 +34,9 @@ if [ ! -f .lexicon ]; then
         "$DIR/shells" \
         "$DIR/showcases" \
         "$DIR/prototypes"
+  # Product icons: separate, tolerant extraction (older tagged kits don't have them).
+  curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
+    | tar xz --strip-components=1 "$DIR/product-icons" 2>/dev/null || true
   # Only stamp .lexicon if the kit really landed, so a failed download retries next time.
   if [ -f components.css ] && [ -f prototypes/login.html ] && [ -d showcases ]; then
     printf '{"version":"%s","lastCheck":"%s"}\n' "$VER" "$(date +%F)" > .lexicon
