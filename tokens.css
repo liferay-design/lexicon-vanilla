@@ -97,6 +97,8 @@
   --font-size-xl:   20px;
   --font-size-2xl:  28px;
   --font-size-3xl:  32px;
+  /* Names are one step off Figma: Regular 400 = --semi, Semibold 600 = --bold.
+     --normal (300) is lighter than any Figma style. See CLAUDE.md › Known caveats. */
   --font-weight-normal: 300;
   --font-weight-semi:   400;
   --font-weight-bold:   600;
