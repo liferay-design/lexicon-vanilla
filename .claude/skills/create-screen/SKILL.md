@@ -175,8 +175,7 @@ For avatars / product images, use `.sticker` (initials, image, or icon). See [st
   <title>{{ Concrete screen title }}</title>
 
   <!-- KEEP THIS BLOCK INTACT — copied from starter.html.
-       Applies both the active skin (vanilla-skin) and the CMS Style flag
-       (vanilla-cms-style → overrides --rounded-sm/md/lg). -->
+       Applies the active skin (vanilla-skin). -->
   <script>(function(){
     var S=['light','light-hc','dark','dark-hc'];
     function apply(){try{
@@ -184,15 +183,6 @@ For avatars / product images, use `.sticker` (initials, image, or icon). See [st
       var s=localStorage.getItem('vanilla-skin')||'light';
       S.forEach(function(c){r.classList.remove(c);});
       r.classList.add(S.indexOf(s)>-1?s:'light');
-      if(localStorage.getItem('vanilla-cms-style')==='1'){
-        r.style.setProperty('--rounded-sm','4px');
-        r.style.setProperty('--rounded-md','8px');
-        r.style.setProperty('--rounded-lg','16px');
-      }else{
-        r.style.removeProperty('--rounded-sm');
-        r.style.removeProperty('--rounded-md');
-        r.style.removeProperty('--rounded-lg');
-      }
     }catch(e){}}
     apply();
     window.addEventListener('pageshow',apply);
@@ -217,12 +207,11 @@ For avatars / product images, use `.sticker` (initials, image, or icon). See [st
 
 The block between `<script>(function(){…})()</script>` and `<script src="../icons.js"></script>` is not optional. It wires up:
 - Skin persistence across reloads (`vanilla-skin` localStorage key).
-- CMS Style propagation (`vanilla-cms-style` localStorage key → overrides `--rounded-sm/md/lg`).
 - Light, Light HC, Dark, Dark HC tokens.
 - The component stylesheet.
 - The icon sprite loader.
 
-Drop any one and the prototype breaks in one of the four skins, ignores the CMS Style toggle from `index.html`, or icons render as empty squares.
+Drop any one and the prototype breaks in one of the four skins, or icons render as empty squares.
 
 ---
 

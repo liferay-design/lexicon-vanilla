@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#FFFFFF">
   <title>Browse Panel — Lexicon Vanilla</title>
 
-  <!-- Skin + CMS-style bootstrap (verbatim from starter.html) -->
+  <!-- Skin bootstrap (verbatim from starter.html) -->
   <script>(function(){
     var S=['light','light-hc','dark','dark-hc'];
     function apply(){try{
@@ -18,15 +18,6 @@
       var s=localStorage.getItem('vanilla-skin')||'light';
       S.forEach(function(c){r.classList.remove(c);});
       r.classList.add(S.indexOf(s)>-1?s:'light');
-      if(localStorage.getItem('vanilla-cms-style')==='1'){
-        r.style.setProperty('--rounded-sm','4px');
-        r.style.setProperty('--rounded-md','8px');
-        r.style.setProperty('--rounded-lg','16px');
-      }else{
-        r.style.removeProperty('--rounded-sm');
-        r.style.removeProperty('--rounded-md');
-        r.style.removeProperty('--rounded-lg');
-      }
     }catch(e){}}
     apply();
     window.addEventListener('pageshow',apply);
@@ -41,7 +32,6 @@
     /* Page-scoped kit tweaks (moved out of components.css — the kit defaults
        stay --rounded-md / 8px sticker--sm text; do not promote these back):
        8px sticker corners, 10px small-sticker text. */
-    .sticker { border-radius: var(--rounded-lg); }
     .sticker--sm { font-size: 10px; border-radius: var(--rounded-md); }
 
     /* ── Page-level tokens ──────────────────────────────────────
@@ -68,7 +58,6 @@
        kit's 10px/16px base. */
     .control-menu { padding: var(--spacing-4); }
     .control-menu__left { gap: var(--spacing-3); }
-    .control-menu__btn { border-radius: var(--rounded-lg); }
     /* The menu toggle stays in the Control Menu flow but paints above the
        floating panel, so it reads as the panel's top-left corner button. */
     .control-menu__btns { position: relative; z-index: 60; }
@@ -171,7 +160,6 @@
       gap: var(--spacing-2);
       margin-left: auto;
     }
-    .control-panel__actions .btn { border-radius: var(--rounded-lg); }
     /* Close button: hidden until keyboard focus (visually-hidden-focusable). */
     .control-panel__close { order: 1; }
     .control-panel__close:not(:focus-visible) {

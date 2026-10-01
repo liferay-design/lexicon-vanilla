@@ -139,7 +139,6 @@
       font-weight: inherit;
     }
     .ref__skin .dropdown__item:hover { background: var(--color-light); }
-    .ref__cms-toggle { margin-bottom: var(--spacing-7); }
     .ref__download {
       display: flex;
       align-items: center;
@@ -207,12 +206,6 @@
         </button></li>
       </ul>
     </div>
-
-    <label class="toggle toggle--sm ref__cms-toggle">
-      <input type="checkbox" class="toggle__input" id="cms-style-toggle">
-      <span class="toggle__track"><span class="toggle__dot"></span></span>
-      <span class="toggle__label">CMS Style</span>
-    </label>
 
     <h2>Vanilla Lexicon</h2>
     <ul>
@@ -5040,35 +5033,6 @@
     });
   })();
 
-  (function () {
-    var root = document.documentElement;
-    var toggle = document.getElementById('cms-style-toggle');
-    var KEY = 'vanilla-cms-style';
-
-    function applyCmsStyle(on) {
-      if (on) {
-        root.style.setProperty('--rounded-sm', '4px');
-        root.style.setProperty('--rounded-md', '8px');
-        root.style.setProperty('--rounded-lg', '16px');
-      } else {
-        root.style.removeProperty('--rounded-sm');
-        root.style.removeProperty('--rounded-md');
-        root.style.removeProperty('--rounded-lg');
-      }
-    }
-
-    // Restore from localStorage on load (so prototypes opened later see the same state)
-    try {
-      var stored = localStorage.getItem(KEY) === '1';
-      toggle.checked = stored;
-      applyCmsStyle(stored);
-    } catch (e) {}
-
-    toggle.addEventListener('change', function () {
-      applyCmsStyle(toggle.checked);
-      try { localStorage.setItem(KEY, toggle.checked ? '1' : ''); } catch (e) {}
-    });
-  })();
 </script>
 
 </body>

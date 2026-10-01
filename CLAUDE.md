@@ -437,19 +437,18 @@ The JS toggles the skin class on `<html>`, persists under `localStorage` key `va
 
 ---
 
-## CMS Style — implementation reference
+## Corner radii — CMS Style is the only style
 
-`index.html` ships a second sibling toggle next to the skin selector called **CMS Style**, which overrides the rounded-corner tokens at runtime:
+The rounded-corner tokens ship at the CMS Style values. There is no switch: no `vanilla-cms-style` flag, no toggle in `index.html`, no runtime override.
 
-| Token | Default | CMS Style on |
-|---|---|---|
-| `--rounded-sm` | 2px | **4px** |
-| `--rounded-md` | 4px | **8px** |
-| `--rounded-lg` | 8px | **16px** |
+| Token | Value |
+|---|---|
+| `--rounded-sm` | 4px |
+| `--rounded-md` | 8px |
+| `--rounded-lg` | 16px |
+| `--rounded-xl` | 16px |
 
-The choice persists under `localStorage` key `vanilla-cms-style` (`'1'` = on, `''` or absent = off). It propagates to prototypes and showcases the same way the skin does — the head IIFE in each page reads the flag on load and applies the three `documentElement.style.setProperty` calls before any CSS runs.
-
-### Extended IIFE (what every prototype / showcase must ship in `<head>`)
+Components keep referencing the tokens (`.btn`, `.sticker`, `.table`, `.modal` → `--rounded-md`; `.label` → `--rounded-sm`; `.card` → `--rounded-xl`), so nothing else changes. The head IIFE every page ships only bootstraps the skin:
 
 ```html
 <script>(function(){
@@ -459,22 +458,13 @@ The choice persists under `localStorage` key `vanilla-cms-style` (`'1'` = on, `'
     var s=localStorage.getItem('vanilla-skin')||'light';
     S.forEach(function(c){r.classList.remove(c);});
     r.classList.add(S.indexOf(s)>-1?s:'light');
-    if(localStorage.getItem('vanilla-cms-style')==='1'){
-      r.style.setProperty('--rounded-sm','4px');
-      r.style.setProperty('--rounded-md','8px');
-      r.style.setProperty('--rounded-lg','16px');
-    }else{
-      r.style.removeProperty('--rounded-sm');
-      r.style.removeProperty('--rounded-md');
-      r.style.removeProperty('--rounded-lg');
-    }
   }catch(e){}}
   apply();
   window.addEventListener('pageshow',apply);
 })()</script>
 ```
 
-`starter.html` already includes this — any prototype copied from the scaffold inherits it. Older prototypes / showcases authored before this change need the IIFE replaced manually.
+`starter.html` already includes this — any prototype copied from the scaffold inherits it.
 
 ---
 
