@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS · Unified Permissions — Lexicon Vanilla</title>
+
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <style>
+    /* ── Page composition (layout glue only, every value is a kit token) ── */
+    .content { display: flex; flex-direction: column; gap: var(--spacing-5); padding: var(--spacing-7); }
+    .content__head { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-5); flex-wrap: wrap; }
+
+    /* ── Permissions modal: wider than the 600px kit default, body stacks blocks ── */
+    :root { --proto-panel-w: calc(var(--spacing-10) * 4 + var(--spacing-5)); }   /* 212px */
+    /* Leave a lane on the left for the prototype panel so it never covers the modal */
+    .modal-overlay { padding-left: calc(var(--proto-panel-w) + var(--spacing-7) * 2); }
+
+    /* ── Background feedback: what the prototype panel just selected pulses three times,
+       strong enough to read through the scrim ── */
+    @keyframes perm-flash {
+      0%, 100% { background: var(--color-primary-l3); box-shadow: inset 0 0 0 2px transparent; }
+      50%      { background: var(--color-primary-l1); box-shadow: inset 0 0 0 2px var(--color-primary); }
+    }
+    .table tbody tr.is-flashing,
+    .table tbody tr.is-flashing:nth-child(even) { animation: perm-flash 0.5s ease-in-out 3; }
+    /* Space case: no row to pulse, so the crumb goes full-contrast — solid primary,
+       inverted text and sticker, double halo and a slight scale — four beats */
+    @keyframes perm-flash-crumb {
+      0%, 100% { box-shadow: 0 0 0 0 transparent; background: transparent; transform: scale(1); }
+      30%, 70% { box-shadow: 0 0 0 var(--spacing-2) var(--color-primary), 0 0 0 var(--spacing-5) var(--color-primary-l2); background: var(--color-primary); transform: scale(1.08); }
+    }
+    @keyframes perm-flash-crumb-text {
+      0%, 100% { color: inherit; }
+      30%, 70% { color: var(--color-white); }
+    }
+    @keyframes perm-flash-crumb-sticker {
+      0%, 100% { background: var(--color-primary-l3); color: var(--color-primary); border-color: var(--color-primary); }
+      30%, 70% { background: var(--color-white); color: var(--color-primary); border-color: var(--color-white); }
+    }
+    .cms-breadcrumb__item.is-flashing { position: relative; z-index: 1; border-radius: var(--rounded-md); transform-origin: center; animation: perm-flash-crumb 0.5s ease-in-out 4; }
+    .cms-breadcrumb__item.is-flashing a,
+    .cms-breadcrumb__item.is-flashing .cms-breadcrumb__sep { animation: perm-flash-crumb-text 0.5s ease-in-out 4; }
+    .cms-breadcrumb__item.is-flashing .cms-breadcrumb__space { animation: perm-flash-crumb-sticker 0.5s ease-in-out 4; }
+    @media (prefers-reduced-motion: reduce) { .is-flashing { animation: none !important; } }
+    .perm-modal { max-width: 960px; }
+    .perm-modal .modal__body { display: flex; flex-direction: column; gap: var(--spacing-6); }
+    .perm-modal__block { display: flex; flex-direction: column; gap: var(--spacing-3); }
+
+    /* What is selected: sticker + name + path, then the one-line origin */
+    .perm-modal__context { display: flex; align-items: center; gap: var(--spacing-4); }
+    .perm-modal__context-text { display: flex; flex-direction: column; gap: var(--spacing-1); min-width: 0; }
+    .perm-modal__context-name { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-dark); }
+    .perm-modal__context-path { font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.7; }
+    .perm-modal__origin { display: flex; align-items: center; gap: var(--spacing-3); flex-wrap: wrap; font-size: var(--font-size-sm); color: var(--color-dark); }
+    .perm-modal__origin-label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-dark); opacity: 0.7; }
+    .perm-modal__context + .perm-modal__origin { margin-top: calc(-1 * var(--spacing-3)); }
+
+    /* "Also apply to" rows are kit List rows; titles are plain text, not links */
+    .perm-modal .list__title { text-decoration: none; cursor: pointer; }
+    .perm-modal .list__title:hover { color: var(--color-dark); }
+    .apply-to__sub { display: flex; flex-direction: column; gap: var(--spacing-3); padding-top: var(--spacing-3); }
+
+    /* Roles × actions matrix: title (or type tabs) on the left, filter on the right */
+    .matrix__head { display: flex; align-items: flex-end; gap: var(--spacing-5); flex-wrap: wrap; }
+    .matrix__head .section, .matrix__head .tabs { flex: 1 1 auto; min-width: 0; }
+    .matrix__search { width: 280px; max-width: 100%; }
+    /* Filter, not search: the magnifier is a leading decoration, the clear button trails */
+    .matrix__search .search__submit { right: auto; left: var(--spacing-3); pointer-events: none; }
+    .matrix__search .search__field { padding-left: var(--spacing-9); padding-right: var(--spacing-9); }
+    .matrix__search .search__clear { right: var(--spacing-3); }
+    .matrix .table th, .matrix .table td { text-align: center; }
+    .matrix .table th:first-child, .matrix .table td:first-child { text-align: left; white-space: nowrap; }
+    .matrix__role { display: inline-flex; align-items: center; gap: var(--spacing-3); }
+    .matrix__role .lexicon-icon { opacity: 0.7; }
+    .matrix__empty { padding: var(--spacing-6); text-align: center; font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.7; }
+
+    /* Footer: "Restore from Parent" reads as a quiet secondary action, not bold */
+    .perm-modal .modal__footer .btn--borderless { font-weight: var(--font-weight-semi); }
+
+    /* Prototype-only controls: floating popover in the reserved lane */
+    .proto-panel { position: fixed; left: var(--spacing-7); bottom: var(--spacing-7); z-index: 1001; width: var(--proto-panel-w); box-shadow: var(--shadow-dropdown); }
+    .proto-panel .popover__body { display: flex; flex-direction: column; gap: var(--spacing-3); }
+    .proto-panel__hint { font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.7; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body style="margin: 0;">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PROTOTYPE · CMS 2.0 · One "Permissions" entry that adapts to the
+     selection. Replaces: Permissions, Default Permissions, Edit and
+     Propagate Default Permissions, Reset to Default Permissions.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ─── Control Menu (top bar) ──────────────────────────────────── -->
+<div class="control-menu">
+  <div class="control-menu__left">
+    <div class="control-menu__btns">
+      <button class="control-menu__btn" type="button" aria-label="Toggle product menu">
+        <svg class="lexicon-icon"><use href="#product-menu-closed"></use></svg>
+      </button>
+    </div>
+    <span class="control-menu__title">Liferay CMS</span>
+  </div>
+  <div class="control-menu__right">
+    <button class="control-menu__btn" type="button" aria-label="Global navigation">
+      <svg class="lexicon-icon"><use href="#grid"></use></svg>
+    </button>
+    <div class="control-menu__avatar">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=72&h=72&fit=crop&auto=format" alt="User avatar">
+    </div>
+  </div>
+</div>
+
+<!-- ─── App body: full-width listing (no sidebar, so the selection reads behind the modal) ── -->
+<div style="display: flex; flex-direction: column; min-height: calc(100vh - 60px);">
+
+  <main style="display: flex; flex-direction: column; min-width: 0;">
+    <div class="content">
+      <div class="content__head">
+        <ol class="cms-breadcrumb">
+          <li class="cms-breadcrumb__item" id="crumbSpace"><span class="sticker sticker--outline sticker--sm sticker--primary cms-breadcrumb__space">M</span><a href="#">Madrid</a><svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg></li>
+          <li class="cms-breadcrumb__item"><a href="#">Contents</a><svg class="lexicon-icon cms-breadcrumb__sep"><use href="#slash"></use></svg></li>
+          <li class="cms-breadcrumb__item" aria-current="page"><span>Parent</span>
+            <button class="cms-breadcrumb__action" type="button" aria-label="More actions"><svg class="lexicon-icon lexicon-icon-sm"><use href="#ellipsis-v"></use></svg></button>
+          </li>
+        </ol>
+        <button class="btn btn--primary" type="button">New <svg class="lexicon-icon"><use href="#caret-bottom"></use></svg></button>
+      </div>
+
+      <!-- Listing behind the modal. Selection changes with the variant. -->
+      <table class="table" id="listing">
+        <thead>
+          <tr>
+            <th class="table__cell--gutter"><label class="checkbox" aria-label="Select all"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label></th>
+            <th>Title</th><th>Type</th><th>Author</th><th>Modified</th><th>Status</th><th class="table__cell--gutter"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row="folder">
+            <td class="table__cell--gutter"><label class="checkbox" aria-label="Select Child"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label></td>
+            <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#folder"></use></svg><a href="#" class="table__title">Child</a></span></td>
+            <td>Folder</td><td>Laura Méndez</td><td>Sep 30, 2026</td><td>--</td>
+            <td class="table__cell--gutter"><button class="btn btn--borderless btn--sm btn--icon" aria-label="Actions for Child"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button></td>
+          </tr>
+          <tr data-row="item">
+            <td class="table__cell--gutter"><label class="checkbox" aria-label="Select Retiro Park"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label></td>
+            <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#web-content"></use></svg><a href="#" class="table__title">Retiro Park</a></span></td>
+            <td>Basic Web Content</td><td>Diego Alonso</td><td>Sep 24, 2026</td><td><span class="label label--sm label--success">Approved</span></td>
+            <td class="table__cell--gutter"><button class="btn btn--borderless btn--sm btn--icon" aria-label="Actions for Retiro Park"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button></td>
+          </tr>
+          <tr data-row="item2">
+            <td class="table__cell--gutter"><label class="checkbox" aria-label="Select San Isidro Festival"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label></td>
+            <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#web-content"></use></svg><a href="#" class="table__title">San Isidro Festival</a></span></td>
+            <td>Basic Web Content</td><td>Pilar Ortega</td><td>Sep 24, 2026</td><td><span class="label label--sm label--warning">Pending</span></td>
+            <td class="table__cell--gutter"><button class="btn btn--borderless btn--sm btn--icon" aria-label="Actions for San Isidro Festival"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button></td>
+          </tr>
+          <tr data-row="file">
+            <td class="table__cell--gutter"><label class="checkbox" aria-label="Select visitor-guide.pdf"><input type="checkbox" class="checkbox__input"><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label></td>
+            <td><span class="table__title-wrap"><svg class="lexicon-icon table__icon"><use href="#document-text"></use></svg><a href="#" class="table__title">visitor-guide.pdf</a></span></td>
+            <td>File</td><td>Laura Méndez</td><td>Sep 30, 2026</td><td><span class="label label--sm label--success">Approved</span></td>
+            <td class="table__cell--gutter"><button class="btn btn--borderless btn--sm btn--icon" aria-label="Actions for visitor-guide.pdf"><svg class="lexicon-icon"><use href="#ellipsis-v"></use></svg></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     THE MODAL · one entry point, content adapts to the selection
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="permOverlay">
+  <div class="modal perm-modal" role="dialog" aria-modal="true" aria-labelledby="permTitle">
+
+    <header class="modal__header">
+      <h2 id="permTitle" class="modal__title">Permissions</h2>
+      <button class="btn btn--borderless btn--sm btn--icon modal__close" aria-label="Close" id="closeBtn">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </header>
+
+    <div class="modal__body">
+
+      <!-- What is selected -->
+      <div class="perm-modal__context">
+        <span class="sticker sticker--icon sticker--md" id="ctxSticker"><svg class="lexicon-icon"><use href="#web-content"></use></svg></span>
+        <div class="perm-modal__context-text">
+          <span class="perm-modal__context-name" id="ctxName">Retiro Park</span>
+          <span class="perm-modal__context-path" id="ctxPath">Basic Web Content · Madrid / Contents / Parent</span>
+        </div>
+      </div>
+
+      <!-- Where the current permissions come from -->
+      <div class="perm-modal__origin">
+        <span class="perm-modal__origin-label">Current permissions</span>
+        <span class="label label--success" id="originLabel">Inherited from Parent</span>
+        <span id="originText">Same as the folder defaults. Changes here make this item custom.</span>
+      </div>
+
+      <!-- Also apply to (kit List with select checkboxes; row goes is-active when checked) -->
+      <div class="perm-modal__block" id="applyTo">
+        <header class="section section--sm"><span class="section__title">Also apply to</span></header>
+        <ul class="list">
+          <li class="list__row" id="optExisting">
+            <label class="checkbox list__select" aria-label="Existing items inside">
+              <input type="checkbox" class="checkbox__input" id="cbExisting">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+            <div class="list__content">
+              <label class="list__title" for="cbExisting" id="lblExisting">Existing items inside</label>
+              <span class="list__subtitle" id="hintExisting">1 subfolder, 2 contents and 1 file, at any depth.</span>
+              <div class="apply-to__sub" id="subExisting" hidden>
+                <label class="radio">
+                  <input type="radio" name="scope" class="radio__input" checked id="rdInherit">
+                  <span class="radio__box"></span>
+                  <span class="radio__label">Only items that still inherit (keeps custom permissions untouched)</span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="scope" class="radio__input" id="rdAll">
+                  <span class="radio__box"></span>
+                  <span class="radio__label">All items, including the ones with custom permissions</span>
+                </label>
+                <div class="alert alert--simple alert--warning" id="overwriteWarn" hidden>
+                  <div class="alert__content">
+                    <svg class="lexicon-icon"><use href="#warning-full"></use></svg>
+                    <p class="alert__text"><strong>Warning:</strong> <span id="overwriteText">2 items</span> with custom permissions will be overwritten. This runs in the background and cannot be undone.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="list">
+          <li class="list__row" id="optDefault">
+            <label class="checkbox list__select" aria-label="New items created inside">
+              <input type="checkbox" class="checkbox__input" id="cbDefault">
+              <span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span>
+            </label>
+            <div class="list__content">
+              <label class="list__title" for="cbDefault" id="lblDefault">New items created inside</label>
+              <span class="list__subtitle" id="hintDefault">Becomes the default for anything created later in this folder and its subfolders.</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Roles × actions -->
+      <div class="perm-modal__block matrix">
+        <div class="matrix__head">
+          <header class="section section--sm" id="matrixTitle"><span class="section__title">Roles and actions</span></header>
+          <nav class="tabs" role="tablist" aria-label="Item type" id="typeTabs" hidden>
+            <button class="tabs__tab is-active" role="tab" aria-selected="true" data-type="folder">Folders</button>
+            <button class="tabs__tab" role="tab" aria-selected="false" data-type="content">Contents</button>
+            <button class="tabs__tab" role="tab" aria-selected="false" data-type="file">Files</button>
+          </nav>
+          <div class="search input--sm matrix__search">
+            <input type="search" class="input__field search__field" placeholder="Filter roles" aria-label="Filter roles" id="roleFilter" autocomplete="off">
+            <button class="search__clear" type="button" aria-label="Clear filter" id="roleFilterClear" hidden><svg class="lexicon-icon"><use href="#times"></use></svg></button>
+            <span class="search__submit" aria-hidden="true"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
+          </div>
+        </div>
+        <div class="alert alert--simple alert--info" id="restoreNote" hidden>
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+            <p class="alert__text"><strong>Restored:</strong> the matrix now shows the defaults of Parent. Edit any box to keep a custom set, or save to follow Parent again.</p>
+          </div>
+        </div>
+        <div id="matrixHost"></div>
+      </div>
+
+    </div>
+
+    <!-- Kit rule: the first borderless button in .modal__footer sits on the left -->
+    <footer class="modal__footer">
+      <button class="btn btn--borderless" type="button" id="restoreBtn">
+        <svg class="lexicon-icon"><use href="#restore"></use></svg>
+        <span id="restoreText">Restore from Parent</span>
+      </button>
+      <button class="btn btn--secondary" type="button" id="cancelBtn">Cancel</button>
+      <button class="btn btn--primary" type="button" id="saveBtn">Save</button>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ─── Prototype controls (not product UI) ─────────────────────── -->
+<aside class="popover proto-panel" role="group" aria-labelledby="protoTitle">
+  <div class="popover__header"><h3 class="popover__title" id="protoTitle">Prototype: what is selected</h3></div>
+  <div class="popover__body" id="variantTabs">
+    <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="item" checked><span class="radio__box"></span><span class="radio__label">A content or a file</span></label>
+    <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="folder"><span class="radio__box"></span><span class="radio__label">A folder</span></label>
+    <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="space"><span class="radio__box"></span><span class="radio__label">A space</span></label>
+    <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="multi"><span class="radio__box"></span><span class="radio__label">Several items</span></label>
+    <span class="proto-panel__hint">The same Permissions entry opens in every case. Only the modal changes.</span>
+  </div>
+</aside>
+
+<script>
+(function () {
+  // ── Sample data (mirrors the real CMS roles and actions) ──────────
+  var ROLES = [
+    { name: 'Analytics Administrator', kind: 'regular' },
+    { name: 'Space Administrator', kind: 'space', all: true },
+    { name: 'Space Connected Site Member', kind: 'space' },
+    { name: 'Space Content Reviewer', kind: 'space', all: true },
+    { name: 'Space Member', kind: 'space', some: ['View', 'Subscribe', 'Download'] },
+    { name: 'CMS Administrator', kind: 'regular', all: true },
+    { name: 'Category Manager', kind: 'regular' }
+  ];
+  // What the parent folder's defaults would give (used by "Restore from Parent")
+  var PARENT_DEFAULTS = [
+    { name: 'Analytics Administrator', kind: 'regular' },
+    { name: 'Space Administrator', kind: 'space', all: true },
+    { name: 'Space Connected Site Member', kind: 'space', some: ['View'] },
+    { name: 'Space Content Reviewer', kind: 'space', all: true },
+    { name: 'Space Member', kind: 'space', some: ['View', 'Download'] },
+    { name: 'CMS Administrator', kind: 'regular', all: true },
+    { name: 'Category Manager', kind: 'regular', some: ['View'] }
+  ];
+  var ACTIONS = {
+    folder:  ['Add Entry', 'Add Subfolder', 'Delete', 'Permissions', 'Subscribe', 'Update', 'View'],
+    content: ['Add Discussion', 'Delete', 'Permissions', 'Subscribe', 'Update', 'View'],
+    file:    ['Add Discussion', 'Delete', 'Download', 'Permissions', 'Update', 'View'],
+    space:   ['Add Folder', 'Delete', 'Permissions', 'Update', 'View', 'View Members']
+  };
+
+  var VARIANTS = {
+    item: {
+      icon: '#web-content', name: 'Retiro Park', path: 'Basic Web Content · Madrid / Contents / Parent',
+      origin: { tone: 'success', label: 'Inherited from Parent', text: 'Same as the folder defaults. Changes here make this item custom.' },
+      existing: null, def: null,
+      type: 'content', restore: 'Restore from Parent', rows: ['item']
+    },
+    folder: {
+      icon: '#folder', name: 'Child', path: 'Folder · Madrid / Contents / Parent',
+      origin: { tone: 'warning', label: 'Custom', text: 'Changed by Laura Méndez on Sep 30, 2026. No longer follows Parent.' },
+      existing: { label: 'Existing items inside', hint: '1 subfolder, 2 contents and 1 file, at any depth.', count: 4, custom: 2 },
+      def: { label: 'New items created inside', hint: 'Becomes the default for anything created later in this folder and its subfolders.' },
+      type: 'folder', restore: 'Restore from Parent', rows: ['folder']
+    },
+    space: {
+      initials: 'M', name: 'Madrid', path: 'Space · 2 folders, 9 contents, 1 file',
+      origin: { tone: 'secondary', label: 'Space root', text: 'Nothing above a space. Defaults here seed every folder.' },
+      existing: { label: 'Existing items in the space', hint: '2 folders, 9 contents and 1 file, at any depth.', count: 12, custom: 1 },
+      def: { label: 'New items created in the space', hint: 'Default for anything created later in any folder of the space.' },
+      type: 'space', restore: null, rows: []
+    },
+    multi: {
+      icon: '#list', name: '3 items selected', path: 'Child, Retiro Park, San Isidro Festival · Madrid / Contents / Parent',
+      origin: { tone: 'info', label: 'Mixed', text: '2 items inherit from Parent, 1 is custom.' },
+      existing: { label: 'Also everything inside the selected folders', hint: 'Child contains 1 content.', count: 1, custom: 0 },
+      def: null,
+      base: 3, type: 'folder', restore: 'Restore selected from Parent', rows: ['folder', 'item', 'item2']
+    }
+  };
+
+  var current = 'item';
+  var restoring = false;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // The dialog stays centred but must not jump while its body changes (filtering,
+  // disclosing options, switching tabs). Once a case is applied, measure the tallest
+  // state it can reach and lock the modal to that height; the body scrolls inside.
+  function lockHeight() {
+    var modal = document.querySelector('.perm-modal');
+    var reveal = ['subExisting', 'overwriteWarn', 'typeTabs', 'restoreNote'].map($)
+      .concat(Array.prototype.slice.call(document.querySelectorAll('#matrixHost tbody tr[hidden]')));
+    var was = reveal.map(function (el) { return el.hidden; });
+    var titleWas = $('matrixTitle').hidden;
+    modal.style.height = '';
+    reveal.forEach(function (el) { el.hidden = false; });
+    $('matrixTitle').hidden = true;
+    var h = modal.offsetHeight;
+    reveal.forEach(function (el, i) { el.hidden = was[i]; });
+    $('matrixTitle').hidden = titleWas;
+    modal.style.height = h + 'px';
+  }
+
+  function checkboxHTML(checked, label) {
+    return '<label class="checkbox" aria-label="' + label + '">' +
+      '<input type="checkbox" class="checkbox__input"' + (checked ? ' checked' : '') + '>' +
+      '<span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg>' +
+      '<svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span></label>';
+  }
+
+  function renderMatrix(type) {
+    var actions = ACTIONS[type];
+    var roles = restoring ? PARENT_DEFAULTS : ROLES;
+    var html = '<table class="table"><thead><tr><th scope="col">Role</th>';
+    actions.forEach(function (a) { html += '<th scope="col">' + a + '</th>'; });
+    html += '</tr></thead><tbody>';
+    roles.forEach(function (r) {
+      var icon = r.kind === 'space' ? '#globe' : '#user';
+      html += '<tr><td><span class="matrix__role"><svg class="lexicon-icon"><use href="' + icon + '"></use></svg><span>' + r.name + '</span></span></td>';
+      actions.forEach(function (a) {
+        var on = !!r.all || (r.some && r.some.indexOf(a) > -1);
+        html += '<td>' + checkboxHTML(on, r.name + ' · ' + a) + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('matrixHost').innerHTML = html + '<div class="matrix__empty" id="matrixEmpty" hidden>No roles match your filter.</div>';
+    filterRoles();
+  }
+
+  function filterRoles() {
+    var q = $('roleFilter').value.trim().toLowerCase();
+    var shown = 0;
+    document.querySelectorAll('#matrixHost tbody tr').forEach(function (tr) {
+      var on = !q || tr.querySelector('td:first-child').textContent.toLowerCase().indexOf(q) > -1;
+      tr.hidden = !on; if (on) shown++;
+    });
+    $('matrixEmpty').hidden = shown > 0;
+    $('roleFilterClear').hidden = !q;
+  }
+
+  function setOption(id, cfg, cbId) {
+    var el = $(id);
+    if (!cfg) { el.hidden = true; return; }
+    el.hidden = false;
+    el.querySelector('.list__title').textContent = cfg.label;
+    el.querySelector('.list__subtitle').textContent = cfg.hint;
+    $(cbId).checked = false;
+    el.classList.remove('is-active');
+  }
+
+  function updateTabsAndFooter() {
+    var v = VARIANTS[current];
+    var toExisting = !!(v.existing && $('cbExisting').checked);
+    var toDefault = !!(v.def && $('cbDefault').checked);
+    var propagating = toExisting || toDefault;
+
+    // Propagating means several item types at once → one matrix per type, switched by tabs
+    $('typeTabs').hidden = !propagating;
+    $('matrixTitle').hidden = propagating;
+    if (propagating) {
+      renderMatrix($('typeTabs').querySelector('.is-active').getAttribute('data-type'));
+    } else {
+      renderMatrix(v.type);
+    }
+
+    $('subExisting').hidden = !toExisting;
+    $('overwriteWarn').hidden = !(toExisting && $('rdAll').checked && v.existing.custom > 0);
+    if (toExisting) $('overwriteText').textContent = v.existing.custom + ' item' + (v.existing.custom === 1 ? '' : 's');
+    $('optExisting').classList.toggle('is-active', toExisting);
+    $('optDefault').classList.toggle('is-active', toDefault);
+
+    var label = 'Save';
+    if (toExisting) {
+      var n = v.existing.count + (v.base || 0);
+      if ($('rdInherit').checked) n = n - v.existing.custom;
+      label = 'Save and apply to ' + n + ' item' + (n === 1 ? '' : 's');
+    }
+    if (toDefault && !toExisting) label = 'Save as default';
+    if (restoring) label = label === 'Save' ? 'Save and follow Parent' : label.replace('Save', 'Follow Parent');
+    $('saveBtn').textContent = label;
+    $('restoreNote').hidden = !restoring;
+    $('restoreBtn').disabled = restoring;
+  }
+
+  function flash(el) {
+    el.classList.remove('is-flashing');
+    void el.offsetWidth;                      // restart the animation if it was mid-way
+    el.classList.add('is-flashing');
+  }
+  document.addEventListener('animationend', function (e) {
+    if (e.target.classList && e.target.classList.contains('is-flashing')) e.target.classList.remove('is-flashing');
+  });
+
+  function applyVariant(key, withFlash) {
+    current = key;
+    restoring = false;
+    var v = VARIANTS[key];
+
+    // Context row
+    var st = $('ctxSticker');
+    st.className = v.initials ? 'sticker sticker--outline sticker--primary sticker--md' : 'sticker sticker--icon sticker--md';
+    st.innerHTML = v.initials ? v.initials : '<svg class="lexicon-icon"><use href="' + v.icon + '"></use></svg>';
+    $('ctxName').textContent = v.name;
+    $('ctxPath').textContent = v.path;
+    var ol = $('originLabel');
+    ol.className = 'label label--' + v.origin.tone;
+    ol.textContent = v.origin.label;
+    $('originText').textContent = v.origin.text;
+
+    // Apply-to options. A plain item has nothing below it, so the block hides entirely.
+    setOption('optExisting', v.existing, 'cbExisting');
+    setOption('optDefault', v.def, 'cbDefault');
+    $('rdInherit').checked = true;
+    $('applyTo').hidden = !v.existing && !v.def;
+
+    // Footer
+    $('restoreBtn').hidden = !v.restore;
+    if (v.restore) $('restoreText').textContent = v.restore;
+
+    // Reset type tabs to the entity's own type
+    $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (t) {
+      var on = t.getAttribute('data-type') === (v.type === 'space' ? 'folder' : v.type);
+      t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+
+    // Listing selection behind the modal (+ pulse on what was just selected)
+    document.querySelectorAll('#listing tbody tr').forEach(function (tr) {
+      var on = v.rows.indexOf(tr.getAttribute('data-row')) > -1;
+      tr.classList.toggle('is-selected', on);
+      tr.querySelector('.checkbox__input').checked = on;
+      if (withFlash && on) flash(tr);
+    });
+    // A space has no row: its crumb is the selection
+    $('crumbSpace').classList.toggle('is-selected', key === 'space');
+    if (withFlash && key === 'space') flash($('crumbSpace'));
+
+    updateTabsAndFooter();
+    lockHeight();
+  }
+
+  // ── Wiring ────────────────────────────────────────────────────────
+  window.addEventListener('resize', lockHeight);
+  $('variantTabs').addEventListener('change', function (e) {
+    var r = e.target.closest('.radio__input'); if (!r) return;
+    applyVariant(r.getAttribute('data-variant'), true);
+  });
+  $('typeTabs').addEventListener('click', function (e) {
+    var t = e.target.closest('.tabs__tab'); if (!t) return;
+    $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (x) { x.classList.remove('is-active'); x.setAttribute('aria-selected', 'false'); });
+    t.classList.add('is-active'); t.setAttribute('aria-selected', 'true');
+    renderMatrix(t.getAttribute('data-type'));
+  });
+  ['cbExisting', 'cbDefault', 'rdInherit', 'rdAll'].forEach(function (id) { $(id).addEventListener('change', updateTabsAndFooter); });
+  $('restoreBtn').addEventListener('click', function () {
+    restoring = true;
+    var ol = $('originLabel');
+    ol.className = 'label label--info';
+    ol.textContent = 'Will inherit from Parent';
+    $('originText').textContent = 'Values below are the defaults of Parent. Nothing changes until you save.';
+    updateTabsAndFooter();
+  });
+  $('roleFilter').addEventListener('input', filterRoles);
+  $('roleFilterClear').addEventListener('click', function () { $('roleFilter').value = ''; filterRoles(); $('roleFilter').focus(); });
+
+  // Prototype: the modal never closes. X, Cancel and Save reset it to the initial state of the selected case.
+  function reset() { applyVariant(current); $('roleFilter').value = ''; filterRoles(); document.querySelector('.perm-modal .modal__body').scrollTop = 0; }
+  $('closeBtn').addEventListener('click', reset);
+  $('cancelBtn').addEventListener('click', reset);
+  $('saveBtn').addEventListener('click', reset);
+
+  applyVariant('item');
+})();
+</script>
+
+</body>
+</html>
