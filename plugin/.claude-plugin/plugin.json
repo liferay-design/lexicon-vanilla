@@ -1,6 +1,6 @@
 {
   "name": "lexicon-vanilla",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Build Lexicon Vanilla prototype screens from natural language, using only kit components, tokens, and icons. Includes export to a shareable bundle.",
   "author": {
     "name": "Marcos Castro"
