@@ -13,41 +13,38 @@ Before composing, make sure the kit exists in the current directory. Run this in
 
 ```bash
 REPO="liferay-design/lexicon-vanilla"
+GH="https://github.com/$REPO"
 if [ ! -f .lexicon ]; then
-  # Pin to the published release tag; fall back to main if VERSION or its tag is unreachable.
-  VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
-  REF="refs/heads/main"; DIR="lexicon-vanilla-main"
-  if [ -n "$VER" ] && curl -fsIL -o /dev/null "https://github.com/$REPO/archive/refs/tags/v$VER.tar.gz" 2>/dev/null; then
-    REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"
-  else
-    VER="main"
+  # Pin to the newest release tag. One call to github.com only, so it also works
+  # behind host allowlists that block raw.githubusercontent.com. Fall back to main.
+  VER=$(git ls-remote --tags --refs "$GH.git" 2>/dev/null | sed -n 's#.*refs/tags/v##p' | sort -V | tail -1)
+  if [ -n "$VER" ]; then REF="v$VER"; ARCHIVE="refs/tags/v$VER"; else VER="main"; REF="main"; ARCHIVE="refs/heads/main"; fi
+  TMP=$(mktemp -d)
+  # 1) Release tarball. github.com redirects it to codeload.github.com, which some
+  #    sandboxes (Cowork, proxies with a host allowlist) answer with a 403.
+  curl -fsSL "$GH/archive/$ARCHIVE.tar.gz" 2>/dev/null | tar xz --strip-components=1 -C "$TMP" 2>/dev/null
+  # 2) Fallback: shallow git clone of the same ref, which only talks to github.com.
+  if [ ! -f "$TMP/components.css" ]; then
+    rm -rf "$TMP"; TMP=$(mktemp -d)
+    git -c advice.detachedHead=false clone -q --depth 1 --branch "$REF" "$GH.git" "$TMP" 2>/dev/null || true
   fi
-  curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
-    | tar xz --strip-components=1 \
-        "$DIR/tokens.css" \
-        "$DIR/tokens-high-contrast.css" \
-        "$DIR/tokens-dark.css" \
-        "$DIR/components.css" \
-        "$DIR/icons.svg" \
-        "$DIR/icons.js" \
-        "$DIR/starter.html" \
-        "$DIR/shells" \
-        "$DIR/showcases" \
-        "$DIR/prototypes"
-  # Product icons + navigation.js: separate, tolerant extraction (older tagged kits don't have them).
-  curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
-    | tar xz --strip-components=1 "$DIR/product-icons" "$DIR/navigation.js" 2>/dev/null || true
-  # Only stamp .lexicon if the kit really landed, so a failed download retries next time.
-  if [ -f components.css ] && [ -f prototypes/login.html ] && [ -d showcases ]; then
+  # Install only if the kit really landed, so a failed download retries next time.
+  if [ -f "$TMP/components.css" ] && [ -f "$TMP/prototypes/login.html" ] && [ -d "$TMP/showcases" ]; then
+    cp "$TMP"/tokens*.css "$TMP"/components.css "$TMP"/icons.svg "$TMP"/icons.js "$TMP"/starter.html ./
+    for d in shells showcases prototypes product-icons; do
+      [ -d "$TMP/$d" ] && mkdir -p "$d" && cp -R "$TMP/$d/." "$d/"
+    done
+    [ -f "$TMP/navigation.js" ] && cp "$TMP/navigation.js" ./
     printf '{"version":"%s","lastCheck":"%s"}\n' "$VER" "$(date +%F)" > .lexicon
     echo "Kit $VER installed."
   else
-    echo "ERROR: kit download incomplete; .lexicon not written. Re-run to retry."
+    echo "ERROR: could not download the kit. Both the release tarball (github.com -> codeload.github.com) and a git clone (github.com) failed. .lexicon not written; re-run to retry. Behind a network allowlist, github.com must be reachable."
   fi
+  rm -rf "$TMP"
 fi
 ```
 
-Run this command exactly as written. Do not drop entries from the tar list: `prototypes/` and `showcases/` are required references, not optional.
+Run this command exactly as written. Do not drop directories from the copy list: `prototypes/` and `showcases/` are required references, not optional. If it prints the ERROR line, say so and stop: never substitute invented styling, and never try to route around a network block.
 
 Then a throttled update check (at most once per day). If it prints `update:<version>`, tell the user one line: "Lexicon Vanilla `<version>` is available, run /lexicon-refresh." Do not auto-update.
 
@@ -58,7 +55,8 @@ if [ -f .lexicon ]; then
   TODAY=$(date +%F)
   if [ "$LAST" != "$TODAY" ]; then
     LOCAL=$(sed -n 's/.*"version":"\([^"]*\)".*/\1/p' .lexicon)
-    REMOTE=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null || echo "$LOCAL")
+    REMOTE=$(git ls-remote --tags --refs "https://github.com/$REPO.git" 2>/dev/null | sed -n 's#.*refs/tags/v##p' | sort -V | tail -1)
+    [ -z "$REMOTE" ] && REMOTE="$LOCAL"
     printf '{"version":"%s","lastCheck":"%s"}\n' "$LOCAL" "$TODAY" > .lexicon
     NEWEST=$(printf '%s\n%s\n' "$LOCAL" "$REMOTE" | sort -V | tail -1)
     { [ "$LOCAL" != "$REMOTE" ] && [ "$NEWEST" = "$REMOTE" ] && echo "update:$REMOTE"; } || true

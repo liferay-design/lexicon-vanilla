@@ -6,40 +6,26 @@ Refresh the Lexicon Vanilla kit in the current directory to the latest published
 
 ```bash
 REPO="liferay-design/lexicon-vanilla"
-VER=$(curl -fsSL "https://raw.githubusercontent.com/$REPO/main/VERSION" 2>/dev/null)
-
-# Prefer the release tag; fall back to main if the tag is missing
-REF="refs/heads/main"; DIR="lexicon-vanilla-main"
-if [ -n "$VER" ] && curl -fsIL -o /dev/null "https://github.com/$REPO/archive/refs/tags/v$VER.tar.gz" 2>/dev/null; then
-  REF="refs/tags/v$VER"; DIR="lexicon-vanilla-$VER"
-else
-  VER="main"
-fi
+GH="https://github.com/$REPO"
+# Newest release tag. One call to github.com only, so it also works behind host
+# allowlists that block raw.githubusercontent.com. Fall back to main.
+VER=$(git ls-remote --tags --refs "$GH.git" 2>/dev/null | sed -n 's#.*refs/tags/v##p' | sort -V | tail -1)
+if [ -n "$VER" ]; then REF="v$VER"; ARCHIVE="refs/tags/v$VER"; else VER="main"; REF="main"; ARCHIVE="refs/heads/main"; fi
 
 TMP=$(mktemp -d)
-curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
-  | tar xz --strip-components=1 -C "$TMP" \
-      "$DIR/tokens.css" \
-      "$DIR/tokens-high-contrast.css" \
-      "$DIR/tokens-dark.css" \
-      "$DIR/components.css" \
-      "$DIR/icons.svg" \
-      "$DIR/icons.js" \
-      "$DIR/starter.html" \
-      "$DIR/shells" \
-      "$DIR/showcases" \
-      "$DIR/prototypes" \
-      "$DIR/kit-manifest.json"
-
-# Product icons + navigation.js (opt-in satellite behaviour). Separate, tolerant
-# extraction: versions tagged before they existed simply skip them.
-curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \
-  | tar xz --strip-components=1 -C "$TMP" "$DIR/product-icons" "$DIR/navigation.js" 2>/dev/null || true
+# 1) Release tarball. github.com redirects it to codeload.github.com, which some
+#    sandboxes (Cowork, proxies with a host allowlist) answer with a 403.
+curl -fsSL "$GH/archive/$ARCHIVE.tar.gz" 2>/dev/null | tar xz --strip-components=1 -C "$TMP" 2>/dev/null
+# 2) Fallback: shallow git clone of the same ref, which only talks to github.com.
+if [ ! -f "$TMP/components.css" ]; then
+  rm -rf "$TMP"; TMP=$(mktemp -d)
+  git -c advice.detachedHead=false clone -q --depth 1 --branch "$REF" "$GH.git" "$TMP" 2>/dev/null || true
+fi
 
 # Safety gate: touch the working copy ONLY if the download is complete
 if [ ! -f "$TMP/components.css" ] || [ ! -d "$TMP/shells" ] || [ ! -d "$TMP/showcases" ]; then
   rm -rf "$TMP"
-  echo "Download failed — nothing was changed. Try again later."
+  echo "Download failed — nothing was changed. Both the release tarball (github.com -> codeload.github.com) and a git clone (github.com) were unreachable. Behind a network allowlist, github.com must be allowed. Try again later."
   exit 1
 fi
 

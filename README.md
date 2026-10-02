@@ -23,6 +23,8 @@ create a login screen with a CMS sidebar
 
 or use the command `/lexicon-vanilla:create-screen ...`. The first time in each folder it downloads the kit and asks whether to open prototypes in the browser. After that it works locally.
 
+Network note: that one-time download (and `/lexicon-refresh`) only needs `github.com`. It tries the release tarball first (which GitHub serves from `codeload.github.com`) and falls back to a shallow `git clone` when a sandbox or proxy allowlist blocks that host with a 403, as Cowork sessions do. If both fail, the skill stops and reports it instead of inventing styling.
+
 Updating:
 
 - `/lexicon-vanilla:lexicon-refresh` updates the kit in your project (it never deletes your own prototypes).
