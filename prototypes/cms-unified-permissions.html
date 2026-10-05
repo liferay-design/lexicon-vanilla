@@ -98,6 +98,11 @@
     .proto-panel { position: fixed; left: var(--spacing-7); bottom: var(--spacing-7); z-index: 1001; width: var(--proto-panel-w); box-shadow: var(--shadow-dropdown); }
     .proto-panel .popover__body { display: flex; flex-direction: column; gap: var(--spacing-3); }
     .proto-panel__hint { font-size: var(--font-size-sm); color: var(--color-dark); opacity: 0.7; }
+    .proto-panel .popover__header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-3); }
+    .proto-panel__options { display: flex; flex-direction: column; gap: var(--spacing-2); padding-top: var(--spacing-3); border-top: 1px solid var(--color-secondary-l3); }
+    .proto-panel__options .checkbox__label { font-size: var(--font-size-sm); }
+    /* Parts switched off from the prototype options. In-memory only: a page refresh brings everything back. */
+    [data-proto-off] { display: none !important; }
 
     [hidden] { display: none !important; }
   </style>
@@ -201,7 +206,7 @@
     <div class="modal__body">
 
       <!-- What is selected -->
-      <div class="perm-modal__context">
+      <div class="perm-modal__context" data-proto="context">
         <span class="sticker sticker--icon sticker--md" id="ctxSticker"><svg class="lexicon-icon"><use href="#web-content"></use></svg></span>
         <div class="perm-modal__context-text">
           <span class="perm-modal__context-name" id="ctxName">Retiro Park</span>
@@ -210,14 +215,14 @@
       </div>
 
       <!-- Where the current permissions come from -->
-      <div class="perm-modal__origin">
+      <div class="perm-modal__origin" data-proto="origin">
         <span class="perm-modal__origin-label">Current permissions</span>
         <span class="label label--success" id="originLabel">Inherited from Parent</span>
         <span id="originText">Same as the folder defaults. Changes here make this item custom.</span>
       </div>
 
       <!-- Also apply to (kit List with select checkboxes; row goes is-active when checked) -->
-      <div class="perm-modal__block" id="applyTo">
+      <div class="perm-modal__block" id="applyTo" data-proto="applyTo">
         <header class="section section--sm"><span class="section__title">Also apply to</span></header>
         <ul class="list">
           <li class="list__row" id="optExisting">
@@ -268,18 +273,18 @@
       <div class="perm-modal__block matrix">
         <div class="matrix__head">
           <header class="section section--sm" id="matrixTitle"><span class="section__title">Roles and actions</span></header>
-          <nav class="tabs" role="tablist" aria-label="Item type" id="typeTabs" hidden>
+          <nav class="tabs" role="tablist" aria-label="Item type" id="typeTabs" data-proto="typeTabs" hidden>
             <button class="tabs__tab is-active" role="tab" aria-selected="true" data-type="folder">Folders</button>
             <button class="tabs__tab" role="tab" aria-selected="false" data-type="content">Contents</button>
             <button class="tabs__tab" role="tab" aria-selected="false" data-type="file">Files</button>
           </nav>
-          <div class="search input--sm matrix__search">
+          <div class="search input--sm matrix__search" data-proto="filter">
             <input type="search" class="input__field search__field" placeholder="Filter roles" aria-label="Filter roles" id="roleFilter" autocomplete="off">
             <button class="search__clear" type="button" aria-label="Clear filter" id="roleFilterClear" hidden><svg class="lexicon-icon"><use href="#times"></use></svg></button>
             <span class="search__submit" aria-hidden="true"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
           </div>
         </div>
-        <div class="alert alert--simple alert--info" id="restoreNote" hidden>
+        <div class="alert alert--simple alert--info" id="restoreNote" data-proto="restoreNote" hidden>
           <div class="alert__content">
             <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
             <p class="alert__text"><strong>Restored:</strong> the matrix now shows the defaults of Parent. Edit any box to keep a custom set, or save to follow Parent again.</p>
@@ -292,7 +297,7 @@
 
     <!-- Kit rule: the first borderless button in .modal__footer sits on the left -->
     <footer class="modal__footer">
-      <button class="btn btn--borderless" type="button" id="restoreBtn">
+      <button class="btn btn--borderless" type="button" id="restoreBtn" data-proto="restore">
         <svg class="lexicon-icon"><use href="#restore"></use></svg>
         <span id="restoreText">Restore from Parent</span>
       </button>
@@ -305,13 +310,27 @@
 
 <!-- ─── Prototype controls (not product UI) ─────────────────────── -->
 <aside class="popover proto-panel" role="group" aria-labelledby="protoTitle">
-  <div class="popover__header"><h3 class="popover__title" id="protoTitle">Prototype: what is selected</h3></div>
+  <div class="popover__header">
+    <h3 class="popover__title" id="protoTitle">Prototype</h3>
+    <button class="btn btn--secondary btn--xs" type="button" id="protoOptionsBtn" aria-expanded="false" aria-controls="protoOptions">Options</button>
+  </div>
   <div class="popover__body" id="variantTabs">
+    <span class="proto-panel__hint">What is selected</span>
     <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="item" checked><span class="radio__box"></span><span class="radio__label">A content or a file</span></label>
     <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="folder"><span class="radio__box"></span><span class="radio__label">A folder</span></label>
     <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="space"><span class="radio__box"></span><span class="radio__label">A space</span></label>
     <label class="radio"><input type="radio" name="variant" class="radio__input" data-variant="multi"><span class="radio__box"></span><span class="radio__label">Several items</span></label>
     <span class="proto-panel__hint">The same Permissions entry opens in every case. Only the modal changes.</span>
+    <div class="proto-panel__options" id="protoOptions" hidden>
+      <span class="proto-panel__hint">Show or hide parts of the modal. Resets on page refresh.</span>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="context" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Selection header</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="origin" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Current permissions line</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="applyTo" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">"Also apply to" block</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="typeTabs" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Item type tabs</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="filter" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Role filter</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="restoreNote" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Restore note</span></label>
+      <label class="checkbox"><input type="checkbox" class="checkbox__input" data-target="restore" checked><span class="checkbox__box"><svg class="checkbox__icon checkbox__icon--check"><use href="#check-small"></use></svg><svg class="checkbox__icon checkbox__icon--hr"><use href="#hr"></use></svg></span><span class="checkbox__label">Restore from Parent button</span></label>
+    </div>
   </div>
 </aside>
 
@@ -536,6 +555,18 @@
 
   // ── Wiring ────────────────────────────────────────────────────────
   window.addEventListener('resize', lockHeight);
+  // Prototype options: hide parts of the modal. Kept in memory only, so a refresh restores everything.
+  $('protoOptionsBtn').addEventListener('click', function () {
+    var open = $('protoOptions').hidden;
+    $('protoOptions').hidden = !open;
+    this.setAttribute('aria-expanded', String(open));
+  });
+  $('protoOptions').addEventListener('change', function (e) {
+    var cb = e.target.closest('[data-target]'); if (!cb) return;
+    document.querySelectorAll('[data-proto="' + cb.getAttribute('data-target') + '"]').forEach(function (el) {
+      if (cb.checked) el.removeAttribute('data-proto-off'); else el.setAttribute('data-proto-off', '');
+    });
+  });
   $('variantTabs').addEventListener('change', function (e) {
     var r = e.target.closest('.radio__input'); if (!r) return;
     applyVariant(r.getAttribute('data-variant'), true);
