@@ -60,7 +60,15 @@
     .cms-breadcrumb__item.is-flashing .cms-breadcrumb__space { animation: perm-flash-crumb-sticker 0.5s ease-in-out 4; }
     @media (prefers-reduced-motion: reduce) { .is-flashing { animation: none !important; } }
     .perm-modal { max-width: 960px; }
-    .perm-modal .modal__body { display: flex; flex-direction: column; gap: var(--spacing-6); }
+    /* The body itself does not scroll: the roles matrix scrolls inside its own container (both axes), like a responsive table */
+    .perm-modal .modal__body { display: flex; flex-direction: column; gap: var(--spacing-6); overflow: hidden; min-height: 0; }
+    .perm-modal .matrix { flex: 1 1 auto; min-height: 0; }
+    .perm-modal #matrixHost { flex: 1 1 auto; min-height: calc(var(--spacing-10) * 4); overflow: auto; border: 1px solid var(--color-secondary-l3); border-radius: var(--rounded-md); }
+    /* Only when the viewport is too short for the minimum matrix height does the body scroll as a fallback */
+    @media (max-height: 760px) { .perm-modal .modal__body { overflow: auto; } }
+    /* The kit table clips with overflow: hidden, which would pin the sticky header to the table instead of the scroll container */
+    .perm-modal #matrixHost .table { margin: 0; min-width: 100%; overflow: visible; border: 0; border-radius: 0; }
+    .perm-modal #matrixHost .table thead th { position: sticky; top: 0; z-index: 1; background: var(--color-white); white-space: nowrap; }
     .perm-modal__block { display: flex; flex-direction: column; gap: var(--spacing-3); }
 
     /* What is selected: sticker + name + path, then the one-line origin */
@@ -590,7 +598,7 @@
   $('roleFilterClear').addEventListener('click', function () { $('roleFilter').value = ''; filterRoles(); $('roleFilter').focus(); });
 
   // Prototype: the modal never closes. X, Cancel and Save reset it to the initial state of the selected case.
-  function reset() { applyVariant(current); $('roleFilter').value = ''; filterRoles(); document.querySelector('.perm-modal .modal__body').scrollTop = 0; }
+  function reset() { applyVariant(current); $('roleFilter').value = ''; filterRoles(); $('matrixHost').scrollTop = 0; $('matrixHost').scrollLeft = 0; }
   $('closeBtn').addEventListener('click', reset);
   $('cancelBtn').addEventListener('click', reset);
   $('saveBtn').addEventListener('click', reset);
