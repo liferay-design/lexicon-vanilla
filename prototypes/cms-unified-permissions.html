@@ -291,6 +291,12 @@
             <span class="search__submit" aria-hidden="true"><svg class="lexicon-icon"><use href="#search"></use></svg></span>
           </div>
         </div>
+        <div class="alert alert--simple alert--info" id="tabScope" data-proto="typeTabs" hidden>
+          <div class="alert__content">
+            <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+            <p class="alert__text" id="tabScopeText">Applies to this folder and its subfolders.</p>
+          </div>
+        </div>
         <div class="alert alert--simple alert--info" id="restoreNote" data-proto="restoreNote" hidden>
           <div class="alert__content">
             <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
@@ -382,21 +388,21 @@
       origin: { tone: 'warning', label: 'Custom', text: 'Changed by Laura Méndez on Sep 30, 2026. No longer follows Parent.' },
       existing: { label: 'Existing items inside', hint: '1 subfolder, 2 contents and 1 file, at any depth.', count: 4, custom: 2 },
       def: { label: 'New items created inside', hint: 'Becomes the default for anything created later in this folder and its subfolders.' },
-      type: 'folder', restore: 'Restore from Parent', rows: ['folder']
+      type: 'folder', types: ['folder', 'content', 'file'], restore: 'Restore from Parent', rows: ['folder']
     },
     space: {
       initials: 'M', name: 'Madrid', path: 'Space · 2 folders, 9 contents, 1 file',
       origin: { tone: 'secondary', label: 'Space root', text: 'Nothing above a space. Defaults here seed every folder.' },
       existing: { label: 'Existing items in the space', hint: '2 folders, 9 contents and 1 file, at any depth.', count: 12, custom: 1 },
       def: { label: 'New items created in the space', hint: 'Default for anything created later in any folder of the space.' },
-      type: 'space', restore: null, rows: []
+      type: 'space', types: ['folder', 'content', 'file'], restore: null, rows: []
     },
     multi: {
       icon: '#list', name: '3 items selected', path: 'Child, Retiro Park, San Isidro Festival · Madrid / Contents / Parent',
       origin: { tone: 'info', label: 'Mixed', text: '2 items inherit from Parent, 1 is custom.' },
       existing: { label: 'Also everything inside the selected folders', hint: 'Child contains 1 content.', count: 1, custom: 0 },
       def: null,
-      base: 3, type: 'folder', restore: 'Restore selected from Parent', rows: ['folder', 'item', 'item2']
+      base: 3, type: 'folder', types: ['folder', 'content'], restore: 'Restore selected from Parent', rows: ['folder', 'item', 'item2']
     }
   };
 
@@ -409,7 +415,7 @@
   // state it can reach and lock the modal to that height; the body scrolls inside.
   function lockHeight() {
     var modal = document.querySelector('.perm-modal');
-    var reveal = ['subExisting', 'overwriteWarn', 'typeTabs', 'restoreNote'].map($)
+    var reveal = ['subExisting', 'overwriteWarn', 'typeTabs', 'tabScope', 'restoreNote'].map($)
       .concat(Array.prototype.slice.call(document.querySelectorAll('#matrixHost tbody tr[hidden]')));
     var was = reveal.map(function (el) { return el.hidden; });
     var titleWas = $('matrixTitle').hidden;
@@ -479,8 +485,22 @@
     // Propagating means several item types at once → one matrix per type, switched by tabs
     $('typeTabs').hidden = !propagating;
     $('matrixTitle').hidden = propagating;
+    $('tabScope').hidden = !propagating;
     if (propagating) {
-      renderMatrix($('typeTabs').querySelector('.is-active').getAttribute('data-type'));
+      // Only the item types that exist below (or in the selection) get a tab: no folder-only and
+      // content-only actions listed together, and no Files tab where there are no files
+      var types = v.types || [v.type];
+      $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (t) { t.hidden = types.indexOf(t.getAttribute('data-type')) < 0; });
+      var active = $('typeTabs').querySelector('.is-active:not([hidden])') || $('typeTabs').querySelector('.tabs__tab:not([hidden])');
+      $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (t) { var on = t === active; t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      var activeType = active.getAttribute('data-type');
+      var SCOPE = v.type === 'space'
+        ? { folder: 'Applies to every folder in the space.', content: 'Applies to the contents inside, at any depth.', file: 'Applies to the files inside, at any depth.' }
+        : v.rows.length > 1
+          ? { folder: 'Applies to the selected folders and their subfolders.', content: 'Applies to the selected contents and the contents inside the selected folders.', file: 'Applies to the files inside the selected folders.' }
+          : { folder: 'Applies to this folder and its subfolders.', content: 'Applies to the contents inside, at any depth.', file: 'Applies to the files inside, at any depth.' };
+      $('tabScopeText').textContent = SCOPE[activeType];
+      renderMatrix(activeType);
     } else {
       renderMatrix(v.type);
     }
@@ -581,10 +601,10 @@
     applyVariant(r.getAttribute('data-variant'), true);
   });
   $('typeTabs').addEventListener('click', function (e) {
-    var t = e.target.closest('.tabs__tab'); if (!t) return;
+    var t = e.target.closest('.tabs__tab'); if (!t || t.hidden) return;
     $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (x) { x.classList.remove('is-active'); x.setAttribute('aria-selected', 'false'); });
     t.classList.add('is-active'); t.setAttribute('aria-selected', 'true');
-    renderMatrix(t.getAttribute('data-type'));
+    updateTabsAndFooter();
   });
   ['cbExisting', 'cbDefault', 'rdInherit', 'rdAll'].forEach(function (id) { $(id).addEventListener('change', updateTabsAndFooter); });
   $('restoreBtn').addEventListener('click', function () {
