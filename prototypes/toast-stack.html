@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toast notifications stack</title>
+
+  <!-- Lexicon kit — in this order -->
+  <script>(function(){
+    var S=['light','light-hc','dark','dark-hc'];
+    function apply(){try{
+      var r=document.documentElement;
+      var s=localStorage.getItem('vanilla-skin')||'light';
+      S.forEach(function(c){r.classList.remove(c);});
+      r.classList.add(S.indexOf(s)>-1?s:'light');
+    }catch(e){}}
+    apply();
+    window.addEventListener('pageshow',apply);
+  })()</script>
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../tokens-high-contrast.css">
+  <link rel="stylesheet" href="../tokens-dark.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="../icons.js"></script>
+
+  <!-- Page-scoped layout only: where the stack sits, how toasts enter/leave,
+       and the three stacking modes. The toasts themselves are the kit's
+       .alert.alert--toast, untouched.
+
+       Modes (set on .toast-stack by the script, from the vertical budget):
+         (none)                    → column with a gap
+         .toast-stack--tight       → each toast overlaps the one above by --toast-overlap
+         .toast-stack--collapsed   → light deck: compact toasts, fully visible, --toast-deck-gap apart
+         Past DECK_AFTER toasts the deck is forced; past HEAVY_AFTER it becomes:
+         .toast-stack--heavy       → overlapping deck, every older one peeks --toast-peek (20px)
+         .toast-stack--dense       → past DENSE_AFTER, the tightest peek (12px)
+       Newest toast is last in the DOM, so it paints on top. Hover / focus-within
+       lifts any toast to the front so it can be read. -->
+  <style>
+    .page-actions {
+      position: fixed;
+      top: var(--spacing-7);
+      right: var(--spacing-7);
+    }
+
+    .toast-stack {
+      --toast-motion:  280ms;                                 /* one duration for every re-layout */
+      --toast-ease:    cubic-bezier(0.2, 0, 0, 1);            /* quick start, soft landing */
+      --toast-stagger: 0ms;                                   /* extra delay per depth level — off:
+                                                                 a domino wave looks odd when toasts
+                                                                 are added in quick succession */
+
+      --toast-gap:     var(--spacing-4);   /* normal: space between toasts */
+      --toast-overlap: var(--spacing-8);   /* tight: how much a toast covers the older one */
+      --toast-peek:    var(--spacing-9);   /* collapsed: visible strip of each older toast */
+      --toast-inset:   var(--spacing-3);   /* horizontal shrink per depth level, each side (16px total) */
+
+      position: fixed;
+      left: var(--spacing-7);
+      bottom: var(--spacing-7);
+      width: calc(var(--side-menu-width) * 2);          /* 560px */
+      max-width: calc(100vw - var(--spacing-7) * 2);
+      height: 0;                                         /* set by the script */
+      pointer-events: none;                              /* clicks pass through the empty area */
+    }
+
+    /* Light deck (DECK_AFTER < n ≤ HEAVY_AFTER): compact toasts, fully visible,
+       with a slight gap between them. */
+    .toast-stack--collapsed { --toast-deck-gap: var(--spacing-2); }
+    /* Heavy deck (more than HEAVY_AFTER toasts): overlapping, tighter strip per older toast. */
+    .toast-stack--heavy { --toast-peek: var(--spacing-6); --toast-deck-gap: 0px; }
+    /* Dense deck (more than DENSE_AFTER toasts): barely a strip per older toast. */
+    .toast-stack--dense { --toast-peek: var(--spacing-4); --toast-deck-gap: 0px; }
+
+    /* Every toast is absolutely positioned from the bottom of the stack.
+       The script sets, per toast:
+         --y      distance from the stack's bottom edge
+         --depth  0 = newest (front), 1 = behind it, … capped at MAX_INSET_DEPTH for the inset
+         --z      paint order (newest highest)                                  */
+    .toast-stack .alert {
+      pointer-events: auto;
+      position: absolute;
+      box-sizing: border-box;
+      bottom: var(--y, 0px);
+      left: calc(var(--depth, 0) * var(--toast-inset));
+      width: calc(100% - var(--depth, 0) * var(--toast-inset) * 2);
+      z-index: var(--z, 0);
+      /* Every geometric property moves together, with the same duration and curve.
+         --toast-stagger (per raw depth --d) can add a front-to-back fold; it ships off. */
+      --toast-delay: calc(min(var(--d, 0), 12) * var(--toast-stagger));
+      transition: bottom  var(--toast-motion) var(--toast-ease) var(--toast-delay),
+                  left    var(--toast-motion) var(--toast-ease) var(--toast-delay),
+                  width   var(--toast-motion) var(--toast-ease) var(--toast-delay),
+                  padding var(--toast-motion) var(--toast-ease) var(--toast-delay),
+                  opacity var(--toast-motion) var(--toast-ease) var(--toast-delay),
+                  box-shadow 200ms ease;
+      /* Fade with depth: full up to the 20th toast, then 9% less per level, down
+         to 10% at the 30th and beyond. */
+      opacity: calc(1 - clamp(0, var(--d, 0) - 19, 10) * 0.09);
+    }
+    /* Invisible clone the script uses to measure the heights the toasts will
+       have at their final width / padding, without touching the live ones. */
+    .toast-stack--ghost { visibility: hidden; pointer-events: none; }
+    .toast-stack--ghost .alert { transition: none; animation: none; }
+
+    /* Deck modes: the toasts behind the front one drop their vertical padding so
+       the visible strip is mostly content. Set by the script as .is-behind. */
+    .toast-stack .alert.is-behind {
+      padding-top: var(--spacing-1);
+      padding-bottom: var(--spacing-1);
+    }
+
+    /* Lift to the front while hovered or while something inside has focus. */
+    /* Past the 20th toast the box keeps fading but its contents are emptied, so
+       the text of the toasts behind never shows through the translucent ones. */
+    .toast-stack .alert__content,
+    .toast-stack .alert__close {
+      opacity: calc(1 - clamp(0, var(--d, 0) - 19, 1));
+      transition: opacity var(--toast-motion) var(--toast-ease) var(--toast-delay);
+    }
+
+    .toast-stack .alert:hover,
+    .toast-stack .alert:focus-within {
+      z-index: 1000;
+      opacity: 1;
+      box-shadow: var(--shadow-lg);
+    }
+    .toast-stack .alert:hover .alert__content,
+    .toast-stack .alert:hover .alert__close,
+    .toast-stack .alert:focus-within .alert__content,
+    .toast-stack .alert:focus-within .alert__close { opacity: 1; }
+
+    /* Enter / leave */
+    .toast-stack .alert.is-entering { animation: toast-in 220ms ease-out; }
+    .toast-stack .alert.is-leaving  { animation: toast-out 160ms ease-in forwards; }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(var(--spacing-5)); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes toast-out {
+      to { opacity: 0; transform: translateX(calc(-1 * var(--spacing-5))); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .toast-stack { --toast-motion: 1ms; --toast-stagger: 0ms; }
+      .toast-stack .alert.is-entering,
+      .toast-stack .alert.is-leaving { animation-duration: 1ms; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     EDIT BELOW.
+     Components: see ../components.html for live variants (all components, one page).
+     Icons: <svg class="lexicon-icon"><use href="#name"></use></svg>
+            (513 names — grep ../icons.svg for `<symbol id=`)
+     Tokens only: var(--color-…), var(--spacing-…), var(--font-size-…).
+     ════════════════════════════════════════════════════════════════ -->
+
+<main style="min-height: 100vh;">
+
+  <!-- Top-right: add a notification -->
+  <div class="page-actions">
+    <button type="button" class="btn btn--primary" id="add-toast">
+      <svg class="lexicon-icon"><use href="#plus"></use></svg>
+      Add notification
+    </button>
+  </div>
+
+  <!-- Bottom-left: the stack. Toasts persist until the user closes them. -->
+  <div class="toast-stack" id="toast-stack" role="region" aria-label="Notifications" aria-live="polite">
+    <div class="alert alert--toast alert--info" role="status">
+      <div class="alert__content">
+        <svg class="lexicon-icon"><use href="#info-circle"></use></svg>
+        <p class="alert__text"><strong>Info:</strong> This is an Info alert</p>
+      </div>
+      <button type="button" class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">
+        <svg class="lexicon-icon"><use href="#times"></use></svg>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+(function () {
+  var stack = document.getElementById('toast-stack');
+  var addBtn = document.getElementById('add-toast');
+
+  // ── Stacking policy ────────────────────────────────────────────────
+  // The stack may use up to BUDGET of the viewport height. Normal first;
+  // if that overflows, tighten; if tight overflows too, collapse to a deck.
+  var BUDGET = 0.5;
+  var MAX_INSET_DEPTH = 7;     // the horizontal shrink stops at this level; every toast keeps peeking
+  var DECK_AFTER  = 6;         // more toasts than this → deck mode regardless of space
+  var HEAVY_AFTER = 12;        // more toasts than this → heavy deck (tighter peek)
+  var DENSE_AFTER = 20;        // more toasts than this → dense deck (tightest peek)
+
+  function px(name) {
+    return parseFloat(getComputedStyle(stack).getPropertyValue(name)) || 0;
+  }
+
+  function layout() {
+    var toasts = Array.prototype.slice.call(stack.querySelectorAll('.alert:not(.is-leaving)'));
+    var n = toasts.length;
+    var budget = window.innerHeight * BUDGET;
+    var gap = px('--toast-gap'), overlap = px('--toast-overlap');
+
+    // Walk from the newest (front, last in DOM) to the oldest.
+    var front = toasts.slice().reverse();
+    function measure() { return front.map(function (t) { return t.offsetHeight; }); }
+    var h = measure();
+    var sum = h.reduce(function (a, b) { return a + b; }, 0);
+
+    var normalH = sum + gap * Math.max(0, n - 1);
+    var tightH  = sum - overlap * Math.max(0, n - 1);
+    var heavy = n > HEAVY_AFTER, dense = n > DENSE_AFTER;
+    var mode = n > DECK_AFTER ? 'collapsed' : normalH <= budget ? 'normal' : tightH <= budget ? 'tight' : 'collapsed';
+    stack.classList.toggle('toast-stack--tight', mode === 'tight');
+    stack.classList.toggle('toast-stack--collapsed', mode === 'collapsed');
+    stack.classList.toggle('toast-stack--heavy', heavy && !dense);
+    stack.classList.toggle('toast-stack--dense', dense);
+    var peek = px('--toast-peek');          /* read after the classes: heavy shrinks it */
+    var deckGap = px('--toast-deck-gap');   /* > 0 only in the light deck */
+
+    // Pass 1: measure the heights the toasts will have at their final width and
+    // padding (a narrower toast may wrap to more lines). Measured on an invisible
+    // clone so the live toasts, and any transition they are in, are left alone.
+    function applyFinal(list) {
+      list.forEach(function (t, d) {
+        t.style.setProperty('--d', d);
+        t.style.setProperty('--depth', mode === 'normal' ? 0 : Math.min(d, MAX_INSET_DEPTH));
+        t.classList.toggle('is-behind', mode === 'collapsed' && d > 0);
+      });
+    }
+    var ghost = stack.cloneNode(true);
+    ghost.removeAttribute('id');
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.classList.add('toast-stack--ghost');
+    var ghostFront = Array.prototype.slice.call(ghost.querySelectorAll('.alert:not(.is-leaving)')).reverse();
+    applyFinal(ghostFront);
+    document.body.appendChild(ghost);
+    h = ghostFront.map(function (t) { return t.offsetHeight; });
+    ghost.remove();
+    applyFinal(front);
+
+    // Pass 2: vertical positions and paint order.
+    var y = 0, top = 0, prevTop = 0;
+    front.forEach(function (t, d) {
+      if (d > 0) {
+        if (mode === 'normal')        y += h[d - 1] + gap;
+        else if (mode === 'tight')    y += h[d - 1] - overlap;
+        /* light deck: compact toasts one above the other with a slight gap */
+        else if (deckGap > 0)         y = prevTop + deckGap;
+        /* heavy / dense deck: align by the TOP edge so exactly `peek` of every
+           older toast shows, whatever its height (text wraps on narrow screens). */
+        else                          y = Math.max(0, prevTop + Math.min(peek, h[d]) - h[d]);
+      }
+      prevTop = y + h[d];
+      t.style.setProperty('--y', y + 'px');
+      t.style.setProperty('--z', n - d);
+      top = Math.max(top, y + h[d]);
+    });
+    stack.style.height = top + 'px';
+  }
+
+  // Re-layout whenever a toast changes height (text wraps on resize).
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(function () { layout(); });
+    stack.querySelectorAll('.alert').forEach(function (t) { ro.observe(t); });
+  }
+  window.addEventListener('resize', layout);
+
+  // ── Sample notifications, rotated in order ─────────────────────────
+  var samples = [
+    { tone: 'success', icon: 'check-circle-full', title: 'Success', text: 'Page "Spring campaign" was published.' },
+    { tone: 'warning', icon: 'warning-full',      title: 'Warning', text: 'Your session will expire in 5 minutes.' },
+    { tone: 'danger',  icon: 'times-circle-full', title: 'Error',   text: 'Could not upload hero-banner.png. Try again.' },
+    { tone: 'info',    icon: 'info-circle',       title: 'Info',    text: '3 new comments on "Pricing page".' },
+    { tone: 'success', icon: 'check-circle-full', title: 'Success', text: 'Changes to "Footer" were saved.' },
+    { tone: 'info',    icon: 'info-circle',       title: 'Info',    text: 'Maria Gomez shared "Q4 roadmap" with you.' }
+  ];
+  var next = 0;
+
+  function icon(name) {
+    return '<svg class="lexicon-icon"><use href="#' + name + '"></use></svg>';
+  }
+
+  function buildToast(s) {
+    var el = document.createElement('div');
+    el.className = 'alert alert--toast alert--' + s.tone + ' is-entering';
+    el.setAttribute('role', s.tone === 'danger' ? 'alert' : 'status');
+    el.innerHTML =
+      '<div class="alert__content">' + icon(s.icon) +
+        '<p class="alert__text"><strong>' + s.title + ':</strong> ' + s.text + '</p>' +
+      '</div>' +
+      '<button type="button" class="btn btn--borderless btn--sm btn--icon alert__close" aria-label="Close">' +
+        icon('times') +
+      '</button>';
+    el.addEventListener('animationend', function () { el.classList.remove('is-entering'); }, { once: true });
+    return el;
+  }
+
+  // New toast goes to the bottom (front); the older ones shift up / behind.
+  addBtn.addEventListener('click', function () {
+    var t = buildToast(samples[next % samples.length]);
+    next++;
+    stack.appendChild(t);
+    if (ro) ro.observe(t);
+    layout();
+  });
+
+  // Close (event delegation so the initial toast works too).
+  stack.addEventListener('click', function (e) {
+    var btn = e.target.closest('.alert__close');
+    if (!btn) return;
+    var toast = btn.closest('.alert');
+    toast.classList.add('is-leaving');
+    toast.addEventListener('animationend', function () { toast.remove(); layout(); }, { once: true });
+    layout();
+  });
+
+  layout();
+})();
+</script>
+
+</body>
+</html>
