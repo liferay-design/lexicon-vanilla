@@ -282,8 +282,7 @@
           <header class="section section--sm" id="matrixTitle"><span class="section__title">Roles and actions</span></header>
           <nav class="tabs" role="tablist" aria-label="Item type" id="typeTabs" data-proto="typeTabs" hidden>
             <button class="tabs__tab is-active" role="tab" aria-selected="true" data-type="folder">Folders</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-type="content">Contents</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-type="file">Files</button>
+            <button class="tabs__tab" role="tab" aria-selected="false" data-type="item">Items</button>
           </nav>
           <div class="search input--sm matrix__search" data-proto="filter">
             <input type="search" class="input__field search__field" placeholder="Filter roles" aria-label="Filter roles" id="roleFilter" autocomplete="off">
@@ -371,8 +370,8 @@
   ];
   var ACTIONS = {
     folder:  ['Add Entry', 'Add Subfolder', 'Delete', 'Permissions', 'Subscribe', 'Update', 'View'],
-    content: ['Add Discussion', 'Delete', 'Permissions', 'Subscribe', 'Update', 'View'],
-    file:    ['Add Discussion', 'Delete', 'Download', 'Permissions', 'Update', 'View'],
+    // Contents and files share one action set (content attachments also carry Download)
+    item:    ['Add Discussion', 'Delete', 'Download', 'Permissions', 'Subscribe', 'Update', 'View'],
     space:   ['Add Folder', 'Delete', 'Permissions', 'Update', 'View', 'View Members']
   };
 
@@ -381,28 +380,28 @@
       icon: '#web-content', name: 'Retiro Park', path: 'Basic Web Content · Madrid / Contents / Parent',
       origin: { tone: 'success', label: 'Inherited from Parent', text: 'Same as the folder defaults. Changes here make this item custom.' },
       existing: null, def: null,
-      type: 'content', restore: 'Restore from Parent', rows: ['item']
+      type: 'item', restore: 'Restore from Parent', rows: ['item']
     },
     folder: {
       icon: '#folder', name: 'Child', path: 'Folder · Madrid / Contents / Parent',
       origin: { tone: 'warning', label: 'Custom', text: 'Changed by Laura Méndez on Sep 30, 2026. No longer follows Parent.' },
       existing: { label: 'Existing items inside', hint: '1 subfolder, 2 contents and 1 file, at any depth.', count: 4, custom: 2 },
       def: { label: 'New items created inside', hint: 'Becomes the default for anything created later in this folder and its subfolders.' },
-      type: 'folder', types: ['folder', 'content', 'file'], restore: 'Restore from Parent', rows: ['folder']
+      type: 'folder', types: ['folder', 'item'], restore: 'Restore from Parent', rows: ['folder']
     },
     space: {
       initials: 'M', name: 'Madrid', path: 'Space · 2 folders, 9 contents, 1 file',
       origin: { tone: 'secondary', label: 'Space root', text: 'Nothing above a space. Defaults here seed every folder.' },
       existing: { label: 'Existing items in the space', hint: '2 folders, 9 contents and 1 file, at any depth.', count: 12, custom: 1 },
       def: { label: 'New items created in the space', hint: 'Default for anything created later in any folder of the space.' },
-      type: 'space', types: ['folder', 'content', 'file'], restore: null, rows: []
+      type: 'space', types: ['folder', 'item'], restore: null, rows: []
     },
     multi: {
       icon: '#list', name: '3 items selected', path: 'Child, Retiro Park, San Isidro Festival · Madrid / Contents / Parent',
       origin: { tone: 'info', label: 'Mixed', text: '2 items inherit from Parent, 1 is custom.' },
       existing: { label: 'Also everything inside the selected folders', hint: 'Child contains 1 content.', count: 1, custom: 0 },
       def: null,
-      base: 3, type: 'folder', types: ['folder', 'content'], restore: 'Restore selected from Parent', rows: ['folder', 'item', 'item2']
+      base: 3, type: 'folder', types: ['folder', 'item'], restore: 'Restore selected from Parent', rows: ['folder', 'item', 'item2']
     }
   };
 
@@ -495,10 +494,10 @@
       $('typeTabs').querySelectorAll('.tabs__tab').forEach(function (t) { var on = t === active; t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
       var activeType = active.getAttribute('data-type');
       var SCOPE = v.type === 'space'
-        ? { folder: 'Applies to every folder in the space.', content: 'Applies to the contents inside, at any depth.', file: 'Applies to the files inside, at any depth.' }
+        ? { folder: 'Applies to every folder in the space.', item: 'Applies to every content and file in the space.' }
         : v.rows.length > 1
-          ? { folder: 'Applies to the selected folders and their subfolders.', content: 'Applies to the selected contents and the contents inside the selected folders.', file: 'Applies to the files inside the selected folders.' }
-          : { folder: 'Applies to this folder and its subfolders.', content: 'Applies to the contents inside, at any depth.', file: 'Applies to the files inside, at any depth.' };
+          ? { folder: 'Applies to the selected folders and their subfolders.', item: 'Applies to the selected items and the items inside the selected folders.' }
+          : { folder: 'Applies to this folder and its subfolders.', item: 'Applies to the contents and files inside, at any depth.' };
       $('tabScopeText').textContent = SCOPE[activeType];
       renderMatrix(activeType);
     } else {
