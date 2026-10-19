@@ -1988,7 +1988,7 @@
           <a href="showcases/modal.html">Playground</a>
         </span>
       </div>
-      <p class="lead"><code>.modal-overlay</code> backdrop + <code>.modal</code> card (600px max). Validation variants tint header + colored border. Footer: first <code>.btn--borderless</code> pushes left automatically.</p>
+      <p class="lead"><code>.modal-overlay</code> backdrop + <code>.modal</code> card (600px max). Body text is 16px. Validation variants tint header + colored border, and the primary action takes the same tone (<code>btn--primary btn--&lt;tone&gt;</code>). Footer actions are right-aligned in order: <code>.btn--borderless</code>, <code>.btn--secondary</code>, <code>.btn--primary</code>.</p>
 
       <div class="showcase__row">
         <span class="showcase__label">Default · warning · success · info · danger</span>
@@ -2045,7 +2045,7 @@
           <footer class="modal__footer">
             <button class="btn btn--borderless">Clear</button>
             <button class="btn btn--secondary">Cancel</button>
-            <button class="btn btn--primary">Done</button>
+            <button class="btn btn--primary btn--info">Done</button>
           </footer>
         </div>
         <div class="modal modal--danger" style="display:block;max-width:360px;border:1px solid var(--color-secondary-l3);border-radius:var(--rounded-md);overflow:hidden;box-shadow:none;">
