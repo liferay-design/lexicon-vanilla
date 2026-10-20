@@ -4290,7 +4290,7 @@
   gap: var(--spacing-2);
   height: 24px;
   padding: 0 var(--spacing-3);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-sm);   /* Figma rounded-md = 4px → --rounded-sm with the CMS radii, same as .label */
   background: var(--color-secondary-l3);
   color: var(--color-dark-d2);
   font-family: var(--font-family-base);
