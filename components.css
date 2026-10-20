@@ -4290,7 +4290,7 @@
   gap: var(--spacing-2);
   height: 24px;
   padding: 0 var(--spacing-3);
-  border-radius: var(--rounded-sm);   /* Figma rounded-md = 4px → --rounded-sm with the CMS radii, same as .label */
+  border-radius: var(--rounded-md);
   background: var(--color-secondary-l3);
   color: var(--color-dark-d2);
   font-family: var(--font-family-base);
@@ -4306,6 +4306,7 @@
   padding: 0 var(--spacing-2);
   font-size: var(--font-size-sm);
   line-height: 1;
+  border-radius: var(--rounded-sm);   /* 16px tall: --rounded-md (8px) would make a pill */
 }
 
 .content-label--0 { background: var(--color-secondary-l3); color: var(--color-dark-d2); }
