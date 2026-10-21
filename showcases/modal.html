@@ -37,7 +37,7 @@
   <h1>Modal</h1>
   <p class="lead">
     Source: <a href="https://www.figma.com/design/YNNkt9Xd6ImDtEvIz4tETF/Lexicon-Components?node-id=472-4478">Figma — Lexicon Components</a>.
-    Centred dialog over a dimmed overlay. Header (title + close), body (24 padding) and right-aligned footer of action buttons. Validation variants tint the header (warning / success / info).
+    Centred dialog over a dimmed overlay. Header (title + close), body (24 padding) and right-aligned footer of action buttons (borderless, secondary, primary). Body text is 16px. Validation variants tint the header (info / success / warning / danger) and the primary action takes the same tone: <code>btn--primary btn--&lt;tone&gt;</code>.
   </p>
 
   <div class="showcase__row">
@@ -118,7 +118,7 @@
       <footer class="modal__footer">
         <button class="btn btn--borderless">Clear</button>
         <button class="btn btn--secondary">Cancel</button>
-        <button class="btn btn--primary">Done</button>
+        <button class="btn btn--primary btn--info">Done</button>
       </footer>
     </div>
   </div>
