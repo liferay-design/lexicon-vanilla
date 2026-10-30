@@ -4270,6 +4270,58 @@
 
 
 /* ============================================================
+   CONTENT LABEL (Satellite)
+   Source: Figma — Lexicon Satellites, node 4516:8521
+   Borderless tinted tag for content metadata (types, categories,
+   collections…). Nine colour variants (Figma content-0…content-8):
+   -l5 chart tint + -d2 text, so every variant reskins with the
+   chart palette. Two sizes: regular 24px (14/600) · --sm 16px (12/600).
+
+   Markup:
+     <span class="content-label content-label--1">Label Text</span>
+     <span class="content-label content-label--sm content-label--1">Label Text</span>
+
+   Variants: --0 neutral (default) · --1 purple · --2 yellow ·
+   --3 green · --4 red · --5 teal · --6 cyan · --7 orange · --8 pink
+   ============================================================ */
+
+.content-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  height: 24px;
+  padding: 0 var(--spacing-3);
+  border-radius: var(--rounded-md);
+  background: var(--color-secondary-l3);
+  color: var(--color-dark-d2);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.content-label--sm {
+  height: 16px;
+  padding: 0 var(--spacing-2);
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  border-radius: var(--rounded-sm);   /* 16px tall: --rounded-md (8px) would make a pill */
+}
+
+.content-label--0 { background: var(--color-secondary-l3); color: var(--color-dark-d2); }
+.content-label--1 { background: var(--purple-l5); color: var(--purple-d2); }
+.content-label--2 { background: var(--yellow-l5); color: var(--yellow-d4); }  /* yellow-d2 is too light on l5 — Figma uses d4 */
+.content-label--3 { background: var(--green-l5);  color: var(--green-d2); }
+.content-label--4 { background: var(--red-l5);    color: var(--red-d2); }
+.content-label--5 { background: var(--teal-l5);   color: var(--teal-d2); }
+.content-label--6 { background: var(--cyan-l5);   color: var(--cyan-d2); }
+.content-label--7 { background: var(--orange-l5); color: var(--orange-d2); }
+.content-label--8 { background: var(--pink-l5);   color: var(--pink-d2); }
+
+
+/* ============================================================
    CMS MENU (Satellite)
    Source: Figma — Lexicon Satellites, node 2545:4896
    280px sidebar panel. Item rows reuse .vert-nav__item and
