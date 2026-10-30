@@ -1737,7 +1737,7 @@
 .pagination {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--spacing-5);
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
@@ -1753,7 +1753,7 @@
 
 .pagination__pages {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 auto;     /* Figma 538:20529: items-per-page + summary grouped left (16px gap), pages pinned right */
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -1789,11 +1789,11 @@
 
 .pagination__btn.is-active,
 .pagination__btn[aria-current="page"] {
-  background: var(--color-primary-l3);
+  /* Figma 1018:7797 (State=Selected): 4px primary-l0 bar along the bottom, straight
+     top edge, clipped by the rounded corners — a background layer, not an inset
+     shadow (a shadow would curve with the radius). */
+  background: linear-gradient(to top, var(--color-primary-l0) var(--spacing-2), var(--color-primary-l3) var(--spacing-2));
   color: var(--color-dark);
-  box-shadow: inset 0 -2px 0 0 var(--color-primary);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 .pagination__ellipsis {
@@ -1812,6 +1812,7 @@
   align-items: center;
   gap: var(--spacing-3);
 }
+.pagination--stacked .pagination__pages { margin-left: 0; }
 
 
 /* ============================================================
