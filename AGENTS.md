@@ -68,7 +68,7 @@ vanilla/
 
 Anything you author or refine in `components.css` must reskin cleanly across the four skins shipped (Light, Light HC, Dark, Dark HC). The "tokens only" rule from constraint #4 is the foundation, but a few subtleties trip up refinements.
 
-**1. Avoid `--color-secondary-l0/l1/l2/l3` for text or icons.** In Light HC and Dark HC the secondary scale collapses — `-l0` through `-l3` all share the same flat colour. That's fine for borders and surfaces, but it kills text contrast on near-white or near-black backgrounds.
+**1. Avoid `--color-secondary-l0/l1/l2/l3` for text or icons.** The secondary scale lands very differently per skin: in Light HC `-l0` is nearly as dark as `--color-secondary` while `-l2`/`-l3` are near-white, and in the dark skins the whole scale inverts. That's fine for borders and surfaces, but text set in those steps won't hold its contrast across all four skins.
 
 For text/icons that must stay legible in every skin, use `var(--color-dark)` with `opacity` for the dimmer tone:
 

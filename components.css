@@ -4478,12 +4478,13 @@
 
 /* ============================================================
    LIGHT HIGH CONTRAST — component-level overrides
-   Compensates for token collapsing that happens in
-   tokens-high-contrast.css:
-     · primary-l0–l3  all → #A3C3FF  (too saturated for bg use)
-     · secondary-l0–l3 all → #B0B0C4 (too dark for subtle borders)
-     · color-light        → #BFC0C8  (too dark for input backgrounds)
-     · validation l1 = l2           (bg ≡ border, no visible border)
+   Firmer edges than the token scale gives on its own: white
+   field backgrounds, --color-secondary borders and full-strength
+   tone borders on validation states, alerts and modals. The
+   scales in tokens-high-contrast.css no longer collapse — every
+   step is distinct (secondary-l0–l3: #42424D · #6C6F8E · #CDCDDA
+   · #F0F0F4) — so these overrides are about contrast, not about
+   telling identical steps apart.
    ============================================================ */
 
 /* Inputs — use near-white bg + stronger border in HC */
@@ -4512,13 +4513,13 @@
 .light-hc .btn--primary.btn--success:hover  { background: var(--color-success-d2); }
 .light-hc .btn--primary.btn--success:active { background: var(--color-success-d2); }
 
-/* input-group__addon — collapse of secondary-l3 makes it a dark gray block */
+/* input-group__addon — white bg + secondary border, like the field */
 .light-hc .input-group__addon {
   background: var(--color-white);
   border-color: var(--color-secondary);
 }
 
-/* color-input hex field + swatch — same color-light / secondary-l3 problem */
+/* color-input hex field + swatch — same treatment as the field */
 .light-hc .color-input__hex {
   background: var(--color-white);
   border-color: var(--color-secondary);
@@ -4554,10 +4555,10 @@
 }
 
 /* Active state — use transparent primary tint instead of #A3C3FF */
-.light-hc .vert-nav__item.is-active { background: rgba(24, 82, 191, 0.1); }
+.light-hc .vert-nav__item.is-active { background: rgba(0, 40, 117, 0.1); }
 
 /* Navbar active — same tint fix */
-.light-hc .navbar__item.is-active { background: rgba(24, 82, 191, 0.1); }
+.light-hc .navbar__item.is-active { background: rgba(0, 40, 117, 0.1); }
 
 
 /* ─── Control Panel ─────────────────────────────────────────────────────────── */
