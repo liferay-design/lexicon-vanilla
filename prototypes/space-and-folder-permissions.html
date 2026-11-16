@@ -946,7 +946,7 @@ button .lexicon-icon,a .lexicon-icon{pointer-events:none}
 .pim-vbar .btn{width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:#6b6c7e;border-radius:0}
 .pim-vbar .btn:hover,.pim-vbar .btn:focus-visible{background:none;color:#272833} /* CMS: only the icon darkens */
 .pim-vbar .btn .lexicon-icon{width:16px;height:16px}
-.pim-edit-scroll{padding-right:40px} /* content never runs under the bar */
+.pim-edit-scroll{padding-right:40px} .pim-edit-scroll.pim-no-vbar{padding-right:0} /* permissions pages have no side panels */ /* content never runs under the bar */
 .pim-translation{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid #6b6c7e;border-radius:4px;background:#fff;font-size:14px;font-weight:600;color:#272833}
 .pim-pdp-header{display:flex;gap:16px;margin-top:40px;align-items:flex-start}
 .pim-pdp-sticker{width:80px;height:80px;border-radius:4px;background:#f7f8f9;display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
@@ -2619,13 +2619,13 @@ function folderPermsView(){const P=fpCur();if(!P)return '';const k=S.fpTab||'fol
  const it=fpItems(P),diff=fpDiff(P),cu=it.custom;
  const aside=`<aside class="pim-fs-aside" aria-label="Folder summary"><section class="pim-fs-card"><h2 class="pim-fs-title">Inside this folder</h2><div class="pim-fs-row"><span>Subfolders</span><strong>${fpSubsN(P)}</strong></div><div class="pim-fs-row"><span>Entries</span><strong>${fpEntsOf(P).length}</strong></div></section>
   <section class="pim-fs-card"><h2 class="pim-fs-title">Unsaved changes</h2><div id="pim-fs-unsaved">${permUnsaved(diff,fpSecsOf(P).map(([k,l])=>[k==='folder'?'this folder':l.toLowerCase(),l,k==='folder'?'Saving changes only this folder.':`Saving changes only new ${l.toLowerCase()}. To update existing ones, use Save and Apply to Items.`]))}</div></section></aside>`;
- return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs">${nav}<div class="pim-edit-canvas pim-fp-canvas"><div class="pim-fp">
+ return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs pim-no-vbar">${nav}<div class="pim-edit-canvas pim-fp-canvas"><div class="pim-fp">
   <h2 class="pim-fs-h pim-fp-h">${title}</h2><p class="pim-fs-intro">${desc}</p>
   <div class="pim-fp-status"><span class="pim-fp-sico" aria-hidden="true">${ic('info-circle')}</span>${PS.b}${restoreBtn('fp-restore',src,PS.canRestore)}</div>
   <div class="input-group pim-fp-search"><div class="input-group-item"><input class="form-control input-group-inset input-group-inset-before" type="text" placeholder="Filter roles" aria-label="Filter roles" data-a="fp-q" value="${esc(S.fpQ||'')}"><span class="input-group-inset-item input-group-inset-item-before">${ic('search')}</span></div></div>
   ${typeof PS!=='undefined'?PS.info:''}<div class="pim-fp-wrap"><table class="table pim-fp-table"><thead><tr><th class="pim-fp-role">Role</th>${acts.map(a=>`<th>${a}</th>`).join('')}</tr></thead><tbody>
    ${roles.map(([r,icn])=>`<tr><td class="pim-fp-role"><span class="pim-fp-ricon">${ic(icn)}</span>${esc(r)}</td>${acts.map(a=>`<td><div class="custom-control custom-checkbox"><label><input class="custom-control-input" type="checkbox" ${(d[r]||[]).includes(a)?'checked':''} data-a="fp-cb" data-r="${esc(r)}" data-act="${a}" aria-label="${esc(r)}: ${a}"><span class="custom-control-label"></span></label></div></td>`).join('')}</tr>`).join('')||`<tr><td colspan="${acts.length+1}" class="pim-fp-none">No roles found.</td></tr>`}
-  </tbody></table></div></div></div>${aside}</div>${vbar()}</div>`;}
+  </tbody></table></div></div></div>${aside}</div></div>`;}
 function spDraft(sp,k){S.spd=S.spd&&S.spd._sp===sp?S.spd:{_sp:sp,secs:{}};if(!S.spd.secs[k])S.spd.secs[k]=JSON.parse(JSON.stringify(spEff(sp,k)));return S.spd.secs[k];}
 const spSecChanged=(sp,k)=>!!(S.spd&&S.spd._sp===sp&&S.spd.secs[k]&&fpNorm(S.spd.secs[k])!==fpNorm(spEff(sp,k)));
 function spDiff(sp){const out=[];SP_SECS.forEach(([k,l])=>{if(!spSecChanged(sp,k))return;const was=spEff(sp,k),now=S.spd.secs[k],sc=k==='space'?'this space':l.toLowerCase();
@@ -2639,13 +2639,13 @@ function spacePermsView(){const sp=S.spPermsId,dd0=SPACE_DEF[sp];if(!dd0)return 
   <div class="actions"><button class="btn btn-unstyled btn-cancel" type="button" data-a="sp-cancel">Cancel</button>${dd('sp-savedd',o=>`<div class="btn-group pim-split" role="group"><button class="btn btn-primary btn-sm pim-split-main" type="button" data-a="sp-save">Save</button><button class="btn btn-primary btn-sm pim-split-toggle dropdown-toggle" type="button" data-a="dd" data-dd-id="sp-savedd" aria-haspopup="true" aria-expanded="${o}" aria-label="More save options">${ic('caret-bottom')}</button></div>`,`<div class="pim-row-menu"><button class="dropdown-item pim-row-item" type="button" role="menuitem" data-a="sp-apply-open">${ic('propagation')}<span class="pim-row-label">Save and Apply to Items</span></button></div>`,true)}</div></header>`;
  const aside=`<aside class="pim-fs-aside" aria-label="Space summary"><section class="pim-fs-card"><h2 class="pim-fs-title">Inside this space</h2><div class="pim-fs-row"><span>Folders</span><strong>${S.parents.filter(x=>spaceOf(x)===sp).length}</strong></div><div class="pim-fs-row"><span>Products</span><strong>${S.children.filter(c=>spaceOf(c)===sp).length}</strong></div></section>
   <section class="pim-fs-card"><h2 class="pim-fs-title">Unsaved changes</h2><div id="pim-fs-unsaved">${permUnsaved(diff,SP_SECS.map(([k,l])=>[k==='space'?'this space':l.toLowerCase(),l,k==='space'?'Saving changes only this space.':`Saving changes only new ${l.toLowerCase()}. To update existing ones, use Save and Apply to Items.`]))}</div></section></aside>`;
- return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs">${nav}<div class="pim-edit-canvas pim-fp-canvas"><div class="pim-fp">
+ return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs pim-no-vbar">${nav}<div class="pim-edit-canvas pim-fp-canvas"><div class="pim-fp">
   <h2 class="pim-fs-h pim-fp-h">${title}</h2><p class="pim-fs-intro">${desc}</p>
   <div class="pim-fp-status"><span class="pim-fp-sico" aria-hidden="true">${ic('info-circle')}</span>${(()=>{const cu=fpNorm(d)!==fpNorm(spDefault(k));return k==='space'?(cu?'<span class="pim-fp-stxt">These permissions are custom and differ from the system defaults. Changes here apply only to this space.</span>':'<span class="pim-fp-stxt">These permissions started as a copy of the system defaults when this space was created. Changes here apply only to this space.</span>'):(cu?'<span class="pim-fp-stxt">These defaults are custom and differ from the system defaults.</span>':'<span class="pim-fp-stxt">These defaults started as a copy of the system defaults when this space was created.</span>');})()}${restoreBtn('sp-restore','System',fpNorm(d)!==fpNorm(spDefault(k)))}</div>
   <div class="input-group pim-fp-search"><div class="input-group-item"><input class="form-control input-group-inset input-group-inset-before" type="text" placeholder="Filter roles" aria-label="Filter roles" data-a="fp-q" value="${esc(S.fpQ||'')}"><span class="input-group-inset-item input-group-inset-item-before">${ic('search')}</span></div></div>
   ${typeof PS!=='undefined'?PS.info:''}<div class="pim-fp-wrap"><table class="table pim-fp-table"><thead><tr><th class="pim-fp-role">Role</th>${acts.map(a=>`<th>${a}</th>`).join('')}</tr></thead><tbody>
    ${roles.map(([r,icn])=>`<tr><td class="pim-fp-role"><span class="pim-fp-ricon">${ic(icn)}</span>${esc(r)}</td>${acts.map(a=>`<td><div class="custom-control custom-checkbox"><label><input class="custom-control-input" type="checkbox" ${(d[r]||[]).includes(a)?'checked':''} data-a="sp-cb" data-r="${esc(r)}" data-act="${a}" aria-label="${esc(r)}: ${a}"><span class="custom-control-label"></span></label></div></td>`).join('')}</tr>`).join('')||`<tr><td colspan="${acts.length+1}" class="pim-fp-none">No roles found.</td></tr>`}
-  </tbody></table></div></div></div>${aside}</div>${vbar()}</div>`;}
+  </tbody></table></div></div></div>${aside}</div></div>`;}
 // ----- product permissions: follows the Products section of its folder (or of the space) -----
 const skBase=c=>{if(String(c.id).startsWith('as_')){const F=c.parentId&&(S.af||[]).find(x=>x.id===c.parentId);return F?fpEff(F,c.kind):spEff(c.space,c.kind);}const P=c.parentId&&S.parents.find(x=>x.id===c.parentId);return P?fpEff(P,'products'):spEff(spaceOf(c),'products');};
 const skStored=c=>{if(!c.pp)c.pp=JSON.parse(JSON.stringify(skBase(c)));return c.pp;};
@@ -2667,13 +2667,13 @@ function skuPermsView(){const c=S.children.find(x=>x.id===S.skPermsId);if(!c)ret
   :`<section class="pim-fs-card"><h2 class="pim-fs-title">From space</h2><p class="pim-fs-txt">This product is not in a folder: it follows the space defaults.</p></section>`;
  const aside=`<aside class="pim-fs-aside" aria-label="Product summary">${from}<section class="pim-fs-card"><h2 class="pim-fs-title">Unsaved changes</h2><div id="pim-fs-unsaved">${permUnsaved(diff,null,'Saving changes only this product.')}</div></section></aside>`;
  const roles=FP_ROLES.filter(([r])=>!q||r.toLowerCase().includes(q));
- return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs"><div class="pim-edit-canvas pim-fp-canvas is-solo"><div class="pim-fp">
+ return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs pim-no-vbar"><div class="pim-edit-canvas pim-fp-canvas is-solo"><div class="pim-fp">
   <h2 class="pim-fs-h pim-fp-h">Permissions</h2><p class="pim-fs-intro">Who can see and change this product.</p>
   <div class="pim-fp-status"><span class="pim-fp-sico" aria-hidden="true">${ic('info-circle')}</span>${PS.b}${restoreBtn('sk-restore',src,PS.canRestore)}</div>
   <div class="input-group pim-fp-search"><div class="input-group-item"><input class="form-control input-group-inset input-group-inset-before" type="text" placeholder="Filter roles" aria-label="Filter roles" data-a="fp-q" value="${esc(S.fpQ||'')}"><span class="input-group-inset-item input-group-inset-item-before">${ic('search')}</span></div></div>
   ${typeof PS!=='undefined'?PS.info:''}<div class="pim-fp-wrap"><table class="table pim-fp-table"><thead><tr><th class="pim-fp-role">Role</th>${acts.map(a=>`<th>${a}</th>`).join('')}</tr></thead><tbody>
    ${roles.map(([r,icn])=>`<tr><td class="pim-fp-role"><span class="pim-fp-ricon">${ic(icn)}</span>${esc(r)}</td>${acts.map(a=>`<td><div class="custom-control custom-checkbox"><label><input class="custom-control-input" type="checkbox" ${(d[r]||[]).includes(a)?'checked':''} data-a="sk-cb" data-r="${esc(r)}" data-act="${a}" aria-label="${esc(r)}: ${a}"><span class="custom-control-label"></span></label></div></td>`).join('')}</tr>`).join('')||`<tr><td colspan="${acts.length+1}" class="pim-fp-none">No roles found.</td></tr>`}
-  </tbody></table></div></div></div>${aside}</div>${vbar()}</div>`;}
+  </tbody></table></div></div></div>${aside}</div></div>`;}
 function permState(o){const {custom,rec,eqStored,restored,outdated,src,what,defs,tab,diff}=o;
  // stable sentence: no inheritance, permissions are copied from the parent defaults when the item is created
  const SRC_TAB={contents:'Contents',files:'Files',products:'Products'},stab=what==='folder'?(tab==='folder'||tab==='subfolders'?(defs==='space'?'Folders':'Subfolders'):SRC_TAB[tab]):(what==='product'?'Products':what==='file'?'Files':'Contents'),from=`${defs}’s ${stab}`;
@@ -4393,13 +4393,13 @@ function asPermsView(){const c=(S.assets||[]).find(x=>x.id===S.skPermsId);if(!c)
   :`<section class="pim-fs-card"><h2 class="pim-fs-title">From space</h2><p class="pim-fs-txt">This ${one} is not in a folder: it got the default permissions of the space.</p></section>`;
  const aside=`<aside class="pim-fs-aside" aria-label="Summary">${from}<section class="pim-fs-card"><h2 class="pim-fs-title">Unsaved changes</h2><div id="pim-fs-unsaved">${permUnsaved(diff,null,`Saving changes only this ${one}.`)}</div></section></aside>`;
  const roles=FP_ROLES.filter(([r])=>!q||r.toLowerCase().includes(q));
- return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs"><div class="pim-edit-canvas pim-fp-canvas is-solo"><div class="pim-fp">
+ return `<div class="pim-edit">${head}<div class="pim-edit-scroll pim-fs pim-no-vbar"><div class="pim-edit-canvas pim-fp-canvas is-solo"><div class="pim-fp">
   <h2 class="pim-fs-h pim-fp-h">Permissions</h2><p class="pim-fs-intro">Who can see and change this ${one}.</p>
   <div class="pim-fp-status"><span class="pim-fp-sico" aria-hidden="true">${ic('info-circle')}</span>${PS.b}${restoreBtn('sk-restore',src,PS.canRestore)}</div>
   <div class="input-group pim-fp-search"><div class="input-group-item"><input class="form-control input-group-inset input-group-inset-before" type="text" placeholder="Filter roles" aria-label="Filter roles" data-a="fp-q" value="${esc(S.fpQ||'')}"><span class="input-group-inset-item input-group-inset-item-before">${ic('search')}</span></div></div>
   ${PS.info}<div class="pim-fp-wrap"><table class="table pim-fp-table"><thead><tr><th class="pim-fp-role">Role</th>${acts.map(a=>`<th>${a}</th>`).join('')}</tr></thead><tbody>
    ${roles.map(([r,icn])=>`<tr><td class="pim-fp-role"><span class="pim-fp-ricon">${ic(icn)}</span>${esc(r)}</td>${acts.map(a=>`<td><div class="custom-control custom-checkbox"><label><input class="custom-control-input" type="checkbox" ${(d[r]||[]).includes(a)?'checked':''} data-a="sk-cb" data-r="${esc(r)}" data-act="${a}" aria-label="${esc(r)}: ${a}"><span class="custom-control-label"></span></label></div></td>`).join('')}</tr>`).join('')||`<tr><td colspan="${acts.length+1}" class="pim-fp-none">No roles found.</td></tr>`}
-  </tbody></table></div></div></div>${aside}</div>${vbar()}</div>`;}
+  </tbody></table></div></div></div>${aside}</div></div>`;}
 const asOriginNow=()=>({view:S.view,ak:S.ak,afid:S.afid,spaceHome:S.spaceHome});
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;
  if(a==='as-f-perms'){const F=afOf(t.dataset.id||S.afid);if(!F)return;S.fpReturnAs=asOriginNow();S.fpAsset=F.id;S.fpd=null;S.fpTab='folder';S.fpQ='';S.asSel.clear();go({view:'folderPerms',openDd:null,modal:null});}
